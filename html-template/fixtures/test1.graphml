@@ -1,0 +1,88 @@
+<graphml>
+  <key id="weight" for="node" attr.name="weight" attr.type="double"/>
+  <key id="type" for="node" attr.name="type" attr.type="string"/>
+  <key id="shape" for="node" attr.name="shape" attr.type="string"/>
+  <key id="label" for="node" attr.name="label" attr.type="string"/>
+  
+  <key id="type" for="edge" attr.name="type" attr.type="string"/>
+  <key id="weight" for="edge" attr.name="weight" attr.type="double"/>
+  <key id="sourceArrowShape" for="edge" attr.name="sourceArrowShape" attr.type="string"/>
+  <key id="targetArrowShape" for="edge" attr.name="targetArrowShape" attr.type="string"/>
+  
+  <graph edgedefault="undirected">  
+    <node id="1">
+      <data key="weight">0.45</data>
+      <data key="label">n1</data>
+      <data key="type">1</data>
+      <data key="shape">ELLIPSE</data>
+    </node>
+    <node id="2">
+      <data key="weight">0.22</data>
+      <data key="label">n2</data>
+      <data key="type">2</data>
+      <data key="shape">TRIANGLE</data>
+    </node>
+    <node id="3">
+      <data key="weight">0.09</data>
+      <data key="label">n3</data>
+      <data key="type">1</data>
+      <data key="shape">OCTAGON</data>
+    </node>
+    <node id="4">
+      <data key="weight">0.03</data>
+      <data key="label">n4</data>
+      <data key="type">1</data>
+      <data key="shape">DIAMOND</data>
+    </node>
+    <node id="5">
+      <data key="weight">0.10</data>
+      <data key="label">n5</data>
+      <data key="type">3</data>
+      <data key="shape">PARALLELOGRAM</data>
+    </node>
+ 
+    <edge target="1" source="2" directed="true">
+      <data key="type">1</data>
+      <data key="weight">0.4</data>
+      <data key="sourceArrowShape">diamond</data>
+      <data key="targetArrowShape">diamond</data>
+    </edge>
+    <edge target="1" source="3" directed="true">
+      <data key="type">1</data>
+      <data key="weight">0.6</data>
+      <data key="sourceArrowShape">delta</data>
+      <data key="targetArrowShape">T</data>
+    </edge>
+    <edge target="1" source="3" directed="true">
+      <data key="type">2</data>
+      <data key="weight">0.6</data>
+      <data key="sourceArrowShape">delta</data>
+      <data key="targetArrowShape">T</data>
+    </edge>
+    <edge target="3" source="1" directed="true">
+      <data key="type">3</data>
+      <data key="weight">0.1</data>
+      <data key="sourceArrowShape">diamond</data>
+      <data key="targetArrowShape">T</data>
+    </edge>
+    <edge target="4" source="1" directed="true">
+      <data key="type">1</data>
+      <data key="weight">0.2</data>
+      <data key="sourceArrowShape">circle</data>
+      <data key="targetArrowShape">circle</data>
+    </edge>
+    <edge target="1" source="4" directed="true">
+      <data key="type">2</data>
+      <data key="weight">0.8</data>
+      <data key="sourceArrowShape">diamond</data>
+      <data key="targetArrowShape">circle</data>
+    </edge>
+    <edge target="4" source="5">
+      <data key="type">3</data>
+      <data key="weight">0.2</data>
+      <data key="sourceArrowShape">none</data>
+      <data key="targetArrowShape">none</data>
+    </edge>
+
+  </graph>
+</graphml>

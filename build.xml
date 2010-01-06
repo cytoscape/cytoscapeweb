@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<project name="Cytoscape Web" basedir="." default="info">
+    <taskdef resource="flexTasks.tasks" classpath="${basedir}/lib-dev/flexTasks.jar"/>
+    
+    <!-- 
+         This file should be created by each user when he/she needs to override particular values. 
+         Do NOT place it under version control.
+    -->
+    <property file="build.properties"/>
+    
+    <property file="default.properties"/>
+    
+    <property environment="env"/>
+    
+    <property name="flex.src.dir" value="src"/>
+    <property name="flex.bin.dir" value="bin"/>
+    <property name="flex.lib.dir" value="lib"/>
+    <property name="dev.lib.dir" value="lib-dev"/>
+    <property name="flex.doc.dir" value="doc"/>
+    <property name="build.dir" value="build"/>
+    <property name="js.src.dir" value="html-template/js"/>
+    <property name="temp.dir" value="tmp"/>
+    
+   <target name="build" depends="copy resources to bin, js minify">
+        <delete dir="${build.dir}"/>
+        <mkdir dir="${build.dir}"/>
+        <delete dir="${temp.dir}"/>
+        <mkdir dir="${temp.dir}"/>
+        <copy todir="${temp.dir}/swf">
+            <fileset dir="${flex.bin.dir}">
+                <include name="CytoscapeWeb.swf"/>
+                <include name="playerProductInstall.swf"/>
+            </fileset>
+        </copy>
+        <copy todir="${temp.dir}/js/min">
+            <fileset dir="${flex.bin.dir}/js">
+                <include name="json2.min.js"/>
+                <include name="AC_OETags.min.js"/>
+                <include name="cytoscapeweb.min.js"/>
+            </fileset>
+        </copy>
+        <copy todir="${temp.dir}/js/src">
+            <fileset dir="${flex.bin.dir}/js">
+                <include name="json2.js"/>
+                <include name="AC_OETags.js"/>
+                <include name="cytoscapeweb.js"/>
+            </fileset>
+        </copy>
+        <zip destfile="${build.dir}/cytoscapeweb_v${build.version}.zip"
+             basedir="${temp.dir}"
+             update="true"
+          />
+        <delete dir="${temp.dir}"/>
+    </target>
+    
+    <target name="compile" depends="clean">
+        <mxmlc file="${flex.src.dir}/CytoscapeWeb.mxml" output="${flex.bin.dir}/CytoscapeWeb.swf"
+               actionscript-file-encoding="UTF-8" optimize="true" debug="false" incremental="true"
+               locale="en_US" keep-generated-actionscript="false" allow-source-path-overlap="true">
+            <load-config filename="${FLEX_HOME}/frameworks/flex-config.xml"/>
+            <compiler.source-path path-element="${flex.src.dir}"/>
+            <compiler.source-path path-element="${flex.src.dir}/assets/locale/{locale}"/>
+            <compiler.external-library-path dir="${FLEX_HOME}/frameworks"/>
+            <compiler.include-libraries dir="${flex.lib.dir}" append="true">
+                 <include name="AlivePDF.swc"/>
+                 <include name="flare.swc"/>
+                 <include name="PureMVC_AS3_2_0_4.swc"/>
+            </compiler.include-libraries>
+        </mxmlc>
+    </target>
+    
+    <target name="js minify">
+        <apply executable="java" parallel="false" failonerror="true">
+            <fileset dir="${js.src.dir}" includes="cytoscapeweb.js AC_OETags.js json2.js"/>
+            <arg line="-jar"/>
+            <arg path="${basedir}/${dev.lib.dir}/yuicompressor-2.4.2.jar"/>
+            <srcfile/>
+            <arg line="-o"/>
+            <mapper type="glob" from="*.js" to="${flex.bin.dir}/js/*.min.js"/>
+            <targetfile/>
+        </apply>
+    </target>
+
+    <target name="copy resources to bin">
+        <copy todir="${flex.bin.dir}">
+            <fileset dir="html-template" includes="**/**"/>
+        </copy>
+    </target>
+
+    <target name="clean">
+        <delete dir="${flex.bin.dir}" />
+        <mkdir dir="${flex.bin.dir}"/>
+    </target>
+    
+    <target name="info">
+        <echo>*******************************************************************</echo>
+        <echo>*   This script builds Cytoscape Web                              *</echo>
+        <echo>*   The following targets are available in this script:           *</echo>
+        <echo>*       build - generates the zip file with the release artifacts *</echo>
+        <echo>*       info - (default) prints this text                         *</echo>
+        <echo>*******************************************************************</echo>
+    </target>
+    
+</project>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  This file is part of Cytoscape Web.
+  Copyright (c) 2009, The Cytoscape Consortium (www.cytoscape.org)
+
+  The Cytoscape Consortium is:
+    - Agilent Technologies
+    - Institut Pasteur
+    - Institute for Systems Biology
+    - Memorial Sloan-Kettering Cancer Center
+    - National Center for Integrative Biomedical Informatics
+    - Unilever
+    - University of California San Diego
+    - University of California San Francisco
+    - University of Toronto
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+	       xmlns:app="org.cytoscapeweb.view.components.*"
+	       styleName="rawBox"
+	       width="100%" height="100%"
+	       verticalScrollPolicy="off" horizontalScrollPolicy="off"
+	       autoLayout="true"
+	       initialize="onInit()">
+
+<mx:Script>
+<![CDATA[
+    [Bindable] public var graphView:GraphView;
+
+    private function onInit():void {
+        // Create and add the View that contains the GRAPH:
+        graphView = new GraphView();
+        graphView.width = graphBox.width;
+        graphView.height = graphBox.height;
+        graphBox.addChild(graphView);
+    }
+
+    private function onRollOverPanZoomBox():void {
+        panZoomBox.styleName = "panZoomBoxRollOver";
+    }
+    
+    private function onRollOutPanZoomBox():void {
+        panZoomBox.styleName = "panZoomBox";
+    }
+
+]]>
+</mx:Script>
+	
+	<mx:Box id="graphBox" styleName="rawBox" width="100%" height="100%"
+		    verticalScrollPolicy="off" horizontalScrollPolicy="off"
+		    verticalAlign="middle" horizontalAlign="center"
+		    autoLayout="true"/>
+	
+	<app:PanZoomBox id="panZoomBox" visible="false"
+		            rollOver="onRollOverPanZoomBox();"
+		            rollOut="onRollOutPanZoomBox();"/>
+	
+</mx:Canvas>

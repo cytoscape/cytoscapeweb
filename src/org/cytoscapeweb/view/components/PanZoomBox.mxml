@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  This file is part of Cytoscape Web.
+  Copyright (c) 2009, The Cytoscape Consortium (www.cytoscape.org)
+
+  The Cytoscape Consortium is:
+    - Agilent Technologies
+    - Institut Pasteur
+    - Institute for Systems Biology
+    - Memorial Sloan-Kettering Cancer Center
+    - National Center for Integrative Biomedical Informatics
+    - Unilever
+    - University of California San Diego
+    - University of California San Francisco
+    - University of Toronto
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-->
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml"
+         xmlns:app="org.cytoscapeweb.view.components.*"
+         styleName="panZoomBox">
+
+<mx:Script>
+<![CDATA[
+	import org.cytoscapeweb.model.methods.$;
+	import org.cytoscapeweb.view.components.slider.TrackSkin;
+	import org.cytoscapeweb.view.components.slider.ThumbSkin;
+	
+	private function dataTipFormat(value:Number):String{
+	   return $('zoom.slider.datatip', Math.round(value));
+	}
+]]>
+</mx:Script>
+
+    <mx:Grid styleName="panBox">
+        <mx:GridRow>
+            <mx:GridItem></mx:GridItem>
+            <mx:GridItem>
+                <mx:Button id="panUpButton" styleName="panUpButton" toolTip="{$('pan.up.tooltip')}"/>
+            </mx:GridItem>
+            <mx:GridItem></mx:GridItem>    
+        </mx:GridRow>
+        <mx:GridRow>
+            <mx:GridItem>
+                <mx:Button id="panLeftButton" styleName="panLeftButton" toolTip="{$('pan.left.tooltip')}"/>
+            </mx:GridItem>
+            <mx:GridItem>
+            </mx:GridItem>
+            <mx:GridItem>
+                <mx:Button id="panRightButton" styleName="panRightButton" toolTip="{$('pan.right.tooltip')}"/>
+            </mx:GridItem>
+        </mx:GridRow>
+        <mx:GridRow>
+            <mx:GridItem></mx:GridItem>
+            <mx:GridItem>
+                <mx:Button id="panDownButton" styleName="panDownButton" toolTip="{$('pan.down.tooltip')}"/>
+            </mx:GridItem>
+            <mx:GridItem></mx:GridItem>    
+        </mx:GridRow>
+    </mx:Grid>
+    
+    <mx:Spacer width="4"/>
+    
+    <mx:Grid styleName="zoomBox">
+        <mx:GridRow>
+            <mx:GridItem verticalAlign="bottom">
+                <mx:Button id="zoomOutButton" styleName="zoomOutButton" toolTip="{$('zoom.out.tooltip')}"/>
+            </mx:GridItem>
+            <mx:GridItem verticalAlign="middle">
+                <mx:Button id="zoomFitButton" styleName="zoomFitButton" toolTip="{$('zoom.fit.tooltip')}"/>
+            </mx:GridItem>
+            <mx:GridItem>
+                <mx:Button id="zoomInButton" styleName="zoomInButton" toolTip="{$('zoom.in.tooltip')}"/>
+            </mx:GridItem>
+        </mx:GridRow>
+        <mx:GridRow>
+            <mx:GridItem colSpan="3">
+                <mx:HSlider id="zoomSlider" width="76"
+                            minimum="10" maximum="300"
+                            liveDragging="true"
+                            dataTipPrecision="0"
+                            snapInterval="1"
+                            tickValues="{[10,25,50,75,100,125,150,200,300]}"
+                            tickLength="0"
+                            tickOffset="4"
+                            value="100"
+                            toolTip="{$('zoom.slider.tooltip', Math.round(zoomSlider.value))}"
+                            dataTipFormatFunction="{dataTipFormat}"
+                            trackSkin="{TrackSkin}"
+                            thumbSkin="{ThumbSkin}"/>
+            </mx:GridItem>
+        </mx:GridRow>
+    </mx:Grid>
+
+</mx:HBox>

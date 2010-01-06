@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+  This file is part of Cytoscape Web.
+  Copyright (c) 2009, The Cytoscape Consortium (www.cytoscape.org)
+
+  The Cytoscape Consortium is:
+    - Agilent Technologies
+    - Institut Pasteur
+    - Institute for Systems Biology
+    - Memorial Sloan-Kettering Cancer Center
+    - National Center for Integrative Biomedical Informatics
+    - Unilever
+    - University of California San Diego
+    - University of California San Francisco
+    - University of Toronto
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<title>Cytoscape Web API Tests</title>
+
+<script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="js/jquery.base64.min.js"></script>
+<script type="text/javascript" src="js/qunit.js"></script>
+<script type="text/javascript" src="js/json2.js"></script>
+<script type="text/javascript" src="js/AC_OETags.js"></script>
+<script type="text/javascript" src="js/cytoscapeweb.js"></script>
+<script type="text/javascript" src="js/tests.js"></script>
+
+<link rel="stylesheet" href="css/qunit.css" type="text/css" media="screen" />
+<style type="text/css">
+    body { overflow-y: scroll; }
+    #graphs { float: right; width: 44%; height: 100%; background-color: #ffffff; padding: 2px 4px 2px 2px; }
+    #graphs div { width: 100%; height: 160px; margin: 2px; border: 1px solid #D2E0E6; }
+    .pointer { position: absolute; width: 10px; height: 10px; background-color: rgba(0,255,100, 0.7); }
+</style>
+
+<script>
+    $(document).ready(function(){
+        var options1 = {
+                panZoomControlVisible: false,
+                edgesMerged: false,
+                nodeLabelsVisible: true,
+                nodeTooltipsEnabled: true,
+                edgeTooltipsEnabled: false
+            };
+        var vis1 = new org.cytoscapeweb.Visualization("cytoweb1");
+        vis1.ready(function() { runGraphTests("Vis-1", vis1, options1); });
+        runJSTests(vis1);
+
+        $.get("fixtures/test1.graphml", function(xml){
+            options1.network = xml;
+            vis1.draw(options1);
+        });
+        
+        var options2 = {
+                panZoomControlVisible: true,
+                edgesMerged: true,
+                nodeLabelsVisible: false,
+                nodeTooltipsEnabled: false,
+                edgeTooltipsEnabled: true
+            };
+        var vis2 = new org.cytoscapeweb.Visualization("cytoweb2");
+        vis2.ready(function() { runGraphTests("Vis-2", vis2, options2); });
+
+        $.get("fixtures/test2.xgmml", function(xml){
+            options2.network = xml;
+            vis2.draw(options2);
+        });
+    });
+</script>
+</head>
+<body>
+    <h1 id="qunit-header">Cytoscape Web - API Tests</h1>
+    <h2 id="qunit-banner"></h2>
+    <h2 id="qunit-userAgent"></h2>
+
+    <div id="graphs">
+        <div id="cytoweb1"></div>
+        <div id="image_cytoweb1">PNG Image</div>
+        <div id="cytoweb2"></div>
+        <div id="image_cytoweb2">PNG Image</div>
+    </div>
+
+    <ol id="qunit-tests"></ol>
+    <p id="qunit-testresult"></p>
+</body>
+</html>

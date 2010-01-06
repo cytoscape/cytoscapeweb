@@ -1,0 +1,196 @@
+<graphml>
+  <key id="weight" for="node" attr.name="weight" attr.type="double"/>
+  <key id="label" for="node" attr.name="label" attr.type="string"/>
+  <key id="network" for="edge" attr.name="network" attr.type="string"/>
+  <key id="weight" for="edge" attr.name="weight" attr.type="double"/>
+  <key id="label" for="edge" attr.name="label" attr.type="string"/>
+  
+  <graph edgedefault="undirected">  
+    <node id="1">
+      <data key="weight">0.9</data>
+      <data key="label">A01</data>
+    </node>
+    <node id="2">
+      <data key="weight">0.2</data>
+      <data key="label">A02</data>
+    </node>
+    <node id="3">
+      <data key="weight">0.4</data>
+      <data key="label">A03</data>
+    </node>
+    <node id="4">
+      <data key="weight">0.3</data>
+      <data key="label">A04</data>
+    </node>
+    <node id="5">
+      <data key="weight">0.2</data>
+      <data key="label">A05</data>
+    </node>
+    <node id="6">
+      <data key="weight">0.1</data>
+      <data key="label">A06</data>
+    </node>
+    <node id="7">
+      <data key="weight">0.5</data>
+      <data key="label">A07</data>
+    </node>
+    <node id="8">
+      <data key="weight">0.6</data>
+      <data key="label">A08</data>
+    </node>
+    <node id="9">
+      <data key="weight">0.5</data>
+      <data key="label">A09</data>
+    </node>
+    <node id="10">
+      <data key="weight">0.1</data>
+      <data key="label">A10</data>
+    </node>
+
+    <edge target="7" source="4">
+      <data key="network">15</data>
+      <data key="weight">0.019</data>
+      <data key="label">7 (15) 4</data>
+    </edge>
+    <edge target="7" source="3">
+      <data key="network">2</data>
+      <data key="weight">0.019</data>
+      <data key="label">7 (2) 3</data>
+    </edge>
+    <edge target="1" source="7">
+      <data key="network">16</data>
+      <data key="weight">0.029</data>
+      <data key="label">1 (16) 7</data>
+    </edge>
+    <edge target="1" source="8">
+      <data key="network">15</data>
+      <data key="weight">0.044</data>
+      <data key="label">1 (15) 8</data>
+    </edge>
+    <edge target="1" source="9">
+      <data key="network">15</data>
+      <data key="weight">0.022</data>
+      <data key="label">1 (15) 9</data>
+    </edge>
+    <edge target="1" source="3">
+      <data key="network">2</data>
+      <data key="weight">0.007</data>
+      <data key="label">1 (2) 3</data>
+    </edge>
+    <edge target="1" source="2">
+      <data key="network">15</data>
+      <data key="weight">0.030</data>
+      <data key="label">1 (15) 2</data>
+    </edge>
+    <edge target="4" source="1">
+      <data key="network">15</data>
+      <data key="weight">0.015</data>
+      <data key="label">4 (15) 1</data>
+    </edge>
+    <edge target="4" source="8">
+      <data key="network">25</data>
+      <data key="weight">0.073</data>
+      <data key="label">4 (25) 8</data>
+    </edge>
+    <edge target="4" source="9">
+      <data key="network">15</data>
+      <data key="weight">0.078</data>
+      <data key="label">4 (15) 9</data>
+    </edge>
+    <edge target="9" source="10">
+      <data key="network">15</data>
+      <data key="weight">0.052</data>
+      <data key="label">9 (15) 10</data>
+    </edge>
+    <edge target="10" source="1">
+      <data key="network">15</data>
+      <data key="weight">0.061</data>
+      <data key="label">10 (15) 1</data>
+    </edge>
+    <edge target="10" source="8">
+      <data key="network">15</data>
+      <data key="weight">0.022</data>
+      <data key="label">10 (15) 8</data>
+    </edge>
+    <edge target="3" source="9">
+      <data key="network">2</data>
+      <data key="weight">0.011</data>
+      <data key="label">3 (2) 9</data>
+    </edge>
+    <edge target="2" source="7">
+      <data key="network">15</data>
+      <data key="weight">0.024</data>
+      <data key="label">2 (15) 7</data>
+    </edge>
+    <edge target="5" source="3">
+      <data key="network">15</data>
+      <data key="weight">0.036</data>
+      <data key="label">5 (15) 3</data>
+    </edge>
+    <edge target="7" source="3">
+      <data key="network">14</data>
+      <data key="weight">0.082</data>
+      <data key="label">7 (14) 3</data>
+    </edge>
+    <edge target="1" source="10">
+      <data key="network">14</data>
+      <data key="weight">0.064</data>
+      <data key="label">1 (14) 10</data>
+    </edge>
+    <edge target="4" source="7">
+      <data key="network">14</data>
+      <data key="weight">0.040</data>
+      <data key="label">4 (14) 7</data>
+    </edge>
+    <edge target="4" source="3">
+      <data key="network">14</data>
+      <data key="weight">0.059</data>
+      <data key="label">4 (14) 3</data>
+    </edge>
+    <edge target="8" source="1">
+      <data key="network">24</data>
+      <data key="weight">0.018</data>
+      <data key="label">8 (24) 1</data>
+    </edge>
+    <edge target="8" source="4">
+      <data key="network">14</data>
+      <data key="weight">0.008</data>
+      <data key="label">8 (14) 4</data>
+    </edge>
+    <edge target="8" source="10">
+      <data key="network">2</data>
+      <data key="weight">0.25</data>
+      <data key="label">8 (2) 10</data>
+    </edge>
+    <edge target="8" source="3">
+      <data key="network">14</data>
+      <data key="weight">0.050</data>
+      <data key="label">8 (14) 3</data>
+    </edge>
+    <edge target="9" source="1">
+      <data key="network">2</data>
+      <data key="weight">0.011</data>
+      <data key="label">9 (2) 1</data>
+    </edge>
+    <edge target="10" source="1">
+      <data key="network">24</data>
+      <data key="weight">0.098</data>
+      <data key="label">10 (24) 1</data>
+    </edge>
+    <edge target="7" source="1">
+      <data key="network">25</data>
+      <data key="weight">0.065</data>
+      <data key="label">7 (25) 1</data>
+    </edge>
+    <edge target="10" source="4">
+      <data key="network">25</data>
+      <data key="weight">0.040</data>
+      <data key="label">10 (25) 4</data>
+    </edge>
+    <edge target="6" source="8">
+      <data key="network">16</data>
+      <data key="weight">0.080</data>
+      <data key="label">6 (16) 8</data>
+    </edge>
+  </graph>
+</graphml>
