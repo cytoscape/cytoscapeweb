@@ -21,7 +21,7 @@
     <property name="js.src.dir" value="html-template/js"/>
     <property name="temp.dir" value="tmp"/>
     
-   <target name="build" depends="copy resources to bin, js minify">
+   <target name="build" depends="compile, copy resources to bin, js minify">
         <delete dir="${build.dir}"/>
         <mkdir dir="${build.dir}"/>
         <delete dir="${temp.dir}"/>
