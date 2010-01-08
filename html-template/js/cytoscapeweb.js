@@ -76,14 +76,6 @@
      *                             you would like to have replaced by the Flash object.
      * @param {Object} [options] Cytoscape Web parameters:
      *                <ul>
-     *                    <li><strong><code>resourceBundleUrl</code></strong>: An optional resource bundle path. Usually a <code>.properties</code></strong> file
-     *                                                                         that redefines the default labels and messages used by Cytoscape Web.</li>
-     *                    <li><strong><code>idToken</code></strong>: A string used to create the embedded Flash video id
-     *                                                               (usually an HTML <code>embed</code> or <code>object</code> tag).
-     *                                                               The default token is "cytoscapeWeb" and the final id will be the token followed
-     *                                                               by a number, so if the application has two instances of the Visualization in the same page,
-     *                                                               their id's will be "cytoscapeWeb1" and "cytoscapeWeb2".
-     *                                                               This token does not usually need to be changed.</li>
      *                    <li><strong><code>swfPath</code></strong>: The path of the compiled Cytoscape Web SWF file, but without the
      *                                                               <code>.swf</code> extension. If you use the provided <code>CytoscapeWeb.swf</code>
      *                                                               file and put it in the root path of the web application, this option does not need
@@ -98,6 +90,28 @@
      *                    <li><strong><code>flashAlternateContent</code></strong>: The text message that should be displayed if the browser does not have
      *                                                                             the Flash Player plugin. If none is provided, Cytoscape Web will show
      *                                                                             a default message and a link to the "Get Flash" page.</li>
+     *                    <li><strong><code>resourceBundleUrl</code></strong>: An optional resource bundle path. Usually a <code>.properties</code></strong> file
+     *                                                                         that redefines the default labels and messages used by Cytoscape Web.
+     *                                                                         Example of a valid file with all the available keys:
+     * <pre>
+     * global.wait = Please wait...
+     * error.title = Error
+     * pan.up.tooltip = Pan up
+     * pan.down.tooltip = Pan down
+     * pan.left.tooltip = Pan left
+     * pan.right.tooltip = Pan right
+     * zoom.out.tooltip = Zoom out (-)
+     * zoom.in.tooltip = Zoom in (+)
+     * zoom.fit.tooltip = Fit to screen (*)
+     * zoom.slider.tooltip = {0}%
+     * zoom.slider.datatip = {0}%
+     * </pre></li>
+     *                    <li><strong><code>idToken</code></strong>: A string used to create the embedded Flash video id
+     *                                                               (usually an HTML <code>embed</code> or <code>object</code> tag).
+     *                                                               The default token is "cytoscapeWeb" and the final id will be the token followed
+     *                                                               by a number, so if the application has two instances of the Visualization in the same page,
+     *                                                               their id's will be "cytoscapeWeb1" and "cytoscapeWeb2".
+     *                                                               This token does not usually need to be changed.</li>
      *                </ul>
      * @return {org.cytoscapeweb.Visualization} The Visualization instance.
      * @see org.cytoscapeweb.Visualization#draw

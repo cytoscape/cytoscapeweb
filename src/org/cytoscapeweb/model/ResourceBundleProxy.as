@@ -59,8 +59,6 @@ package org.cytoscapeweb.model {
 
         // ========[ PUBLIC PROPERTIES ]============================================================
 
-        public var resourceBundleUrl:String = "cytoscapeweb-bundle.properties";
-
         [Bindable(event="resourceBundleChange")]
         public function get resourceBundle():ResourceBundle {
             return _bundle;
@@ -82,10 +80,11 @@ package org.cytoscapeweb.model {
         public function ResourceBundleProxy(params:Object = null) {
             super(NAME);
 
-            if (params != null && params.resourceBundleUrl != null)
-                this.resourceBundleUrl = params.resourceBundleUrl;
-
-            load();
+            if (params != null && params.resourceBundleUrl != null) {
+                load(params.resourceBundleUrl);
+            }
+            
+            sendNotification(ApplicationFacade.RESOURCE_BUNDLE_CHANGED, resourceBundle);
         }
 
         // ========[ PUBLIC METHODS ]===============================================================
@@ -93,8 +92,8 @@ package org.cytoscapeweb.model {
 
         // ========[ PRIVATE METHODS ]==============================================================
         
-        private function load():void {
-            var req:URLRequest = new URLRequest(resourceBundleUrl);
+        private function load(url:String):void {
+            var req:URLRequest = new URLRequest(url);
 
             var loader:URLLoader = new URLLoader();
             loader.addEventListener(Event.COMPLETE, doEvent);

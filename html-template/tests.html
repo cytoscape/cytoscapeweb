@@ -74,7 +74,7 @@
                 nodeTooltipsEnabled: false,
                 edgeTooltipsEnabled: true
             };
-        var vis2 = new org.cytoscapeweb.Visualization("cytoweb2");
+        var vis2 = new org.cytoscapeweb.Visualization("cytoweb2", { resourceBundleUrl: "fixtures/bundle_test.properties" });
         vis2.ready(function() { runGraphTests("Vis-2", vis2, options2); });
 
         $.get("fixtures/test2.xgmml", function(xml){
