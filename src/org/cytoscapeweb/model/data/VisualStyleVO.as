@@ -99,6 +99,7 @@ package org.cytoscapeweb.model.data {
                                                      { attrValue: "false", value: ArrowShapes.NONE } ]
                         }
                     },
+                    label: { passthroughMapper: { attrName: "label" } },
                     labelHorizontalAnchor: "center",
                     labelVerticalAnchor: "middle",
                     labelXOffset: 0,

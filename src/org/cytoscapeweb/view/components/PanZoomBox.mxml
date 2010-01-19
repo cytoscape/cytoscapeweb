@@ -38,8 +38,8 @@
 	import org.cytoscapeweb.view.components.slider.TrackSkin;
 	import org.cytoscapeweb.view.components.slider.ThumbSkin;
 	
-	private function dataTipFormat(value:Number):String{
-	   return $('zoom.slider.datatip', Math.round(value));
+	private function toolTipFormat(value:Number, bundleKey:String='zoom.slider.datatip'):String {
+	    return $(bundleKey, Math.round(value));
 	}
 ]]>
 </mx:Script>
@@ -88,16 +88,16 @@
         <mx:GridRow>
             <mx:GridItem colSpan="3">
                 <mx:HSlider id="zoomSlider" width="76"
-                            minimum="10" maximum="300"
-                            liveDragging="true"
-                            dataTipPrecision="0"
+                            minimum="1" maximum="300"
+                            dataTipPrecision="2"
                             snapInterval="1"
-                            tickValues="{[10,25,50,75,100,125,150,200,300]}"
+                            liveDragging="true"
+                            tickValues="{[1,10,25,50,75,100,125,150,200,300]}"
                             tickLength="0"
                             tickOffset="4"
                             value="100"
-                            toolTip="{$('zoom.slider.tooltip', Math.round(zoomSlider.value))}"
-                            dataTipFormatFunction="{dataTipFormat}"
+                            toolTip="{toolTipFormat(zoomSlider.value, 'zoom.slider.tooltip')}"
+                            dataTipFormatFunction="{toolTipFormat}"
                             trackSkin="{TrackSkin}"
                             thumbSkin="{ThumbSkin}"/>
             </mx:GridItem>

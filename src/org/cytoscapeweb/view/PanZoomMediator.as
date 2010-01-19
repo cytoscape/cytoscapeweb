@@ -55,6 +55,7 @@ package org.cytoscapeweb.view {
         
         private var _panTimer:Timer = new Timer(16);
         private var _pressedPanButton:Button;
+        private var _ignoreZoomChange:Boolean;
         
         private function get panZoomBox():PanZoomBox {
             return viewComponent as PanZoomBox;
@@ -159,15 +160,15 @@ package org.cytoscapeweb.view {
 	    }
 	    
 	    private function onZoomSliderChange(e:SliderEvent):void {
-	    	sendNotification(ApplicationFacade.ZOOM_GRAPH, e.value/100);
+                sendNotification(ApplicationFacade.ZOOM_GRAPH, e.value/100);
 	    }
 	    
 	    private function onZoomInClick(e:Event):void {
-	        var zoomValue:Number = zoomSlider.value;
+	        var zoomValue:Number = Math.round(graphProxy.zoom*10000)/100;
 	        
 	        if (zoomValue < zoomSlider.maximum) {
                 var tickValues:Array = zoomSlider.tickValues;
-                for (var i:int = 0; i < tickValues.length - 1; i++) {
+                for (var i:int = 0; i < tickValues.length - 1; i++) {trace(i+" : "+ zoomValue+" - "+tickValues[i]+" | "+tickValues[i+1]);
                 	// Get the next larger tick value of the pre-defined range:
                 	if (zoomValue >= tickValues[i] && zoomValue < tickValues[i+1]) {
                 		zoomValue = tickValues[i+1];
@@ -179,11 +180,11 @@ package org.cytoscapeweb.view {
 	    }
 	    
 	    private function onZoomOutClick(e:Event):void {
-	        var zoomValue:Number = zoomSlider.value;
+	        var zoomValue:Number = Math.round(graphProxy.zoom*10000)/100;
 	        
 	        if (zoomValue > zoomSlider.minimum) {
                 var tickValues:Array = zoomSlider.tickValues;
-                for (var i:int = tickValues.length; i > 0; i--) {
+                for (var i:int = tickValues.length-1; i >= 0; i--) {trace(i+" : "+ zoomValue+" <= "+tickValues[i]+" && > "+tickValues[i-1]);
                     // Get the next lower tick value of the pre-defined range:
                     if (zoomValue <= tickValues[i] && zoomValue > tickValues[i-1]) {
                         zoomValue = tickValues[i-1];

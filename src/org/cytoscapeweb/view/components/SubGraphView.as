@@ -69,7 +69,7 @@ package org.cytoscapeweb.view.components {
     import org.cytoscapeweb.view.layout.PresetLayout;
     import org.cytoscapeweb.view.render.Labeler;
     
-    // TODO: rename to "GraphView" and call GraphView "NetworkView"
+
     public class SubGraphView extends Visualization {
         
         // ========[ CONSTANTS ]====================================================================

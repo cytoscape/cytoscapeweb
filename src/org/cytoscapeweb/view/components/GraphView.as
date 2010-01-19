@@ -113,13 +113,6 @@ package org.cytoscapeweb.view.components {
             	evt.currentTarget.removeEventListener(evt.type, arguments.callee);
             	evt.currentTarget.dispose();
                 dispatchEvent(new GraphViewEvent(GraphViewEvent.RENDER_COMPLETE));
-
-// TODO: remove                
-                //*****
-//                var bmp:BitmapData = new BitmapData(1, 1, false, 0xffffff);
-//                var storm:StormEmitter = new StormEmitter(Sprite(graphContainer.parent), width, height, bmp);
-//                storm.start();
-                //*****
             });
             par.play();
         }
@@ -168,7 +161,7 @@ package org.cytoscapeweb.view.components {
         }
         
         public function zoomToFit():Number {
-        	// Reset zoom first:
+       	    // Reset zoom first:
         	if (graphContainer.scaleX != 1)
         	   zoomTo(1);
         	
