@@ -6,7 +6,7 @@
          This file should be created by each user when he/she needs to override particular values. 
          Do NOT place it under version control.
     -->
-    <property file="build.properties"/>
+    <property file="local.properties"/>
     
     <property file="default.properties"/>
     
@@ -19,38 +19,14 @@
     <property name="flex.doc.dir" value="doc"/>
     <property name="build.dir" value="build"/>
     <property name="js.src.dir" value="html-template/js"/>
-    <property name="temp.dir" value="tmp"/>
     
-   <target name="build" depends="compile, copy resources to bin, js minify">
-        <delete dir="${build.dir}"/>
-        <mkdir dir="${build.dir}"/>
-        <delete dir="${temp.dir}"/>
-        <mkdir dir="${temp.dir}"/>
-        <copy todir="${temp.dir}/swf">
-            <fileset dir="${flex.bin.dir}">
-                <include name="CytoscapeWeb.swf"/>
-                <include name="playerProductInstall.swf"/>
-            </fileset>
-        </copy>
-        <copy todir="${temp.dir}/js/min">
-            <fileset dir="${flex.bin.dir}/js">
-                <include name="json2.min.js"/>
-                <include name="AC_OETags.min.js"/>
-                <include name="cytoscapeweb.min.js"/>
-            </fileset>
-        </copy>
-        <copy todir="${temp.dir}/js/src">
-            <fileset dir="${flex.bin.dir}/js">
-                <include name="json2.js"/>
-                <include name="AC_OETags.js"/>
-                <include name="cytoscapeweb.js"/>
-            </fileset>
-        </copy>
-        <zip destfile="${build.dir}/cytoscapeweb_v${build.version}.zip"
-             basedir="${temp.dir}"
-             update="true"
-          />
-        <delete dir="${temp.dir}"/>
+    <target name="build" depends="compile, copy resources to bin, js minify">
+        <zip destfile="${build.dir}/cytoscapeweb_v${build.version}.zip">
+        	<zipfileset dir="${basedir}" includes="LICENSE.txt README.txt"/>
+        	<zipfileset dir="${flex.bin.dir}" prefix="swf" includes="CytoscapeWeb.swf playerProductInstall.swf"/>
+        	<zipfileset dir="${flex.bin.dir}/js" prefix="js/src" includes="json2.js AC_OETags.js cytoscapeweb.js"/>
+        	<zipfileset dir="${flex.bin.dir}/js" prefix="js/min" includes="json2.min.js AC_OETags.min.js cytoscapeweb.min.js"/>
+        </zip>
     </target>
     
     <target name="compile" depends="clean">

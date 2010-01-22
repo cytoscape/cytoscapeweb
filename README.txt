@@ -18,17 +18,78 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ================================================================================
+WEBSITE
+================================================================================
+
+Visit our Website at http://cytoweb.baderlab.org
+
+================================================================================
 INSTALLATION AND USAGE
 ================================================================================
 
--- TODO --
+1. Copy all the files from js/min/ and swf/ to your project folder.
+
+2. Create an HTML file in the same folder and reference the copied JavaScript
+   files:
+
+        <head>
+            <script type="text/javascript" src="AC_OETags.min.js"></script>
+            <script type="text/javascript" src="json2.min.js"></script>
+            <script type="text/javascript" src="cytoscapeweb.min.js"></script>
+        </head>
+        
+3. Add a div or another HTML container and give it an ID (Cytoscape Web will 
+   replace its contents with the rendered graph):
+
+        <body>
+            <div id="cytoscapeweb" style="width:600px;height:400px;"></div>
+        </body>
+   
+4. Write JavaScript code to initialize and start Cytoscape Web:
+
+        <script type="text/javascript">
+            // network data could alternatively be grabbed via ajax
+            var xml = '\
+            <graphml>\
+              <graph>\
+                <node id="1"/>\
+                <node id="2"/>\
+                <edge target="1" source="2"/>\
+              </graph>\
+            </graphml>\
+            ';
+            
+            // init and draw
+            var vis = new org.cytoscapeweb.Visualization("cytoscapeweb");
+            vis.draw({ network: xml });
+        </script>
+
+--------------------------------------------------------------------------------
+
+To see other examples and the API documentation, visit 
+http://cytoweb.baderlab.org/documentation.
 
 ================================================================================
-PROJECT SETUP ON ECLIPSE
+SOURCE CODE
+================================================================================
+
+- You can browse the Cytoscape Web source code at 
+  http://chianti.ucsd.edu/svn/cytoscapeweb
+
+- You can also download the latest source from our Subversion server, by using 
+  the following command:
+  
+  svn checkout http://chianti.ucsd.edu/svn/cytoscapeweb/trunk/cytoscapeweb cytoscapeweb-read-only
+
+- After you download the project from Subversion, you can use Flex Builder or 
+  Jakarta Ant to build it.
+
+================================================================================
+PROJECT SETUP ON FLEX BUILDER
 ================================================================================
 Requires: Flex Builder 3 or Eclipse + Flex Builder 3 plugin
 
-1. Checkout the project from SVN as a Flex project.
+1. Checkout the project from SVN or import it as a Flex project.
 
 2. Setup the Flex Build Path:
    * Main source folder:            src
@@ -43,3 +104,56 @@ Requires: Flex Builder 3 or Eclipse + Flex Builder 3 plugin
    * src/CytoscapeWeb.mxml (default)
    * src/TestRunner.mxml
 
+5. To test it, just right-click src/CytoscapeWeb.mxml and choose:
+   
+   Run As >> Flex Application
+   
+   The first time it will open CytoscapeWeb.html in your default browser, but
+   it does not work. To fix it, right-click CytoscapeWeb.mxml again and select:
+   
+   Run As >> Run Configurations...
+   
+   Then, under "URL or path to launch", uncheck "Use defaults" and replace
+   "CytoscapeWeb.html" by "tests.html" (on Debug, Profile and Run). Now you can
+   run CytoscapeWeb.mxml again.
+
+================================================================================
+BUILDING IT WITH ANT
+================================================================================
+
+1. Download and install Jakarta Ant. Installation instructions are available at:
+   
+   http://ant.apache.org/manual/install.html.
+
+2. Download and install the Flex SDK from:
+
+   http://www.adobe.com/cfusion/entitlement/index.cfm?e=flex3sdk
+   
+3. After installing the Flex SDK, create a file called "local.properties" in the
+   root folder of the Cytoscape Web project (the one that contains "build.xml"). 
+   Open the created properties file with any text editor and add the FLEX_HOME 
+   path, which is the path where you installed the Flex SDK.
+   Example:
+   
+   FLEX_HOME=/Library/flex_sdk_3.5/
+
+2. To build Cytoscape Web, open the terminal, go to the project folder and type:
+
+   ant build
+
+3. To test it, just open bin/tests.html in a web browser. It will probably not
+   work if you are doing that directly from the file system, because of the 
+   Flash Player security settings. You can change it by going to this web page:
+   
+   http://www.macromedia.com/support/documentation/en/flashplayer/help/settings_manager04.html
+   
+   Just open "Edit locations...", select "Add location...", and add the folder
+   that contains the Cytoscape Web project. Now you can open bin/tests.html
+   again.
+   
+   If you run Cytoscape Web from a Web server, there is no such security issues.
+
+
+================================================================================
+
+Thanks for using Cytoscape Web!
