@@ -1931,7 +1931,7 @@
      * // Set the mapper to a Visual Style;
      * var style = {
      *         nodes: {
-     *             color: { continuousMapper: colorMapper }
+     *             color: { discreteMapper: colorMapper }
      *         }
      * };
      * 
@@ -2110,7 +2110,7 @@
     /**
      * <p>This object represents edge arrow shapes. In actuality, it is just a string.</p>
      * <p>Its value must be one of:</p>
-     * <ul class="options"><li><code>NONE</code>: indicates that there is no arrow.</li>
+     * <ul class="options"><li><code>NONE</code></li>
       *     <li><code>DELTA</code></li>
       *     <li><code>DIAMOND</code></li>
       *     <li><code>CIRCLE</code></li>
