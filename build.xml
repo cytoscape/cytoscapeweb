@@ -52,7 +52,7 @@
             <arg path="${basedir}/${dev.lib.dir}/yuicompressor-2.4.2.jar"/>
             <srcfile/>
             <arg line="-o"/>
-            <mapper type="glob" from="*.js" to="${flex.bin.dir}/js/*.min.js"/>
+            <mapper type="glob" from="*.js" to="${basedir}/${flex.bin.dir}/js/*.min.js"/>
             <targetfile/>
         </apply>
     </target>
