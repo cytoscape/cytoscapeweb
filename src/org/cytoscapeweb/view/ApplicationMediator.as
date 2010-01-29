@@ -285,13 +285,13 @@ package org.cytoscapeweb.view {
             var amount:Number = 16;
 
             if (e.keyCode == Keyboard.UP)
-                panY = amount;
-            else if (e.keyCode == Keyboard.DOWN)
                 panY = -amount;
+            else if (e.keyCode == Keyboard.DOWN)
+                panY = amount;
             else if (e.keyCode == Keyboard.LEFT)
-                panX = amount;
-            else if (e.keyCode == Keyboard.RIGHT)
                 panX = -amount;
+            else if (e.keyCode == Keyboard.RIGHT)
+                panX = amount;
             else if (e.charCode == 43) // '+'
                 panZoomBox.zoomInButton.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
             else if (e.charCode == 45) // '-'
