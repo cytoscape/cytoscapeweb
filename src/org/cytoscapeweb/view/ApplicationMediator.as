@@ -31,6 +31,7 @@ package org.cytoscapeweb.view {
 	import flash.display.BitmapData;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	import flash.ui.Keyboard;
 	import flash.ui.Mouse;
@@ -103,6 +104,10 @@ package org.cytoscapeweb.view {
         
         private function get networkVisBox():NetworkVisBox {
             return application.networkVisBox;
+        }
+        
+        private function get graphView():GraphView {
+            return networkVisBox.graphView;
         }
         
         private function get panZoomBox():PanZoomBox {
@@ -221,13 +226,17 @@ package org.cytoscapeweb.view {
             var bytes:ByteArray;
 
             if (type === "png") {
+                var bounds:Rectangle = graphView.getRealBounds();
+                var scale:Number = graphProxy.zoom;
                 var color:uint = configProxy.config.visualStyle.getValue(VisualProperties.BACKGROUND_COLOR);
-                var source:BitmapData = new BitmapData(networkVisBox.width, networkVisBox.height, false, color);
+                
+                var source:BitmapData = new BitmapData(bounds.width, bounds.height, false, color);
                 
                 // Do not draw the pan-zoom copntrol:
                 if (panZoomBox.visible) panZoomBox.visible = false;
 
-                source.draw(networkVisBox);
+                var matrix:Matrix = new Matrix(1, 0, 0, 1, -bounds.x, -bounds.y);
+                source.draw(networkVisBox, matrix);
                 
                 if (configProxy.panZoomControlVisible) panZoomBox.visible = true;
 
@@ -235,7 +244,7 @@ package org.cytoscapeweb.view {
                 bytes = encoder.encode(source);
             } else {
                 // PDF:
-                var pdfConv:PDFConverter = new PDFConverter(networkVisBox.graphView);
+                var pdfConv:PDFConverter = new PDFConverter(graphView);
                 bytes = pdfConv.convertToPDF(graphProxy.graphData,
                                              configProxy.visualStyle,
                                              configProxy.config,
@@ -270,14 +279,14 @@ package org.cytoscapeweb.view {
 		}
 		  
 		private function showWaitMessage():void {
-			networkVisBox.graphView.visible = false;
+			graphView.visible = false;
 		    PopUpManager.addPopUp(waitMsgLabel, application, true);
 		    PopUpManager.centerPopUp(waitMsgLabel);
 		}
 		  
 		private function hideWaitMessage():void {
 		    PopUpManager.removePopUp(waitMsgLabel);
-		    networkVisBox.graphView.visible = true;
+		    graphView.visible = true;
 		}
 		
         public function onKeyPressed(e:KeyboardEvent):void {
@@ -328,8 +337,8 @@ package org.cytoscapeweb.view {
                     graphProxy.rolledOverEdge.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OUT));
                 }
                 // To force the end of a drag-selection or graph panning:
-                if (networkVisBox.graphView != null && networkVisBox.graphView.graphContainer != null)
-                    networkVisBox.graphView.graphContainer.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_UP));
+                if (graphView != null && graphView.graphContainer != null)
+                    graphView.graphContainer.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_UP));
                 
                 // Another workaround: it seems that forcing roll-over node/edge can bubble it up
                 // to the application, causing a roll-over app. as well,
