@@ -159,6 +159,22 @@ package org.cytoscapeweb.model {
                 config.currentLayout = layout;
             }
         }
+        
+        public function get minZoom():Number {
+            return config.minZoom;
+        }
+        
+        public function set minZoom(value:Number):void {
+            config.minZoom = value;
+        }
+        
+        public function get maxZoom():Number {
+            return config.maxZoom;
+        }
+        
+        public function set maxZoom(value:Number):void {
+            config.maxZoom = value;
+        }
 
         // ========[ CONSTRUCTOR ]==================================================================
 

@@ -144,20 +144,16 @@ package org.cytoscapeweb.view.components {
 
         /**
         * Zoom the "camera" until it reaches the required scale.
+        * @return The actual scale value after the zooming is executed.
         */
         public function zoomTo(scale:Number):void { trace("-> Zoom to: " + scale);
-       		zoomBy(scale / graphContainer.scaleX);
-        }
-        
-        /**
-        * Zoom the "camera" by the specified scale factor.
-        */
-        public function zoomBy(scale:Number):void { trace("-> Zoom by: " + scale);
-            if (scale > 0) {
-                Displays.zoomBy(graphContainer, scale, parent.width/2, parent.height/2);
-                // Let others know about the new scale:
-                dispatchEvent(new GraphViewEvent(GraphViewEvent.SCALE_CHANGE, graphContainer.scaleX));
-	        }
+       		if (scale < _config.minZoom)
+                scale = _config.minZoom;
+            else if (scale > _config.maxZoom)
+                scale = _config.maxZoom;
+       		
+       		var delta:Number = scale / graphContainer.scaleX;
+       		zoomBy(delta);
         }
         
         public function zoomToFit():Number {
@@ -347,6 +343,17 @@ package org.cytoscapeweb.view.components {
         }
 		
         // ========[ PRIVATE METHODS ]==============================================================
+		
+		/**
+         * Zoom the "camera" by the specified scale factor.
+         */
+        private function zoomBy(scale:Number):void { trace("-> Zoom by: " + scale);            
+            if (scale > 0) {
+                Displays.zoomBy(graphContainer, scale, parent.width/2, parent.height/2);
+                // Let others know about the new scale:
+                dispatchEvent(new GraphViewEvent(GraphViewEvent.SCALE_CHANGE, graphContainer.scaleX));
+            }
+        }
 		
 		private function resize():void {
 		    width = parent.width;

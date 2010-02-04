@@ -70,6 +70,9 @@ package org.cytoscapeweb.view {
         public function PanZoomMediator(viewComponent:Object) {
             super(NAME, viewComponent, this);
 
+            // Setup Zoom Slider:
+            panZoomBox.setZoomRange(configProxy.minZoom, configProxy.maxZoom);
+
             // Panning events:
             var panButtons:Array = [panZoomBox.panDownButton, panZoomBox.panLeftButton, 
                                     panZoomBox.panRightButton, panZoomBox.panUpButton];
@@ -88,12 +91,12 @@ package org.cytoscapeweb.view {
             panZoomBox.zoomInButton.addEventListener(MouseEvent.CLICK, onZoomInClick, false, 0, true);
             panZoomBox.zoomOutButton.addEventListener(MouseEvent.CLICK, onZoomOutClick, false, 0, true);
             panZoomBox.zoomFitButton.addEventListener(MouseEvent.CLICK, onZoomFitClick, false, 0, true);
-            
-            // To avoid dragging the panZoomBox while pressing its buttons or the slider:
-            zoomSlider.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown, false, 0, true);
             panZoomBox.zoomInButton.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown, false, 0, true);
             panZoomBox.zoomOutButton.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown, false, 0, true);
             panZoomBox.zoomFitButton.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown, false, 0, true);
+            
+            // To avoid dragging the panZoomBox while pressing its buttons or the slider:
+            zoomSlider.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown, false, 0, true);
         }
 
         // ========[ PUBLIC METHODS ]===============================================================
@@ -112,7 +115,7 @@ package org.cytoscapeweb.view {
                     // Avoid infinit loops:
                     zoomSlider.removeEventListener(SliderEvent.CHANGE, onZoomSliderChange);
                     var scale:Number = note.getBody() as Number;
-                    zoomSlider.value = Math.round(scale*100);
+                    panZoomBox.scale = scale;
                     zoomSlider.addEventListener(SliderEvent.CHANGE, onZoomSliderChange);
                     graphProxy.zoom = scale;
                     break;
@@ -160,11 +163,11 @@ package org.cytoscapeweb.view {
 	    }
 	    
 	    private function onZoomSliderChange(e:SliderEvent):void {
-                sendNotification(ApplicationFacade.ZOOM_GRAPH, e.value/100);
+            sendNotification(ApplicationFacade.ZOOM_GRAPH, e.value/panZoomBox.ZOOM_FACTOR);
 	    }
 	    
 	    private function onZoomInClick(e:Event):void {
-	        var zoomValue:Number = Math.round(graphProxy.zoom*10000)/100;
+	        var zoomValue:Number = Math.round(graphProxy.zoom*panZoomBox.ZOOM_FACTOR*10)/10;
 	        
 	        if (zoomValue < zoomSlider.maximum) {
                 var tickValues:Array = zoomSlider.tickValues;
@@ -180,7 +183,7 @@ package org.cytoscapeweb.view {
 	    }
 	    
 	    private function onZoomOutClick(e:Event):void {
-	        var zoomValue:Number = Math.round(graphProxy.zoom*10000)/100;
+	        var zoomValue:Number = Math.round(graphProxy.zoom*panZoomBox.ZOOM_FACTOR*10)/10;
 	        
 	        if (zoomValue > zoomSlider.minimum) {
                 var tickValues:Array = zoomSlider.tickValues;

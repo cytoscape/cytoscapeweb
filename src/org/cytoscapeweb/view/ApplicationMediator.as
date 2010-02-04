@@ -288,26 +288,26 @@ package org.cytoscapeweb.view {
 		    PopUpManager.removePopUp(waitMsgLabel);
 		    graphView.visible = true;
 		}
-		
-        public function onKeyPressed(e:KeyboardEvent):void {
+        
+        public function onKeyPressed(evt:KeyboardEvent):void {
             var panX:Number = 0; var panY:Number = 0;
             var amount:Number = 16;
 
-            if (e.keyCode == Keyboard.UP)
+            if (evt.keyCode == Keyboard.UP)
                 panY = -amount;
-            else if (e.keyCode == Keyboard.DOWN)
+            else if (evt.keyCode == Keyboard.DOWN)
                 panY = amount;
-            else if (e.keyCode == Keyboard.LEFT)
+            else if (evt.keyCode == Keyboard.LEFT)
                 panX = -amount;
-            else if (e.keyCode == Keyboard.RIGHT)
+            else if (evt.keyCode == Keyboard.RIGHT)
                 panX = amount;
-            else if (e.charCode == 43) // '+'
+            else if (evt.charCode == 43) // '+'
                 panZoomBox.zoomInButton.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
-            else if (e.charCode == 45) // '-'
+            else if (evt.charCode == 45) // '-'
                 panZoomBox.zoomOutButton.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
-            else if (e.charCode == 42) // '*'
+            else if (evt.charCode == 42) // '*'
                 panZoomBox.zoomFitButton.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
-            else if (e.ctrlKey || e.shiftKey)
+            else if (evt.ctrlKey || evt.shiftKey)
                 updateCursor();
                 
             if (panX != 0 || panY != 0)

@@ -108,15 +108,15 @@ package org.cytoscapeweb.view {
             
             return _selectionControl;
         }
+        
+        private function get _graphScale():Number {
+            return graphContainer.scaleX;
+        }
    
         // ========[ PUBLIC PROPERTIES ]============================================================
    
         public function get graphView():GraphView {
             return viewComponent as GraphView;
-        }
-        
-        public function get scale():Number {
-            return graphContainer.scaleX;
         }
    
         // ========[ CONSTRUCTOR ]==================================================================
@@ -240,7 +240,7 @@ package org.cytoscapeweb.view {
             if (sg != null) sg.resetDataSprite(ds);
         }
         
-        public function zoomGraph(scale:Number):void {
+        public function zoomGraphTo(scale:Number):void {
             graphView.zoomTo(scale);
             if (graphProxy.rolledOverNode != null) {
                 // If zooming while mouse still over a node (e.g. using the keyboard to zoom),
@@ -465,7 +465,7 @@ package org.cytoscapeweb.view {
             n.addEventListener(MouseEvent.ROLL_OUT, onRollOutNode, false, 0, true);
             
             // When zoom < 100%, increase the label size to make it readable:
-            if (scale < 1) rescaleNodeLabel(n);
+            if (_graphScale < 1) rescaleNodeLabel(n);
         }
         
         private function onRollOutNode(evt:MouseEvent):void {
@@ -654,8 +654,8 @@ package org.cytoscapeweb.view {
                     var fsize:Number = configProxy.visualStyle.getValue(VisualProperties.NODE_LABEL_FONT_SIZE, n.data) as Number;
                     if (reset)
                         label.size = fsize;
-                    else if (scale < 1)
-                        label.size = fsize / scale;
+                    else if (_graphScale < 1)
+                        label.size = fsize / _graphScale;
                         
                     var sg:SubGraphView = graphView.getSubGraphOf(n);
                     sg.nodeLabeler.operate();

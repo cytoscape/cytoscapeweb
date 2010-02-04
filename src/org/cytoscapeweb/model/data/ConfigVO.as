@@ -51,6 +51,8 @@ package org.cytoscapeweb.model.data {
         public var visualStyle:VisualStyleVO;
         public var layouts:Array = [Layouts.FORCE_DIRECTED, Layouts.CIRCLE, Layouts.CIRCLE_TREE, Layouts.RADIAL, Layouts.TREE];
         public var currentLayout:String = Layouts.FORCE_DIRECTED;
+        public var minZoom:Number = 0.008;
+        public var maxZoom:Number = 3;
         public var nodesPoints:/*nodeId->flash.geom.Point*/Object;
         
         // ========[ CONSTRUCTOR ]==================================================================

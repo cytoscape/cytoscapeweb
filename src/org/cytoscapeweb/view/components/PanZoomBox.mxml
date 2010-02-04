@@ -38,9 +38,51 @@
 	import org.cytoscapeweb.view.components.slider.TrackSkin;
 	import org.cytoscapeweb.view.components.slider.ThumbSkin;
 	
-	private function toolTipFormat(value:Number, bundleKey:String='zoom.slider.datatip'):String {
-	    return $(bundleKey, Math.round(value));
+	public const ZOOM_FACTOR:Number = 10000;
+	
+	private function toolTipFormat(value:Number):String {
+	    var v:* = value < ZOOM_FACTOR ? Math.round(value*100)/ZOOM_FACTOR : Math.round(100*value/ZOOM_FACTOR);
+	    return $('zoom.slider.tooltip', v);
 	}
+	
+	public function get scale():Number {
+        return zoomSlider.value/ZOOM_FACTOR;
+    }
+    
+	public function set scale(value:Number):void {
+        zoomSlider.value = value*ZOOM_FACTOR;
+    }
+    
+	public function setZoomRange(min:Number, max:Number):void {
+	    if (max < min) max = min;
+	    min *= ZOOM_FACTOR;
+        max *= ZOOM_FACTOR;
+        
+        // Initial zoom value:
+        var value:Number = max > ZOOM_FACTOR ? ZOOM_FACTOR : max; // 100% unless max < 100%
+        
+        var tickValues:Array = [];
+        var t:Number = min;
+        
+        do {
+            tickValues.push(t);
+            t *= 2;
+        } while (t < value);
+        
+        t = value; // usually == 100%
+        
+        do {
+            tickValues.push(t);
+            t += (0.25 * ZOOM_FACTOR);
+        } while (t <= max);
+
+        trace("Zoom Slider | tickValues: " + tickValues);
+        
+        zoomSlider.minimum = min;
+        zoomSlider.maximum = max;
+        zoomSlider.tickValues = tickValues;
+        zoomSlider.value = value;
+    }
 ]]>
 </mx:Script>
 
@@ -88,16 +130,12 @@
         <mx:GridRow>
             <mx:GridItem colSpan="3">
                 <mx:HSlider id="zoomSlider" width="76"
-                            minimum="1" maximum="300"
-                            dataTipPrecision="2"
+                            dataTipPrecision="0"
                             snapInterval="1"
                             liveDragging="true"
-                            tickValues="{[1,10,25,50,75,100,125,150,200,300]}"
                             tickLength="0"
                             tickOffset="4"
-                            value="100"
-                            toolTip="{toolTipFormat(zoomSlider.value, 'zoom.slider.tooltip')}"
-                            dataTipFormatFunction="{toolTipFormat}"
+                            dataTipFormatFunction="toolTipFormat"
                             trackSkin="{TrackSkin}"
                             thumbSkin="{ThumbSkin}"/>
             </mx:GridItem>

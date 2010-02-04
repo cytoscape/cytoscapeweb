@@ -82,6 +82,8 @@ package org.cytoscapeweb.model {
         private var _filteredEdges:Array;
         private var _nodesMap:Object = {};
         private var _edgesMap:Object = {};
+        // Scale factor, between 0 and 1:
+        private var _zoom:Number = 1;
 
         private var _configProxy:ConfigProxy;
         
@@ -98,8 +100,6 @@ package org.cytoscapeweb.model {
         // ========[ PUBLIC PROPERTIES ]============================================================
         
         public var dataSet:DataSet;
-        // Scale factor, between 0 and 1:
-        public var zoom:Number = 1;
         
         public function get graphData():Data {
             return _graphData;
@@ -268,6 +268,14 @@ package org.cytoscapeweb.model {
                 if (edge != null) edge.props.$hover = true;
                 _rolledOverEdge = edge;
             }
+        }
+        
+        public function get zoom():Number {
+            return _zoom;
+        }
+ 
+        public function set zoom(value:Number):void {
+            _zoom = value;
         }
 
         // ========[ CONSTRUCTOR ]==================================================================

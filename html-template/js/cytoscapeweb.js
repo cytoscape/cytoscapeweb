@@ -104,7 +104,6 @@
      * zoom.in.tooltip = Zoom in (+)
      * zoom.fit.tooltip = Fit to screen (*)
      * zoom.slider.tooltip = {0}%
-     * zoom.slider.datatip = {0}%
      * </pre></li>
      *                    <li><code>idToken</code>: A string used to create the embedded Flash video id
      *                                                               (usually an HTML <code>embed</code> or <code>object</code> tag).
@@ -1142,7 +1141,7 @@
                         "allowScriptAccess", "always",
                         "type", "application/x-shockwave-flash",
                         "pluginspage", "http://www.adobe.com/go/getflashplayer",
-                        "wmode", "transparent",
+                        "wmode", "opaque", // DO NOT set it to "transparent", because it may crash FireFox and IE on Windows!
                         "flashVars", flashVars
                 );
             } else { // flash is too old or we can't detect the plugin

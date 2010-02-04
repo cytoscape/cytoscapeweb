@@ -165,23 +165,23 @@ function runGraphTests(moduleName, vis, options) {
         vis.panZoomControlVisible(true);
         ok(vis.panZoomControlVisible(), "Pan-zoom control should be visible");
 
-        vis.zoom(0.2);
-        same(vis.$callbacks.zoom, 0.2, "Zoom out");
-        same(Math.round(vis.zoom()*10), 2, "zoom() returns the correct value after zoom(0.2).");
-        vis.zoom(2);
-        same(vis.$callbacks.zoom, 2, "Zoom in");
-        same(vis.zoom(), 2, "zoom() returns the correct value after zoom(2).");
+        vis.zoom(0.02322);
+        same(Math.round(vis.$callbacks.zoom*100000)/100000, 0.02322, "Zoom out");
+        same(Math.round(vis.zoom()*100000)/100000, 0.02322, "zoom() returns the correct value after zoom out.");
+        vis.zoom(2.1);
+        same(Math.round(vis.$callbacks.zoom*100)/100, 2.1, "Zoom in");
+        same(Math.round(vis.zoom()*100)/100, 2.1, "zoom() returns the correct value after zoom in.");
 
         vis.panBy(100, 200);
         vis.zoomToFit();
         ok(vis.$callbacks.zoom <= 1, "Zoom to fit (value <= 1 ?):" + vis.$callbacks.zoom);
-        same(vis.$callbacks.zoom, vis.zoom(), "zoom() returns the correct value after zoomToFit().");
+        same(vis.zoom(), vis.$callbacks.zoom, "zoom() returns the correct value after zoomToFit().");
 
         var zoom = vis.$callbacks.zoom;
         vis.panBy(320, 160);
         vis.panToCenter();
         same(vis.$callbacks.zoom, zoom, "Zoom value should NOT change after panning");
-        same(zoom, vis.zoom(), "zoom() returns the correct value again.");
+        same(vis.zoom(), zoom, "zoom() returns the correct value again.");
     });
 
     test("Tooltips", function() {
@@ -630,9 +630,23 @@ function runGraphTests(moduleName, vis, options) {
 			stop();
 			
 			vis.removeListener("layout");
-			
-			// Visual test of node coordinates - align divs with nodes:
-			// --------------------------------------------------------
+    	});
+    	
+    	vis.layout('  TREE '); // It should trim and be case insensitive!
+    });
+    
+    test("PNG", function() {
+    	vis.zoom(Math.random()*2);
+    	vis.panBy(Math.random()*-1000, Math.random()*1000);
+    	
+    	var base64 = vis.png();
+    	ok(typeof base64 === 'string', "PNG returned as string");
+    	ok(base64.length > 0, "PNG string not empty");
+    	$("#image_"+vis.containerId).html('<img src="data:image/png;base64,'+base64+'"/>');
+    	
+		// Visual test of node coordinates - align divs with nodes:
+		// --------------------------------------------------------
+    	vis.addListener("zoom", function(evt) {
 			var nodes = vis.nodes();
 			$.each(nodes, function(i, n) {
 				var pointer = $('<div class="pointer"></div>');
@@ -646,17 +660,10 @@ function runGraphTests(moduleName, vis, options) {
 				pointer.css('left', p.x - size/2).css('top', p.y - size/2);
 				pointer.css('width', size).css('height', size);
 			});
-			// --------------------------------------------------------
     	});
-    	
-    	vis.layout('  TREE '); // It should trim and be case insensitive!
-    });
-    
-    test("PNG", function() {
-    	var base64 = vis.png();
-    	ok(typeof base64 === 'string', "PNG returned as string");
-    	ok(base64.length > 0, "PNG string not empty");
-    	$("#image_"+vis.containerId).html('<img src="data:image/png;base64,'+base64+'"/>');
+    	vis.zoomToFit();
+    	vis.removeListener("zoom");
+		// --------------------------------------------------------
     });
     
     test("PDF", function() {
