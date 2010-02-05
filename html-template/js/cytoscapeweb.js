@@ -1282,7 +1282,7 @@
      *    <ul><li><code>type</code></li><li><code>group</code></li></ul>
      * <p>The following tables lists the possible properties for each event type.</p>
      * <p><label><strong>click:</strong></label> Fired when the user clicks an element that belongs to the <code>group</code> you registered. 
-     * If you don't specify any group or if the group is <code>none</code>, the event will be fired when the background of network visualization is clicked.</p>
+     * If you don't specify any group or if the group is <code>none</code>, the event will be fired when the background of the network visualization is clicked.</p>
      * <table>
      *     <tr><th>group</th><th>target</th><th>value</th></tr>
      *     <tr><td><code>nodes</code></td><td>{@link org.cytoscapeweb.Node}</td><td><code>undefined</code></td></tr>
@@ -1290,7 +1290,7 @@
      *     <tr><td><code>none</code>: clicking the visualization background</td><td><code>undefined</code></td><td><code>undefined</code></td></tr>
      * </Table>
      * <p><label><strong>dblclick:</strong></label> Fired when the user double clicks an element that belongs to the <code>group</code> you registered. 
-     * If you don't specify any group or if the group is <code>none</code>, the event will be fired when the background of network visualization is double-clicked.</p>
+     * If you don't specify any group or if the group is <code>none</code>, the event will be fired when the background of the network visualization is double-clicked.</p>
      * <table>
      *     <tr><th>group</th><th>target</th><th>value</th></tr>
      *     <tr><td><code>nodes</code></td><td>{@link org.cytoscapeweb.Node}</td><td><code>undefined</code></td></tr>
