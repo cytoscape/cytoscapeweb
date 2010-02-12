@@ -583,7 +583,10 @@ package org.cytoscapeweb.model {
                 var edges:Array = np.edges;
                 
                 // Create a fake merged edge:
-                var me:EdgeSprite = graphData.addEdgeFor(np.node1, np.node2, false);
+                var src:NodeSprite = np.node1;
+                var tgt:NodeSprite = np.node2;
+                var dt:Object = { source: src.data.id, target: tgt.data.id };
+                var me:EdgeSprite = graphData.addEdgeFor(src, tgt, false, dt);
                 me.props.$merged = true;
                 me.props.$edges = edges;
                 me.props.$getDataList = function():Array {

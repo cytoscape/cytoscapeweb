@@ -33,6 +33,8 @@ package org.cytoscapeweb.fixtures {
     
     import flash.utils.ByteArray;
     
+    import org.cytoscapeweb.ApplicationFacade;
+    import org.cytoscapeweb.model.GraphProxy;
     import org.cytoscapeweb.model.converters.GraphMLConverter;
     
     public class Fixtures {
@@ -73,6 +75,11 @@ package org.cytoscapeweb.fixtures {
         public static function getData(fixtureClass:Class):Data {
         	var ds:DataSet = getDataSet(fixtureClass);
             var data:Data = Data.fromDataSet(ds);
+            
+            var graphProxy:GraphProxy = ApplicationFacade.getInstance().retrieveProxy(GraphProxy.NAME) as GraphProxy;
+            graphProxy.dataSet = ds;
+            graphProxy.graphData = data;
+            data = graphProxy.graphData;
 
             return data;
         }

@@ -30,6 +30,8 @@
 package org.cytoscapeweb {
 	import flexunit.framework.TestSuite;
 	
+	import org.cytoscapeweb.model.ConfigProxy;
+	import org.cytoscapeweb.model.GraphProxy;
 	import org.cytoscapeweb.model.converters.XGMMLConverterTest;
 	import org.cytoscapeweb.model.data.ConfigVOTest;
 	import org.cytoscapeweb.model.data.ContinuousVizMapperVOTest;
@@ -46,6 +48,9 @@ package org.cytoscapeweb {
 	public class AllTests extends TestSuite {
 		
 		public function AllTests() {
+		    setupEnvironment();
+		    
+		    
 			addTestSuite(UtilsTest);
 			addTestSuite(GraphUtilsTest);
 			addTestSuite(VisualPropertiesTest);
@@ -63,6 +68,15 @@ package org.cytoscapeweb {
 			addTestSuite(LabelerTest);
 			
 			addTestSuite(XGMMLConverterTest);			
+		}
+		
+		private function setupEnvironment():void {
+		    // Pure MVC setup:
+		    var facade:ApplicationFacade = ApplicationFacade.getInstance();
+		    
+		    // Register required model classes:
+            facade.registerProxy(new ConfigProxy());
+            facade.registerProxy(new GraphProxy());
 		}
 	}
 }
