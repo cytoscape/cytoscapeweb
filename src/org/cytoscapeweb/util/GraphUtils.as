@@ -66,12 +66,22 @@ package org.cytoscapeweb.util {
             subGraph.addNode(nodeOrigin);
             
             nodeOrigin.visitEdges(function(e:EdgeSprite):void {
-                var n:NodeSprite = e.other(nodeOrigin);
-                if (visited[n]) {
-                    if (!subGraph.contains(e)) { subGraph.addEdge(e); }
-                    return;
+                if (e.props.$merged) {
+                    var n:NodeSprite = e.other(nodeOrigin);
+                    if (visited[n]) {
+                        if (!subGraph.contains(e)) {
+                            // Adde the merged edge:
+                            subGraph.addEdge(e);
+                            // Add its edges as well:
+                            var edges:Array = e.props.$edges;
+                            for each (var ee:EdgeSprite in edges) {
+                                subGraph.addEdge(ee);
+                            }
+                        }
+                        return;
+                    }
+                    depthFirst(n, e, visited, subGraph);
                 }
-                depthFirst(n, e, visited, subGraph);
             });
         }
 

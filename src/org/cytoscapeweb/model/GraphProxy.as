@@ -73,7 +73,7 @@ package org.cytoscapeweb.model {
 
         private var _graphData:Data;
         private var _dataList:Array;
-        private var _pairList:Array;
+        private var _nodePairs:/*pairKey->NodePair*/Object;
         private var _parentEdges:/*regularEdgeId->mergedEdgeSprite*/Object;
         private var _mergedEdges:Array;
         private var _rolledOverNode:NodeSprite;
@@ -112,7 +112,7 @@ package org.cytoscapeweb.model {
                 // Add missing Ids:
                 setIdentifiers(data.nodes);
                 setIdentifiers(data.edges);
-                createNodePairsList();
+                createNodePairs();
                 createMergedEdges();
                 createDataList();
                 // TODO: do we really need these Flare groups?
@@ -289,20 +289,17 @@ package org.cytoscapeweb.model {
         public function getNodePair(node1:NodeSprite, node2:NodeSprite):NodePair {
             var pair:NodePair = null;
             
-            if (_pairList != null) {
-                for each (var p:NodePair in _pairList) {
-                    if (p.hasNodes(node1, node2)) {
-                        pair = p;
-                        break;
-                    }
-                }
+            if (_nodePairs != null) {
+                var k:String = NodePair.createKey(node1, node2);
+                pair = _nodePairs[k];
             }
             
             return pair;
         }
 
-        public function getDataSpriteList(objList:Array, group:String=Groups.NONE):Array {
+        public function getDataSpriteList(objList:Array, group:String=null):Array {
         	var list:Array = null;
+        	if (group == null) group = Groups.NONE;
         	
             if (objList != null) {
                 list = [];
@@ -551,8 +548,8 @@ package org.cytoscapeweb.model {
             }
         }
         
-        private function createNodePairsList():void {
-            _pairList = new Array();
+        private function createNodePairs():void {
+            _nodePairs = new Object();
             
             if (graphData != null) {
                 for each (var edge:EdgeSprite in graphData.edges) {
@@ -560,13 +557,14 @@ package org.cytoscapeweb.model {
                     
                     if (pair == null) {
                         pair = new NodePair(edge.source, edge.target);
-                        _pairList.push(pair);
+                        _nodePairs[pair.key] = pair;
                     }
                     
                     pair.addEdge(edge);
                 }
 
-                for each (var np:NodePair in _pairList) {
+                for (var k:String in _nodePairs) {
+                    var np:NodePair = _nodePairs[k];
                     for each (var e:EdgeSprite in np.edges) {
                         // It will be important to correctly render multiple edges:
                         e.props.adjacentIndex = np.getAdjacentIndex(e);
@@ -575,11 +573,12 @@ package org.cytoscapeweb.model {
             }
         }
         
-        private function createMergedEdges():void {
+        private function createMergedEdges():void { // TODO: optimize it!!!
             _mergedEdges = [];
             _parentEdges = {};
             
-            for each (var np:NodePair in _pairList) {
+            for (var k:String in _nodePairs) {
+                var np:NodePair = _nodePairs[k];
                 var edges:Array = np.edges;
                 
                 // Create a fake merged edge:
@@ -608,7 +607,6 @@ package org.cytoscapeweb.model {
                 for each (var e:EdgeSprite in edges) {
                     _parentEdges[e.data.id] = me;
                 }
-                
             }
             
             setIdentifiers(graphData.edges);
@@ -655,7 +653,7 @@ package org.cytoscapeweb.model {
         }
 
         private function createDataList():void {
-            _dataList = new Array();
+            _dataList = [];
             var visited:Dictionary = new Dictionary();
             
             // Get any node to start searching:

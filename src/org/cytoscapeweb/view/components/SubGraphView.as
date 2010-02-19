@@ -232,12 +232,10 @@ package org.cytoscapeweb.view.components {
             operators.add(_currentLayout);
 
             if (_currentLayout is ForceDirectedLayout) {
-                // First, center all the nodes:
-                var centerX:Number = _currentLayout.layoutBounds.width / 2;
-                var centerY:Number = _currentLayout.layoutBounds.height / 2;
+                // First set random positions to nodes:
                 data.nodes.visit(function(n:NodeSprite):void {
-                    n.x = centerX;
-                    n.y = centerY;               
+                    n.x = Math.random() * width;
+                    n.y = Math.random() * height;          
                 });
             }
 

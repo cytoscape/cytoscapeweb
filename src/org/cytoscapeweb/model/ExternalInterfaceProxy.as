@@ -175,11 +175,13 @@ package org.cytoscapeweb.model {
             sendNotification(ApplicationFacade.DRAW_GRAPH, options);
         }
         
-        private function addContextMenuItem(label:String, group:String=Groups.NONE):void {
+        private function addContextMenuItem(label:String, group:String=null):void {
+            if (group == null) group = Groups.NONE;
             contextMenuProxy.addMenuItem(label, group);
         }
         
-        private function removeContextMenuItem(label:String, group:String=Groups.NONE):void {
+        private function removeContextMenuItem(label:String, group:String=null):void {
+            if (group == null) group = Groups.NONE;
             contextMenuProxy.removeMenuItem(label, group);
         }
         

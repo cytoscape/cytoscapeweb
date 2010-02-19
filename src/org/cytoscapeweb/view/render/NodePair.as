@@ -33,6 +33,7 @@ package org.cytoscapeweb.view.render {
 	
 	public class NodePair {
 		
+		private var _key:String;
 		private var _node1:NodeSprite;
 		private var _node2:NodeSprite;
 		private var _mergedEdge:EdgeSprite;
@@ -42,6 +43,7 @@ package org.cytoscapeweb.view.render {
         // =========================================================================================
 		
 		public function NodePair(node1:NodeSprite, node2:NodeSprite) {
+		    this._key = NodePair.createKey(node1, node2);
 			this._node1 = node1;
 			this._node2 = node2;
 			this._edges = new Array();
@@ -49,6 +51,10 @@ package org.cytoscapeweb.view.render {
 		}
 		
         // ========[ PUBLIC METHODS ]===============================================================
+		
+		public function get key():String {
+			return this._key;
+		}
 		
 		public function get node1():NodeSprite {
 			return this._node1;
@@ -93,6 +99,14 @@ package org.cytoscapeweb.view.render {
 		public function hasNodes(node1:NodeSprite, node2:NodeSprite):Boolean {
 			return (this._node1 == node1 && this._node2 == node2) || (this._node1 == node2 && this._node2 == node1);
 		}
+		
+		public static function createKey(node1:NodeSprite, node2:NodeSprite):String {
+		    var id1:* = node1.data.id;
+		    var id2:* = node2.data.id;
+		    var key:String = id1 < id2 ? id1+"::"+id2 : id2+"::"+id1;
+		    
+		    return key;
+	    }
 
         // ========[ PRIVATE METHODS ]==============================================================
 		
