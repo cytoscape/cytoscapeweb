@@ -61,28 +61,35 @@ package org.cytoscapeweb.util {
             }
         }
 
-        public static function depthFirst(nodeOrigin:NodeSprite, edge:EdgeSprite, visited:Dictionary, subGraph:Data):void {
-            visited[nodeOrigin] = true;
-            subGraph.addNode(nodeOrigin);
-            
-            nodeOrigin.visitEdges(function(e:EdgeSprite):void {
-                if (e.props.$merged) {
-                    var n:NodeSprite = e.other(nodeOrigin);
-                    if (visited[n]) {
-                        if (!subGraph.contains(e)) {
-                            // Adde the merged edge:
-                            subGraph.addEdge(e);
-                            // Add its edges as well:
-                            var edges:Array = e.props.$edges;
-                            for each (var ee:EdgeSprite in edges) {
-                                subGraph.addEdge(ee);
+        public static function depthFirst(nodeOrigin:NodeSprite, visited:Dictionary, subGraph:Data):void {
+            var toVisit:Array = [nodeOrigin];
+
+            while (toVisit.length > 0) {
+                var node:NodeSprite = toVisit.pop();
+                
+                if (!visited[node]) {
+                    visited[node] = true;
+                    subGraph.addNode(node);
+                    
+                    node.visitEdges(function(e:EdgeSprite):void {
+                        if (e.props.$merged) {
+                            var otherNode:NodeSprite = e.other(node);
+                            if (!subGraph.contains(e)) {
+                                // Adde the merged edge:
+                                subGraph.addEdge(e);
+                                // Add its edges as well:
+                                var edges:Array = e.props.$edges;
+                                for each (var ee:EdgeSprite in edges) {
+                                    subGraph.addEdge(ee);
+                                }
+                            }
+                            if (!visited[otherNode]) {
+                                toVisit.push(otherNode);
                             }
                         }
-                        return;
-                    }
-                    depthFirst(n, e, visited, subGraph);
+                    });
                 }
-            });
+            }
         }
 
         public static function toExtObjectsArray(dataSprites:*):Array {

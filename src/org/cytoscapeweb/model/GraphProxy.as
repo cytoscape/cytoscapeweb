@@ -660,7 +660,7 @@ package org.cytoscapeweb.model {
             for each (var n:NodeSprite in graphData.nodes) {
                 if (!visited[n]) {
                     var subg:Data = new Data(graphData.directedEdges);
-                    GraphUtils.depthFirst(n, null, visited, subg);
+                    GraphUtils.depthFirst(n, visited, subg);
                     _dataList.push(subg);
                 }
             }
