@@ -166,8 +166,8 @@ function runGraphTests(moduleName, vis, options) {
         ok(vis.panZoomControlVisible(), "Pan-zoom control should be visible");
 
         vis.zoom(0.02322);
-        same(Math.round(vis.$callbacks.zoom*100000)/100000, 0.02322, "Zoom out");
-        same(Math.round(vis.zoom()*100000)/100000, 0.02322, "zoom() returns the correct value after zoom out.");
+        same(Math.round(vis.$callbacks.zoom*10000)/10000, 0.0232, "Zoom out");
+        same(Math.round(vis.zoom()*10000)/10000, 0.0232, "zoom() returns the correct value after zoom out.");
         vis.zoom(2.1);
         same(Math.round(vis.$callbacks.zoom*100)/100, 2.1, "Zoom in");
         same(Math.round(vis.zoom()*100)/100, 2.1, "zoom() returns the correct value after zoom in.");
