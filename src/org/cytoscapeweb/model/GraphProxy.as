@@ -111,9 +111,9 @@ package org.cytoscapeweb.model {
             if (data != null) {
                 // Add missing Ids:
                 setIdentifiers(data.nodes);
-                setIdentifiers(data.edges);
                 createNodePairs();
                 createMergedEdges();
+                setIdentifiers(data.edges);
                 createDataList();
                 // TODO: do we really need these Flare groups?
                 // Add data groups to house selected nodes and edges:
@@ -529,18 +529,18 @@ package org.cytoscapeweb.model {
          */
         private function setIdentifiers(list:*):void {
         	if (list != null) {
-                var ids:Array = [];
+                var ids:Object = {};
                 var count:int = 1;
     			
         		var sp:DataSprite;
         		// 1rs iteration: get existing IDs:
         		for each (sp in list) {
-        			if (sp.data.id != null) ids.push(sp.data.id);
+        			if (sp.data.id != null) ids[""+sp.data.id] = true;
         		}
         		// 2nd iteration: set missing IDs:
                 for each (sp in list) {
                     if (sp.data.id == null) {
-                    	while (ids.indexOf(count.toString()) != -1) ++count;
+                    	while (ids[count.toString()]) ++count;
                         sp.data.id = count.toString();
                         count++;
                     }
@@ -608,8 +608,7 @@ package org.cytoscapeweb.model {
                     _parentEdges[e.data.id] = me;
                 }
             }
-            
-            setIdentifiers(graphData.edges);
+
             updateMergedEdgesData();
         }
         
