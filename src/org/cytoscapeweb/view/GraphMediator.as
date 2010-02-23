@@ -160,10 +160,8 @@ package org.cytoscapeweb.view {
         }
         
         public function applyVisualStyle(style:VisualStyleVO):void {
-            //sendNotification(ApplicationFacade.INDETERMINATE_TASK_START);
             graphView.applyVisualStyle(style);
             setStyleToSelectionControl(style);
-            //sendNotification(ApplicationFacade.INDETERMINATE_TASK_COMPLETE);
         }
         
         public function applyVisualBypass(style:VisualStyleVO):void {
