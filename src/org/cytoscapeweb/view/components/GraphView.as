@@ -364,6 +364,8 @@ package org.cytoscapeweb.view.components {
 			var boundsList:Array = new Array();
 			var sg:SubGraphView;
 			
+			var maxWidth:Number = width;
+			
             for each (sg in subGraphs) {
                 // The real subgraph bounds:
                 var sgBounds:Rectangle = sg.getRealBounds();
@@ -371,13 +373,17 @@ package org.cytoscapeweb.view.components {
                 // Temp. props attributes, just to get the correct subgraph later:
                 sg.props.realWidth = sgBounds.width;
                 sg.props.realHeight = sgBounds.height;
+                
+                // If there is a subgraph that is wider than the whole canvas,
+                // use its width in the packing bounds:
+                if (sgBounds.width > maxWidth) maxWidth = sgBounds.width;
             }
             
             // More than 8 subgraphs decreases performance when using "fill by stripes":
             if (boundsList.length <= 7)
-                boundsList = PackingAlgorithms.fillByStripes(width, boundsList);
+                boundsList = PackingAlgorithms.fillByStripes(maxWidth, boundsList);
             else
-                boundsList = PackingAlgorithms.fillByOneColumn(width, boundsList);
+                boundsList = PackingAlgorithms.fillByOneColumn(maxWidth, boundsList);
             
             for (var i:int = 0; i < boundsList.length; i++) {
                 var rect:Rectangle = Rectangle(boundsList[i]);
@@ -420,7 +426,7 @@ package org.cytoscapeweb.view.components {
             }, Array.DESCENDING);
             
             for (var i:int = 0; i < dataList.length; i++) {
-                var data:Data = dataList[i];                
+                var data:Data = dataList[i];
                 var bounds:Rectangle = rects[i];
                 
                 var sg:SubGraphView = createSubGraph(data, bounds);
@@ -437,13 +443,6 @@ package org.cytoscapeweb.view.components {
             
             subGraphs.push(sgView);
             graphContainer.addChild(sgView);
-
-            // THIS IS NECESSARY to make ForceDirectedLyout render well,
-            // but I don't know why!
-            // -----------------------------------------------------------
-            sgView.graphics.beginFill(0xffffff, 0);
-            sgView.graphics.drawRect(0, 0, bounds.width, bounds.height);
-            // -----------------------------------------------------------
             
             return sgView;
 		}
