@@ -208,36 +208,32 @@ package org.cytoscapeweb.view.components {
 
         public function applyLayout(name:String):Transition {
             continuousUpdates = false;
-            
-            // If the previous layout is ForceDirected, we need to set the nodes' particles and the
-            // edges' springs to null, otherwise the layout may not render very well when it is
-            // applied again (e.g. by using the "Recompute Layout" feature). 
-            if (_currentLayout is ForceDirectedLayout) {
-	            for each (var n:NodeSprite in data.nodes)
-	               n.props.particle = null;
-	            for each (var e:EdgeSprite in data.edges)
-	               e.props.spring = null;
-            }
 
             if (_currentLayout != null)
                 operators.remove(_currentLayout);
 
             _currentLayout = layouts[name];
             
-            if (_currentLayout is PresetLayout)
+            if (_currentLayout is ForceDirectedLayout) {
+                // If the previous layout is ForceDirected, we need to set the nodes' particles and
+                // the edges' springs to null, otherwise the layout may not render very well
+                // when it is applied again. 
+                data.nodes.visit(function(n:NodeSprite):void {
+                    n.props.particle = null;
+                    // It is also important to set random positions to nodes:
+                    n.x = Math.random() * _initialWidth;
+                    n.y = Math.random() * _initialHeight;
+                });
+                data.edges.visit(function(e:EdgeSprite):void {
+                   e.props.spring = null;
+                });
+            } else if (_currentLayout is PresetLayout) {
                 PresetLayout(_currentLayout).points = _config.nodesPoints;
+            }
             
             // The layout must be enabled in order to allow a layout change:
             _currentLayout.enabled = true;
             operators.add(_currentLayout);
-
-            if (_currentLayout is ForceDirectedLayout) {
-                // First set random positions to nodes:
-                data.nodes.visit(function(n:NodeSprite):void {
-                    n.x = Math.random() * width;
-                    n.y = Math.random() * height;          
-                });
-            }
 
             var seq:Sequence = new Sequence();
             var trans:Transitioner = update(0.1);
