@@ -36,6 +36,7 @@ package org.cytoscapeweb.fixtures {
     import org.cytoscapeweb.ApplicationFacade;
     import org.cytoscapeweb.model.GraphProxy;
     import org.cytoscapeweb.model.converters.GraphMLConverter;
+    import org.cytoscapeweb.model.converters.SIFConverter;
     
     public class Fixtures {
         
@@ -44,29 +45,39 @@ package org.cytoscapeweb.fixtures {
         [Embed(source="/assets/fixtures/simple.xml", mimeType="application/octet-stream")]
         public static const GRAPHML_SIMPLE:Class;
         
+        [Embed(source="/assets/fixtures/tabs.sif", mimeType="application/octet-stream")]
+        public static const SIF_TABS:Class;
+        [Embed(source="/assets/fixtures/spaces.sif", mimeType="application/octet-stream")]
+        public static const SIF_SPACES:Class;
+        
         // ========[ PRIVATE PROPERTIES ]===========================================================
         
-        private static var _cache:Object;
-        
-        private static function get cache():Object {
-            if (_cache == null) {
-                _cache = new Object();
-            }
-            
-            return _cache;
-        }
+        private static var _xmlCache:Object = {};
+        private static var _stringCache:Object = {};
 
         // ========[ PUBLIC PROPERTIES ]============================================================
 
         // ========[ PUBLIC METHODS ]===============================================================
         
+        public static function getFixtureAsString(fixtureClass:Class):String {
+            var txt:String = _stringCache[fixtureClass];
+            
+            if (txt == null) {
+            	var ba:ByteArray = new fixtureClass() as ByteArray;
+            	txt = ba.readUTFBytes(ba.length);
+            	_stringCache[fixtureClass] = txt;
+            }
+            
+            return txt;
+        }
+        
         public static function getFixtureAsXml(fixtureClass:Class):XML {
-            var xml:XML = cache[fixtureClass];
+            var xml:XML = _xmlCache[fixtureClass];
             
             if (xml == null) {
             	var ba:ByteArray = new fixtureClass() as ByteArray;
             	xml = XML(ba.readUTFBytes(ba.length));
-            	cache[fixtureClass] = xml;
+            	_xmlCache[fixtureClass] = xml;
             }
             
             return xml;
@@ -84,9 +95,16 @@ package org.cytoscapeweb.fixtures {
             return data;
         }
         
-        public static function getDataSet(fixtureClass:Class):DataSet {
-            var xml:XML = getFixtureAsXml(fixtureClass);
-            var ds:DataSet = new GraphMLConverter().parse(xml);
+        public static function getDataSet(fixture:Class):DataSet {
+            var ds:DataSet;
+            
+            if (isGraphML(fixture)) {
+                var xml:XML = getFixtureAsXml(fixture);
+                ds = new GraphMLConverter().parse(xml);
+            } else if (isSIF(fixture)) {
+                var sif:String = getFixtureAsString(fixture);
+                ds = new SIFConverter().parse(sif);
+            }
 
             return ds;
         }
@@ -116,5 +134,13 @@ package org.cytoscapeweb.fixtures {
         
         // ========[ PRIVATE METHODS ]==============================================================
 
+        private static function isGraphML(fixture:Class):Boolean {
+            return fixture == Fixtures.GRAPHML_SIMPLE;
+        }
+        
+        private static function isSIF(fixture:Class):Boolean {
+            return fixture == Fixtures.SIF_SPACES || fixture == Fixtures.SIF_TABS;
+        }
+        
     }
 }

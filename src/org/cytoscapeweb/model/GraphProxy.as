@@ -49,6 +49,7 @@ package org.cytoscapeweb.model {
 	
 	import org.cytoscapeweb.ApplicationFacade;
 	import org.cytoscapeweb.model.converters.GraphMLConverter;
+	import org.cytoscapeweb.model.converters.SIFConverter;
 	import org.cytoscapeweb.model.converters.XGMMLConverter;
 	import org.cytoscapeweb.model.data.ConfigVO;
 	import org.cytoscapeweb.model.data.GraphicsDataTable;
@@ -445,29 +446,30 @@ package org.cytoscapeweb.model {
                 try {
                     var xml:XML = new XML(txt);
                     var ds:DataSet;
-                    var isGraphml:Boolean = xml.name().localName === GraphMLConverter.GRAPHML;
                     
-                    if (isGraphml) {
-                        // GraphML:
-                        ds = new GraphMLConverter().parse(xml);
+                    if (xml != null && xml.name() != null) {
+                        var isGraphml:Boolean = xml.name().localName === GraphMLConverter.GRAPHML;
                         
-                        if (config.currentLayout === Layouts.PRESET)
-                            config.currentLayout = Layouts.FORCE_DIRECTED;
-                    } else {
-                        // XGMML:
-                        var style:VisualStyleVO = configProxy.visualStyle;
-                        
-                        var xgmmlConverter:XGMMLConverter = new XGMMLConverter(style);
-                        ds = xgmmlConverter.parse(xml);
-                        
-                        var points:Object = xgmmlConverter.points;
-                        if (points != null) {
-                            config.layouts.push(Layouts.PRESET);
-                            config.currentLayout = Layouts.PRESET;
-                            config.nodesPoints = points;
+                        if (isGraphml) {
+                            // GraphML:
+                            ds = new GraphMLConverter().parse(xml);
                         } else {
-                            config.currentLayout = Layouts.FORCE_DIRECTED;
+                            // XGMML:
+                            var style:VisualStyleVO = configProxy.visualStyle;
+                            
+                            var xgmmlConverter:XGMMLConverter = new XGMMLConverter(style);
+                            ds = xgmmlConverter.parse(xml);
+                            
+                            var points:Object = xgmmlConverter.points;
+                            if (points != null) {
+                                // TODO: do not force the preset layout??? Users might want to load an XGMML with another layout!
+                                config.currentLayout = Layouts.PRESET;
+                                config.nodesPoints = points;
+                            }
                         }
+                    } else {
+                        // SIF:
+                        ds = new SIFConverter().parse(txt);
                     }
                     dataSet = ds;
                     graphData = Data.fromDataSet(ds);
@@ -480,7 +482,7 @@ package org.cytoscapeweb.model {
             }
         }
         
-        public function getDataAsXml(format:String="xgmml"):String {
+        public function getDataAsText(format:String="xgmml"):String {
             var out:IDataOutput, nodesTable:DataTable, edgesTable:DataTable, dtSet:DataSet;
             var edges:DataList = new DataList(Data.EDGES);
             var edgesData:Array = [];
@@ -492,19 +494,25 @@ package org.cytoscapeweb.model {
                     edgesData.push(e.data);
                 }
             }
+            
+            format = StringUtil.trim(format.toLowerCase());
                         
-            if (format.toLowerCase() == "xgmml") {
-                // XGMML
+            if (format === "xgmml") {
                 nodesTable = new GraphicsDataTable(graphData.nodes, dataSet.nodes.schema);
                 edgesTable = new GraphicsDataTable(edges, dataSet.edges.schema);
-                dtSet = new DataSet(nodesTable, edgesTable);   
+                dtSet = new DataSet(nodesTable, edgesTable);
                 out = new XGMMLConverter(configProxy.visualStyle).write(dtSet);
             } else {
-                // GRAPHML
                 nodesTable = new DataTable(graphData.nodes.toDataArray(), dataSet.nodes.schema);
                 edgesTable = new DataTable(edgesData, dataSet.edges.schema);
-                dtSet = new DataSet(nodesTable, edgesTable);        
-                out = new GraphMLConverter().write(dtSet);
+                dtSet = new DataSet(nodesTable, edgesTable);
+
+                if (format === "graphml") {
+                    out = new GraphMLConverter().write(dtSet);
+                } else {
+                    // SIF
+                    out = new SIFConverter().write(dtSet);
+                }
             }
 
             return "" + out;
@@ -586,6 +594,7 @@ package org.cytoscapeweb.model {
                 var tgt:NodeSprite = np.node2;
                 var dt:Object = { source: src.data.id, target: tgt.data.id };
                 var me:EdgeSprite = graphData.addEdgeFor(src, tgt, false, dt);
+                me.data.directed = false;
                 me.props.$merged = true;
                 me.props.$edges = edges;
                 me.props.$getDataList = function():Array {

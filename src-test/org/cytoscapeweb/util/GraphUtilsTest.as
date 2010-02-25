@@ -42,29 +42,32 @@ package org.cytoscapeweb.util {
         
         public function testToExtObject():void {
             var data:Data = Fixtures.getData(Fixtures.GRAPHML_SIMPLE);
-            var o:Object;
+            var o:Object, k:*;
             
-            var props:Array = ["data","shape","borderColor","borderWidth","opacity","visible",
-                                "color","x","y"];
+            var props:Array = ["data","shape","borderColor","borderWidth","opacity","visible","color","x","y"];
+            var attrs:Array = ["id"];
             
             for each (var n:NodeSprite in data.nodes) {
                 o = GraphUtils.toExtObject(n);
                 assertEquals(Groups.NODES, o.group);
                 
-                for each (var k:* in props) assertTrue(o.hasOwnProperty(k));
+                for each (k in props) assertTrue("Node property: " + k, o.hasOwnProperty(k));
+                for each (k in attrs) assertTrue("Node data attribute: " + k, + o.data.hasOwnProperty(k));
+                
                 assertEquals(n.data.id, o.data.id);
             }
             
-            props = ["data","color","width","opacity","visible",
-                     "directed","sourceArrowShape","targetArrowShape",
-                     "sourceArrowColor","targetArrowColor",
-                     "curvature","merged"];
+            props = ["data","color","width","opacity","visible","sourceArrowShape","targetArrowShape",
+                     "sourceArrowColor","targetArrowColor","curvature","merged"];
+            attrs = ["id","source","target","directed"];
             
             for each (var e:EdgeSprite in data.edges) {
                 o = GraphUtils.toExtObject(e);
                 assertEquals(Groups.EDGES, o.group);
                 
-                for each (k in props) assertTrue(o.hasOwnProperty(k));
+                for each (k in props) assertTrue("Edge property: " + k, o.hasOwnProperty(k));
+                for each (k in attrs) assertTrue("Edge data attribute: " + k, o.data.hasOwnProperty(k));
+                
                 assertEquals(e.data.id, o.data.id);
                 assertEquals(e.source.data.id, o.data.source);
                 assertEquals(e.target.data.id, o.data.target);

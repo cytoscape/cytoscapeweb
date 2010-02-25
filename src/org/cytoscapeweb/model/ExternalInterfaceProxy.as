@@ -110,7 +110,7 @@ package org.cytoscapeweb.model {
                                         "getLayout", "applyLayout", 
                                         "setVisualStyle", "getVisualStyle", 
                                         "visualStyleBypass",
-                                        "getNetworkAsXml", "getNetworkAsImage", 
+                                        "getNetworkAsText", "getNetworkAsImage", 
                                         "exportNetwork" ];
 
 	            for each (var f:String in functions) addFunction(f);
@@ -343,8 +343,8 @@ package org.cytoscapeweb.model {
             sendNotification(ApplicationFacade.APPLY_LAYOUT, name);
         }
         
-        private function getNetworkAsXml(format:String="xgmml"):String {
-            return graphProxy.getDataAsXml(format);
+        private function getNetworkAsText(format:String="xgmml"):String {
+            return graphProxy.getDataAsText(format);
         }
         
         private function getNetworkAsImage(format:String="pdf"):String {

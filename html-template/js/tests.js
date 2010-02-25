@@ -672,6 +672,16 @@ function runGraphTests(moduleName, vis, options) {
     	ok(base64.length > 0, "PDF string not empty");
     });
     
+    test("SIF", function() {
+    	var sif = vis.sif();
+    	var edges = vis.edges();
+    	$.each(edges, function(i, e) {
+    		var inter = e.data.interaction ? e.data.interaction : "pp";
+    		var line = e.data.source + "\t" + inter + "\t" + e.data.target; 
+    		ok(sif.indexOf(line) > -1, "SIF text should have the line: '"+line+"'");
+    	});
+    });
+    
     // TODO: test graphml(), xgmml()
     // TODO: test selection styles
     // TODO: test bypass

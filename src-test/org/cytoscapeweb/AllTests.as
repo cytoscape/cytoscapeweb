@@ -32,6 +32,7 @@ package org.cytoscapeweb {
 	
 	import org.cytoscapeweb.model.ConfigProxy;
 	import org.cytoscapeweb.model.GraphProxy;
+	import org.cytoscapeweb.model.converters.SIFConverterTest;
 	import org.cytoscapeweb.model.converters.XGMMLConverterTest;
 	import org.cytoscapeweb.model.data.ConfigVOTest;
 	import org.cytoscapeweb.model.data.ContinuousVizMapperVOTest;
@@ -67,7 +68,8 @@ package org.cytoscapeweb {
 			
 			addTestSuite(LabelerTest);
 			
-			addTestSuite(XGMMLConverterTest);			
+			addTestSuite(XGMMLConverterTest);
+			addTestSuite(SIFConverterTest);
 		}
 		
 		private function setupEnvironment():void {

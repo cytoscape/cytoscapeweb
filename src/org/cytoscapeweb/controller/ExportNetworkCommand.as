@@ -57,13 +57,13 @@ package org.cytoscapeweb.controller {
                 
                 var graphProxy:GraphProxy = facade.retrieveProxy(GraphProxy.NAME) as GraphProxy;
 
-                if (format === "xgmml" || format === "graphml") {
-                    // Get the XML:
-                    data = graphProxy.getDataAsXml(format);
-                } else {
+                if (format === "pdf" || format === "png") {
                     // Get the image bytes from the graph mediator class:
                     var appMediator:ApplicationMediator = facade.retrieveMediator(ApplicationMediator.NAME) as ApplicationMediator;
                     data = appMediator.getGraphImage(format, w, h);
+                } else {
+                    // Get the XML:
+                    data = graphProxy.getDataAsText(format);
                 }
                 
                 // Export:

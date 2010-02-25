@@ -49,7 +49,12 @@ package org.cytoscapeweb.model.data {
         public var nodeTooltipsEnabled:Boolean;
         public var edgeTooltipsEnabled:Boolean;
         public var visualStyle:VisualStyleVO;
-        public var layouts:Array = [Layouts.FORCE_DIRECTED, Layouts.CIRCLE, Layouts.CIRCLE_TREE, Layouts.RADIAL, Layouts.TREE];
+        public var layouts:Array = [Layouts.FORCE_DIRECTED, 
+                                    Layouts.CIRCLE, 
+                                    Layouts.CIRCLE_TREE, 
+                                    Layouts.RADIAL, 
+                                    Layouts.TREE,
+                                    Layouts.PRESET];
         public var currentLayout:String = Layouts.FORCE_DIRECTED;
         public var minZoom:Number = 0.008;
         public var maxZoom:Number = 3;

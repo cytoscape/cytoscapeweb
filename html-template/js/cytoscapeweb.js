@@ -77,22 +77,22 @@
      * @param {Object} [options] Cytoscape Web parameters:
      *                <ul class="options">
      *                    <li><code>swfPath</code>: The path of the compiled Cytoscape Web SWF file, but without the
-     *                                                               <code>.swf</code> extension. If you use the provided <code>CytoscapeWeb.swf</code>
-     *                                                               file and put it in the root path of the web application, this option does not need
-     *                                                               to be informed. But, for example, if you deploy the swf file at <code>/plugin/flash</code>,
-     *                                                               the <code>swfPath</code> value must be "/plugin/flash/CytoscapeWeb".</li>
+     *                                              <code>.swf</code> extension. If you use the provided <code>CytoscapeWeb.swf</code>
+     *                                              file and put it in the root path of the web application, this option does not need
+     *                                              to be informed. But, for example, if you deploy the swf file at <code>/plugin/flash</code>,
+     *                                              the <code>swfPath</code> value must be "/plugin/flash/CytoscapeWeb".</li>
      *                    <li><code>flashInstallerPath</code>: The path to the compiled Flash video that should be displayed in case
-     *                                                                          the browser does not have the Flash Player version required by Cytoscape Web.
-     *                                                                          The default value is "playerProductInstall" and, if this option is not changed,
-     *                                                                          the <code>playerProductInstall.swf</code> file must be deployed in the
-     *                                                                          web site's root path. Otherwise, just inform the new path without the
-     *                                                                          <code>.swf</code> extension.</li>
+     *                                                         the browser does not have the Flash Player version required by Cytoscape Web.
+     *                                                         The default value is "playerProductInstall" and, if this option is not changed,
+     *                                                         the <code>playerProductInstall.swf</code> file must be deployed in the
+     *                                                         web site's root path. Otherwise, just inform the new path without the
+     *                                                         <code>.swf</code> extension.</li>
      *                    <li><code>flashAlternateContent</code>: The text message that should be displayed if the browser does not have
-     *                                                                             the Flash Player plugin. If none is provided, Cytoscape Web will show
-     *                                                                             a default message and a link to the "Get Flash" page.</li>
+     *                                                            the Flash Player plugin. If none is provided, Cytoscape Web will show
+     *                                                            a default message and a link to the "Get Flash" page.</li>
      *                    <li><code>resourceBundleUrl</code>: An optional resource bundle path. Usually a <code>.properties</code> file
-     *                                                                         that redefines the default labels and messages used by Cytoscape Web.
-     *                                                                         Example of a valid file with all the available keys:
+     *                                                        that redefines the default labels and messages used by Cytoscape Web.
+     *                                                        Example of a valid file with all the available keys:
      * <pre>
      * global.wait = Please wait...
      * error.title = Error
@@ -106,11 +106,11 @@
      * zoom.slider.tooltip = {0}%
      * </pre></li>
      *                    <li><code>idToken</code>: A string used to create the embedded Flash video id
-     *                                                               (usually an HTML <code>embed</code> or <code>object</code> tag).
-     *                                                               The default token is "cytoscapeWeb" and the final id will be the token followed
-     *                                                               by a number, so if the application has two instances of the Visualization in the same page,
-     *                                                               their id's will be "cytoscapeWeb1" and "cytoscapeWeb2".
-     *                                                               This token does not usually need to be changed.</li>
+     *                                              (usually an HTML <code>embed</code> or <code>object</code> tag).
+     *                                              The default token is "cytoscapeWeb" and the final id will be the token followed
+     *                                              by a number, so if the application has two instances of the Visualization in the same page,
+     *                                              their id's will be "cytoscapeWeb1" and "cytoscapeWeb2".
+     *                                              This token does not usually need to be changed.</li>
      *                </ul>
      * @return {org.cytoscapeweb.Visualization} The Visualization instance.
      * @see org.cytoscapeweb.Visualization#draw
@@ -175,32 +175,34 @@
          * vis.draw({ network: '&lt;graphml&gt;...&lt;/graphml&gt;' });
          *
          * @param {Object} options
-         *               <ul class="options">Possible options:
-         *                    <li><code>network</code>: The XML string that describes the network, either a
-         *                                                               <a href="http://graphml.graphdrawing.org/primer/graphml-primer.html" target="_blank">GraphML</a>
-         *                                                               or an <a href="http://www.cs.rpi.edu/~puninj/XGMML/" target="_blank">XGMML</a> format.</li>
+         *               <ul class="options">
+         *                    <li><code>network</code>: The string that describes the network. Cytoscape supports one of the following formats:
+         *                                              <a href="http://graphml.graphdrawing.org/primer/graphml-primer.html" target="_blank">GraphML</a>,
+         *                                              <a href="http://www.cs.rpi.edu/~puninj/XGMML/" target="_blank">XGMML</a> or
+         *                                              <a href="http://cytoscape.wodaklab.org/wiki/Cytoscape_User_Manual/Network_Formats/" target="_blank">SIF</a>.
+         *                                              Only this option is mandatory.</li>
          *                    <li><code>visualStyle</code>: an optional {@link org.cytoscapeweb.VisualStyle} object to be applied on this network.</li>
          *                    <li><code>layout</code>: an optional {@link org.cytoscapeweb.Layout} name to be applied on this network. The default is "ForceDirected"</li>
          *                    <li><code>nodeLabelsVisible</code>: Boolean that defines whether or not the node labels will be visible.
-         *                                                                         The default value is <code>true</code>.
-         *                                                                         You can call {@link org.cytoscapeweb.Visualization#nodeLabelsVisible} 
-         *                                                                         later (after the network is ready) to change it.</li>
+         *                                                        The default value is <code>true</code>.
+         *                                                        You can call {@link org.cytoscapeweb.Visualization#nodeLabelsVisible} 
+         *                                                        later (after the network is ready) to change it.</li>
          *                    <li><code>edgeLabelsVisible</code>: Boolean that defines whether or not the edge labels will be visible.
-         *                                                                         The default value is <code>false</code>.
-         *                                                                         You can use {@link org.cytoscapeweb.Visualization#edgeLabelsVisible} later to change it.</li>
+         *                                                        The default value is <code>false</code>.
+         *                                                        You can use {@link org.cytoscapeweb.Visualization#edgeLabelsVisible} later to change it.</li>
          *                    <li><code>nodeTooltipsEnabled</code>: Boolean value that enables or disables the node tooltips.
-         *                                                                           The default value is <code>true</code>.
-         *                                                                           You can call {@link org.cytoscapeweb.Visualization#nodeTooltipsEnabled} later to change it.</li>
+         *                                                          The default value is <code>true</code>.
+         *                                                          You can call {@link org.cytoscapeweb.Visualization#nodeTooltipsEnabled} later to change it.</li>
          *                    <li><code>edgeTooltipsEnabled</code>: Boolean that enables or disables the edge tooltips.
-         *                                                                           The default value is <code>true</code>.
-         *                                                                           You can use {@link org.cytoscapeweb.Visualization#edgeTooltipsEnabled} later to change it.</li>
+         *                                                          The default value is <code>true</code>.
+         *                                                          You can use {@link org.cytoscapeweb.Visualization#edgeTooltipsEnabled} later to change it.</li>
          *                    <li><code>edgesMerged</code>: Boolean that defines whether or not the network will be initially
-         *                                                                   rendered with merged edges. The default value is <code>false</code>.
-         *                                                                   You can call {@link org.cytoscapeweb.Visualization#edgesMerged} after the network is ready to change it.</li>
+         *                                                  rendered with merged edges. The default value is <code>false</code>.
+         *                                                  You can call {@link org.cytoscapeweb.Visualization#edgesMerged} after the network is ready to change it.</li>
          *                    <li><code>panZoomControlVisible</code>: Boolean value that sets whether or not the built-in control
-         *                                                                             will be visible. The default value is <code>true</code>.
-         *                                                                             The visibility of the control can be changed later with
-         *                                                                             {@link org.cytoscapeweb.Visualization#panZoomControlVisible}.</li>
+         *                                                            will be visible. The default value is <code>true</code>.
+         *                                                            The visibility of the control can be changed later with
+         *                                                            {@link org.cytoscapeweb.Visualization#panZoomControlVisible}.</li>
          *                </ul>
          * @return {org.cytoscapeweb.Visualization} The Visualization instance.
          * @see org.cytoscapeweb.Visualization#ready
@@ -680,20 +682,37 @@
 
         /**
          * <p>Return the network data as <a href="http://graphml.graphdrawing.org/primer/graphml-primer.html" target="_blank">GraphML</a>.</p>
-         * @return {String} The XML string.
+         * @return {String} The XML text.
          * @see org.cytoscapeweb.Visualization#xgmml
+         * @see org.cytoscapeweb.Visualization#sif
          */
         graphml: function () {
-            return this.swf().getNetworkAsXml("graphml");
+            return this.swf().getNetworkAsText("graphml");
         },
 
         /**
          * <p>Return the network data as <a href="http://www.cs.rpi.edu/~puninj/XGMML/" target="_blank">XGMML</a>.</p>
-         * @return {String} The XML string.
+         * @return {String} The XML text.
          * @see org.cytoscapeweb.Visualization#graphml
+         * @see org.cytoscapeweb.Visualization#sif
          */
         xgmml: function () {
-            return this.swf().getNetworkAsXml("xgmml");
+            return this.swf().getNetworkAsText("xgmml");
+        },
+        
+        /**
+         * <p>Return the network data as <a href="http://cytoscape.wodaklab.org/wiki/Cytoscape_User_Manual/Network_Formats/" target="_blank">Simple Interaction Format (SIF)</a>.</p>
+         * <p>Cytoscape Web uses tab characters to delimit the fields, because the node and interaction names may contain spaces.</p>
+         * <p>The node name in the SIF text is taken from the node's <code>data.id</code> attribute.</p>
+         * <p>Cytoscape Web first tries to get the interaction name from the edge's <code>data.interaction</code> attribute.
+         * If the edge data has no <code>interaction</code> attribute, Cytoscape Web just writes the default interaction type, which is "pp"
+         * (protein - protein interaction).</p>
+         * @return {String} The SIF text.
+         * @see org.cytoscapeweb.Visualization#graphml
+         * @see org.cytoscapeweb.Visualization#xgmml
+         */
+        sif: function () {
+        	return this.swf().getNetworkAsText("sif");
         },
 
         /**
@@ -745,7 +764,7 @@
          *     print &#36;data;
          * ?&gt;
          * 
-         * @param {String} format One of: <code>png</code>, <code>pdf</code>, <code>xgmml</code>, <code>graphml</code>.
+         * @param {String} format One of: <code>png</code>, <code>pdf</code>, <code>xgmml</code>, <code>graphml</code>, <code>sif</code>.
          * @param {String} url The url that will receive the exported image (bytes) or xml (text).
          * @param {Object} [options] Additional options:
          *                              <ul class="options"><li><code>width</code>:</strong> The desired width of the image in pixels (only for 'pdf' format).</li>
@@ -759,6 +778,11 @@
          *                                                  The default is <code>_self</code>.
          *                                                  
          * @return {org.cytoscapeweb.Visualization} The Visualization instance.
+         * @see org.cytoscapeweb.Visualization#png
+         * @see org.cytoscapeweb.Visualization#pdf
+         * @see org.cytoscapeweb.Visualization#sif
+         * @see org.cytoscapeweb.Visualization#graphml
+         * @see org.cytoscapeweb.Visualization#xgmml
          */
         exportNetwork: function (format, url, options) {
             format = format.toLowerCase().trim();
@@ -1559,20 +1583,16 @@
     /**
       * The object that stores the custom edge attributes.
       * It should have at least the following properties:
-      * <ul><li><code>id</code>: the edge id</li>
-      *     <li><code>source</code>: the source node id</li>
-      *     <li><code>target</code>: the target node id</li></ul>
+      * <ul class="options">
+      *     <li><code>id</code> {String}: the edge id.</li>
+      *     <li><code>source</code> {String}: the source node id.</li>
+      *     <li><code>target</code> {String}: the target node id.</li>
+      *     <li><code>directed</code> {Boolean}: a directed edge has a default arrow pointed to the target node.</li></ul>
+      * When the network was created from a SIF data format, the edge's data object will also have the <code>interaction</code>
+      * attribute (String type).
       * @property
       * @name data
       * @type Object
-      * @memberOf org.cytoscapeweb.Edge#
-      */
-    /**
-      * Indicate whether or not the edge is directed. A directed edge has a default arrow pointed 
-      * to the target node.
-      * @property
-      * @name directed
-      * @type Boolean
       * @memberOf org.cytoscapeweb.Edge#
       */
     /**
