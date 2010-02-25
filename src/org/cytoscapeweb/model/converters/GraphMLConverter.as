@@ -48,7 +48,7 @@ package org.cytoscapeweb.model.converters {
 	 * Note: Just copied from Flare, in order to fix some errors, because it's
 	 * hard to inherit from the original GraphMLConverter.
 	 */
-	public class GraphMLConverter implements IDataConverter {    
+	public class GraphMLConverter implements IDataConverter {
 		
 		private namespace _defNamespace = "http://graphml.graphdrawing.org/xmlns";
         use namespace _defNamespace;
@@ -56,10 +56,10 @@ package org.cytoscapeweb.model.converters {
 		// ========[ CONSTANTS ]====================================================================
 		
         private static const NODE_ATTR:Object = {
-            "id":1
+            id: 1
         }
         private static const EDGE_ATTR:Object = {
-            "id":1, "directed":1, "source":1, "target":1
+            id: 1, directed: false, source: 1, target: 1
         };
         
         private static const GRAPHML_HEADER:String = 
@@ -86,7 +86,6 @@ package org.cytoscapeweb.model.converters {
         private static const EDGE:String   = "edge";
         private static const SOURCE:String = "source";
         private static const TARGET:String = "target";
-        private static const DATA:String   = "data";
         private static const TYPE:String   = "type";
         
         private static const INT:String = "int";
@@ -110,80 +109,6 @@ package org.cytoscapeweb.model.converters {
 					str.substring(str.indexOf(">", idx));
 			}
 			return parse(XML(str), schema);
-		}
-		
-		/**
-		 * Parses a GraphML XML object into a DataSet instance.
-		 * @param graphml the XML object containing GraphML markup
-		 * @param schema a DataSchema (typically null, as GraphML contains
-		 *  schema information)
-		 * @return the parsed DataSet instance
-		 */
-		public function parse(graphml:XML, schema:DataSchema=null):DataSet {
-		    // TODO: do not throw error when schema declaration is present!!!
-			var lookup:Object = {};
-			var nodes:Array = [], n:Object;
-			var edges:Array = [], e:Object;
-			var id:String, sid:String, tid:String;
-			var def:Object, type:int;
-			var group:String, attrName:String, attrType:String;
-			
-			var nodeSchema:DataSchema = new DataSchema();
-			var edgeSchema:DataSchema = new DataSchema();
-			var schema:DataSchema;
-			
-			// set schema defaults
-			nodeSchema.addField(new DataField(ID, DataUtil.STRING));
-			edgeSchema.addField(new DataField(ID, DataUtil.STRING));
-			edgeSchema.addField(new DataField(SOURCE, DataUtil.STRING));
-			edgeSchema.addField(new DataField(TARGET, DataUtil.STRING));
-			edgeSchema.addField(new DataField(DIRECTED, DataUtil.BOOLEAN, DIRECTED == graphml.graph.@[EDGEDEF]));
-			
-			// parse data schema
-			for each (var key:XML in graphml..key) {
-				id       = key.@[ID].toString();
-				group    = key.@[FOR].toString();
-				attrName = key.@[ATTRNAME].toString();
-				type     = toType(key.@[ATTRTYPE].toString());
-				def = key[DEFAULT].toString();
-				def = def != null && def.length > 0
-					? DataUtil.parseValue(def, type) : null;
-					
-				// Patch: accept "all" for node and edge schemas:
-				// ############################################
-				if (group === NODE || group === ALL)
-				    nodeSchema.addField(new DataField(attrName, type, def, id));
-				if (group === EDGE || group === ALL)
-				    edgeSchema.addField(new DataField(attrName, type, def, id));
-				// ############################################
-			}
-			
-			// parse nodes
-			for each (var node:XML in graphml..node) {
-				id = node.@[ID].toString();
-				lookup[id] = (n = parseData(node, nodeSchema));
-				nodes.push(n);
-			}
-			
-			// parse edges
-			for each (var edge:XML in graphml..edge) {
-				id  = edge.@[ID].toString();
-				sid = edge.@[SOURCE].toString();
-				tid = edge.@[TARGET].toString();
-				
-				// error checking
-				if (!lookup.hasOwnProperty(sid))
-					error("Edge "+id+" references unknown node: "+sid);
-				if (!lookup.hasOwnProperty(tid))
-					error("Edge "+id+" references unknown node: "+tid);
-								
-				edges.push(e = parseData(edge, edgeSchema));
-			}
-			
-			return new DataSet(
-				new DataTable(nodes, nodeSchema),
-				new DataTable(edges, edgeSchema)
-			);
 		}
 		
 		/** @inheritDoc */
@@ -213,9 +138,81 @@ package org.cytoscapeweb.model.converters {
 			return output;
 		}
 		
-		// ========[ PRIVATE METHODS ]==============================================================
+		/**
+         * Parses a GraphML XML object into a DataSet instance.
+         * @param graphml the XML object containing GraphML markup
+         * @param schema a DataSchema (typically null, as GraphML contains
+         *  schema information)
+         * @return the parsed DataSet instance
+         */
+        public function parse(graphml:XML, schema:DataSchema=null):DataSet {
+            var lookup:Object = {};
+            var nodes:Array = [], edges:Array = [];
+            var n:Object, e:Object;
+            var id:String, sid:String, tid:String;
+            var def:Object, type:int;
+            var group:String, attrName:String, attrType:String;
+            
+            var nodeSchema:DataSchema = new DataSchema();
+            var edgeSchema:DataSchema = new DataSchema();
+            
+            // set schema defaults
+            nodeSchema.addField(new DataField(ID, DataUtil.STRING));
+            edgeSchema.addField(new DataField(ID, DataUtil.STRING));
+            edgeSchema.addField(new DataField(SOURCE, DataUtil.STRING));
+            edgeSchema.addField(new DataField(TARGET, DataUtil.STRING));
+            edgeSchema.addField(new DataField(DIRECTED, DataUtil.BOOLEAN, DIRECTED == graphml.graph.@[EDGEDEF]));
+            
+            // parse data schema
+            for each (var key:XML in graphml..key) {
+                id       = key.@[ID].toString();
+                group    = key.@[FOR].toString();
+                attrName = key.@[ATTRNAME].toString();
+                type     = toType(key.@[ATTRTYPE].toString());
+                def = key[DEFAULT].toString();
+                def = def != null && def.length > 0
+                    ? DataUtil.parseValue(def, type) : null;
+                    
+                // Patch: accept "all" for node and edge schemas:
+                // ############################################
+                if (group === NODE || group === ALL)
+                    nodeSchema.addField(new DataField(attrName, type, def, id));
+                if (group === EDGE || group === ALL)
+                    edgeSchema.addField(new DataField(attrName, type, def, id));
+                // ############################################
+            }
+            
+            // parse nodes
+            for each (var node:XML in graphml..node) {
+                id = node.@[ID].toString();
+                lookup[id] = (n = parseData(node, nodeSchema));
+                nodes.push(n);
+            }
+            
+            // parse edges
+            for each (var edge:XML in graphml..edge) {
+                id  = edge.@[ID].toString();
+                sid = edge.@[SOURCE].toString();
+                tid = edge.@[TARGET].toString();
+                
+                // error checking
+                if (!lookup.hasOwnProperty(sid))
+                    error("Edge "+id+" references unknown node: "+sid);
+                if (!lookup.hasOwnProperty(tid))
+                    error("Edge "+id+" references unknown node: "+tid);
+                                
+                edges.push(e = parseData(edge, edgeSchema));
+            }
+            
+            return new DataSet(
+                new DataTable(nodes, nodeSchema),
+                new DataTable(edges, edgeSchema)
+            );
+        }
 		
-		private function parseData(node:XML, schema:DataSchema):Object {
+		// ========[ PROTECTED METHODS ]============================================================
+
+		protected function parseData(node:XML, schema:DataSchema):Object {
             var n:Object = {};
             var name:String, field:DataField, value:Object;
             
@@ -248,6 +245,8 @@ package org.cytoscapeweb.model.converters {
             
             return n;
         }
+		
+		// ========[ PRIVATE METHODS ]==============================================================
 		
 		private static function addSchema(xml:XML, schema:DataSchema, group:String, attrs:Object):XML {
 			var field:DataField;

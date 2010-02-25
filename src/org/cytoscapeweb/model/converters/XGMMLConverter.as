@@ -111,7 +111,7 @@ package org.cytoscapeweb.model.converters {
             id: 1, label: "", weight: 1
         }
         private static const EDGE_ATTR:Object = {
-            id: 1, source: 1, target: 1, label: "", weight: 1
+            id: 1, source: 1, target: 1, label: "", weight: 1, directed: false
         };
         private static const NODE_GRAPHICS_ATTR:Object = {
             type: [VisualProperties.NODE_SHAPE],
