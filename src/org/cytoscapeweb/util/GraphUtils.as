@@ -133,7 +133,6 @@ package org.cytoscapeweb.util {
                     obj.group = Groups.EDGES;
 
                     var e:EdgeSprite = EdgeSprite(ds);
-                    obj.directed = e.directed;
                     obj.color = Utils.rgbColorAsString(e.lineColor);
                     obj.width = ds.lineWidth;
                     obj.sourceArrowShape = e.props.sourceArrowShape;
