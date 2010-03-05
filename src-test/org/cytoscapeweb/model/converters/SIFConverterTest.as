@@ -68,7 +68,7 @@ package org.cytoscapeweb.model.converters {
                 assertEquals(8, edgesData.length);
                 
                 var tuple:Object;
-                var nodesMap:Object = {};
+                var nodesMap:Object = {}, edgesMap:Object = {};
                 var sif:String = Fixtures.getFixtureAsString(fixture);
                 
                 // Nodes:
@@ -81,6 +81,7 @@ package org.cytoscapeweb.model.converters {
                 // To verify duplicated nodes, which would be incorrect:
                 var count:int = 0;
                 for (var k:String in nodesMap) { count++; }
+                assertEquals(count, nodesData.length);
                 
                 // The same for edges:
                 for each (tuple in edgesData) {
@@ -89,7 +90,12 @@ package org.cytoscapeweb.model.converters {
                     assertNotNull(tuple.interaction);
                     assertEquals(tuple.interaction, tuple.label);
                     assertFalse(tuple.directed);
+                    edgesMap[id] = tuple;
                 }
+
+                count = 0;
+                for (k in edgesMap) { count++; }
+                assertEquals(count, edgesData.length);
             }
         }
         

@@ -136,7 +136,7 @@ package org.cytoscapeweb.model.converters {
         }
         
         public function parse(sif:String):DataSet {
-            var lookup:Object = {};
+            var nodeLookup:Object = {}, edgeLookup:Object = {};
             var nodes:Array = [], edges:Array = [];
             var n:Object, e:Object;
             
@@ -186,15 +186,19 @@ package org.cytoscapeweb.model.converters {
                 
                 // Create the nodes data:
                 for each (var name:String in nodeNames) {
-                    if (!lookup[name]) {
-                        lookup[name] = (n = createNodeData(name));
+                    if (!nodeLookup[name]) {
+                        nodeLookup[name] = n = createNodeData(name);
                         nodes.push(n);
                     }
                 }
                 // Create the edges for each target:
                 if (interaction != null && targets.length > 0) {
                     for each (var target:String in targets) {
-                        edges.push(e = createEdgeData(interaction, source, target));
+                        var k:String = source+" ("+interaction+") "+target;
+                        if (!edgeLookup[k]) {
+                            edgeLookup[k] = e = createEdgeData(interaction, source, target);
+                            edges.push(e);
+                        }
                     }
                 }
             }
