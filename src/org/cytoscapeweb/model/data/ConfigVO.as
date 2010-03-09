@@ -56,7 +56,7 @@ package org.cytoscapeweb.model.data {
                                     Layouts.TREE,
                                     Layouts.PRESET];
         public var currentLayout:String = Layouts.FORCE_DIRECTED;
-        public var minZoom:Number = 0.008;
+        public var minZoom:Number = 0.002;
         public var maxZoom:Number = 3;
         public var nodesPoints:/*nodeId->flash.geom.Point*/Object;
         
