@@ -83,6 +83,7 @@ package org.cytoscapeweb.view {
         private var _isMouseOverApp:Boolean = false;
         
         private var _waitMsgLabel:Label;
+        private var _executingTasks:uint = 0;
         
         /** Flag that indicates whether or not the PanZoomBox has been dragged. */
 	    private var _panZoomMoved:Boolean;
@@ -134,7 +135,7 @@ package org.cytoscapeweb.view {
             resizeChildren();
             
             networkVisBox.addEventListener(ResizeEvent.RESIZE, onNetworkVisBoxResize, false, 0, true);
-            application.addEventListener(FlexEvent.APPLICATION_COMPLETE, onCreationComplete, false, 0, true);
+            application.addEventListener(FlexEvent.APPLICATION_COMPLETE, onApplicationComplete, false, 0, true);
             application.addEventListener(MouseEvent.ROLL_OVER, onRollOverApplication, false, 0, true);
             application.addEventListener(MouseEvent.ROLL_OUT, onRollOutApplication, false, 0, true);
             
@@ -266,7 +267,7 @@ package org.cytoscapeweb.view {
         
         // ========[ PRIVATE METHODS ]==============================================================
 		
-		private function onCreationComplete(evt:FlexEvent):void {
+		private function onApplicationComplete(evt:FlexEvent):void {
 		    // KEY BINDINGS:
             application.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPressed, false, 0, true);
 		    
@@ -276,17 +277,24 @@ package org.cytoscapeweb.view {
             panZoomBox.addEventListener(DragEvent.DRAG_COMPLETE, onDragCompletePanZoom, false, 0, true);
 
             application.stage.focus = panZoomBox;
+            
+            // Tell the client application that Cytoscape Web is ready:
+            sendNotification(ApplicationFacade.CALL_EXTERNAL_INTERFACE, { functionName: ExternalFunctions.COMPLETE });
 		}
 		  
 		private function showWaitMessage():void {
-			graphView.visible = false;
-		    PopUpManager.addPopUp(waitMsgLabel, application, true);
-		    PopUpManager.centerPopUp(waitMsgLabel);
+		    if (_executingTasks++ === 0) {
+    			graphView.visible = false;
+    		    PopUpManager.addPopUp(waitMsgLabel, application, true);
+    		    PopUpManager.centerPopUp(waitMsgLabel);
+    		}
 		}
 		  
 		private function hideWaitMessage():void {
-		    PopUpManager.removePopUp(waitMsgLabel);
-		    graphView.visible = true;
+		    if (--_executingTasks === 0) {
+    		    PopUpManager.removePopUp(waitMsgLabel);
+    		    graphView.visible = true;
+    		}
 		}
         
         public function onKeyPressed(evt:KeyboardEvent):void {

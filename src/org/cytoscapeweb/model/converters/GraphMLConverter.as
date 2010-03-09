@@ -164,7 +164,8 @@ package org.cytoscapeweb.model.converters {
             edgeSchema.addField(new DataField(DIRECTED, DataUtil.BOOLEAN, DIRECTED == graphml.graph.@[EDGEDEF]));
             
             // parse data schema
-            for each (var key:XML in graphml..key) {
+            var keyList:XMLList = graphml..key;
+            for each (var key:XML in keyList) {
                 id       = key.@[ID].toString();
                 group    = key.@[FOR].toString();
                 attrName = key.@[ATTRNAME].toString();
@@ -183,14 +184,16 @@ package org.cytoscapeweb.model.converters {
             }
             
             // parse nodes
-            for each (var node:XML in graphml..node) {
+            var nodeList:XMLList = graphml..node;
+            for each (var node:XML in nodeList) {
                 id = node.@[ID].toString();
                 lookup[id] = (n = parseData(node, nodeSchema));
                 nodes.push(n);
             }
             
             // parse edges
-            for each (var edge:XML in graphml..edge) {
+            var edgeList:XMLList = graphml..edge;
+            for each (var edge:XML in edgeList) {
                 id  = edge.@[ID].toString();
                 sid = edge.@[SOURCE].toString();
                 tid = edge.@[TARGET].toString();

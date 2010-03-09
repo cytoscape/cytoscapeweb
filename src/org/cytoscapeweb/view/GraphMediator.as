@@ -50,6 +50,7 @@ package org.cytoscapeweb.view {
     import org.cytoscapeweb.util.GraphUtils;
     import org.cytoscapeweb.util.Groups;
     import org.cytoscapeweb.util.Nodes;
+    import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.VisualProperties;
     import org.cytoscapeweb.view.components.GraphView;
     import org.cytoscapeweb.view.components.SubGraphView;
@@ -332,12 +333,6 @@ package org.cytoscapeweb.view {
             graphContainer.addEventListener(MouseEvent.CLICK, onClickContainer, false, 0, true);
             // 4. 2-Click:
             graphContainer.addEventListener(MouseEvent.DOUBLE_CLICK, onDoubleClickContainer, false, 0, true);
-            
-            // Zooming is performed either by scrolling the mouse wheel or by 
-            // clicking and dragging vertically while the control key is pressed.
-            // NOTE: I don't want to use, because it interferes with other drag actions - e.g.
-            //       dragging nodes and the SelectionControl.
-            //new PanZoomControl().attach(graphView);
         }
         
         // CONTAINER listener functions:
@@ -578,10 +573,8 @@ package org.cytoscapeweb.view {
 		            }
 	            }
             }
-            // Necessary for Linux!
-            // ###########################################################
+            // Avoiding detached node labels:
             graphView.update();
-            // ###########################################################
         }
         
         private function onSelect(evt:SelectionEvent):void {

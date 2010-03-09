@@ -36,6 +36,7 @@ package org.cytoscapeweb.view.components {
     import flare.display.TextSprite;
     import flare.util.Orientation;
     import flare.util.Property;
+    import flare.util.Shapes;
     import flare.vis.Visualization;
     import flare.vis.controls.TooltipControl;
     import flare.vis.data.Data;
@@ -43,6 +44,8 @@ package org.cytoscapeweb.view.components {
     import flare.vis.data.DataSprite;
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
+    import flare.vis.data.Tree;
+    import flare.vis.events.DataEvent;
     import flare.vis.events.TooltipEvent;
     import flare.vis.events.VisualizationEvent;
     import flare.vis.operator.layout.CircleLayout;
@@ -54,9 +57,11 @@ package org.cytoscapeweb.view.components {
     import flash.geom.Point;
     import flash.geom.Rectangle;
     import flash.text.TextField;
+    import flash.utils.getTimer;
     
     import org.cytoscapeweb.model.data.ConfigVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
+    import org.cytoscapeweb.model.methods.error;
     import org.cytoscapeweb.util.Edges;
     import org.cytoscapeweb.util.GraphUtils;
     import org.cytoscapeweb.util.Groups;
@@ -65,8 +70,10 @@ package org.cytoscapeweb.view.components {
     import org.cytoscapeweb.util.Nodes;
     import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.VisualProperties;
+    import org.cytoscapeweb.util.methods.$each;
     import org.cytoscapeweb.view.layout.ForceDirectedLayout;
     import org.cytoscapeweb.view.layout.PresetLayout;
+    import org.cytoscapeweb.view.layout.physics.Simulation;
     import org.cytoscapeweb.view.render.Labeler;
     
 
@@ -76,6 +83,7 @@ package org.cytoscapeweb.view.components {
         
         // ========[ PRIVATE PROPERTIES ]===========================================================
         
+        private var _data:Data;
         private var _layouts:Object;
         private var _currentLayout:Layout;
         private var _style:VisualStyleVO;
@@ -120,22 +128,48 @@ package org.cytoscapeweb.view.components {
         }
         
         /** @inheritDoc */
-        public override function set bounds(r:Rectangle):void {
+        override public  function set bounds(r:Rectangle):void {
             super.bounds = r;
             _initialWidth = r.width;
             _initialHeight = r.height;
         }
+        
+        /** @inheritDoc */
+        override public function get tree():Tree { return data.tree; }
+        
+        /** @inheritDoc */
+        override public function get data():Data { return _data; }
+        
+        /** @inheritDoc */
+        override public function set data(d:Data):void {
+            if (_data != null) {
+                _data.visit(marks.removeChild);
+                _data.removeEventListener(DataEvent.ADD, dataAdded);
+                _data.removeEventListener(DataEvent.REMOVE, dataRemoved);
+            }
+            _data = d;
+            if (_data != null) {
+                var edges:DataList = _data.edges;
+                $each(edges, function(i:uint, e:EdgeSprite):void {
+                    marks.addChild(e);
+                });
+                
+                var nodes:DataList = _data.nodes;
+                $each(nodes, function(i:uint, n:NodeSprite):void {
+                    marks.addChild(n);
+                });
+
+                _data.addEventListener(DataEvent.ADD, dataAdded);
+                _data.addEventListener(DataEvent.REMOVE, dataRemoved);
+            }
+        }
 
         // ========[ CONSTRUCTOR ]==================================================================
 
-        public function SubGraphView(data:Data, config:ConfigVO, style:VisualStyleVO) {
+        public function SubGraphView(data:Data, config:ConfigVO) {
         	super(data);
         	this._config = config;
-       
-            // Visual Style:
-            // --------------------------------------------------------------------------
-            applyVisualStyle(style);
-
+        	
             // Tooltips:
             // --------------------------------------------------------------------------
             controls.add(tooltipControl);
@@ -144,12 +178,17 @@ package org.cytoscapeweb.view.components {
             // Avoiding the bug that makes the edges separate from the nodes:
             // (seems to be caused by a Flash/Flex integration problem - see:
             // http://sourceforge.net/forum/forum.php?thread_id=2190163&forum_id=757572)
-            addEventListener(VisualizationEvent.UPDATE, function ():void{ DirtySprite.renderDirty(); });
+            // I've been noticing this issue on Linux only...
+            if (Utils.isLinux()) {
+                addEventListener(VisualizationEvent.UPDATE, 
+                                 function ():void{ DirtySprite.renderDirty(); });
+            }
         }
         
         // ========[ PUBLIC METHODS ]===============================================================
 
         public function applyVisualStyle(style:VisualStyleVO):void {
+            var firstTime:Boolean = this._style == null;
             this._style = style;
             
             // Nodes & Edges properties:
@@ -188,22 +227,23 @@ package org.cytoscapeweb.view.components {
             edgeLabeler.textFunction = Labels.text;
             
             // Without this the font styles would not change:
-            data.visit(function(d:DataSprite):Boolean {
-                var lb:TextSprite = d.props.label;
-                if (lb != null) {
-                    if (d is NodeSprite) lb.applyFormat(nodeLabeler.textFormat);
-                    else if (d is EdgeSprite) lb.applyFormat(edgeLabeler.textFormat);
-                }
-                return false;
+            $each(data.edges, function(i:uint, e:EdgeSprite):void {
+                var lb:TextSprite = e.props.label;
+                if (lb != null) lb.applyFormat(edgeLabeler.textFormat);
+            });
+            $each(data.nodes, function(i:uint, n:NodeSprite):void {
+                var lb:TextSprite = n.props.label;
+                if (lb != null) lb.applyFormat(nodeLabeler.textFormat);
             });
 
-            updateLabels();
+            if (!firstTime) {
+                if (_config.nodeLabelsVisible) updateLabels(Data.NODES);
+                if (_config.edgeLabelsVisible) updateLabels(Data.EDGES);
+            }
 
             // Tooltips:
             // ---------------------------------------------------------
             tooltipControl.showDelay = _style.getValue(VisualProperties.TOOLTIP_DELAY) as Number;
-            
-            DirtySprite.renderDirty();
         }
 
         public function applyLayout(name:String):Transition {
@@ -217,7 +257,7 @@ package org.cytoscapeweb.view.components {
             if (_currentLayout is ForceDirectedLayout) {
                 // If the previous layout is ForceDirected, we need to set the nodes' particles and
                 // the edges' springs to null, otherwise the layout may not render very well
-                // when it is applied again. 
+                // when it is applied again.
                 data.nodes.visit(function(n:NodeSprite):void {
                     n.props.particle = null;
                     // It is also important to set random positions to nodes:
@@ -314,9 +354,11 @@ package org.cytoscapeweb.view.components {
             var bounds:Rectangle = new Rectangle();
             var minX:Number = Number.POSITIVE_INFINITY, minY:Number = Number.POSITIVE_INFINITY;
             var maxX:Number = Number.NEGATIVE_INFINITY, maxY:Number = Number.NEGATIVE_INFINITY;
+            var lbl:TextSprite;
+            var fld:TextField;
 
             // First, consider the NODES bounds:
-            for each (var n:NodeSprite in data.nodes) {
+            $each(data.nodes, function(i:uint, n:NodeSprite):void {
                 // The node size (its shape must have the same height and width; e.g. a circle)
                 var ns:Number = n.height;
                 // Verify MIN and MAX x/y again:
@@ -329,20 +371,22 @@ package org.cytoscapeweb.view.components {
                 var lbl:TextSprite = n.props.label;
                 if (_config.nodeLabelsVisible && lbl != null) {
                 	// The alignment values are done by the text field, not the label...
-                	var fld:TextField = lbl.textField;
+                	fld = lbl.textField;
                     minX = Math.min(minX, lbl.x + fld.x);
                     maxX = Math.max(maxX, (lbl.x + lbl.width + fld.x));
                     minY = Math.min(minY, lbl.y + fld.y);
                     maxY = Math.max(maxY, (lbl.y + lbl.height + fld.y));
                 }
-            }
+            });
             
             // Then consider the edges bezier control points too, 
             // because curved edges may get out of bounds:
-            for each (var e:EdgeSprite in data.edges) e.render();
+            $each(data.edges, function(i:uint, e:EdgeSprite):void {
+                 if (e.shape != Shapes.LINE) e.render();
+            });
             if (_config.edgeLabelsVisible) edgeLabeler.operate();
             
-            for each (e in data.edges) {
+            $each(data.edges, function(i:uint, e:EdgeSprite):void {
                 // Edge LABELS first, to avoid checking edges that are already inside the bounds:
                 lbl = e.props.label;
                 if (_config.edgeLabelsVisible && lbl != null) {
@@ -370,7 +414,7 @@ package org.cytoscapeweb.view.components {
 		            	}
 	                }
                 }
-            }
+            });
             
             const PAD:Number = 2;
             bounds.x = minX - PAD;
@@ -492,23 +536,30 @@ package org.cytoscapeweb.view.components {
         private function get layouts():Object {
         	if (_layouts == null) {
         		_layouts = new Object();
+        		var nl:uint = data.nodes.length;
+        		var el:uint = data.edges.length;
 
                 // ---------------------------------------------------------------------------------
         		// FORCE DIRECTED:
         		// ---------------------------------------------------------------------------------
-        		var fdl:ForceDirectedLayout = new ForceDirectedLayout(true, 5, null);
+        		var fdl:ForceDirectedLayout = new ForceDirectedLayout(true, 5, new Simulation());
         		fdl.layoutBounds = new Rectangle(bounds.x, bounds.y, _initialWidth, _initialHeight),
                 fdl.ticksPerIteration = 1.5,
                 fdl.simulation.dragForce.drag = 0.4;
-                fdl.simulation.nbodyForce.gravitation = Math.min(-100, -50000/data.nodes.length);
+                fdl.simulation.nbodyForce.gravitation = -1000;
                 fdl.simulation.nbodyForce.minDistance = 1;
-                fdl.simulation.nbodyForce.maxDistance = 5000;
-                fdl.defaultParticleMass = 2;
+                fdl.simulation.nbodyForce.maxDistance = 10000;
+                fdl.defaultParticleMass = 3;
                 fdl.defaultSpringTension = 0.1;
-                
-                var diagonal:Number = Math.sqrt(_initialWidth*_initialWidth + _initialHeight*_initialHeight);
-                var desiredLength:Number = diagonal/8 + Math.pow(data.edges.length/data.nodes.length, 2)*0.3;
+
+                var desiredLength:Number = 60 + (el > 0 ? 2*Math.log(el) : 0);
                 fdl.defaultSpringLength = Math.min(200, desiredLength);
+
+                trace("[FORCE_DIRECTED] Grav="+fdl.simulation.nbodyForce.gravitation+
+                                      " Tens="+fdl.defaultSpringTension+
+                                      " Drag="+fdl.simulation.dragForce.drag+
+                                      " Mass="+fdl.defaultParticleMass+
+                                      " Length="+fdl.defaultSpringLength);
 
                 _layouts[Layouts.FORCE_DIRECTED] = fdl;
 
@@ -559,63 +610,89 @@ package org.cytoscapeweb.view.components {
         
         private function operateForceDirectedLayout():void {
             var fdl:ForceDirectedLayout = ForceDirectedLayout(_currentLayout);
-            var start:Date = new Date();
+            var startTime:int = getTimer();
             
-            const RUN_TIMES_1:int = 20;
-            const RUN_TIMES_2:int = 10 + RUN_TIMES_1;
-            const MAX_TIMES:int = 120;
+            const MIN_COUNT:uint = 20;
+            const MAX_COUNT:uint = 80;
+            const MAX_TIME:uint = 60000;
+            var count:uint = 0, stableCount:uint = 0;
             
-            // Always operate the layout a few times first:
-            for (var count:int = 0; count < RUN_TIMES_1; count++) fdl.operate();
-            
-            //Then operate the layout until it's stable:
-            storeInitialNodePoints();
-            var fdlTuned:Boolean = false;
-            
-            do {
-                fdl.operate();
+            try {
+                // Always operate the layout a few times first:
+                while (count++ < MIN_COUNT  && (getTimer()-startTime < MAX_TIME)) {
+                    fdl.operate();
+                }
                 
-                if (count >= RUN_TIMES_2) {
-                    // Start tuning the Layout, because it's hard to make the
-                    // layout stable with the current values:
-                    var m:Number = fdl.defaultParticleMass;
-                    var t:Number = fdl.defaultSpringTension;
-                    var d:Number = fdl.simulation.dragForce.drag;
-                    var g:Number = fdl.simulation.nbodyForce.gravitation;
-                    var l:Number = fdl.defaultSpringLength;
-                    
-                    m = fdl.defaultParticleMass = Math.max(1, m*0.9);
-                    t = fdl.defaultSpringTension = Math.max(0.01, t*0.8);
-                    d = fdl.simulation.dragForce.drag = Math.max(1, d*1.2);
-                    g = fdl.simulation.nbodyForce.gravitation = Math.min(-100, g*0.8);
-                    l = fdl.defaultSpringLength = Math.min(260, l*1.05);
-                    
-                    trace("\t% Tuning ForceDirectedLayout ["+count+"] Grav="+g+" Tens="+t+" Drag="+d+" Mass="+m+" Length="+l);
-                    
+                // Then operate the layout until it's stable:
+                var reset:Boolean = false;
+                storeInitialNodePoints();
+                var stable:Boolean = false;
+                const MAX_M:Number = 1, MAX_D:Number = 1, MAX_L:Number = 240;
+           
+                while ( !stable &&  (getTimer()-startTime < MAX_TIME) ) {
                     fdl.operate();
                     count++;
-                    fdlTuned = true;
+                    
+                    stable = stable || isLayoutStable();
+                    
+                    if (!stable) {
+                        // Start tuning the Layout, because it's hard to make the
+                        // layout stable with the current values:
+                        var m:Number = fdl.defaultParticleMass;          
+                        var d:Number = fdl.simulation.dragForce.drag;
+                        var l:Number = fdl.defaultSpringLength;
+                        var g:Number = fdl.simulation.nbodyForce.gravitation;
+                        var t:Number = fdl.defaultSpringTension;
+                        
+                        m = fdl.defaultParticleMass = Math.max(MAX_M, m*0.9);
+                        d = fdl.simulation.dragForce.drag = Math.min(MAX_D, d*1.1);
+                        l = fdl.defaultSpringLength = Math.min(MAX_L, l*1.1);
+    
+                        if (m === MAX_M && d === MAX_D && l === MAX_L) {
+                            // It has not worked so far, so decrease gravity/tension and do not verify anymore:
+                            g = fdl.simulation.nbodyForce.gravitation = -10;
+                            t = fdl.defaultSpringTension = 0.01;
+                            stable = true;
+                        }
+                        
+                        trace("\t% Stabilizing ForceDirectedLayout ["+count+"] Grav="+g+" Tens="+t+" Drag="+d+" Mass="+m+" Length="+l);
+                        reset = true;
+                        
+                        fdl.operate();
+                        count++;
+                    } else {
+                        // Just consider the layout stable:
+                        stable = true;
+                        break;
+                    }
                 }
-            } while (!isLayoutStable() && count++ < MAX_TIMES);
+            } catch (err:Error) {
+                if (err.errorID === 1502 || err.errorID === 1503)
+                    trace("[ visit ] Timeout at iteration " + count + ": " + err.getStackTrace());
+                else
+                    error("Error operating ForceDirected Layout: "+err.message, err.errorID, err.name, err.getStackTrace());
+            }
             
-            var elapsed:Number = new Date().time - start.time;
+            var elapsed:Number = getTimer() - startTime;
             trace("% >> ForceDirectedLayout runned "+count+"x for "+elapsed/1000+" seconds.");
             
             // Reset layout parameter values:
-            if (fdlTuned) _layouts = null;
+            if (reset) _layouts = null;
         }
         
         private function isLayoutStable():Boolean {
             var stable:Boolean = true;
             var nodes:DataList = data.nodes;
             
-            for each (var n:NodeSprite in nodes) {
-                var p1:Point = _nodePoints[n.data.id];
-                var p2:Point = new Point(n.x, n.y);
-                _nodePoints[n.data.id] = p2;
-                
-                var d:Number = Point.distance(p1, p2);
-                if (d > 40) stable = false;
+            if (nodes.length > 1) {
+                for each (var n:NodeSprite in nodes) {
+                    var p1:Point = _nodePoints[n.data.id];
+                    var p2:Point = new Point(n.x, n.y);
+                    _nodePoints[n.data.id] = p2;
+                    
+                    var d:Number = Point.distance(p1, p2);
+                    if (d > 40) stable = false;
+                }
             }
             
             return stable;
@@ -708,7 +785,7 @@ package org.cytoscapeweb.view.components {
             return text;
         }
         
-        private function formatTooltipAttribute(attrName:String, attrValue:*, level:int=0):String {
+        private function formatTooltipAttribute(attrName:String, attrValue:*, level:uint=0):String {
             var text:String = '';
             if (attrName === "") attrName = null;
 

@@ -1,0 +1,2046 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<graphml>
+	<key attr.type="double" attr.name="score" for="node" id="score" />
+	<key attr.type="string" attr.name="symbol" for="node" id="symbol" />
+	<key attr.type="string" attr.name="source" for="node" id="source" />
+	<key attr.type="double" attr.name="weight" for="edge" id="weight" />
+	<key attr.type="string" attr.name="networkGroup" for="edge" id="networkGroup" />
+	<key attr.type="string" attr.name="networks" for="edge" id="networks" />
+	<graph edgedefault="undirected">
+		<node id="121082">
+			<data key="score">00.4985</data>
+			<data key="symbol">STE5</data>
+			<data key="source">true</data>
+		</node>
+		<node id="122794">
+			<data key="score">00.4916</data>
+			<data key="symbol">STE12</data>
+			<data key="source">true</data>
+		</node>
+		<node id="126152">
+			<data key="score">00.4947</data>
+			<data key="symbol">DIG1</data>
+			<data key="source">true</data>
+		</node>
+		<node id="120876">
+			<data key="score">00.4981</data>
+			<data key="symbol">STE7</data>
+			<data key="source">true</data>
+		</node>
+		<node id="121491">
+			<data key="score">00.506</data>
+			<data key="symbol">DIG2</data>
+			<data key="source">true</data>
+		</node>
+		<node id="121678">
+			<data key="score">00.0042</data>
+			<data key="symbol">GPA2</data>
+			<data key="source">false</data>
+		</node>
+		<node id="121791">
+			<data key="score">00.0053</data>
+			<data key="symbol">FLO8</data>
+			<data key="source">false</data>
+		</node>
+		<node id="121442">
+			<data key="score">00.0062</data>
+			<data key="symbol">NPL3</data>
+			<data key="source">false</data>
+		</node>
+		<node id="120277">
+			<data key="score">00.0107</data>
+			<data key="symbol">TEC1</data>
+			<data key="source">false</data>
+		</node>
+		<node id="125447">
+			<data key="score">00.0047</data>
+			<data key="symbol">HUB1</data>
+			<data key="source">false</data>
+		</node>
+		<node id="124916">
+			<data key="score">00.0043</data>
+			<data key="symbol">CLN1</data>
+			<data key="source">false</data>
+		</node>
+		<node id="122694">
+			<data key="score">00.0044</data>
+			<data key="symbol">GPA1</data>
+			<data key="source">false</data>
+		</node>
+		<node id="123368">
+			<data key="score">00.0055</data>
+			<data key="symbol">FAR1</data>
+			<data key="source">false</data>
+		</node>
+		<node id="122217">
+			<data key="score">00.0047</data>
+			<data key="symbol">MPT5</data>
+			<data key="source">false</data>
+		</node>
+		<node id="122608">
+			<data key="score">00.0044</data>
+			<data key="symbol">SCW4</data>
+			<data key="source">false</data>
+		</node>
+		<node id="120078">
+			<data key="score">00.0092</data>
+			<data key="symbol">FUS3</data>
+			<data key="source">false</data>
+		</node>
+		<node id="125111">
+			<data key="score">00.007</data>
+			<data key="symbol">MSG5</data>
+			<data key="source">false</data>
+		</node>
+		<node id="124370">
+			<data key="score">00.0051</data>
+			<data key="symbol">CDC25</data>
+			<data key="source">false</data>
+		</node>
+		<node id="121619">
+			<data key="score">00.0103</data>
+			<data key="symbol">YEL048C</data>
+			<data key="source">false</data>
+		</node>
+		<node id="124525">
+			<data key="score">00.0052</data>
+			<data key="symbol">SST2</data>
+			<data key="source">false</data>
+		</node>
+		<node id="122735">
+			<data key="score">00.0086</data>
+			<data key="symbol">MSC7</data>
+			<data key="source">false</data>
+		</node>
+		<node id="124874">
+			<data key="score">00.0069</data>
+			<data key="symbol">MSS11</data>
+			<data key="source">false</data>
+		</node>
+		<node id="122352">
+			<data key="score">00.0096</data>
+			<data key="symbol">KSS1</data>
+			<data key="source">false</data>
+		</node>
+		<node id="121260">
+			<data key="score">00.004</data>
+			<data key="symbol">AKR1</data>
+			<data key="source">false</data>
+		</node>
+		<node id="124426">
+			<data key="score">00.0054</data>
+			<data key="symbol">STE11</data>
+			<data key="source">false</data>
+		</node>
+		<edge source="124426" target="121491">
+			<data key="weight">0.027987132</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="121082">
+			<data key="weight">0.04336323</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="121491">
+			<data key="weight">0.015978059</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122352" target="121619">
+			<data key="weight">0.44509536</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="121619">
+			<data key="weight">0.03326901</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="121491">
+			<data key="weight">0.50989074</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="124370">
+			<data key="weight">0.017200107</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124370" target="121082">
+			<data key="weight">0.010232776</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="120876">
+			<data key="weight">0.0149298245</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125111" target="122217">
+			<data key="weight">0.035093375</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122217" target="121678">
+			<data key="weight">0.022420436</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121260" target="120277">
+			<data key="weight">0.014893565</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122217" target="120078">
+			<data key="weight">0.07206617</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="122352">
+			<data key="weight">0.011298976</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="120078">
+			<data key="weight">0.04540099</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122735" target="121260">
+			<data key="weight">0.00514969</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125111" target="121491">
+			<data key="weight">0.04225521</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121791" target="120078">
+			<data key="weight">0.019239057</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="122217">
+			<data key="weight">0.009332904</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125447" target="124370">
+			<data key="weight">0.015359763</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="120078">
+			<data key="weight">0.09856263</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122608" target="121260">
+			<data key="weight">0.012765501</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="122217">
+			<data key="weight">0.019660607</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="120876" target="120277">
+			<data key="weight">0.010199503</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="121491">
+			<data key="weight">0.02184811</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="121082">
+			<data key="weight">0.075375214</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="122735">
+			<data key="weight">0.12458369</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122352" target="120876">
+			<data key="weight">0.1177954</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122352" target="121619">
+			<data key="weight">0.009054827</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="120876">
+			<data key="weight">0.03236352</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121260" target="121082">
+			<data key="weight">0.009240048</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="121491">
+			<data key="weight">0.010966198</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="121491">
+			<data key="weight">0.21535489</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124370" target="121082">
+			<data key="weight">0.01828477</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="121791">
+			<data key="weight">0.040558748</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="120876">
+			<data key="weight">0.010367673</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="122608">
+			<data key="weight">0.027226733</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122217" target="121678">
+			<data key="weight">0.010157355</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122352" target="120078">
+			<data key="weight">0.07994378</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="120078">
+			<data key="weight">0.020547615</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="121678">
+			<data key="weight">0.011317244</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122735" target="121260">
+			<data key="weight">0.022236934</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="120078">
+			<data key="weight">0.06010266</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125111" target="121082">
+			<data key="weight">0.022335595</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121791" target="121260">
+			<data key="weight">0.018432213</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="120876" target="120277">
+			<data key="weight">0.048461407</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="123368">
+			<data key="weight">0.011767866</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122352" target="120876">
+			<data key="weight">0.34601533</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122217" target="121491">
+			<data key="weight">0.020873368</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="120876">
+			<data key="weight">0.014142018</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122735" target="122694">
+			<data key="weight">0.008275809</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="121082">
+			<data key="weight">0.012513132</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121791" target="121491">
+			<data key="weight">0.017316455</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="121491">
+			<data key="weight">0.020366576</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="121791">
+			<data key="weight">0.1305627</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122352" target="120078">
+			<data key="weight">0.066481985</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="122352">
+			<data key="weight">0.012996583</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="120078">
+			<data key="weight">0.048830584</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121491" target="120277">
+			<data key="weight">0.07239639</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="121791">
+			<data key="weight">0.11196098</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="120876" target="120277">
+			<data key="weight">0.009543985</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="122217">
+			<data key="weight">0.008406136</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122352" target="121491">
+			<data key="weight">0.035839774</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121619" target="121260">
+			<data key="weight">0.019537358</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="122735">
+			<data key="weight">0.015523335</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="121082">
+			<data key="weight">0.0051100105</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122694" target="120876">
+			<data key="weight">0.10235354</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="121491">
+			<data key="weight">0.014905335</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="124426">
+			<data key="weight">0.002255363</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122694" target="121619">
+			<data key="weight">0.014119156</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="121791">
+			<data key="weight">0.014824038</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="122694">
+			<data key="weight">0.09692085</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="121082">
+			<data key="weight">0.09993548</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122352" target="120078">
+			<data key="weight">0.027644066</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="121260">
+			<data key="weight">0.035479847</data>
+			<data key="networkGroup">25</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122352" target="122217">
+			<data key="weight">0.09512848</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="122217">
+			<data key="weight">0.0872139</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122694" target="120078">
+			<data key="weight">0.06323527</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="121791">
+			<data key="weight">0.008838666</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121491" target="120078">
+			<data key="weight">0.056876346</data>
+			<data key="networkGroup">25</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="121791">
+			<data key="weight">0.5489694</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122352" target="121491">
+			<data key="weight">0.20611562</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122352" target="121082">
+			<data key="weight">0.027545495</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="121491">
+			<data key="weight">0.01830766</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="122694">
+			<data key="weight">0.108462095</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="121082">
+			<data key="weight">0.06930533</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="121082">
+			<data key="weight">0.019631835</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122694" target="120078">
+			<data key="weight">0.043247435</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125447" target="122608">
+			<data key="weight">0.007317939</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="123368">
+			<data key="weight">0.13368624</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="121791">
+			<data key="weight">0.01465079</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="120277">
+			<data key="weight">0.05254845</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122352" target="121082">
+			<data key="weight">0.06881626</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="121082">
+			<data key="weight">0.009677012</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="121791">
+			<data key="weight">0.0142035335</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122694" target="121491">
+			<data key="weight">0.014066764</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122217" target="121619">
+			<data key="weight">0.048577055</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="121442">
+			<data key="weight">0.50146973</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122694" target="120078">
+			<data key="weight">0.122473225</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122608" target="120078">
+			<data key="weight">0.016931398</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121491" target="120078">
+			<data key="weight">0.20333451</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122694" target="122217">
+			<data key="weight">0.016647182</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121082" target="120876">
+			<data key="weight">0.13383512</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="120277">
+			<data key="weight">0.6120578</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="122794">
+			<data key="weight">0.048574567</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="121791">
+			<data key="weight">0.0071343854</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="121791">
+			<data key="weight">0.030920431</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122694" target="121491">
+			<data key="weight">0.009873416</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122694" target="121082">
+			<data key="weight">0.082445756</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124370" target="122794">
+			<data key="weight">0.0055916146</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="121442">
+			<data key="weight">0.017813468</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121082" target="120078">
+			<data key="weight">0.065682866</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="120277">
+			<data key="weight">0.13107057</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122735" target="120078">
+			<data key="weight">0.053302668</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="120078">
+			<data key="weight">0.01994906</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122694" target="122217">
+			<data key="weight">0.014041332</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121082" target="120876">
+			<data key="weight">0.015388899</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="122794">
+			<data key="weight">0.047038935</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="120277">
+			<data key="weight">0.09347148</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="122794">
+			<data key="weight">0.16180082</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122694" target="121082">
+			<data key="weight">0.01138216</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122217" target="120876">
+			<data key="weight">0.020645635</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121678" target="120277">
+			<data key="weight">0.023990178</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121082" target="120078">
+			<data key="weight">0.009660507</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124370" target="122794">
+			<data key="weight">0.011371046</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122608" target="121491">
+			<data key="weight">0.037257694</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="120277">
+			<data key="weight">0.04408579</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="120277">
+			<data key="weight">0.33252144</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121619" target="120876">
+			<data key="weight">0.04526095</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122217" target="120078">
+			<data key="weight">0.09821568</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124370" target="120277">
+			<data key="weight">0.01720339</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122352" target="121791">
+			<data key="weight">0.061920244</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="121678">
+			<data key="weight">0.0037258542</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="122794">
+			<data key="weight">0.034314755</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122608" target="122217">
+			<data key="weight">0.016405163</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121491" target="121260">
+			<data key="weight">0.009853762</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="122352">
+			<data key="weight">0.049445175</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="124525">
+			<data key="weight">0.0069616456</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="122794">
+			<data key="weight">0.010558326</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122694" target="121082">
+			<data key="weight">0.028996265</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122735" target="121491">
+			<data key="weight">0.62089664</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="121491">
+			<data key="weight">0.22853556</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="120277">
+			<data key="weight">0.028184883</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="120277">
+			<data key="weight">0.017199047</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121260" target="120078">
+			<data key="weight">0.006518638</data>
+			<data key="networkGroup">25</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122217" target="120078">
+			<data key="weight">0.01639951</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="120277">
+			<data key="weight">0.010589772</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125111" target="122794">
+			<data key="weight">0.024820851</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122352" target="121791">
+			<data key="weight">0.026727363</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="122217">
+			<data key="weight">0.0131887</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="121678">
+			<data key="weight">0.015857479</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="120078">
+			<data key="weight">0.0888295</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="122352">
+			<data key="weight">0.14121959</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="121260">
+			<data key="weight">0.06776476</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="122794">
+			<data key="weight">0.0048911003</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121082" target="120277">
+			<data key="weight">0.009227887</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122217" target="121491">
+			<data key="weight">0.026726961</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125111" target="120277">
+			<data key="weight">0.037550412</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="122794">
+			<data key="weight">1.9491199</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="121491">
+			<data key="weight">0.0085163545</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="120078">
+			<data key="weight">0.009397268</data>
+			<data key="networkGroup">25</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="122352">
+			<data key="weight">0.09056155</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121619" target="121491">
+			<data key="weight">0.05866316</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="122694">
+			<data key="weight">0.039578408</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="120078">
+			<data key="weight">0.11202589</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="120277">
+			<data key="weight">0.061992988</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124370" target="121678">
+			<data key="weight">0.0113056945</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="120277">
+			<data key="weight">0.17966287</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121791" target="120277">
+			<data key="weight">0.08745641</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122352" target="121791">
+			<data key="weight">0.015361615</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="122352">
+			<data key="weight">0.017178964</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="124525">
+			<data key="weight">0.016905665</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122217" target="121082">
+			<data key="weight">0.014127277</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121260" target="120876">
+			<data key="weight">0.18995795</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="122794">
+			<data key="weight">0.059666164</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122735" target="121082">
+			<data key="weight">0.010613092</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="120277" target="120078">
+			<data key="weight">0.09717407</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="122794">
+			<data key="weight">0.0494371</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="121678">
+			<data key="weight">0.0069882036</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="122735">
+			<data key="weight">0.06834745</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="124525">
+			<data key="weight">0.013698233</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125111" target="124916">
+			<data key="weight">0.009658673</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="122352">
+			<data key="weight">0.036426604</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="122352">
+			<data key="weight">0.039564084</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121619" target="121082">
+			<data key="weight">0.030884195</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="122608">
+			<data key="weight">0.013777495</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="121260">
+			<data key="weight">0.01206191</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121260" target="120078">
+			<data key="weight">0.11332163</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124370" target="121678">
+			<data key="weight">0.026926257</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="120277">
+			<data key="weight">0.09389445</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121791" target="120277">
+			<data key="weight">0.273761</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="120277">
+			<data key="weight">0.015286795</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124370" target="122352">
+			<data key="weight">0.061203778</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125111" target="124525">
+			<data key="weight">0.02403856</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="124916">
+			<data key="weight">0.0073865093</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="122794">
+			<data key="weight">0.014510215</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="120876" target="120078">
+			<data key="weight">0.030892668</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="124874">
+			<data key="weight">0.012498148</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="120277" target="120078">
+			<data key="weight">0.09364694</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="124525">
+			<data key="weight">0.0072336188</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="121678">
+			<data key="weight">0.011476743</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="124525">
+			<data key="weight">0.013467274</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124370" target="122694">
+			<data key="weight">0.0076386346</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122352" target="120277">
+			<data key="weight">0.024111046</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="122352">
+			<data key="weight">0.14685303</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="122694">
+			<data key="weight">0.05102457</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="121260">
+			<data key="weight">0.06183187</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="122352">
+			<data key="weight">0.15027745</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="120277">
+			<data key="weight">0.0068632946</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="124916">
+			<data key="weight">0.20380025</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124370" target="121260">
+			<data key="weight">0.012264804</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="122694">
+			<data key="weight">0.033282507</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="122794">
+			<data key="weight">0.010753617</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="120876" target="120078">
+			<data key="weight">0.11345183</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="124874">
+			<data key="weight">0.006764019</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122608" target="121791">
+			<data key="weight">0.045555905</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="124874">
+			<data key="weight">0.04577101</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125111" target="121678">
+			<data key="weight">0.03544658</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125111" target="122352">
+			<data key="weight">0.20528072</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="121678">
+			<data key="weight">0.03201081</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122608" target="121442">
+			<data key="weight">0.02724832</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122352" target="120277">
+			<data key="weight">0.17268763</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121678" target="121260">
+			<data key="weight">0.02756599</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121491" target="120876">
+			<data key="weight">0.04839717</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="120277">
+			<data key="weight">0.016268972</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="121260">
+			<data key="weight">0.008992567</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="121678">
+			<data key="weight">0.019858921</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125447" target="124426">
+			<data key="weight">0.052551437</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="123368">
+			<data key="weight">0.05253195</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="122352">
+			<data key="weight">0.0076223286</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="122352">
+			<data key="weight">0.33000118</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121491" target="120078">
+			<data key="weight">0.10070611</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="121260">
+			<data key="weight">0.02781996</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124370" target="121260">
+			<data key="weight">0.026582982</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124370" target="123368">
+			<data key="weight">0.008956887</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="124426">
+			<data key="weight">0.0077613033</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121260" target="121082">
+			<data key="weight">0.13347559</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="124874">
+			<data key="weight">0.015496798</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122735" target="121442">
+			<data key="weight">0.01020429</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="122694">
+			<data key="weight">0.009475873</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122352" target="120277">
+			<data key="weight">0.016185787</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121491" target="120876">
+			<data key="weight">0.015055208</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122352" target="120078">
+			<data key="weight">0.021374566</data>
+			<data key="networkGroup">25</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122694" target="120277">
+			<data key="weight">0.014290564</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="123368">
+			<data key="weight">0.005689924</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="121619">
+			<data key="weight">0.034226827</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="122352">
+			<data key="weight">0.00960778</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="122352">
+			<data key="weight">0.017779294</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="121260">
+			<data key="weight">0.00927164</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125111" target="122694">
+			<data key="weight">0.01297935</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121791" target="121260">
+			<data key="weight">0.013725472</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="123368">
+			<data key="weight">0.013719843</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124370" target="123368">
+			<data key="weight">0.017411212</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="122735">
+			<data key="weight">0.08568555</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122217" target="121442">
+			<data key="weight">0.009496645</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="122694">
+			<data key="weight">0.010074835</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125111" target="123368">
+			<data key="weight">0.010196709</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="122352">
+			<data key="weight">0.054148342</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122694" target="120277">
+			<data key="weight">0.008738288</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125447" target="124525">
+			<data key="weight">0.0149657335</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="120876">
+			<data key="weight">0.071417615</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="121260">
+			<data key="weight">0.017368922</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="123368">
+			<data key="weight">0.021354066</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="121260">
+			<data key="weight">0.027560087</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="123368">
+			<data key="weight">0.010957115</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121678" target="121619">
+			<data key="weight">0.049221426</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="120078">
+			<data key="weight">0.042337723</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="124426">
+			<data key="weight">0.037354954</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="121791">
+			<data key="weight">0.017956564</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="124370">
+			<data key="weight">0.00494257</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122352" target="121678">
+			<data key="weight">0.07133983</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="122694">
+			<data key="weight">0.023553524</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="124426">
+			<data key="weight">0.00530643</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121491" target="121082">
+			<data key="weight">0.01701067</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="121678">
+			<data key="weight">0.01535774</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124370" target="121619">
+			<data key="weight">0.035029225</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="122352">
+			<data key="weight">0.046242207</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122352" target="121260">
+			<data key="weight">0.12881753</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122694" target="120277">
+			<data key="weight">0.036855966</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125447" target="120876">
+			<data key="weight">0.095906265</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="120876">
+			<data key="weight">0.045700774</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="121260">
+			<data key="weight">0.023588661</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="125111">
+			<data key="weight">0.031084038</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121491" target="120277">
+			<data key="weight">0.01572028</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122608" target="120277">
+			<data key="weight">0.032957874</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125111" target="122794">
+			<data key="weight">0.012075418</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125111" target="124426">
+			<data key="weight">0.01796399</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121678" target="120876">
+			<data key="weight">0.0074399533</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="121260">
+			<data key="weight">0.017973732</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="120078">
+			<data key="weight">0.051753473</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="122694">
+			<data key="weight">0.054229222</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="120876">
+			<data key="weight">0.013080608</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="121619">
+			<data key="weight">0.024666306</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="122794">
+			<data key="weight">0.025611809</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121082" target="120277">
+			<data key="weight">0.015116357</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="124370">
+			<data key="weight">0.014031956</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125111" target="120277">
+			<data key="weight">0.019504366</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="124370">
+			<data key="weight">0.016846316</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="124426">
+			<data key="weight">0.026432212</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121678" target="120078">
+			<data key="weight">0.007194759</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="122694">
+			<data key="weight">0.020028165</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="124426">
+			<data key="weight">0.046376657</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124370" target="120876">
+			<data key="weight">0.0061125704</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124370" target="121619">
+			<data key="weight">0.021207932</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="120078">
+			<data key="weight">0.014881362</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122694" target="121678">
+			<data key="weight">0.062322937</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="121491">
+			<data key="weight">0.0074008685</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="125111">
+			<data key="weight">0.030166306</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122694" target="122352">
+			<data key="weight">0.02699686</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="120277">
+			<data key="weight">0.017773315</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122608" target="120277">
+			<data key="weight">0.014352035</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="123368">
+			<data key="weight">0.013805535</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121678" target="120876">
+			<data key="weight">0.020853601</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125111" target="121619">
+			<data key="weight">0.077098854</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="120078">
+			<data key="weight">0.067916155</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="120876">
+			<data key="weight">0.027270734</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="122694">
+			<data key="weight">0.028359702</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125111" target="124370">
+			<data key="weight">0.025419794</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="122217">
+			<data key="weight">0.015698997</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121082" target="120277">
+			<data key="weight">0.017429441</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="122794">
+			<data key="weight">0.021049812</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121678" target="120078">
+			<data key="weight">0.057200685</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124370" target="120876">
+			<data key="weight">0.014954436</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="121619">
+			<data key="weight">0.042951178</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="120078">
+			<data key="weight">0.025430169</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="120078">
+			<data key="weight">0.02847927</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="124370">
+			<data key="weight">0.10872341</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122694" target="121678">
+			<data key="weight">0.4479492</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="121491">
+			<data key="weight">0.104548305</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122217" target="120277">
+			<data key="weight">0.023750741</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125447" target="122694">
+			<data key="weight">0.036314733</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="121082">
+			<data key="weight">0.051661067</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122735" target="120277">
+			<data key="weight">0.016492596</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="120277">
+			<data key="weight">0.028634317</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="122608">
+			<data key="weight">0.3346268</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121791" target="120277">
+			<data key="weight">0.034019828</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122694" target="121260">
+			<data key="weight">0.11796582</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124370" target="120078">
+			<data key="weight">0.057496075</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121678" target="120876">
+			<data key="weight">0.009345608</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121619" target="120277">
+			<data key="weight">0.051961616</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="120876">
+			<data key="weight">0.16250223</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="120876">
+			<data key="weight">0.015814867</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="124426">
+			<data key="weight">0.016260657</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121260" target="120876">
+			<data key="weight">0.021271963</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="120277" target="120078">
+			<data key="weight">0.121663794</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="122794">
+			<data key="weight">0.10175984</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="120876">
+			<data key="weight">0.015492053</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125111" target="124916">
+			<data key="weight">0.022223659</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="120078">
+			<data key="weight">0.060596026</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122694" target="121678">
+			<data key="weight">0.010654629</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="121082">
+			<data key="weight">0.009991712</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121260" target="120078">
+			<data key="weight">0.010493058</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122608" target="122352">
+			<data key="weight">0.023528079</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122694" target="121260">
+			<data key="weight">0.022536572</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="120078">
+			<data key="weight">0.1550504</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="123368" target="120277">
+			<data key="weight">0.05321852</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121082" target="120876">
+			<data key="weight">0.11817742</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121678" target="121491">
+			<data key="weight">0.04989537</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125111" target="120876">
+			<data key="weight">0.032640852</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124370" target="122217">
+			<data key="weight">0.016077772</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="121491">
+			<data key="weight">0.025668481</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="122794">
+			<data key="weight">0.109379515</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="124426">
+			<data key="weight">0.011131251</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124874" target="122608">
+			<data key="weight">0.06752766</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121082" target="120078">
+			<data key="weight">0.022806646</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125111" target="120078">
+			<data key="weight">0.75148124</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="125111" target="122352">
+			<data key="weight">0.041645374</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124370" target="121491">
+			<data key="weight">0.027627552</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="120876">
+			<data key="weight">0.06201887</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124370" target="121082">
+			<data key="weight">0.03928978</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121791" target="120876">
+			<data key="weight">0.014884774</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124525" target="120277">
+			<data key="weight">0.090380765</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122794" target="121082">
+			<data key="weight">0.008330895</data>
+			<data key="networkGroup">21</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124426" target="122217">
+			<data key="weight">0.011361857</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="122735" target="122352">
+			<data key="weight">0.074057676</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="120078">
+			<data key="weight">0.06275189</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="124916" target="122352">
+			<data key="weight">0.027712889</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="120078">
+			<data key="weight">0.09457931</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121791" target="120078">
+			<data key="weight">0.016947223</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121678" target="121082">
+			<data key="weight">0.0142697375</data>
+			<data key="networkGroup">22</data>
+			<data key="networks" />
+		</edge>
+		<edge source="121491" target="121260">
+			<data key="weight">0.019824227</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+		<edge source="126152" target="122217">
+			<data key="weight">0.014060952</data>
+			<data key="networkGroup">23</data>
+			<data key="networks" />
+		</edge>
+	</graph>
+</graphml>

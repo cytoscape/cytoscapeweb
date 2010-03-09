@@ -49,6 +49,7 @@ package org.cytoscapeweb.view.components {
 	import org.cytoscapeweb.util.GraphUtils;
 	import org.cytoscapeweb.util.Layouts;
 	import org.cytoscapeweb.util.VisualProperties;
+	import org.cytoscapeweb.util.methods.$each;
 	import org.cytoscapeweb.view.layout.PackingAlgorithms;
 	
 	public class GraphView extends UIComponent {
@@ -264,27 +265,29 @@ package org.cytoscapeweb.view.components {
         
         public function deselectNodes(nodes:Array):void {
             if (nodes != null && nodes.length > 0) {
-                for each (var n:NodeSprite in nodes) {
+                $each(nodes, function(i:uint, n:NodeSprite):void {
                     var sg:SubGraphView = getSubGraphOf(n);
                     if (sg != null) sg.resetNode(n);
-                }
+                });
             }
         }
         
         public function selectEdges(edges:Array):void {
             if (edges != null && edges.length > 0) {
                 var sg:SubGraphView;
-                for each (var e:EdgeSprite in edges) {
+                $each(edges, function(i:uint, e:EdgeSprite):void {
                     sg = getSubGraphOf(e);
                     if (sg != null) {
                         sg.highlightSelectedEdge(e);
                         // Bring selected edge to front:
                         GraphUtils.bringToFront(e);
                     }
-                }
+                });
                 // Bring all nodes to front, too, so no edge will overlap them:
                 for each (sg in subGraphs) {
-                    for each (var n:NodeSprite in sg.data.nodes) GraphUtils.bringToFront(n);
+                    $each(sg.data.nodes, function(i:uint, n:NodeSprite):void {
+                        GraphUtils.bringToFront(n);
+                    });
                 }
             }
         }
@@ -371,13 +374,18 @@ package org.cytoscapeweb.view.components {
                 var sgBounds:Rectangle = sg.getRealBounds();
                 boundsList.push(sgBounds);
                 // Temp. props attributes, just to get the correct subgraph later:
-                sg.props.realWidth = sgBounds.width;
-                sg.props.realHeight = sgBounds.height;
+                sg.props.$realWidth = sgBounds.width;
+                sg.props.$realHeight = sgBounds.height;
                 
                 // If there is a subgraph that is wider than the whole canvas,
                 // use its width in the packing bounds:
                 if (sgBounds.width > maxWidth) maxWidth = sgBounds.width;
             }
+            
+            boundsList.sort(function(a:Rectangle, b:Rectangle):int {
+                return a.width < b.width ? -1 : (a.width > b.width ? 1 : 0);
+            }, Array.DESCENDING);
+            trace("=> sorted best_rects: " + boundsList);
             
             // More than 8 subgraphs decreases performance when using "fill by stripes":
             if (boundsList.length <= 7)
@@ -385,18 +393,18 @@ package org.cytoscapeweb.view.components {
             else
                 boundsList = PackingAlgorithms.fillByOneColumn(maxWidth, boundsList);
             
-            for (var i:int = 0; i < boundsList.length; i++) {
+            for (var i:uint = 0; i < boundsList.length; i++) {
                 var rect:Rectangle = Rectangle(boundsList[i]);
 
                 for each (sg in subGraphs) {
                 	// Get the correct subgraph for this "packed" bounds:
-                	if (rect.width == sg.props.realWidth && rect.height == sg.props.realHeight) {
+                	if (rect.width == sg.props.$realWidth && rect.height == sg.props.$realHeight) {
                 		// Set the new coordinates:
 		                sg.x = rect.x;
 		                sg.y = rect.y;
 		                // Remove the temp. props attributes:
-		                sg.props.realWidth = null;
-                        sg.props.realHeight = null;
+		                sg.props.$realWidth = null;
+                        sg.props.$realHeight = null;
                 		break;
                 	}
                 }
@@ -404,6 +412,8 @@ package org.cytoscapeweb.view.components {
 		}
 		
 		private function addSubGraphs(dataList:Array):void {
+		    var length:uint = dataList.length;
+		    
 			// Sort the subgraphs by number of nodes, DESC:
             dataList.sort(function(a:Data, b:Data):int {
                 return a.nodes.length < b.nodes.length ? -1 : (a.nodes.length > b.nodes.length ? 1 : 0);
@@ -411,10 +421,10 @@ package org.cytoscapeweb.view.components {
             
             // Calculate a minimum or desired dimension for each subgraph bounds:
             var rects:Array = new Array();
-            var numNodes:int = 0;
+            var numNodes:uint = 0;
             for each (var dt:Data in dataList) numNodes += dt.nodes.length;
             
-            for (var idx:int = 0; idx < dataList.length; idx++) {
+            for (var idx:uint = 0; idx < length; idx++) {
                 var r:Rectangle = calculateGraphDimension(dataList[idx].nodes);
                 rects.push(r);
             }
@@ -425,7 +435,7 @@ package org.cytoscapeweb.view.components {
                 return arA < arB ? -1 : (arA > arB ? 1 : 0);
             }, Array.DESCENDING);
             
-            for (var i:int = 0; i < dataList.length; i++) {
+            for (var i:uint = 0; i < length; i++) {
                 var data:Data = dataList[i];
                 var bounds:Rectangle = rects[i];
                 
@@ -434,7 +444,7 @@ package org.cytoscapeweb.view.components {
 		}
 		
 		private function createSubGraph(data:Data, bounds:Rectangle):SubGraphView {
-		    var sgView:SubGraphView = new SubGraphView(data, _config, _style);
+		    var sgView:SubGraphView = new SubGraphView(data, _config);
             sgView.bounds = bounds;
 
             // This is necessary to allow all nodes from all visualizations to
@@ -443,6 +453,8 @@ package org.cytoscapeweb.view.components {
             
             subGraphs.push(sgView);
             graphContainer.addChild(sgView);
+            
+            sgView.applyVisualStyle(_style);
             
             return sgView;
 		}

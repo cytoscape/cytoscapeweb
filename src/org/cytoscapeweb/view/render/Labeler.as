@@ -30,18 +30,20 @@
 package org.cytoscapeweb.view.render {
 	import flare.animate.Transitioner;
 	import flare.display.TextSprite;
+	import flare.util.Filter;
 	import flare.vis.data.Data;
+	import flare.vis.data.DataList;
 	import flare.vis.data.DataSprite;
 	import flare.vis.data.EdgeSprite;
 	import flare.vis.operator.label.Labeler;
 	
-	import flash.display.Graphics;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.text.TextFormat;
 	
 	import org.cytoscapeweb.util.Utils;
+	import org.cytoscapeweb.util.methods.$each;
 	
 	
 	public class Labeler extends flare.vis.operator.label.Labeler {
@@ -82,18 +84,30 @@ package org.cytoscapeweb.view.render {
                 _labels.useHandCursor = false;
                 _labels.buttonMode = false;
                 visualization.labels = _labels;
-                
-                // IMPORTANT: When dragging nodes, the labeler must be updated
-                //            (only if continuousUpdate is set to false):
-                visualization.data.visit(function(d:DataSprite):Boolean {
+            }
+            
+            // IMPORTANT: When dragging nodes, the labeler might need to be updated:
+            if (_policy === CHILD) {
+                var elements:DataList = group === Data.NODES ? visualization.data.nodes : visualization.data.edges;
+                $each(elements, function(i:uint, d:DataSprite):void {
                     d.addEventListener(Event.RENDER, onRender);
-                    return false;
                 });
             }
         }
 		
 		public override function operate(t:Transitioner=null):void {
-            if (visualization != null) super.operate(t);
+            if (visualization != null) {
+                _t = (t ? t : Transitioner.DEFAULT);
+                
+                var f:Function = Filter.$(filter);
+                var list:DataList = group === Data.NODES ? visualization.data.nodes: visualization.data.edges;
+
+                if (list != null) {
+                    $each(list, function(i:uint, d:DataSprite):void {
+                        if (f == null || f(d)) process(d);
+                    });
+                }
+            }
         }
 		
 		/** @inheritDoc */

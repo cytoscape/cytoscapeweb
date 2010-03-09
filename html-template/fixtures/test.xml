@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<graphml>
+    <key id='label' for='node' attr.name='label' attr.type='string' />
+    <key id='label' for='edge' attr.name='label' attr.type='string' />
+    <key id='weight' for='edge' attr.name='weight' attr.type='double' />
+    <key id='weight' for='node' attr.name='weight' attr.type='double' />
+	<graph edgedefault='undirected'>
+		
+		<node id='0'>
+            <data key='label'>node 0: one line&#xA;another line</data>
+            <data key='weight'>47.0</data>
+        </node>
+		<node id='1'>
+			<data key='label'>
+<![CDATA[node 1: one line
+another line]]>
+            </data>
+			<data key='weight'>17.0</data>
+		</node>
+		<node id='2'>
+			<data key='label'>node 2</data>
+			<data key='weight'>7.0</data>
+		</node>
+		<node id='3'>
+			<data key='label'>node 3</data>
+			<data key='weight'>84.0</data>
+		</node>
+		<node id='4'>
+			<data key='label'>node 4</data>
+			<data key='weight'>3.0</data>
+		</node>
+		<node id='5'>
+			<data key='label'>node 5</data>
+			<data key='weight'>70.0</data>
+		</node>
+		<node id='6'>
+			<data key='label'>node 6</data>
+			<data key='weight'>75.0</data>
+		</node>
+		<node id='7'>
+			<data key='label'>node 7</data>
+			<data key='weight'>64.0</data>
+		</node>
+		<node id='8'>
+			<data key='label'>node 8</data>
+			<data key='weight'>50.0</data>
+		</node>
+		<node id='9'>
+			<data key='label'>node 9</data>
+			<data key='weight'>40.0</data>
+		</node>
+		<edge id='0' source='8' target='7'>
+			<data key='label'>edge 0</data>
+		</edge>
+		<edge id='1' source='3' target='3'>
+			<data key='label'>edge 1</data>
+		</edge>
+		<edge id='2' source='6' target='7'>
+			<data key='label'>edge 2</data>
+		</edge>
+		<edge id='3' source='4' target='7'>
+			<data key='label'>edge 3</data>
+		</edge>
+		<edge id='4' source='7' target='3'>
+			<data key='label'>edge 4</data>
+		</edge>
+		<edge id='5' source='0' target='1'>
+			<data key='label'>edge 5</data>
+		</edge>
+		<edge id='6' source='6' target='9'>
+			<data key='label'>edge 6</data>
+		</edge>
+		<edge id='7' source='3' target='3'>
+			<data key='label'>edge 7</data>
+		</edge>
+		<edge id='8' source='7' target='7'>
+			<data key='label'>edge 8</data>
+		</edge>
+		<edge id='9' source='4' target='1'>
+			<data key='label'>edge 9</data>
+		</edge>
+	</graph>
+</graphml>

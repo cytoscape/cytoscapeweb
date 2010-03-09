@@ -1,0 +1,965 @@
+<graphml>
+	<key id="weight" for="node" attr.name="weight" attr.type="double" />
+	<key id="label" for="node" attr.name="label" attr.type="string" />
+	<key id="source" for="node" attr.name="source" attr.type="string" />
+	<key id="network" for="edge" attr.name="network" attr.type="string" />
+	
+	<graph edgedefault="undirected">
+		<node id="154509">
+			<data key="weight">0.3978145</data>
+			<data key="label">RPL24A</data>
+			<data key="source">false</data>
+		</node>
+		<node id="159818">
+			<data key="weight">0.3978145</data>
+			<data key="label">STV1</data>
+			<data key="source">false</data>
+		</node>
+		<node id="160107">
+			<data key="weight">0.39777833</data>
+			<data key="label">AT3G55930</data>
+			<data key="source">false</data>
+		</node>
+		<node id="160192">
+			<data key="weight">0.39777833</data>
+			<data key="label">AT3G56790</data>
+			<data key="source">false</data>
+		</node>
+		<node id="169191">
+			<data key="weight">0.39777833</data>
+			<data key="label">AT5G51410</data>
+			<data key="source">false</data>
+		</node>
+		<node id="166120">
+			<data key="weight">0.39777833</data>
+			<data key="label">AT5G17440</data>
+			<data key="source">false</data>
+		</node>
+		<node id="160500">
+			<data key="weight">0.29208562</data>
+			<data key="label">ATGDI2</data>
+			<data key="source">false</data>
+		</node>
+		<node id="165336">
+			<data key="weight">0.29208562</data>
+			<data key="label">AT5G09550</data>
+			<data key="source">false</data>
+		</node>
+		<node id="155953">
+			<data key="weight">0.28648475</data>
+			<data key="label">AT3G06540</data>
+			<data key="source">false</data>
+		</node>
+		<node id="155348">
+			<data key="weight">0.19805118</data>
+			<data key="label">AT2G44860</data>
+			<data key="source">true</data>
+		</node>
+		<node id="173450">
+			<data key="weight">0.19801304</data>
+			<data key="label">AT1G28060</data>
+			<data key="source">true</data>
+		</node>
+		<node id="157364">
+			<data key="weight">0.19801304</data>
+			<data key="label">AT3G03340</data>
+			<data key="source">true</data>
+		</node>
+		<node id="176492">
+			<data key="weight">0.17343622</data>
+			<data key="label">AT1G70400</data>
+			<data key="source">false</data>
+		</node>
+		<node id="170224">
+			<data key="weight">0.17340305</data>
+			<data key="label">MIM</data>
+			<data key="source">false</data>
+		</node>
+		<node id="165961">
+			<data key="weight">0.17340305</data>
+			<data key="label">AT5G15920</data>
+			<data key="source">false</data>
+		</node>
+		<node id="175266">
+			<data key="weight">0.1483401</data>
+			<data key="label">NOP56</data>
+			<data key="source">false</data>
+		</node>
+		<node id="155793">
+			<data key="weight">0.1483401</data>
+			<data key="label">AT3G05060</data>
+			<data key="source">false</data>
+		</node>
+		<node id="156574">
+			<data key="weight">0.1483401</data>
+			<data key="label">AT3G12860</data>
+			<data key="source">false</data>
+		</node>
+		<node id="167265">
+			<data key="weight">0.1483401</data>
+			<data key="label">AT5G27120</data>
+			<data key="source">false</data>
+		</node>
+		<node id="167267">
+			<data key="weight">0.1483401</data>
+			<data key="label">AT5G27140</data>
+			<data key="source">false</data>
+		</node>
+		<node id="152061">
+			<data key="weight">0.14621116</data>
+			<data key="label">AT2G05830</data>
+			<data key="source">false</data>
+		</node>
+		<node id="174564">
+			<data key="weight">0.14620346</data>
+			<data key="label">AT1G48970</data>
+			<data key="source">false</data>
+		</node>
+		<node id="155268">
+			<data key="weight">0.14620346</data>
+			<data key="label">AT2G44070</data>
+			<data key="source">false</data>
+		</node>
+		<node id="167871">
+			<data key="weight">0.14620346</data>
+			<data key="label">AT5G38640</data>
+			<data key="source">false</data>
+		</node>
+		<node id="176680">
+			<data key="weight">0.14620346</data>
+			<data key="label">AT1G72340</data>
+			<data key="source">false</data>
+		</node>
+		<node id="160242">
+			<data key="weight">0.14543313</data>
+			<data key="label">EIF3E</data>
+			<data key="source">false</data>
+		</node>
+		<node id="160618">
+			<data key="weight">0.1454292</data>
+			<data key="label">FUS6</data>
+			<data key="source">false</data>
+		</node>
+		<node id="157355">
+			<data key="weight">0.1454292</data>
+			<data key="label">AT3G02200</data>
+			<data key="source">false</data>
+		</node>
+		<node id="163230">
+			<data key="weight">0.1454292</data>
+			<data key="label">AT4G24820</data>
+			<data key="source">false</data>
+		</node>
+		<node id="165925">
+			<data key="weight">0.1454292</data>
+			<data key="label">AT5G15610</data>
+			<data key="source">false</data>
+		</node>
+		<node id="168591">
+			<data key="weight">0.1454292</data>
+			<data key="label">AT5G45620</data>
+			<data key="source">false</data>
+		</node>
+		<node id="173000">
+			<data key="weight">0.1454292</data>
+			<data key="label">FUS5</data>
+			<data key="source">false</data>
+		</node>
+		<node id="155271">
+			<data key="weight">0.14423734</data>
+			<data key="label">AT2G44100</data>
+			<data key="source">true</data>
+		</node>
+		<node id="174028">
+			<data key="weight">0.14169449</data>
+			<data key="label">AT1G34380</data>
+			<data key="source">false</data>
+		</node>
+		<node id="159719">
+			<data key="weight">0.14169449</data>
+			<data key="label">AT3G52050</data>
+			<data key="source">false</data>
+		</node>
+		<node id="151796">
+			<data key="weight">0.13301039</data>
+			<data key="label">AT2G02550</data>
+			<data key="source">false</data>
+		</node>
+		<node id="163498">
+			<data key="weight">0.12980475</data>
+			<data key="label">AT4G27490</data>
+			<data key="source">false</data>
+		</node>
+		<node id="175484">
+			<data key="weight">0.12980475</data>
+			<data key="label">AT1G60080</data>
+			<data key="source">false</data>
+		</node>
+		<node id="156590">
+			<data key="weight">0.12980475</data>
+			<data key="label">RRP45A</data>
+			<data key="source">false</data>
+		</node>
+		<node id="152824">
+			<data key="weight">0.12631518</data>
+			<data key="label">AT2G19560</data>
+			<data key="source">false</data>
+		</node>
+		<node id="153548">
+			<data key="weight">0.12631518</data>
+			<data key="label">FUS12</data>
+			<data key="source">false</data>
+		</node>
+		<node id="158433">
+			<data key="weight">0.12279425</data>
+			<data key="label">UVH3</data>
+			<data key="source">false</data>
+		</node>
+		<node id="172187">
+			<data key="weight">0.12279125</data>
+			<data key="label">AT1G18090</data>
+			<data key="source">false</data>
+		</node>
+		<node id="173582">
+			<data key="weight">0.12279125</data>
+			<data key="label">AT1G29630</data>
+			<data key="source">false</data>
+		</node>
+		<node id="171196">
+			<data key="weight">0.12279125</data>
+			<data key="label">AT1G01880</data>
+			<data key="source">false</data>
+		</node>
+		<node id="159406">
+			<data key="weight">0.121969275</data>
+			<data key="label">AT3G48900</data>
+			<data key="source">false</data>
+		</node>
+		<node id="172397">
+			<data key="weight">0.12178309</data>
+			<data key="label">EMB2719</data>
+			<data key="source">false</data>
+		</node>
+		<node id="161466">
+			<data key="weight">0.111035876</data>
+			<data key="label">AT4G11420</data>
+			<data key="source">true</data>
+		</node>
+		<node id="162312">
+			<data key="weight">0.111035876</data>
+			<data key="label">AT4G19006</data>
+			<data key="source">true</data>
+		</node>
+		<node id="175491">
+			<data key="weight">0.07611523</data>
+			<data key="label">AT1G60170</data>
+			<data key="source">true</data>
+		</node>
+		<node id="156036">
+			<data key="weight">0.066575706</data>
+			<data key="label">AT3G07300</data>
+			<data key="source">true</data>
+		</node>
+		<node id="167218">
+			<data key="weight">0.06403515</data>
+			<data key="label">AT5G26680</data>
+			<data key="source">true</data>
+		</node>
+		<node id="165372">
+			<data key="weight">0.058374837</data>
+			<data key="label">AT5G09900</data>
+			<data key="source">true</data>
+		</node>
+		<node id="154043">
+			<data key="weight">0.058369283</data>
+			<data key="label">AT2G31970</data>
+			<data key="source">true</data>
+		</node>
+		<node id="160666">
+			<data key="weight">0.056864522</data>
+			<data key="label">AT3G61620</data>
+			<data key="source">true</data>
+		</node>
+		<node id="176826">
+			<data key="weight">0.005393039</data>
+			<data key="label">AT1G73820</data>
+			<data key="source">true</data>
+		</node>
+
+		<edge source="152824" target="160618">
+			<data key="network">2</data>
+		</edge>
+		<edge source="153548" target="160618">
+			<data key="network">2</data>
+		</edge>
+		<edge source="157355" target="160618">
+			<data key="network">2</data>
+		</edge>
+		<edge source="160242" target="160618">
+			<data key="network">2</data>
+		</edge>
+		<edge source="161466" target="160618">
+			<data key="network">16</data>
+		</edge>
+		<edge source="162312" target="160618">
+			<data key="network">16</data>
+		</edge>
+		<edge source="163230" target="160618">
+			<data key="network">16</data>
+		</edge>
+		<edge source="165372" target="160618">
+			<data key="network">16</data>
+		</edge>
+		<edge source="165925" target="160618">
+			<data key="network">16</data>
+		</edge>
+		<edge source="168591" target="160618">
+			<data key="network">2</data>
+		</edge>
+		<edge source="172397" target="160618">
+			<data key="network">2</data>
+		</edge>
+		<edge source="173000" target="160618">
+			<data key="network">2</data>
+		</edge>
+		<edge source="176826" target="160618">
+			<data key="network">2</data>
+		</edge>
+		<edge source="156590" target="160666">
+			<data key="network">2</data>
+		</edge>
+		<edge source="163498" target="160666">
+			<data key="network">2</data>
+		</edge>
+		<edge source="175484" target="160666">
+			<data key="network">2</data>
+		</edge>
+		<edge source="176826" target="160666">
+			<data key="network">16</data>
+		</edge>
+		<edge source="158433" target="151796">
+			<data key="network">16</data>
+		</edge>
+		<edge source="159406" target="151796">
+			<data key="network">25</data>
+		</edge>
+		<edge source="167218" target="151796">
+			<data key="network">25</data>
+		</edge>
+		<edge source="171196" target="151796">
+			<data key="network">25</data>
+		</edge>
+		<edge source="172187" target="151796">
+			<data key="network">25</data>
+		</edge>
+		<edge source="173582" target="151796">
+			<data key="network">25</data>
+		</edge>
+		<edge source="176826" target="151796">
+			<data key="network">25</data>
+		</edge>
+		<edge source="155268" target="152061">
+			<data key="network">15</data>
+		</edge>
+		<edge source="156036" target="152061">
+			<data key="network">15</data>
+		</edge>
+		<edge source="167871" target="152061">
+			<data key="network">15</data>
+		</edge>
+		<edge source="174564" target="152061">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176680" target="152061">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="152061">
+			<data key="network">16</data>
+		</edge>
+		<edge source="153548" target="152824">
+			<data key="network">16</data>
+		</edge>
+		<edge source="157355" target="152824">
+			<data key="network">16</data>
+		</edge>
+		<edge source="160242" target="152824">
+			<data key="network">2</data>
+		</edge>
+		<edge source="161466" target="152824">
+			<data key="network">2</data>
+		</edge>
+		<edge source="162312" target="152824">
+			<data key="network">2</data>
+		</edge>
+		<edge source="163230" target="152824">
+			<data key="network">2</data>
+		</edge>
+		<edge source="165372" target="152824">
+			<data key="network">2</data>
+		</edge>
+		<edge source="165925" target="152824">
+			<data key="network">16</data>
+		</edge>
+		<edge source="168591" target="152824">
+			<data key="network">15</data>
+		</edge>
+		<edge source="172397" target="152824">
+			<data key="network">15</data>
+		</edge>
+		<edge source="173000" target="152824">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="152824">
+			<data key="network">15</data>
+		</edge>
+		<edge source="157355" target="153548">
+			<data key="network">25</data>
+		</edge>
+		<edge source="160242" target="153548">
+			<data key="network">25</data>
+		</edge>
+		<edge source="161466" target="153548">
+			<data key="network">25</data>
+		</edge>
+		<edge source="162312" target="153548">
+			<data key="network">15</data>
+		</edge>
+		<edge source="163230" target="153548">
+			<data key="network">15</data>
+		</edge>
+		<edge source="165372" target="153548">
+			<data key="network">15</data>
+		</edge>
+		<edge source="165925" target="153548">
+			<data key="network">15</data>
+		</edge>
+		<edge source="168591" target="153548">
+			<data key="network">15</data>
+		</edge>
+		<edge source="172397" target="153548">
+			<data key="network">15</data>
+		</edge>
+		<edge source="173000" target="153548">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="153548">
+			<data key="network">15</data>
+		</edge>
+		<edge source="165961" target="154043">
+			<data key="network">25</data>
+		</edge>
+		<edge source="170224" target="154043">
+			<data key="network">25</data>
+		</edge>
+		<edge source="176826" target="154043">
+			<data key="network">25</data>
+		</edge>
+		<edge source="155348" target="154509">
+			<data key="network">15</data>
+		</edge>
+		<edge source="159818" target="154509">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="154509">
+			<data key="network">15</data>
+		</edge>
+		<edge source="156036" target="155268">
+			<data key="network">15</data>
+		</edge>
+		<edge source="167871" target="155268">
+			<data key="network">25</data>
+		</edge>
+		<edge source="174564" target="155268">
+			<data key="network">25</data>
+		</edge>
+		<edge source="176680" target="155268">
+			<data key="network">25</data>
+		</edge>
+		<edge source="176826" target="155268">
+			<data key="network">15</data>
+		</edge>
+		<edge source="155953" target="155271">
+			<data key="network">15</data>
+		</edge>
+		<edge source="160500" target="155271">
+			<data key="network">15</data>
+		</edge>
+		<edge source="165336" target="155271">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="155271">
+			<data key="network">15</data>
+		</edge>
+		<edge source="159818" target="155348">
+			<data key="network">16</data>
+		</edge>
+		<edge source="176826" target="155348">
+			<data key="network">2</data>
+		</edge>
+		<edge source="156574" target="155793">
+			<data key="network">2</data>
+		</edge>
+		<edge source="167265" target="155793">
+			<data key="network">2</data>
+		</edge>
+		<edge source="167267" target="155793">
+			<data key="network">2</data>
+		</edge>
+		<edge source="175266" target="155793">
+			<data key="network">2</data>
+		</edge>
+		<edge source="175491" target="155793">
+			<data key="network">2</data>
+		</edge>
+		<edge source="176492" target="155793">
+			<data key="network">2</data>
+		</edge>
+		<edge source="176826" target="155793">
+			<data key="network">16</data>
+		</edge>
+		<edge source="160500" target="155953">
+			<data key="network">16</data>
+		</edge>
+		<edge source="165336" target="155953">
+			<data key="network">16</data>
+		</edge>
+		<edge source="176826" target="155953">
+			<data key="network">16</data>
+		</edge>
+		<edge source="167871" target="156036">
+			<data key="network">16</data>
+		</edge>
+		<edge source="174564" target="156036">
+			<data key="network">16</data>
+		</edge>
+		<edge source="176680" target="156036">
+			<data key="network">16</data>
+		</edge>
+		<edge source="176826" target="156036">
+			<data key="network">16</data>
+		</edge>
+		<edge source="167265" target="156574">
+			<data key="network">16</data>
+		</edge>
+		<edge source="167267" target="156574">
+			<data key="network">15</data>
+		</edge>
+		<edge source="175266" target="156574">
+			<data key="network">25</data>
+		</edge>
+		<edge source="175491" target="156574">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176492" target="156574">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="156574">
+			<data key="network">15</data>
+		</edge>
+		<edge source="163498" target="156590">
+			<data key="network">2</data>
+		</edge>
+		<edge source="175484" target="156590">
+			<data key="network">2</data>
+		</edge>
+		<edge source="176826" target="156590">
+			<data key="network">2</data>
+		</edge>
+		<edge source="160242" target="157355">
+			<data key="network">2</data>
+		</edge>
+		<edge source="161466" target="157355">
+			<data key="network">2</data>
+		</edge>
+		<edge source="162312" target="157355">
+			<data key="network">15</data>
+		</edge>
+		<edge source="163230" target="157355">
+			<data key="network">15</data>
+		</edge>
+		<edge source="165372" target="157355">
+			<data key="network">15</data>
+		</edge>
+		<edge source="165925" target="157355">
+			<data key="network">15</data>
+		</edge>
+		<edge source="168591" target="157355">
+			<data key="network">15</data>
+		</edge>
+		<edge source="172397" target="157355">
+			<data key="network">15</data>
+		</edge>
+		<edge source="173000" target="157355">
+			<data key="network">25</data>
+		</edge>
+		<edge source="176826" target="157355">
+			<data key="network">25</data>
+		</edge>
+		<edge source="166120" target="157364">
+			<data key="network">25</data>
+		</edge>
+		<edge source="169191" target="157364">
+			<data key="network">25</data>
+		</edge>
+		<edge source="176826" target="157364">
+			<data key="network">16</data>
+		</edge>
+		<edge source="159406" target="158433">
+			<data key="network">16</data>
+		</edge>
+		<edge source="159719" target="158433">
+			<data key="network">16</data>
+		</edge>
+		<edge source="167218" target="158433">
+			<data key="network">15</data>
+		</edge>
+		<edge source="171196" target="158433">
+			<data key="network">15</data>
+		</edge>
+		<edge source="172187" target="158433">
+			<data key="network">15</data>
+		</edge>
+		<edge source="173582" target="158433">
+			<data key="network">15</data>
+		</edge>
+		<edge source="174028" target="158433">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="158433">
+			<data key="network">15</data>
+		</edge>
+		<edge source="159719" target="159406">
+			<data key="network">25</data>
+		</edge>
+		<edge source="167218" target="159406">
+			<data key="network">25</data>
+		</edge>
+		<edge source="171196" target="159406">
+			<data key="network">25</data>
+		</edge>
+		<edge source="172187" target="159406">
+			<data key="network">15</data>
+		</edge>
+		<edge source="173582" target="159406">
+			<data key="network">15</data>
+		</edge>
+		<edge source="174028" target="159406">
+			<data key="network">16</data>
+		</edge>
+		<edge source="167218" target="159719">
+			<data key="network">16</data>
+		</edge>
+		<edge source="171196" target="159719">
+			<data key="network">16</data>
+		</edge>
+		<edge source="172187" target="159719">
+			<data key="network">16</data>
+		</edge>
+		<edge source="173582" target="159719">
+			<data key="network">16</data>
+		</edge>
+		<edge source="174028" target="159719">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="159719">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="159818">
+			<data key="network">15</data>
+		</edge>
+		<edge source="160192" target="160107">
+			<data key="network">25</data>
+		</edge>
+		<edge source="173450" target="160107">
+			<data key="network">25</data>
+		</edge>
+		<edge source="176826" target="160107">
+			<data key="network">25</data>
+		</edge>
+		<edge source="173450" target="160192">
+			<data key="network">25</data>
+		</edge>
+		<edge source="176826" target="160192">
+			<data key="network">15</data>
+		</edge>
+		<edge source="161466" target="160242">
+			<data key="network">15</data>
+		</edge>
+		<edge source="162312" target="160242">
+			<data key="network">15</data>
+		</edge>
+		<edge source="163230" target="160242">
+			<data key="network">15</data>
+		</edge>
+		<edge source="165372" target="160242">
+			<data key="network">25</data>
+		</edge>
+		<edge source="165925" target="160242">
+			<data key="network">25</data>
+		</edge>
+		<edge source="168591" target="160242">
+			<data key="network">25</data>
+		</edge>
+		<edge source="172397" target="160242">
+			<data key="network">15</data>
+		</edge>
+		<edge source="173000" target="160242">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="160242">
+			<data key="network">15</data>
+		</edge>
+		<edge source="165336" target="160500">
+			<data key="network">25</data>
+		</edge>
+		<edge source="176826" target="160500">
+			<data key="network">16</data>
+		</edge>
+		<edge source="162312" target="161466">
+			<data key="network">2</data>
+		</edge>
+		<edge source="163230" target="161466">
+			<data key="network">2</data>
+		</edge>
+		<edge source="165372" target="161466">
+			<data key="network">16</data>
+		</edge>
+		<edge source="165925" target="161466">
+			<data key="network">16</data>
+		</edge>
+		<edge source="168591" target="161466">
+			<data key="network">16</data>
+		</edge>
+		<edge source="172397" target="161466">
+			<data key="network">15</data>
+		</edge>
+		<edge source="173000" target="161466">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="161466">
+			<data key="network">15</data>
+		</edge>
+		<edge source="163230" target="162312">
+			<data key="network">15</data>
+		</edge>
+		<edge source="165372" target="162312">
+			<data key="network">15</data>
+		</edge>
+		<edge source="165925" target="162312">
+			<data key="network">15</data>
+		</edge>
+		<edge source="168591" target="162312">
+			<data key="network">15</data>
+		</edge>
+		<edge source="172397" target="162312">
+			<data key="network">16</data>
+		</edge>
+		<edge source="173000" target="162312">
+			<data key="network">16</data>
+		</edge>
+		<edge source="176826" target="162312">
+			<data key="network">16</data>
+		</edge>
+		<edge source="165372" target="163230">
+			<data key="network">16</data>
+		</edge>
+		<edge source="165925" target="163230">
+			<data key="network">16</data>
+		</edge>
+		<edge source="168591" target="163230">
+			<data key="network">16</data>
+		</edge>
+		<edge source="172397" target="163230">
+			<data key="network">15</data>
+		</edge>
+		<edge source="173000" target="163230">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="163230">
+			<data key="network">15</data>
+		</edge>
+		<edge source="175484" target="163498">
+			<data key="network">25</data>
+		</edge>
+		<edge source="176826" target="163498">
+			<data key="network">25</data>
+		</edge>
+		<edge source="176826" target="165336">
+			<data key="network">25</data>
+		</edge>
+		<edge source="165925" target="165372">
+			<data key="network">25</data>
+		</edge>
+		<edge source="168591" target="165372">
+			<data key="network">15</data>
+		</edge>
+		<edge source="172397" target="165372">
+			<data key="network">15</data>
+		</edge>
+		<edge source="173000" target="165372">
+			<data key="network">15</data>
+		</edge>
+		<edge source="168591" target="165925">
+			<data key="network">16</data>
+		</edge>
+		<edge source="172397" target="165925">
+			<data key="network">16</data>
+		</edge>
+		<edge source="173000" target="165925">
+			<data key="network">16</data>
+		</edge>
+		<edge source="176826" target="165925">
+			<data key="network">16</data>
+		</edge>
+		<edge source="170224" target="165961">
+			<data key="network">16</data>
+		</edge>
+		<edge source="176826" target="165961">
+			<data key="network">16</data>
+		</edge>
+		<edge source="169191" target="166120">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="166120">
+			<data key="network">2</data>
+		</edge>
+		<edge source="171196" target="167218">
+			<data key="network">2</data>
+		</edge>
+		<edge source="172187" target="167218">
+			<data key="network">15</data>
+		</edge>
+		<edge source="173582" target="167218">
+			<data key="network">15</data>
+		</edge>
+		<edge source="174028" target="167218">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="167218">
+			<data key="network">25</data>
+		</edge>
+		<edge source="167267" target="167265">
+			<data key="network">25</data>
+		</edge>
+		<edge source="175266" target="167265">
+			<data key="network">16</data>
+		</edge>
+		<edge source="175491" target="167265">
+			<data key="network">16</data>
+		</edge>
+		<edge source="176492" target="167265">
+			<data key="network">16</data>
+		</edge>
+		<edge source="176826" target="167265">
+			<data key="network">16</data>
+		</edge>
+		<edge source="175266" target="167267">
+			<data key="network">16</data>
+		</edge>
+		<edge source="175491" target="167267">
+			<data key="network">16</data>
+		</edge>
+		<edge source="176492" target="167267">
+			<data key="network">25</data>
+		</edge>
+		<edge source="176826" target="167267">
+			<data key="network">15</data>
+		</edge>
+		<edge source="174564" target="167871">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176680" target="167871">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="167871">
+			<data key="network">15</data>
+		</edge>
+		<edge source="172397" target="168591">
+			<data key="network">2</data>
+		</edge>
+		<edge source="173000" target="168591">
+			<data key="network">2</data>
+		</edge>
+		<edge source="176826" target="168591">
+			<data key="network">16</data>
+		</edge>
+		<edge source="176826" target="169191">
+			<data key="network">16</data>
+		</edge>
+		<edge source="176826" target="170224">
+			<data key="network">16</data>
+		</edge>
+		<edge source="172187" target="171196">
+			<data key="network">16</data>
+		</edge>
+		<edge source="173582" target="171196">
+			<data key="network">15</data>
+		</edge>
+		<edge source="174028" target="171196">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="171196">
+			<data key="network">25</data>
+		</edge>
+		<edge source="173582" target="172187">
+			<data key="network">15</data>
+		</edge>
+		<edge source="174028" target="172187">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="172187">
+			<data key="network">15</data>
+		</edge>
+		<edge source="173000" target="172397">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="172397">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="173000">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="173450">
+			<data key="network">15</data>
+		</edge>
+		<edge source="174028" target="173582">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="173582">
+			<data key="network">16</data>
+		</edge>
+		<edge source="176826" target="174028">
+			<data key="network">16</data>
+		</edge>
+		<edge source="176680" target="174564">
+			<data key="network">16</data>
+		</edge>
+		<edge source="176826" target="174564">
+			<data key="network">15</data>
+		</edge>
+		<edge source="175491" target="175266">
+			<data key="network">2</data>
+		</edge>
+		<edge source="176492" target="175266">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="175266">
+			<data key="network">15</data>
+		</edge>
+		<edge source="176826" target="175484">
+			<data key="network">25</data>
+		</edge>
+		<edge source="176492" target="175491">
+			<data key="network">16</data>
+		</edge>
+		<edge source="176826" target="175491">
+			<data key="network">25</data>
+		</edge>
+		<edge source="176826" target="176492">
+			<data key="network">25</data>
+		</edge>
+		<edge source="176826" target="176680">
+			<data key="network">15</data>
+		</edge>
+	</graph>
+</graphml>

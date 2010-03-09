@@ -1,0 +1,260 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    
+    <head>
+        <title>Cytoscape Web</title>
+        
+        <script type="text/javascript" src="js/AC_OETags.js"></script>
+        <script type="text/javascript" src="js/json2.js"></script>
+        <script type="text/javascript" src="js/cytoscapeweb.js"></script>
+        <script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
+        <script type="text/javascript">
+
+            var d1, d2;
+            var div_id = "cytoscapeweb";
+            var vis;
+
+            var edgeColorMapper = {
+                    attrName: "networkGroupCode",
+                    entries: [
+                          { attrValue: "coexp"  , value: "#8b6593" }, //Co-expression
+                          { attrValue: "coloc"  , value: "#b56371" }, //Co-localization
+                          { attrValue: "gi"     , value: "#2fb56d" }, //Genetic interactions
+                          { attrValue: "path"   , value: "#68bbc1" }, //Pathway
+                          { attrValue: "pi"     , value: "#6261fc" }, //Physical interactions
+                          { attrValue: "predict", value: "#c3844c" }, //Predicted
+                          { attrValue: "spd"    , value: "#84ca6a" }, //Shared protein domains
+//                        { attrValue: "????"   , value: "#8e56fc" }, //---RESERVED---
+                          { attrValue: "other"  , value: "#de789a" }, //Other
+                          { attrValue: "user"   , value: "#d2cd4f" } //User-defined
+                    ]
+            };
+            
+            // options used for Cytoscape Web
+            var options = {
+                nodeTooltipsEnabled: true,
+                edgeTooltipsEnabled: true,
+                nodeLabelsVisible: true,
+                edgeLabelsVisible: false,
+                edgesMerged: false,
+                visualStyle: {
+                    global: {
+                        backgroundColor: "#fefefe",
+                        tooltipDelay: 1000
+                    },
+                    nodes: {
+                        shape: "ELLIPSE",
+                        color: "#cccccc",
+                        opacity: 0.9,
+                        size: { defaultValue: 20, continuousMapper: { attrName: "weight",  minValue: 20, maxValue: 40 } },
+                        borderWidth: 1,
+                        borderColor: "#707070"
+                    },
+                    edges: {
+                    	color: "#0b94b1",//{ defaultValue: "#0b94b1", discreteMapper: edgeColorMapper },
+                        width: 2,
+                        mergeWidth: 2,
+                        opacity: 0.8,
+                        labelFontSize: 10,
+                        labelFontWeight: "bold"
+                     }
+                }   
+            };
+            
+            function showSelected() {
+                $("#data").html('');
+                var arr = vis.selected();
+                $.each(arr, function(i, d) {
+                    $("#data").append('<li>'+d.group+': '+d.data.label+'</li>');
+                });
+            }
+            
+            function showElapsedTime() {
+                d2 = new Date();
+                var elapsed = (d2.getTime() - d1.getTime()) / 1000;
+                $("#elapsedTime").html(elapsed + " seconds");
+            }
+
+            function draw(data) {
+            	$("input, select").attr("disabled", true);
+                options.layout = $("#layouts").val();
+                
+                if (data) {
+                	options.network = data;
+                	d1 = new Date();
+                	vis.draw(options);
+                } else {
+                    var url = "fixtures/" + $("#graphs").val();
+                    $.get(url, function(dt) {
+                        if (typeof dt !== "string") {
+                            if (window.ActiveXObject) {
+                                dt = dt.xml;
+                            } else {
+                                dt = (new XMLSerializer()).serializeToString(dt);
+                            }
+                        }
+                        draw(dt);
+                    });
+                }
+            }
+        
+            $(document).ready(function() {
+                $("input").attr("disabled", true);
+
+                // init and draw
+                vis = new org.cytoscapeweb.Visualization(div_id, options);
+
+                vis.ready(function() {
+                    showElapsedTime();
+                    $("#layouts").val(options.layout);
+                    $("input, select").attr("disabled", false);
+                });
+                
+                vis.addListener("select", function(evt) {
+                    //showSelected();
+                })
+                .addListener("deselect", function(evt) {
+                    //showSelected();
+                })
+                .addListener("layout", function(evt) {
+                	showElapsedTime();
+                });
+
+                // Register control liteners:
+                $("#layouts").change(function(evt) {
+                   d1 = new Date();
+                   vis.layout($("#layouts").val());
+               });
+               $("#graphs").change(function(evt) {
+                   draw();
+               });
+               $("#reapplyLayout").click(function(evt) {
+            	   d1 = new Date();
+                   vis.layout($("#layouts").val());
+               });
+               $("#createGraph").click(function(evt) {
+                   var data = createData($("#nodesNumber").val(), $("#edgesNumber").val());
+                   draw(data);
+               });
+
+               draw();
+            });
+
+            function createData(nodesNumber, edgesNumber) {
+                var data = '<graphml>' +
+                           '<key attr.type="string" attr.name="label" for="all" id="label"/>' +
+                           '<key attr.type="double" attr.name="weight" for="all" id="weight"/>' +
+                           '<graph edgedefault="undirected">';
+
+                var i;
+                for (i = 1; i <= nodesNumber; i++) {
+                    data += '<node id="'+i+'">' +
+                            '<data key="weight">'+Math.random()+'</data>' +
+                            '<data key="label">Node '+i+'</data>' +
+                            '</node>';
+                }
+                for (i = 1; i <= edgesNumber; i++) {
+                    var src = 0, tgt = 0;
+                    while (src <= 0) {
+                        src = Math.round(Math.random() * nodesNumber);
+                    }
+                    while (tgt <= 0 || tgt === src) {
+                        tgt = Math.round(Math.random() * nodesNumber);
+                    }
+                    
+                    data += '<edge id="'+i+'" source="'+src+'" target="'+tgt+'">' +
+                            '<data key="weight">'+Math.random()+'</data>' +
+                            '<data key="label">Edge '+i+'</data>' +
+                            '</edge>';
+                }
+                           
+                data += '</graph></graphml>';
+
+                return data;
+            }
+        </script>
+        
+        <style>
+            /* The Cytoscape Web container must have its dimensions set. */
+            html, body { padding: 0; margin: 0; text-align: center; font-family: sans-serif; }
+            h1, h2 { margin-top: 8px; }
+            label { color: #0b94b1; font-size: 14px; }
+            hr { border: #0b94b1 1px solid; }
+            #header { width: 100%; height: 40px; padding: 4px 0; background-color: #0b94b1; color: #ffffff; }
+            #cytoscapeweb { height: 600px; border-right: 2px solid #0b94b1; border-bottom: 2px solid #0b94b1; margin: 0 auto 0 auto; }
+            #sidePanel { width: 120px; padding: 8px 20px 0 10px; vertical-align: top; text-align: left; }
+            #controls > div { margin: 8px 0; }
+            #graphs, #createGraph, #reapplyLayout { width: 164px; }
+            #nodesNumber, #edgesNumber { width: 80px; }
+        </style>
+    </head>
+    
+    <body>
+        <div id="header">
+            <h2>Cytoscape Web</h2>
+        </div>
+        <table width="100%" cellspacing="0">
+            <tr>
+                <td id="cytoscapeweb" width="*">
+                    Cytoscape Web will replace the contents of this div with your graph.
+                </td>
+                <td id="sidePanel">
+                    <div id="controls">
+                        <div>
+                            <label>Networks:</label>
+                            <select id="graphs" size="16">
+                                <option value="sample1.xml" selected="selected">Sample 1</option>
+                                <option value="sample2.xml">Sample 2</option>
+                                <option value="sample3.xml">Sample 3</option>
+                                <option value="fly50.xml">Fly 50</option>
+                                <option value="human50.xml">Human 50</option>
+                                <option value="human80.xml">Human 80</option>
+                                <option value="human100.xml">Human 100</option>
+                                <option value="mouse100.xml">Mouse 100</option>
+                                <option value="worm20.xml">Worm 20</option>
+                                <option value="worm80.xml">Worm 80</option>
+                                <option value="yeast20.xml">Yeast 20</option>
+                                <option value="yeast100.xml">Yeast 100</option>
+                                <option value="interactions.sif">Interactions (SIF)</option>
+                                <option value="1000.xml">1K nodes | 2K edges</option>
+                                <option value="2000.xml">2K nodes | 3K edges</option>
+                                <option value="30K_edges.xml">1K nodes | 30K edges</option>
+                            </select>
+                            <br/><hr/>
+                            <label># Nodes:</label> <input id="nodesNumber" type="text"/><br/>
+                            <label># Edges:</label> <input id="edgesNumber" type="text"/><br/>
+                            <input type="button" id="createGraph" value="Draw"/>
+                        </div>
+                        <hr/>
+                        <div>
+                            <label>Layout:</label>
+                            <select id="layouts">
+                                <option value="ForceDirected" selected="selected">Force Directed</option>
+                                <option value="Circle">Circle</option>
+                                <option value="CircleTree">Circle Tree</option>
+                                <option value="Radial">Radial</option>
+                                <option value="Tree">Tree</option>
+                            </select>
+                        </div>
+                        <div>
+                            <input type="button" id="reapplyLayout" value="Reapply"/>
+                        </div>
+                        <hr/>
+                        <div>
+                            Elapsed time: <span id="elapsedTime">?</span>
+                        </div>
+                    </div>
+                </td>
+            <tr>
+        </table>
+
+        <ol id="data"></ol>
+        <p>
+            <a href="http://www.cytoscape.org" rel="external" target="_blank">Cytoscape</a> |
+            <a href="http://tdccbr.med.utoronto.ca" rel="external" target="_blank">Donnelly CCBR</a>
+
+            , &copy; 2009
+        </p>
+    </body>
+    
+</html>

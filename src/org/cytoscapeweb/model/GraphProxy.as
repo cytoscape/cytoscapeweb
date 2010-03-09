@@ -69,6 +69,7 @@ package org.cytoscapeweb.model {
         
         public static const GRP_SELECTED_NODES:String = "selectedNodes";
         public static const GRP_SELECTED_EDGES:String = "selectedEdges";
+        public static const GRP_MERGED_EDGES:String = "mergedEdges";
 
         // ========[ PRIVATE PROPERTIES ]===========================================================
 
@@ -76,7 +77,6 @@ package org.cytoscapeweb.model {
         private var _dataList:Array;
         private var _nodePairs:/*pairKey->NodePair*/Object;
         private var _parentEdges:/*regularEdgeId->mergedEdgeSprite*/Object;
-        private var _mergedEdges:Array;
         private var _rolledOverNode:NodeSprite;
         private var _rolledOverEdge:EdgeSprite;
         private var _filteredNodes:Array;
@@ -120,7 +120,6 @@ package org.cytoscapeweb.model {
                 // Add data groups to house selected nodes and edges:
                 data.addGroup(GraphProxy.GRP_SELECTED_NODES);
                 data.addGroup(GraphProxy.GRP_SELECTED_EDGES);
-                // TODO: ... or create another one for MERGED EDGES?
                 
                 // Create a mapping of nodes and edges, with their IDs as key,
                 // in order to make it easier to get them later:
@@ -165,8 +164,13 @@ package org.cytoscapeweb.model {
         /**
          * @return The merged edges only. 
          */
-        public function get mergedEdges():Array { 
-            return _mergedEdges;
+        public function get mergedEdges():Array {
+            var arr:Array = [];
+            
+            var list:DataList = graphData.group(GRP_MERGED_EDGES);           
+            for each (var e:EdgeSprite in list) arr.push(e);
+            
+            return arr;
         }
 
         public function get filteredNodes():Array {
@@ -478,7 +482,7 @@ package org.cytoscapeweb.model {
                     throw err;
                 }
             } else {
-                throw new Error("Cannot load network: XML is empty!");
+                throw new Error("Cannot load network: data is empty!");
             }
         }
         
@@ -582,7 +586,9 @@ package org.cytoscapeweb.model {
         }
         
         private function createMergedEdges():void { // TODO: optimize it!!!
-            _mergedEdges = [];
+            var meList:DataList = new DataList(GraphProxy.GRP_MERGED_EDGES);
+            graphData.addGroup(GraphProxy.GRP_MERGED_EDGES, meList);
+            
             _parentEdges = {};
             
             for (var k:String in _nodePairs) {
@@ -612,7 +618,7 @@ package org.cytoscapeweb.model {
                     return filteredList;
                 }
                 
-                _mergedEdges.push(me);
+                meList.add(me);
                 for each (var e:EdgeSprite in edges) {
                     _parentEdges[e.data.id] = me;
                 }

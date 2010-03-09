@@ -1,0 +1,625 @@
+<graphml>
+  <key id="weight" for="node" attr.name="weight" attr.type="double"/>
+  <key id="label" for="node" attr.name="label" attr.type="string"/>
+  
+  <key id="network" for="edge" attr.name="network" attr.type="string"/>
+  <key id="weight" for="edge" attr.name="weight" attr.type="double"/>
+  <key id="label" for="edge" attr.name="label" attr.type="string"/>
+  
+  <graph edgedefault="undirected">  
+    <node id="a01">
+      <data key="weight">0.45</data>
+      <data key="label">A01</data>
+    </node>
+    <node id="a02">
+      <data key="weight">0.25</data>
+      <data key="label">A02</data>
+    </node>
+    <node id="a03">
+      <data key="weight">0.49</data>
+      <data key="label">A03</data>
+    </node>
+    <node id="a04">
+      <data key="weight">0.37</data>
+      <data key="label">A04</data>
+    </node>
+    <node id="a05">
+      <data key="weight">0.21</data>
+      <data key="label">A05</data>
+    </node>
+    <node id="a06">
+      <data key="weight">0.20</data>
+      <data key="label">A06</data>
+    </node>
+    <node id="a07">
+      <data key="weight">0.77</data>
+      <data key="label">A07</data>
+    </node>
+    <node id="a08">
+      <data key="weight">0.55</data>
+      <data key="label">A08</data>
+    </node>
+    <node id="a09">
+      <data key="weight">0.61</data>
+      <data key="label">A09</data>
+    </node>
+    <node id="a10">
+      <data key="weight">0.65</data>
+      <data key="label">A10</data>
+    </node>
+    <node id="a11">
+      <data key="weight">0.40</data>
+      <data key="label">A11</data>
+    </node>
+    <node id="a12">
+      <data key="weight">0.12</data>
+      <data key="label">A12</data>
+    </node>
+
+    <node id="b01">
+      <data key="weight">0.57</data>
+      <data key="label">B01</data>
+    </node>
+    <node id="5462">
+      <data key="weight">0.28</data>
+      <data key="label">B02</data>
+    </node>
+    <node id="2863">
+      <data key="weight">0.01</data>
+      <data key="label">B03</data>
+    </node>
+    <node id="4396">
+      <data key="weight">0.05</data>
+      <data key="label">B04</data>
+    </node>
+    <node id="156">
+      <data key="weight">0.08</data>
+      <data key="label">B05</data>
+    </node>
+    <node id="4645">
+      <data key="weight">0.84</data>
+      <data key="label">C01</data>
+    </node>
+    <node id="3775">
+      <data key="weight">0.06</data>
+      <data key="label">C02</data>
+    </node>
+    <node id="5562">
+      <data key="weight">0.77</data>
+      <data key="label">D01</data>
+    </node>
+    <node id="11">
+      <data key="weight">0.35</data>
+      <data key="label">F01</data>
+    </node>
+    <node id="12">
+      <data key="weight">0.17</data>
+      <data key="label">F03</data>
+    </node>
+    <node id="13">
+      <data key="weight">0.59</data>
+      <data key="label">F02</data>
+    </node>
+    <node id="1">
+      <data key="weight">0.63</data>
+      <data key="label">G01</data>
+    </node>
+    <node id="2">
+      <data key="weight">0.37</data>
+      <data key="label">G02</data>
+    </node>
+    <node id="3">
+      <data key="weight">0.25</data>
+      <data key="label">G03</data>
+    </node>
+    <node id="4">
+      <data key="weight">0.3</data>
+      <data key="label">G04</data>
+    </node>
+    <node id="5">
+      <data key="weight">0.05</data>
+      <data key="label">G05</data>
+    </node>
+    <node id="6">
+      <data key="weight">0.22</data>
+      <data key="label">G06</data>
+    </node>
+    <node id="7">
+      <data key="weight">0.55</data>
+      <data key="label">H01</data>
+    </node>
+    <node id="8">
+      <data key="weight">0.17</data>
+      <data key="label">H02</data>
+    </node>
+    <node id="9">
+      <data key="weight">0.92</data>
+      <data key="label">H03</data>
+    </node>
+    <node id="10">
+      <data key="weight">0.90</data>
+      <data key="label">H04</data>
+    </node>
+
+    <edge target="2" source="1">
+      <data key="network">15</data>
+      <data key="weight">0.01</data>
+      <data key="label">1 (15) 2</data>
+    </edge>
+    <edge target="1" source="2">
+      <data key="network">2</data>
+      <data key="weight">0.05</data>
+      <data key="label">2 (2) 1</data>
+    </edge>
+    <edge target="3" source="2">
+      <data key="network">15</data>
+      <data key="weight">0.08</data>
+      <data key="label">2 (15) 3</data>
+    </edge>
+    <edge target="4" source="2">
+      <data key="network">15</data>
+      <data key="weight">0.18</data>
+      <data key="label">2 (15) 4</data>
+    </edge>
+    <edge target="5" source="3">
+      <data key="network">2</data>
+      <data key="weight">0.12</data>
+      <data key="label">3 (2) 5</data>
+    </edge>
+    <edge target="1" source="5">
+      <data key="network">16</data>
+      <data key="weight">0.25</data>
+      <data key="label">5 (16) 1</data>
+    </edge>
+    <edge target="3" source="5">
+      <data key="network">24</data>
+      <data key="weight">0.24</data>
+      <data key="label">5 (24) 3</data>
+    </edge>
+    <edge target="6" source="5">
+      <data key="network">15</data>
+      <data key="weight">0.32</data>
+      <data key="label">5 (15) 6</data>
+    </edge>
+    <edge target="8" source="7">
+      <data key="network">15</data>
+      <data key="weight">0.44</data>
+      <data key="label">7 (15) 8</data>
+    </edge>
+    <edge target="7" source="8">
+      <data key="network">2</data>
+      <data key="weight">0.55</data>
+      <data key="label">8 (2) 7</data>
+    </edge>
+    <edge target="7" source="8">
+      <data key="network">14</data>
+      <data key="weight">0.90</data>
+      <data key="label">8 (14) 7</data>
+    </edge>
+    <edge target="9" source="7">
+      <data key="network">15</data>
+      <data key="weight">0.33</data>
+      <data key="label">7 (15) 9</data>
+    </edge>
+    <edge target="9" source="8">
+      <data key="network">2</data>
+      <data key="weight">0.85</data>
+      <data key="label">8 (2) 9</data>
+    </edge>
+    <edge target="10" source="9">
+      <data key="network">14</data>
+      <data key="weight">0.70</data>
+      <data key="label">9 (14) 10</data>
+    </edge>
+    <edge target="12" source="11">
+      <data key="network">15</data>
+      <data key="weight">0.07</data>
+      <data key="label">11 (15) 12</data>
+    </edge>
+    <edge target="11" source="12">
+      <data key="network">2</data>
+      <data key="weight">0.26</data>
+      <data key="label">12 (2) 11</data>
+    </edge>
+    <edge target="13" source="12">
+      <data key="network">14</data>
+      <data key="weight">0.34</data>
+      <data key="label">12 (14) 13</data>
+    </edge>
+    <edge target="11" source="13">
+      <data key="network">15</data>
+      <data key="weight">0.81</data>
+      <data key="label">13 (15) 11</data>
+    </edge>
+    <edge target="13" source="11">
+      <data key="network">2</data>
+      <data key="weight">0.20</data>
+      <data key="label">11 (2) 13</data>
+    </edge>
+    <edge target="2863" source="156">
+      <data key="network">15</data>
+      <data key="weight">0.12</data>
+      <data key="label">156 (15) 2863</data>
+    </edge>
+    <edge target="2863" source="b01">
+      <data key="network">25</data>
+      <data key="weight">0.66</data>
+      <data key="label">5091 (25) 2863</data>
+    </edge>
+    <edge target="2863" source="5462">
+      <data key="network">2</data>
+      <data key="weight">0.33</data>
+      <data key="label">5462 (2) 2863</data>
+    </edge>
+    <edge target="a07" source="a11">
+      <data key="network">15</data>
+      <data key="weight">0.50</data>
+      <data key="label">2481 (15) 4853</data>
+    </edge>
+    <edge target="a07" source="a04">
+      <data key="network">15</data>
+      <data key="weight">0.86</data>
+      <data key="label">4306 (15) 4853</data>
+    </edge>
+    <edge target="a07" source="a08">
+      <data key="network">15</data>
+      <data key="weight">0.75</data>
+      <data key="label">6326 (15) 4853</data>
+    </edge>
+    <edge target="a07" source="a03">
+      <data key="network">2</data>
+      <data key="weight">0.20</data>
+      <data key="label">3123 (2) 4853</data>
+    </edge>
+    <edge target="4396" source="156">
+      <data key="network">15</data>
+      <data key="weight">0.08</data>
+      <data key="label">156 (15) 4396</data>
+    </edge>
+    <edge target="4396" source="2863">
+      <data key="network">25</data>
+      <data key="weight">0.64</data>
+      <data key="label">2863 (25) 4396</data>
+    </edge>
+    <edge target="4396" source="b01">
+      <data key="network">15</data>
+      <data key="weight">0.22</data>
+      <data key="label">5091 (15) 4396</data>
+    </edge>
+    <edge target="4396" source="5462">
+      <data key="network">15</data>
+      <data key="weight">0.24</data>
+      <data key="label">5462 (15) 4396</data>
+    </edge>
+    <edge target="a01" source="a07">
+      <data key="network">16</data>
+      <data key="weight">0.40</data>
+      <data key="label">4853 (16) 915</data>
+    </edge>
+    <edge target="a01" source="a11">
+      <data key="network">25</data>
+      <data key="weight">0.50</data>
+      <data key="label">2481 (25) 915</data>
+    </edge>
+    <edge target="a01" source="a08">
+      <data key="network">15</data>
+      <data key="weight">0.20</data>
+      <data key="label">6326 (15) 915</data>
+    </edge>
+    <edge target="a01" source="a09">
+      <data key="network">15</data>
+      <data key="weight">0.20</data>
+      <data key="label">7070 (15) 915</data>
+    </edge>
+    <edge target="a01" source="a12">
+      <data key="network">2</data>
+      <data key="weight">0.20</data>
+      <data key="label">6613 (2) 915</data>
+    </edge>
+    <edge target="a01" source="a03">
+      <data key="network">2</data>
+      <data key="weight">0.24</data>
+      <data key="label">3123 (2) 915</data>
+    </edge>
+    <edge target="a01" source="a02">
+      <data key="network">15</data>
+      <data key="weight">0.32</data>
+      <data key="label">6028 (15) 915</data>
+    </edge>
+    <edge target="a11" source="a08">
+      <data key="network">15</data>
+      <data key="weight">0.12</data>
+      <data key="label">6326 (15) 2481</data>
+    </edge>
+    <edge target="a11" source="a09">
+      <data key="network">25</data>
+      <data key="weight">0.03052709996700287</data>
+      <data key="label">7070 (25) 2481</data>
+    </edge>
+    <edge target="a04" source="a01">
+      <data key="network">15</data>
+      <data key="weight">0.10</data>
+      <data key="label">915 (15) 4306</data>
+    </edge>
+    <edge target="a04" source="a11">
+      <data key="network">15</data>
+      <data key="weight">0.30</data>
+      <data key="label">2481 (15) 4306</data>
+    </edge>
+    <edge target="a04" source="a08">
+      <data key="network">25</data>
+      <data key="weight">0.32</data>
+      <data key="label">6326 (25) 4306</data>
+    </edge>
+    <edge target="a04" source="a09">
+      <data key="network">15</data>
+      <data key="weight">0.42</data>
+      <data key="label">7070 (15) 4306</data>
+    </edge>
+    <edge target="a04" source="a12">
+      <data key="network">15</data>
+      <data key="weight">0.21</data>
+      <data key="label">6613 (15) 4306</data>
+    </edge>
+    <edge target="a04" source="a03">
+      <data key="network">2</data>
+      <data key="weight">0.17</data>
+      <data key="label">3123 (2) 4306</data>
+    </edge>
+    <edge target="a04" source="a02">
+      <data key="network">14</data>
+      <data key="weight">0.19</data>
+      <data key="label">6028 (14) 4306</data>
+    </edge>
+    <edge target="a09" source="a08">
+      <data key="network">15</data>
+      <data key="weight">0.03</data>
+      <data key="label">6326 (15) 7070</data>
+    </edge>
+    <edge target="a09" source="a10">
+      <data key="network">15</data>
+      <data key="weight">0.09</data>
+      <data key="label">700 (15) 7070</data>
+    </edge>
+    <edge target="a10" source="a01">
+      <data key="network">15</data>
+      <data key="weight">0.12</data>
+      <data key="label">915 (15) 700</data>
+    </edge>
+    <edge target="a10" source="a11">
+      <data key="network">15</data>
+      <data key="weight">0.16</data>
+      <data key="label">2481 (15) 700</data>
+    </edge>
+    <edge target="a10" source="a08">
+      <data key="network">15</data>
+      <data key="weight">0.19</data>
+      <data key="label">6326 (15) 700</data>
+    </edge>
+    <edge target="a10" source="a12">
+      <data key="network">15</data>
+      <data key="weight">0.72</data>
+      <data key="label">6613 (15) 700</data>
+    </edge>
+    <edge target="a12" source="a01">
+      <data key="network">25</data>
+      <data key="weight">0.84</data>
+      <data key="label">915 (25) 6613</data>
+    </edge>
+    <edge target="a12" source="a08">
+      <data key="network">15</data>
+      <data key="weight">0.12</data>
+      <data key="label">6326 (15) 6613</data>
+    </edge>
+    <edge target="a12" source="a09">
+      <data key="network">15</data>
+      <data key="weight">0.14</data>
+      <data key="label">7070 (15) 6613</data>
+    </edge>
+    <edge target="a03" source="a09">
+      <data key="network">2</data>
+      <data key="weight">0.26</data>
+      <data key="label">7070 (2) 3123</data>
+    </edge>
+    <edge target="b01" source="156">
+      <data key="network">25</data>
+      <data key="weight">0.32</data>
+      <data key="label">156 (25) 5091</data>
+    </edge>
+    <edge target="b01" source="4396">
+      <data key="network">2</data>
+      <data key="weight">0.76</data>
+      <data key="label">4396 (2) 5091</data>
+    </edge>
+    <edge target="b01" source="5462">
+      <data key="network">15</data>
+      <data key="weight">0.44</data>
+      <data key="label">5462 (15) 5091</data>
+    </edge>
+    <edge target="5462" source="156">
+      <data key="network">15</data>
+      <data key="weight">0.56</data>
+      <data key="label">156 (15) 5462</data>
+    </edge>
+    <edge target="5462" source="2863">
+      <data key="network">15</data>
+      <data key="weight">0.81</data>
+      <data key="label">2863 (15) 5462</data>
+    </edge>
+    <edge target="5462" source="4396">
+      <data key="network">25</data>
+      <data key="weight">0.28</data>
+      <data key="label">4396 (25) 5462</data>
+    </edge>
+    <edge target="a02" source="a07">
+      <data key="network">15</data>
+      <data key="weight">0.29</data>
+      <data key="label">4853 (15) 6028</data>
+    </edge>
+    <edge target="a02" source="a08">
+      <data key="network">15</data>
+      <data key="weight">0.22</data>
+      <data key="label">6326 (15) 6028</data>
+    </edge>
+    <edge target="a05" source="a03">
+      <data key="network">15</data>
+      <data key="weight">0.22</data>
+      <data key="label">3123 (15) 3464</data>
+    </edge>
+    <edge target="a07" source="a08">
+      <data key="network">2</data>
+      <data key="weight">0.22</data>
+      <data key="label">6326 (2) 4853</data>
+    </edge>
+    <edge target="a07" source="a03">
+      <data key="network">14</data>
+      <data key="weight">0.14</data>
+      <data key="label">3123 (14) 4853</data>
+    </edge>
+    <edge target="4396" source="2863">
+      <data key="network">14</data>
+      <data key="weight">0.08</data>
+      <data key="label">2863 (14) 4396</data>
+    </edge>
+    <edge target="a01" source="a10">
+      <data key="network">14</data>
+      <data key="weight">0.08</data>
+      <data key="label">700 (14) 915</data>
+    </edge>
+    <edge target="a01" source="a12">
+      <data key="network">14</data>
+      <data key="weight">0.09</data>
+      <data key="label">6613 (14) 915</data>
+    </edge>
+    <edge target="a11" source="a07">
+      <data key="network">2</data>
+      <data key="weight">0.11</data>
+      <data key="label">4853 (2) 2481</data>
+    </edge>
+    <edge target="a11" source="a04">
+      <data key="network">14</data>
+      <data key="weight">0.18</data>
+      <data key="label">4306 (14) 2481</data>
+    </edge>
+    <edge target="a11" source="a03">
+      <data key="network">14</data>
+      <data key="weight">0.18</data>
+      <data key="label">3123 (14) 2481</data>
+    </edge>
+    <edge target="a04" source="a07">
+      <data key="network">14</data>
+      <data key="weight">0.41</data>
+      <data key="label">4853 (14) 4306</data>
+    </edge>
+    <edge target="a04" source="a03">
+      <data key="network">14</data>
+      <data key="weight">0.59</data>
+      <data key="label">3123 (14) 4306</data>
+    </edge>
+    <edge target="a08" source="a07">
+      <data key="network">14</data>
+      <data key="weight">0.64</data>
+      <data key="label">4853 (14) 6326</data>
+    </edge>
+    <edge target="a08" source="a01">
+      <data key="network">24</data>
+      <data key="weight">0.05</data>
+      <data key="label">915 (24) 6326</data>
+    </edge>
+    <edge target="a08" source="a11">
+      <data key="network">14</data>
+      <data key="weight">0.42</data>
+      <data key="label">2481 (14) 6326</data>
+    </edge>
+    <edge target="a08" source="a04">
+      <data key="network">14</data>
+      <data key="weight">0.15</data>
+      <data key="label">4306 (14) 6326</data>
+    </edge>
+    <edge target="a08" source="a10">
+      <data key="network">2</data>
+      <data key="weight">0.25</data>
+      <data key="label">700 (2) 6326</data>
+    </edge>
+    <edge target="a08" source="a03">
+      <data key="network">14</data>
+      <data key="weight">0.05</data>
+      <data key="label">3123 (14) 6326</data>
+    </edge>
+    <edge target="a09" source="a01">
+      <data key="network">2</data>
+      <data key="weight">0.11</data>
+      <data key="label">915 (2) 7070</data>
+    </edge>
+    <edge target="a09" source="a08">
+      <data key="network">14</data>
+      <data key="weight">0.07</data>
+      <data key="label">6326 (14) 7070</data>
+    </edge>
+    <edge target="a10" source="a01">
+      <data key="network">24</data>
+      <data key="weight">0.09</data>
+      <data key="label">915 (24) 700</data>
+    </edge>
+    <edge target="a10" source="a11">
+      <data key="network">14</data>
+      <data key="weight">0.06</data>
+      <data key="label">2481 (14) 700</data>
+    </edge>
+    <edge target="3775" source="4645">
+      <data key="network">25</data>
+      <data key="weight">0.06</data>
+      <data key="label">4645 (25) 3775</data>
+    </edge>
+    <edge target="4645" source="3775">
+      <data key="network">2</data>
+      <data key="weight">0.09</data>
+      <data key="label">3775 (2) 4645</data>
+    </edge>
+    <edge target="a07" source="a01">
+      <data key="network">25</data>
+      <data key="weight">0.12</data>
+      <data key="label">915 (25) 4853</data>
+    </edge>
+    <edge target="a07" source="a04">
+      <data key="network">24</data>
+      <data key="weight">0.05</data>
+      <data key="label">4306 (24) 4853</data>
+    </edge>
+    <edge target="a07" source="a12">
+      <data key="network">24</data>
+      <data key="weight">0.04</data>
+      <data key="label">6613 (24) 4853</data>
+    </edge>
+    <edge target="a01" source="a11">
+      <data key="network">2</data>
+      <data key="weight">0.09</data>
+      <data key="label">2481 (2) 915</data>
+    </edge>
+    <edge target="a01" source="a10">
+      <data key="network">25</data>
+      <data key="weight">0.08</data>
+      <data key="label">700 (25) 915</data>
+    </edge>
+    <edge target="a04" source="a10">
+      <data key="network">2</data>
+      <data key="weight">0.18</data>
+      <data key="label">700 (2) 4306</data>
+    </edge>
+    <edge target="a10" source="a04">
+      <data key="network">25</data>
+      <data key="weight">0.25</data>
+      <data key="label">4306 (25) 700</data>
+    </edge>
+    <edge target="a10" source="a12">
+      <data key="network">25</data>
+      <data key="weight">0.28</data>
+      <data key="label">6613 (25) 700</data>
+    </edge>
+    <edge target="a06" source="a08">
+      <data key="network">16</data>
+      <data key="weight">0.09</data>
+      <data key="label">6326 (16) 718</data>
+    </edge>
+  </graph>
+</graphml>

@@ -47,11 +47,6 @@ package org.cytoscapeweb.view.layout{
         public static function fillByStripes(bin_width:Number, rects:Array):Array {
             // Create a shalow copy of the rectangles array:
             var best_rects:Array = rects.concat();
-            // Sort by width.
-//            best_rects.sort(function(a:Rectangle, b:Rectangle):int {
-//                return a.width < b.width ? -1 : (a.width > b.width ? 1 : 0);
-//            }, Array.DESCENDING);
-//            trace("=> sorted best_rects: " + best_rects);
 
             // Make variables to track and record the best solution.
             var is_positioned:Array = new Array();

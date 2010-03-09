@@ -63,8 +63,6 @@ package org.cytoscapeweb.controller {
             // Add the callback functions, in order to allow the Flash player
             // to comunicate with JavaScript functions:
             sendNotification(ApplicationFacade.ADD_CALLBACKS);
-            // Tell the client application that Cytoscape Web is ready:
-            sendNotification(ApplicationFacade.CALL_EXTERNAL_INTERFACE, { functionName: ExternalFunctions.COMPLETE });
         }
     }
 }

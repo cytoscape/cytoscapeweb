@@ -32,9 +32,12 @@ package org.cytoscapeweb.view.layout {
 	import flare.physics.Simulation;
 	import flare.physics.Spring;
 	import flare.vis.data.Data;
+	import flare.vis.data.DataList;
 	import flare.vis.data.EdgeSprite;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.operator.layout.ForceDirectedLayout;
+	
+	import org.cytoscapeweb.util.methods.$each;
 	
 
 	/**
@@ -74,14 +77,15 @@ package org.cytoscapeweb.view.layout {
 
 			// run simulation
 			simulation.bounds = enforceBounds ? layoutBounds : null;
-			var iter:int = iterations;
 			var ticks:int = ticksPerIteration;
 
-			for (var i:uint=0; i<iter; ++i) {
+			$each(iterations, function(i:uint, o:*):void {
 				simulation.tick(ticks);
-			}
-
-			visualization.data.nodes.visit(update); // update positions
+			});
+            // update positions
+			$each(visualization.data.nodes, function(i:uint, n:NodeSprite):void {
+			    update(n);
+			});
 			updateEdgePoints(_t);
 		}
 
@@ -90,9 +94,13 @@ package org.cytoscapeweb.view.layout {
 			var data:Data = visualization.data, o:Object;
 			var p:Particle, s:Spring, n:NodeSprite, e:EdgeSprite;
 			var sim:Simulation = simulation;
+			var length:uint, i:uint;
+			var finished:Boolean = false;
+			var edges:DataList = data.edges;
+			var nodes:DataList = data.nodes;
 
 			// initialize all simulation entries
-			for each (n in data.nodes) {
+			$each(nodes, function(i:uint, n:NodeSprite):void {
 				p = n.props.particle;
 				o = _t.$(n);
 
@@ -106,31 +114,34 @@ package org.cytoscapeweb.view.layout {
 					p.fixed = o.fixed;
 				}
 				p.tag = _gen;
-			}
-			for each (e in data.edges) {
-				if (e.props.$merged) {
-					s = e.props.spring;
-					if (s == null) {
-						var l:Number = defaultSpringLength;
-						var t:Number = defaultSpringTension;
-						var d:Number = _damping;
-						e.props.spring = (s = sim.addSpring(
-							e.source.props.particle, e.target.props.particle, l, t, d));
-					}
-	
-					s.tag = _gen;
-				}
-			}
+			});
+
+            $each(edges, function(i:uint, e:EdgeSprite):void {
+                if (e.props.$merged) {
+                    s = e.props.spring;
+                    if (s == null) {
+                        var l:Number = defaultSpringLength;
+                        var t:Number = defaultSpringTension;
+                        var d:Number = _damping;
+                        e.props.spring = (s = sim.addSpring(
+                            e.source.props.particle, e.target.props.particle, l, t, d));
+                    }
+    
+                    s.tag = _gen;
+                }
+            });
+			
 			// set up simulation parameters
 			// this needs to be kept separate from the above initialization
 			// to ensure all simulation items are created first
 			if (mass != null) {
-				for each (n in data.nodes) {
+				$each(nodes, function(i:uint, n:NodeSprite):void {
 					p = n.props.particle;
 					p.mass = mass(n);
-				}
+				});
 			}
-			for each (e in data.edges) {
+
+            $each(edges, function(i:uint, e:EdgeSprite):void {
 				if (e.props.$merged) {
 					s = e.props.spring;
 					if (restLength != null)
@@ -140,12 +151,15 @@ package org.cytoscapeweb.view.layout {
 					if (damping != null)
 						s.damping = damping(e);
 				}
-			}
+            });
+
 			// clean-up unused items
-			for each (p in sim.particles)
+			$each(sim.particles, function(i:uint, p:Particle):void {
 				if (p.tag != _gen) p.kill();
-			for each (s in sim.springs)
+			});
+			$each(sim.springs, function(i:uint, s:Spring):void {
 				if (s.tag != _gen) s.kill();
+			});
 		}
 	}
 }
