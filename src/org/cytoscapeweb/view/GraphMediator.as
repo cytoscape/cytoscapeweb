@@ -37,7 +37,6 @@ package org.cytoscapeweb.view {
     import flare.vis.events.SelectionEvent;
     
     import flash.display.DisplayObject;
-    import flash.display.Sprite;
     import flash.events.KeyboardEvent;
     import flash.events.MouseEvent;
     import flash.ui.Keyboard;
@@ -554,6 +553,12 @@ package org.cytoscapeweb.view {
             if (!_ctrlDown || graphProxy.rolledOverNode == null)
                 vis.hideDragRectangle();
             updateCursor();
+            
+            // Fix a bug on Safari when mouse-up occurs out of the Flash area, which ends the
+            // dragging action without dispatching a MOUSE_UP event before:
+            if (evt.node.hasEventListener(MouseEvent.MOUSE_UP)) {
+                evt.node.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_UP));
+            }
         }
         
         private function onDragNode(evt:DragEvent):void {
