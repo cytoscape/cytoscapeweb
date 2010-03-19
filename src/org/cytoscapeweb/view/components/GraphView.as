@@ -292,7 +292,6 @@ package org.cytoscapeweb.view.components {
         }
         
         public function resetAllEdges():void {
-            //vis.data.edges.setProperties(Edges.properties);
             for each (var e:EdgeSprite in vis.data.edges) resetEdge(e);
             DirtySprite.renderDirty();
         }

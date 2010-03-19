@@ -175,7 +175,7 @@ package org.cytoscapeweb.view {
         }
         
         public function mergeEdges(merge:Boolean):void {
-            graphView.resetAllEdges();
+            vis.data.edges.setProperties(Edges.properties);
             graphView.updateLabels(Groups.EDGES);
         }
         
@@ -194,7 +194,7 @@ package org.cytoscapeweb.view {
                 if (graphProxy.edgesMerged) {
                     // So merged edges are reset when a regular edge was selected.
                     // TODO: bring merged edges to front too!
-                    graphView.resetAllEdges();
+                    vis.data.edges.setProperties(Edges.properties);
                 } else {
                     graphView.selectEdges(edges);
                 }
@@ -208,9 +208,9 @@ package org.cytoscapeweb.view {
         public function deselectEdges(edges:Array):void {
             if (graphProxy.edgesMerged) {
                 // So merged edges are reset when a regular edge was deselected.
-                graphView.resetAllEdges();
+                vis.data.edges.setProperties(Edges.properties);
             } else {
-                for each (var e:EdgeSprite in edges) graphView.resetEdge(e);
+                graphView.resetAllEdges();
             }
         }
         
@@ -634,7 +634,7 @@ package org.cytoscapeweb.view {
                     sendNotification(ApplicationFacade.SELECT, edgesList);
                 }
             }
-            vis.removeEventListener(MouseEvent.MOUSE_MOVE, onDragSelectionStart);
+            graphView.removeEventListener(MouseEvent.MOUSE_MOVE, onDragSelectionStart);
             evt.stopImmediatePropagation();
         }
         
@@ -643,7 +643,7 @@ package org.cytoscapeweb.view {
                 var e:EdgeSprite = evt.target as EdgeSprite;
                 sendNotification(ApplicationFacade.DOUBLE_CLICK_EVENT, e);
             }
-            vis.removeEventListener(MouseEvent.MOUSE_MOVE, onDragSelectionStart);
+            graphView.removeEventListener(MouseEvent.MOUSE_MOVE, onDragSelectionStart);
             evt.stopImmediatePropagation();
         }
         
