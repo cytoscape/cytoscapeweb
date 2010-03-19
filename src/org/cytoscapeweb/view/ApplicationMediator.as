@@ -56,7 +56,6 @@ package org.cytoscapeweb.view {
 	import org.cytoscapeweb.util.Utils;
 	import org.cytoscapeweb.util.VisualProperties;
 	import org.cytoscapeweb.view.components.GraphView;
-	import org.cytoscapeweb.view.components.NetworkVisBox;
 	import org.cytoscapeweb.view.components.PanZoomBox;
 	import org.puremvc.as3.interfaces.INotification;
 	    
@@ -103,16 +102,12 @@ package org.cytoscapeweb.view {
             return viewComponent as CytoscapeWeb;
         }
         
-        private function get networkVisBox():NetworkVisBox {
-            return application.networkVisBox;
-        }
-        
         private function get graphView():GraphView {
-            return networkVisBox.graphView;
+            return application.graphView;
         }
         
         private function get panZoomBox():PanZoomBox {
-            return application.networkVisBox.panZoomBox;
+            return application.panZoomBox;
         }
         
         private function get waitMsgLabel():Label {
@@ -130,11 +125,11 @@ package org.cytoscapeweb.view {
         public function ApplicationMediator(viewComponent:Object) {
             super(NAME, viewComponent, this);
             
-            _previousWidth = networkVisBox.width;
-            _previousHeight = networkVisBox.height;
+            _previousWidth = application.width;
+            _previousHeight = application.height;
             resizeChildren();
             
-            networkVisBox.addEventListener(ResizeEvent.RESIZE, onNetworkVisBoxResize, false, 0, true);
+            application.addEventListener(ResizeEvent.RESIZE, onAppResize, false, 0, true);
             application.addEventListener(FlexEvent.APPLICATION_COMPLETE, onApplicationComplete, false, 0, true);
             application.addEventListener(MouseEvent.ROLL_OVER, onRollOverApplication, false, 0, true);
             application.addEventListener(MouseEvent.ROLL_OUT, onRollOutApplication, false, 0, true);
@@ -220,14 +215,14 @@ package org.cytoscapeweb.view {
         
         public function applyVisualStyle(style:VisualStyleVO):void {
             var bgColor:uint = style.getValue(VisualProperties.BACKGROUND_COLOR) as uint;
-            networkVisBox.graphBox.setStyle("backgroundColor", bgColor);
+            application.graphBox.setStyle("backgroundColor", bgColor);
         }
         
         public function getGraphImage(type:String="png", width:*=null, height:*=null):ByteArray {
             var bytes:ByteArray;
 
             if (type === "png") {
-                var bounds:Rectangle = graphView.getRealBounds();
+                var bounds:Rectangle = graphView.vis.getRealBounds();
                 var scale:Number = graphProxy.zoom;
                 var color:uint = configProxy.config.visualStyle.getValue(VisualProperties.BACKGROUND_COLOR);
                 
@@ -237,7 +232,7 @@ package org.cytoscapeweb.view {
                 if (panZoomBox.visible) panZoomBox.visible = false;
 
                 var matrix:Matrix = new Matrix(1, 0, 0, 1, -bounds.x, -bounds.y);
-                source.draw(networkVisBox, matrix);
+                source.draw(application.graphBox, matrix);
                 
                 if (configProxy.panZoomControlVisible) panZoomBox.visible = true;
 
@@ -325,7 +320,7 @@ package org.cytoscapeweb.view {
 	    private function onMouseDownPanZoom(evt:MouseEvent):void {
 	        evt.stopImmediatePropagation();
 	        _dragging = true;
-	        panZoomBox.startDrag(false, new Rectangle(0, 0, networkVisBox.width - panZoomBox.width, networkVisBox.height - panZoomBox.height));
+	        panZoomBox.startDrag(false, new Rectangle(0, 0, application.width - panZoomBox.width, application.height - panZoomBox.height));
 	    }
 	    
 	    private function onMouseUpPanZoom(evt:MouseEvent):void {
@@ -345,8 +340,8 @@ package org.cytoscapeweb.view {
                     graphProxy.rolledOverEdge.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OUT));
                 }
                 // To force the end of a drag-selection or graph panning:
-                if (graphView != null && graphView.graphContainer != null)
-                    graphView.graphContainer.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_UP));
+                if (graphView != null && graphView.vis != null)
+                    graphView.vis.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_UP));
                 
                 // Another workaround: it seems that forcing roll-over node/edge can bubble it up
                 // to the application, causing a roll-over app. as well,
@@ -361,7 +356,7 @@ package org.cytoscapeweb.view {
 	        cachePanZoomAnchors();
 	    }
 	    
-	    private function onNetworkVisBoxResize(evt:ResizeEvent):void {
+	    private function onAppResize(evt:ResizeEvent):void {
 	        resizeChildren();
 	    }
         
@@ -385,28 +380,28 @@ package org.cytoscapeweb.view {
 	        
 	    private function resizeChildren():void {
 	        // Resize them:
-            networkVisBox.graphBox.width = networkVisBox.width;
-            networkVisBox.graphBox.height = networkVisBox.height;
+            application.graphBox.width = application.width;
+            application.graphBox.height = application.height;
 	        
 	        // Keep the panZoomBox in a good position:
 	        panZoomBox.x = calculatePanZoomBoxX();
 	        panZoomBox.y = calculatePanZoomBoxY();
 	        cachePanZoomAnchors();
 	        
-	        _previousWidth = networkVisBox.width;
-	        _previousHeight = networkVisBox.height;
+	        _previousWidth = application.width;
+	        _previousHeight = application.height;
 	    }
 	    
 	    private function calculatePanZoomBoxX():Number {
 	        // Initially anchored on the right side of the canvas:
-	        var x:Number = networkVisBox.width - panZoomBox.width - 6;
+	        var x:Number = application.width - panZoomBox.width - 6;
 	        
 	        if (_panZoomMoved) {
-	            const MIN_DIST_TO_ANCHOR:Number = Math.min(20, networkVisBox.width/10);
+	            const MIN_DIST_TO_ANCHOR:Number = Math.min(20, application.width/10);
 	            
 	            if (_panZoomLeftAnchor > MIN_DIST_TO_ANCHOR  && _panZoomRightAnchor > MIN_DIST_TO_ANCHOR) {
 	                // Just keep the the right and left paddings with the same proportion:
-	                x = _panZoomLeftAnchor * networkVisBox.width / _previousWidth;
+	                x = _panZoomLeftAnchor * application.width / _previousWidth;
 	            } else {
 	                // If the user previously dragged the panzoom box to really close to the
 	                // left or right canvas' border, he probaly wants it to be anchored there:
@@ -415,13 +410,13 @@ package org.cytoscapeweb.view {
 	                    x = _panZoomLeftAnchor;
 	                } else {
 	                    // Anchor at RIGHT:
-	                    x = networkVisBox.width - panZoomBox.width - _panZoomRightAnchor;
+	                    x = application.width - panZoomBox.width - _panZoomRightAnchor;
 	                }
 	            }
 	        }
 	        
 	        // Don't let the panZoom get out of the canvas!!!
-	        if (x > networkVisBox.width) x = networkVisBox.width - panZoomBox.width;
+	        if (x > application.width) x = application.width - panZoomBox.width;
 	        if (x < 0) x = 0;
 	        
 	        return x;
@@ -429,26 +424,26 @@ package org.cytoscapeweb.view {
 	    
 	    private function calculatePanZoomBoxY():Number {
 	        // Initially anchored on the bottom side of the canvas:
-	        var y:Number = networkVisBox.height - panZoomBox.height - 6;
+	        var y:Number = application.height - panZoomBox.height - 6;
 	        
 	        if (_panZoomMoved) {
-	            const MIN_DIST_TO_ANCHOR:Number = Math.min(20, networkVisBox.height/10);
+	            const MIN_DIST_TO_ANCHOR:Number = Math.min(20, application.height/10);
 	            
 	            if (_panZoomTopAnchor > MIN_DIST_TO_ANCHOR  && _panZoomBottomAnchor > MIN_DIST_TO_ANCHOR) {
 	                // Just keep the the top and bottom paddings with the same proportion:
-	                y = _panZoomTopAnchor * networkVisBox.height / _previousHeight;
+	                y = _panZoomTopAnchor * application.height / _previousHeight;
 	            } else {
 	                // If the user previously dragged the panzoom box to really close to the
 	                // top or bottom border, he probaly wants it to be anchored there:
 	                if (_panZoomTopAnchor < _panZoomBottomAnchor)
 	                    y = _panZoomTopAnchor;
 	                else
-	                    y = networkVisBox.height - panZoomBox.height - _panZoomBottomAnchor;
+	                    y = application.height - panZoomBox.height - _panZoomBottomAnchor;
 	            }
 	        }
 	        
 	        // Don't let the panZoom get out of the canvas!!!
-	        if (y > networkVisBox.height) y = networkVisBox.height - panZoomBox.height;
+	        if (y > application.height) y = application.height - panZoomBox.height;
 	        if (y < 0) y = 0;
 	        
 	        return y;
@@ -457,8 +452,8 @@ package org.cytoscapeweb.view {
 	    private function cachePanZoomAnchors():void {
 	        _panZoomTopAnchor = panZoomBox.y;
 	        _panZoomLeftAnchor = panZoomBox.x;
-	        _panZoomBottomAnchor = networkVisBox.height - panZoomBox.y - panZoomBox.height;
-	        _panZoomRightAnchor = networkVisBox.width - panZoomBox.x - panZoomBox.width;
+	        _panZoomBottomAnchor = application.height - panZoomBox.y - panZoomBox.height;
+	        _panZoomRightAnchor = application.width - panZoomBox.x - panZoomBox.width;
 	        
 	        if (_panZoomRightAnchor < 0) _panZoomRightAnchor = 0;
 	        if (_panZoomBottomAnchor < 0) _panZoomBottomAnchor = 0;

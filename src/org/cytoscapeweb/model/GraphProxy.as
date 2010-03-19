@@ -42,7 +42,6 @@ package org.cytoscapeweb.model {
 	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
 	import flash.net.navigateToURL;
-	import flash.utils.Dictionary;
 	import flash.utils.IDataOutput;
 	
 	import mx.utils.StringUtil;
@@ -53,11 +52,10 @@ package org.cytoscapeweb.model {
 	import org.cytoscapeweb.model.converters.XGMMLConverter;
 	import org.cytoscapeweb.model.data.ConfigVO;
 	import org.cytoscapeweb.model.data.GraphicsDataTable;
+	import org.cytoscapeweb.model.data.InteractionVO;
 	import org.cytoscapeweb.model.data.VisualStyleVO;
-	import org.cytoscapeweb.util.GraphUtils;
 	import org.cytoscapeweb.util.Groups;
 	import org.cytoscapeweb.util.Layouts;
-	import org.cytoscapeweb.view.render.NodePair;
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	
     [Bindable]
@@ -69,13 +67,13 @@ package org.cytoscapeweb.model {
         
         public static const GRP_SELECTED_NODES:String = "selectedNodes";
         public static const GRP_SELECTED_EDGES:String = "selectedEdges";
+        public static const GRP_REGULAR_EDGES:String = "regularEdges";
         public static const GRP_MERGED_EDGES:String = "mergedEdges";
 
         // ========[ PRIVATE PROPERTIES ]===========================================================
 
         private var _graphData:Data;
-        private var _dataList:Array;
-        private var _nodePairs:/*pairKey->NodePair*/Object;
+        private var _interactions:/*key->InteractionVO*/Object;
         private var _parentEdges:/*regularEdgeId->mergedEdgeSprite*/Object;
         private var _rolledOverNode:NodeSprite;
         private var _rolledOverEdge:EdgeSprite;
@@ -112,10 +110,10 @@ package org.cytoscapeweb.model {
             if (data != null) {
                 // Add missing Ids:
                 setIdentifiers(data.nodes);
-                createNodePairs();
+                createInteractions();
                 createMergedEdges();
                 setIdentifiers(data.edges);
-                createDataList();
+                
                 // TODO: do we really need these Flare groups?
                 // Add data groups to house selected nodes and edges:
                 data.addGroup(GraphProxy.GRP_SELECTED_NODES);
@@ -130,10 +128,6 @@ package org.cytoscapeweb.model {
             }
                 
             sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED, data);
-        }
-        
-        public function get dataList():Array {
-            return _dataList;
         }
         
         /**
@@ -202,10 +196,14 @@ package org.cytoscapeweb.model {
         	if (_filteredEdges != value) {
 	            _filteredEdges = value;
 	            
-                for each (var e:EdgeSprite in graphData.edges) e.props.$filteredOut = value != null;
+                for each (var e:EdgeSprite in graphData.edges) {
+                    e.props.$filteredOut = value != null;
+                }
+                
     	        if (value != null) {
                     for each (e in value) e.props.$filteredOut = false;
     	        }
+    	        
     	        for each (e in graphData.edges) {
         	        if (e.props.$merged) {
                         for each (var ee:EdgeSprite in e.props.$edges) {
@@ -291,15 +289,15 @@ package org.cytoscapeweb.model {
 
         // ========[ PUBLIC METHODS ]===============================================================
 
-        public function getNodePair(node1:NodeSprite, node2:NodeSprite):NodePair {
-            var pair:NodePair = null;
+        public function getInteraction(node1:NodeSprite, node2:NodeSprite):InteractionVO {
+            var inter:InteractionVO = null;
             
-            if (_nodePairs != null) {
-                var k:String = NodePair.createKey(node1, node2);
-                pair = _nodePairs[k];
+            if (_interactions != null) {
+                var k:String = InteractionVO.createKey(node1, node2);
+                inter = _interactions[k];
             }
             
-            return pair;
+            return inter;
         }
 
         public function getDataSpriteList(objList:Array, group:String=null):Array {
@@ -560,44 +558,48 @@ package org.cytoscapeweb.model {
             }
         }
         
-        private function createNodePairs():void {
-            _nodePairs = new Object();
+        private function createInteractions():void {
+            _interactions = new Object();
+            var inter:InteractionVO;
             
             if (graphData != null) {
                 for each (var edge:EdgeSprite in graphData.edges) {
-                    var pair:NodePair = getNodePair(edge.source, edge.target);
+                    inter = getInteraction(edge.source, edge.target);
                     
-                    if (pair == null) {
-                        pair = new NodePair(edge.source, edge.target);
-                        _nodePairs[pair.key] = pair;
+                    if (inter == null) {
+                        inter = new InteractionVO(edge.source, edge.target);
+                        _interactions[inter.key] = inter;
                     }
                     
-                    pair.addEdge(edge);
+                    inter.addEdge(edge);
                 }
 
-                for (var k:String in _nodePairs) {
-                    var np:NodePair = _nodePairs[k];
-                    for each (var e:EdgeSprite in np.edges) {
+                for (var k:String in _interactions) {
+                    inter = _interactions[k];
+                    for each (var e:EdgeSprite in inter.edges) {
                         // It will be important to correctly render multiple edges:
-                        e.props.adjacentIndex = np.getAdjacentIndex(e);
+                        e.props.adjacentIndex = inter.getAdjacentIndex(e);
                     }
                 }
             }
         }
         
-        private function createMergedEdges():void { // TODO: optimize it!!!
+        private function createMergedEdges():void {
+            var reList:DataList = new DataList(GraphProxy.GRP_REGULAR_EDGES);
+            graphData.addGroup(GraphProxy.GRP_REGULAR_EDGES, reList);
+            
             var meList:DataList = new DataList(GraphProxy.GRP_MERGED_EDGES);
             graphData.addGroup(GraphProxy.GRP_MERGED_EDGES, meList);
             
             _parentEdges = {};
             
-            for (var k:String in _nodePairs) {
-                var np:NodePair = _nodePairs[k];
-                var edges:Array = np.edges;
+            for (var k:String in _interactions) {
+                var inter:InteractionVO = _interactions[k];
+                var edges:Array = inter.edges;
                 
                 // Create a fake merged edge:
-                var src:NodeSprite = np.node1;
-                var tgt:NodeSprite = np.node2;
+                var src:NodeSprite = inter.node1;
+                var tgt:NodeSprite = inter.node2;
                 var dt:Object = { source: src.data.id, target: tgt.data.id };
                 var me:EdgeSprite = graphData.addEdgeFor(src, tgt, false, dt);
                 me.data.directed = false;
@@ -621,6 +623,9 @@ package org.cytoscapeweb.model {
                 meList.add(me);
                 for each (var e:EdgeSprite in edges) {
                     _parentEdges[e.data.id] = me;
+                    // Separate the regular edges in another list, because data.edges will have both
+                    // regular and merged ones:
+                    reList.add(e);
                 }
             }
 
@@ -662,20 +667,6 @@ package org.cytoscapeweb.model {
                         edge.data["sum:"+df.name] = Math.round(edge.data["sum:"+df.name]);
                         edge.data["avg:"+df.name] = Math.round(edge.data["avg:"+df.name]);
                     }
-                }
-            }
-        }
-
-        private function createDataList():void {
-            _dataList = [];
-            var visited:Dictionary = new Dictionary();
-            
-            // Get any node to start searching:
-            for each (var n:NodeSprite in graphData.nodes) {
-                if (!visited[n]) {
-                    var subg:Data = new Data(graphData.directedEdges);
-                    GraphUtils.depthFirst(n, visited, subg);
-                    _dataList.push(subg);
                 }
             }
         }

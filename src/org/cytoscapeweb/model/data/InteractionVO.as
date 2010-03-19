@@ -27,11 +27,11 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
-package org.cytoscapeweb.view.render {
+package org.cytoscapeweb.model.data {
 	import flare.vis.data.EdgeSprite;
 	import flare.vis.data.NodeSprite;
 	
-	public class NodePair {
+	public class InteractionVO {
 		
 		private var _key:String;
 		private var _node1:NodeSprite;
@@ -42,8 +42,8 @@ package org.cytoscapeweb.view.render {
 		
         // =========================================================================================
 		
-		public function NodePair(node1:NodeSprite, node2:NodeSprite) {
-		    this._key = NodePair.createKey(node1, node2);
+		public function InteractionVO(node1:NodeSprite, node2:NodeSprite) {
+		    this._key = InteractionVO.createKey(node1, node2);
 			this._node1 = node1;
 			this._node2 = node2;
 			this._edges = new Array();

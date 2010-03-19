@@ -28,6 +28,8 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.view.components {
+    import com.senocular.drawing.DashedLine;
+    
     import flare.animate.Sequence;
     import flare.animate.Transition;
     import flare.animate.TransitionEvent;
@@ -56,7 +58,6 @@ package org.cytoscapeweb.view.components {
     import flash.display.DisplayObject;
     import flash.geom.Point;
     import flash.geom.Rectangle;
-    import flash.text.TextField;
     import flash.utils.getTimer;
     
     import org.cytoscapeweb.model.data.ConfigVO;
@@ -77,15 +78,14 @@ package org.cytoscapeweb.view.components {
     import org.cytoscapeweb.view.render.Labeler;
     
 
-    public class SubGraphView extends Visualization {
+    public class GraphVis extends Visualization {
         
         // ========[ CONSTANTS ]====================================================================
         
         // ========[ PRIVATE PROPERTIES ]===========================================================
         
         private var _data:Data;
-        private var _layouts:Object;
-        private var _currentLayout:Layout;
+        private var _layoutName:String;
         private var _style:VisualStyleVO;
         private var _config:ConfigVO;
         private var _nodeLabeler:Labeler;
@@ -94,6 +94,11 @@ package org.cytoscapeweb.view.components {
         private var _initialWidth:Number;
         private var _initialHeight:Number;
         private var _nodePoints:Object;
+        private var _dragRect:Rectangle;
+        
+        private var _dataList:Array = [/*flare.vis.data.Data*/];
+        private var _layoutDataGroups:Array = [/*String*/]; // Data group names
+        private var _appliedLayouts:Array = [/*flare.vis.operator.layout.Layout*/];
         
         private function get tooltipControl():TooltipControl {
             if (_tooltipControl == null) {
@@ -166,7 +171,7 @@ package org.cytoscapeweb.view.components {
 
         // ========[ CONSTRUCTOR ]==================================================================
 
-        public function SubGraphView(data:Data, config:ConfigVO) {
+        public function GraphVis(data:Data, config:ConfigVO) {
         	super(data);
         	this._config = config;
         	
@@ -249,31 +254,67 @@ package org.cytoscapeweb.view.components {
         public function applyLayout(name:String):Transition {
             continuousUpdates = false;
 
-            if (_currentLayout != null)
-                operators.remove(_currentLayout);
+            // Remove previous layouts:
+            if (_appliedLayouts.length > 0) {
+                for (var k:String in _appliedLayouts) {
+                    operators.remove(_appliedLayouts[k]);
+                }
+                _appliedLayouts = [];
+            }
+            // Remove previous data groups:
+            if (_layoutDataGroups.length > 0) {
+                for each (var grName:String in _layoutDataGroups) {
+                    data.removeGroup(grName);
+                }
+                _layoutDataGroups = [];
+            }
 
-            _currentLayout = layouts[name];
+            _layoutName = name;
+            var layout:Layout, fdl:ForceDirectedLayout;
             
-            if (_currentLayout is ForceDirectedLayout) {
-                // If the previous layout is ForceDirected, we need to set the nodes' particles and
-                // the edges' springs to null, otherwise the layout may not render very well
-                // when it is applied again.
-                data.nodes.visit(function(n:NodeSprite):void {
-                    n.props.particle = null;
-                    // It is also important to set random positions to nodes:
-                    n.x = Math.random() * _initialWidth;
-                    n.y = Math.random() * _initialHeight;
-                });
-                data.edges.visit(function(e:EdgeSprite):void {
-                   e.props.spring = null;
-                });
-            } else if (_currentLayout is PresetLayout) {
-                PresetLayout(_currentLayout).points = _config.nodesPoints;
+            if (name === Layouts.PRESET) {
+                layout = createLayout(name);
+                PresetLayout(layout).points = _config.nodesPoints;
+                _appliedLayouts.push(layout);
+            } else {
+                _dataList = GraphUtils.separateDisconnected(data);
+                
+                if (name === Layouts.FORCE_DIRECTED) {
+                    // If the previous layout is ForceDirected, we need to set the nodes' particles and
+                    // the edges' springs to null, otherwise the layout may not render very well
+                    // when it is applied again.
+                    data.nodes.visit(function(n:NodeSprite):void {
+                        n.props.particle = null;
+                        // It is also important to set random positions to nodes:
+                        n.x = Math.random() * _initialWidth;
+                        n.y = Math.random() * _initialHeight;
+                    });
+                    data.edges.visit(function(e:EdgeSprite):void {
+                       e.props.spring = null;
+                    });
+                    fdl = ForceDirectedLayout(createLayout(name));
+                    _appliedLayouts.push(fdl);
+                } else {
+                    // Create one layout for each disconnected component:
+                    for (var i:uint = 0; i < _dataList.length; i++) {
+                        var d:Data = _dataList[i];
+                        var rect:Rectangle = GraphUtils.calculateGraphDimension(d.nodes, name, _style); 
+                        var group:String = name + "_" + i;
+ 
+                        data.addGroup(group, d.nodes);
+                        _layoutDataGroups.push(group);
+                        
+                        layout = createLayout(name, group, rect, d.tree.root);
+                        _appliedLayouts.push(layout);
+                    }
+                }    
             }
             
-            // The layout must be enabled in order to allow a layout change:
-            _currentLayout.enabled = true;
-            operators.add(_currentLayout);
+            // The layouts must be enabled in order to allow a layout change:
+            for each (layout in _appliedLayouts) {
+                layout.enabled = true;
+                operators.add(layout);
+            }
 
             var seq:Sequence = new Sequence();
             var trans:Transitioner = update(0.1);
@@ -281,25 +322,31 @@ package org.cytoscapeweb.view.components {
 
             seq.addEventListener(TransitionEvent.START, function(evt:TransitionEvent):void {
             	evt.currentTarget.removeEventListener(evt.type, arguments.callee);
-
-                if (_currentLayout is ForceDirectedLayout)
-                    ForceDirectedLayout(_currentLayout).enforceBounds = false;
+                if (fdl != null) fdl.enforceBounds = false;
             });
             
             seq.addEventListener(TransitionEvent.END, function(evt:TransitionEvent):void {
                 evt.currentTarget.removeEventListener(evt.type, arguments.callee);
 
-                if (_currentLayout is ForceDirectedLayout)
-                    operateForceDirectedLayout();
+                if (fdl != null) operateForceDirectedLayout(fdl);
 
-                if (!(_currentLayout is PresetLayout))
+                if (_layoutName != Layouts.PRESET)
                     realignGraph();
                 
                 // After new layout is rendered, disable it so users can drag the nodes:
-                _currentLayout.enabled = false;
+                for each (layout in _appliedLayouts) {
+                    layout.enabled = false;
+                }
                 DirtySprite.renderDirty();
                 
                 updateLabels();
+
+                if (_layoutName != Layouts.PRESET) {
+                    GraphUtils.repackDisconnected(_dataList,
+                                                  Math.max(_initialWidth, stage.stageWidth),
+                                                  !_config.nodeLabelsVisible,
+                                                  !_config.edgeLabelsVisible);
+                }
             });
 
             return seq;
@@ -347,183 +394,66 @@ package org.cytoscapeweb.view.components {
             }, group);
         }
 
-        public function getRealBounds():Rectangle {
+        public function getDisconnectedData(ds:DataSprite):Data {
+            if (_dataList != null) {
+                for each (var d:Data in _dataList) {
+                    if (d.contains(ds)) return d;
+                }
+            }
+            return data;
+        }
+        
+        public function getRealBounds(d:Data=null):Rectangle {
+            if (d == null) d = data;
+            
             // It's necessary to operate labeler first, so each label's text sprite is well placed!
             if (_config.nodeLabelsVisible) nodeLabeler.operate();
 
-            var bounds:Rectangle = new Rectangle();
-            var minX:Number = Number.POSITIVE_INFINITY, minY:Number = Number.POSITIVE_INFINITY;
-            var maxX:Number = Number.NEGATIVE_INFINITY, maxY:Number = Number.NEGATIVE_INFINITY;
-            var lbl:TextSprite;
-            var fld:TextField;
-
-            // First, consider the NODES bounds:
-            $each(data.nodes, function(i:uint, n:NodeSprite):void {
-                // The node size (its shape must have the same height and width; e.g. a circle)
-                var ns:Number = n.height;
-                // Verify MIN and MAX x/y again:
-                minX = Math.min(minX, (n.x - ns/2));
-                minY = Math.min(minY, (n.y - ns/2));
-                maxX = Math.max(maxX, (n.x + ns/2));
-                maxY = Math.max(maxY, (n.y + ns/2));
-                
-                // Consider the LABELS bounds, too:
-                var lbl:TextSprite = n.props.label;
-                if (_config.nodeLabelsVisible && lbl != null) {
-                	// The alignment values are done by the text field, not the label...
-                	fld = lbl.textField;
-                    minX = Math.min(minX, lbl.x + fld.x);
-                    maxX = Math.max(maxX, (lbl.x + lbl.width + fld.x));
-                    minY = Math.min(minY, lbl.y + fld.y);
-                    maxY = Math.max(maxY, (lbl.y + lbl.height + fld.y));
-                }
-            });
-            
-            // Then consider the edges bezier control points too, 
-            // because curved edges may get out of bounds:
-            $each(data.edges, function(i:uint, e:EdgeSprite):void {
+            // Then render edges and operate their labels:
+            $each(d.edges, function(i:uint, e:EdgeSprite):void {
                  if (e.shape != Shapes.LINE) e.render();
             });
             if (_config.edgeLabelsVisible) edgeLabeler.operate();
-            
-            $each(data.edges, function(i:uint, e:EdgeSprite):void {
-                // Edge LABELS first, to avoid checking edges that are already inside the bounds:
-                lbl = e.props.label;
-                if (_config.edgeLabelsVisible && lbl != null) {
-                    fld = lbl.textField;
-                    minX = Math.min(minX, lbl.x + fld.x);
-                    maxX = Math.max(maxX, (lbl.x + lbl.width + fld.x));
-                    minY = Math.min(minY, lbl.y + fld.y);
-                    maxY = Math.max(maxY, (lbl.y + lbl.height + fld.y));
-                }
-                
-                if (e.props.$points != null && e.props.$points.curve != null) {
-                	var c:Point = e.props.$points.curve;
-                	if (c.x < minX || c.y < minY || c.x > maxX || c.y > maxY) {
-	                    var p1:Point = e.props.$points.start;
-	                    var p2:Point = e.props.$points.end;
-	                    // Alwasys check a few points along the bezier curve to see
-	                    // if any of them is out of the bounds:
-	                    var fractions:Array = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
-	                    for each (var f:Number in fractions) {
-		                    var mp:Point = Utils.bezierPoint(p1, p2, c, f);
-		                    minX = Math.min(minX, mp.x);
-		                    maxX = Math.max(maxX, mp.x);
-		                    minY = Math.min(minY, mp.y);
-		                    maxY = Math.max(maxY, mp.y);
-		            	}
-	                }
-                }
-            });
-            
-            const PAD:Number = 2;
-            bounds.x = minX - PAD;
-            bounds.y = minY - PAD;
-            bounds.width = maxX - bounds.x + PAD;
-            bounds.height = maxY - bounds.y + PAD;
+
+            var bounds:Rectangle = GraphUtils.getBounds(d, !_config.nodeLabelsVisible, !_config.edgeLabelsVisible);
             
             return bounds;
         }
         
-        public function showDragRectangle():void {
-            var b:Rectangle = getRealBounds();
-            
-            // Draw the border:
-            graphics.lineStyle(1, 0xccccee, 0.7); 
-            graphics.moveTo(b.x, b.y);
-            graphics.lineTo(b.x + b.width, b.y);
-            graphics.lineTo(b.x + b.width, b.y + b.height);
-            graphics.lineTo(b.x, b.y + b.height);
-            graphics.lineTo(b.x, b.y);
-            // Fill with a transparent color:
-            graphics.beginFill(_style.getValue(VisualProperties.BACKGROUND_COLOR) as uint, 0.6);
-            graphics.drawRect(b.x, b.y, b.width, b.height);
-            
-            // Bring the subgraph to front:
-            GraphUtils.bringToFront(this);
-        }
-        
-        public function hideDragRectangle():void {
-            graphics.clear();
-        }
-        
-        public function highlightSelectedNode(n:NodeSprite):void {
-        	if (n != null) {
-        	    n.fillColor = Nodes.fillColor(n);
-        	    n.lineWidth = Nodes.selectionLineWidth(n);
-        	    n.lineColor = Nodes.lineColor(n);
-        		n.alpha = Nodes.selectionAlpha(n);
-        		n.filters = Nodes.filters(n, true);
-        		DirtySprite.renderDirty();
-        	}
-        }
-        
-        public function highlightSelectedEdge(e:EdgeSprite):void {
-        	if (e != null) {
-         	    e.lineWidth = Edges.lineWidth(e);
-                e.lineColor = Edges.lineColor(e);
-                e.props.sourceArrowColor = Edges.sourceArrowColor(e);
-                e.props.targetArrowColor = Edges.targetArrowColor(e);
-                e.alpha = Edges.alpha(e);
-                e.filters = Edges.filters(e);
-                DirtySprite.renderDirty();
-        	}
-        }
-
-        public function resetAll():void {
-            resetAllEdges();
-            resetAllNodes();
-        }
-        
-        public function resetAllNodes():void {
-            // If no nodes list was provided, we get all the nodes:
-            var nodes:DataList = data.nodes;
-            
-            // Restore node properties:
-            //     Note: It is better to set only the properties that are necessary.
-            //     I tried data.nodes.setProperties(nodeProperties), but some nodes blinks when
-            //     rolling over/out
-            nodes.setProperty("lineWidth", Nodes.lineWidth);
-            nodes.setProperty("fillColor", Nodes.fillColor);
-            nodes.setProperty("lineColor", Nodes.lineColor);
-            nodes.setProperty("alpha", Nodes.alpha);
-            nodes.setProperty("filters", Nodes.filters);
-            DirtySprite.renderDirty();
-        }
-        
-        public function resetAllEdges():void {
-        	data.edges.setProperties(Edges.properties);
-        	DirtySprite.renderDirty();
-        }
-        
-        public function resetDataSprite(ds:DataSprite):void {
-            if (ds is NodeSprite) resetNode(NodeSprite(ds));
-            else if (ds is EdgeSprite) resetEdge(EdgeSprite(ds));
-        }
-        
-        public function resetNode(n:NodeSprite):void {
-            if (n != null) {
-                n.size = Nodes.size(n);
-                n.fillColor = Nodes.fillColor(n);
-                n.lineWidth = Nodes.lineWidth(n);
-                n.lineColor = Nodes.lineColor(n);
-                n.alpha = Nodes.alpha(n);  
-                n.shape = Nodes.shape(n);
-                n.filters = Nodes.filters(n);
+        public function updateDragRectangle(...delta):void {
+            if (_dragRect != null) {
+                var b:Rectangle = _dragRect;
+                if (delta.length > 1) {
+                    b.x += delta[0];
+                    b.y += delta[1];
+                }
+                graphics.clear();
+                
+                // Draw the border:
+                graphics.lineStyle(_config.visualStyle.getValue(VisualProperties.SELECTION_LINE_WIDTH),
+                                   _config.visualStyle.getValue(VisualProperties.SELECTION_LINE_COLOR),
+                                   _config.visualStyle.getValue(VisualProperties.SELECTION_LINE_ALPHA));
+                
+                var dash:DashedLine = new DashedLine(this, 1, 4);
+                
+                dash.moveTo(b.x, b.y);
+                dash.lineTo(b.x + b.width, b.y);
+                dash.lineTo(b.x + b.width, b.y + b.height);
+                dash.lineTo(b.x, b.y + b.height);
+                dash.lineTo(b.x, b.y);
             }
         }
         
-        public function resetEdge(e:EdgeSprite):void {
-            if (e != null) {
-                e.shape = Edges.shape(e);
-                e.lineWidth = Edges.lineWidth(e);
-                e.lineColor = Edges.lineColor(e);
-                e.props.sourceArrowColor = Edges.sourceArrowColor(e);
-                e.props.targetArrowColor = Edges.targetArrowColor(e);
-                e.alpha = Edges.alpha(e);  
-                e.arrowType = Edges.targetArrowShape(e);
-                e.props.curvature = Edges.curvature(e);
-                e.filters = Edges.filters(e);
+        public function showDragRectangle(ds:DataSprite):void {
+            var d:Data = getDisconnectedData(ds);
+            _dragRect = getRealBounds(d);
+            updateDragRectangle();
+        }
+        
+        public function hideDragRectangle():void {
+            if (_dragRect != null) {
+                _dragRect = null;
+                graphics.clear();
             }
         }
         
@@ -533,17 +463,19 @@ package org.cytoscapeweb.view.components {
          * This method builds a collection of layout operators and node
          * and edge settings to be applied in the demo.
          */
-        private function get layouts():Object {
-        	if (_layouts == null) {
-        		_layouts = new Object();
-        		var nl:uint = data.nodes.length;
-        		var el:uint = data.edges.length;
+        private function createLayout(name:String,
+                                      group:String=Data.NODES,
+                                      layoutBounds:Rectangle=null,
+                                      layoutRoot:DataSprite=null):Layout {
+        	var layout:Layout;
+        	
+        	if (layoutBounds == null)
+        	   layoutBounds = new Rectangle(bounds.x, bounds.y, _initialWidth, _initialHeight);
 
-                // ---------------------------------------------------------------------------------
-        		// FORCE DIRECTED:
-        		// ---------------------------------------------------------------------------------
+            if (name === Layouts.FORCE_DIRECTED) {
+                var el:uint = data.edges.length;
+                
         		var fdl:ForceDirectedLayout = new ForceDirectedLayout(true, 5, new Simulation());
-        		fdl.layoutBounds = new Rectangle(bounds.x, bounds.y, _initialWidth, _initialHeight),
                 fdl.ticksPerIteration = 1.5,
                 fdl.simulation.dragForce.drag = 0.4;
                 fdl.simulation.nbodyForce.gravitation = -1000;
@@ -555,61 +487,56 @@ package org.cytoscapeweb.view.components {
                 var desiredLength:Number = 60 + (el > 0 ? 2*Math.log(el) : 0);
                 fdl.defaultSpringLength = Math.min(200, desiredLength);
 
+                var tension:Function = fdl.tension;
+                fdl.tension = function(e:EdgeSprite):Number {
+                    var t:Number = 0;
+                    if (!GraphUtils.isFilteredOut(e))
+                        t = Math.max(0.01, tension(e));
+                    return t;
+                };
+
                 trace("[FORCE_DIRECTED] Grav="+fdl.simulation.nbodyForce.gravitation+
                                       " Tens="+fdl.defaultSpringTension+
                                       " Drag="+fdl.simulation.dragForce.drag+
                                       " Mass="+fdl.defaultParticleMass+
                                       " Length="+fdl.defaultSpringLength);
 
-                _layouts[Layouts.FORCE_DIRECTED] = fdl;
-
-                // ---------------------------------------------------------------------------------
-	            // CIRCLE LAYOUT:
-                // ---------------------------------------------------------------------------------
-	            var cl:CircleLayout = new CircleLayout(null, null, false);
+                layout = fdl;
+            } else if (name === Layouts.CIRCLE) {
+	            var cl:CircleLayout = new CircleLayout(null, null, false, group);
                 cl.angleWidth = -2 * Math.PI;
                 cl.padding = 0;
 
-                _layouts[Layouts.CIRCLE] = cl;
-
-                // ---------------------------------------------------------------------------------
-                // CIRCLE TREE LAYOUT:
-                // ---------------------------------------------------------------------------------
-	            var ctl:CircleLayout = new CircleLayout(null, null, true);
+                layout = cl;
+            } else if (name === Layouts.CIRCLE_TREE) {
+	            var ctl:CircleLayout = new CircleLayout(null, null, true, group);
                 ctl.angleWidth = -2 * Math.PI;
                 ctl.padding = 0;
 
-                _layouts[Layouts.CIRCLE_TREE] = ctl;
-
-                // ---------------------------------------------------------------------------------
-                // RADIAL TREE LAYOUT:
-                // ---------------------------------------------------------------------------------
+                layout = ctl;
+            } else if (name === Layouts.RADIAL) {
                 var rtl:RadialTreeLayout = new RadialTreeLayout(60, false);
                 rtl.angleWidth = -2 * Math.PI;
-
-                _layouts[Layouts.RADIAL] = rtl;
-
-                // ---------------------------------------------------------------------------------
-                // TREE LAYOUT:
-                // ---------------------------------------------------------------------------------
+                
+                layout = rtl;
+            } else if (name === Layouts.TREE) {
                 var nltl:NodeLinkTreeLayout = new NodeLinkTreeLayout(Orientation.TOP_TO_BOTTOM, 50, 30, 5);
                 nltl.layoutAnchor = new Point(0, -2 * height/5);
                 
-                _layouts[Layouts.TREE] = nltl;
-                
-                // ---------------------------------------------------------------------------------
-                // PRESET LAYOUT:
-                // ---------------------------------------------------------------------------------
+                layout = nltl;
+            } else if (name === Layouts.PRESET) {
                 var psl:PresetLayout = new PresetLayout(_config.nodesPoints);
                 
-                _layouts[Layouts.PRESET] = psl;
+                layout = psl;
             }
+            
+            layout.layoutBounds = layoutBounds;
+            layout.layoutRoot = layoutRoot;
 
-            return _layouts;
+            return layout;
         }
         
-        private function operateForceDirectedLayout():void {
-            var fdl:ForceDirectedLayout = ForceDirectedLayout(_currentLayout);
+        private function operateForceDirectedLayout(fdl:ForceDirectedLayout):void {
             var startTime:int = getTimer();
             
             const MIN_COUNT:uint = 20;
@@ -651,7 +578,7 @@ package org.cytoscapeweb.view.components {
                         if (m === MAX_M && d === MAX_D && l === MAX_L) {
                             // It has not worked so far, so decrease gravity/tension and do not verify anymore:
                             g = fdl.simulation.nbodyForce.gravitation = -10;
-                            t = fdl.defaultSpringTension = 0.01;
+                            //t = fdl.defaultSpringTension = Math.max(0.05, t/2);
                             stable = true;
                         }
                         
@@ -675,9 +602,6 @@ package org.cytoscapeweb.view.components {
             
             var elapsed:Number = getTimer() - startTime;
             trace("% >> ForceDirectedLayout runned "+count+"x for "+elapsed/1000+" seconds.");
-            
-            // Reset layout parameter values:
-            if (reset) _layouts = null;
         }
         
         private function isLayoutStable():Boolean {

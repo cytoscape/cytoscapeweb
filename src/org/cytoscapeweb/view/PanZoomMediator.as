@@ -187,7 +187,7 @@ package org.cytoscapeweb.view {
 	        
 	        if (zoomValue > zoomSlider.minimum) {
                 var tickValues:Array = zoomSlider.tickValues;
-                for (var i:int = tickValues.length-1; i >= 0; i--) {trace(i+" : "+ zoomValue+" <= "+tickValues[i]+" && > "+tickValues[i-1]);
+                for (var i:int = tickValues.length-1; i >= 0; i--) {
                     // Get the next lower tick value of the pre-defined range:
                     if (zoomValue <= tickValues[i] && zoomValue > tickValues[i-1]) {
                         zoomValue = tickValues[i-1];

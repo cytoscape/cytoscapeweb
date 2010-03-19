@@ -95,7 +95,7 @@ package org.cytoscapeweb.model.data {
             }
             for each (var n:NodeSprite in _rootNodes) {    
                 n.visitEdges(function(e:EdgeSprite):Boolean {
-                    if (_map[e] === undefined) {
+                    if (_map[e] === undefined && !e.props.$filteredOut) {
                         _map[e] = false;
                         
                         if (_map[e.source] === undefined) {

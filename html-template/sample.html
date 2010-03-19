@@ -136,6 +136,22 @@
                    var data = createData($("#nodesNumber").val(), $("#edgesNumber").val());
                    draw(data);
                });
+               $("#minNodeWeight, #minEdgeWeight").keydown(function(evt) {
+                   if (evt.which === 13) {
+                       var val = parseFloat($(this).val());
+                       val = isNaN(val) ? 0 : val;
+                       var gr = $(this).attr("id") === "minNodeWeight" ? "nodes" : "edges";
+                       vis.filter(gr, function(item) {
+                            return item.data.weight >= val;
+                       });
+                   }
+               });
+               $("#toXGMML").click(function(evt) {
+                   alert(vis.xgmml());
+               });
+               $("#toGraphML").click(function(evt) {
+                   alert(vis.graphml());
+               });
 
                draw();
             });
@@ -181,7 +197,7 @@
             label { color: #0b94b1; font-size: 14px; }
             hr { border: #0b94b1 1px solid; }
             #header { width: 100%; height: 40px; padding: 4px 0; background-color: #0b94b1; color: #ffffff; }
-            #cytoscapeweb { height: 600px; border-right: 2px solid #0b94b1; border-bottom: 2px solid #0b94b1; margin: 0 auto 0 auto; }
+            #cytoscapeweb { height: 640px; border-right: 2px solid #0b94b1; border-bottom: 2px solid #0b94b1; margin: 0 auto 0 auto; }
             #sidePanel { width: 120px; padding: 8px 20px 0 10px; vertical-align: top; text-align: left; }
             #controls > div { margin: 8px 0; }
             #graphs, #createGraph, #reapplyLayout { width: 164px; }
@@ -206,9 +222,9 @@
                                 <option value="sample1.xml" selected="selected">Sample 1</option>
                                 <option value="sample2.xml">Sample 2</option>
                                 <option value="sample3.xml">Sample 3</option>
+                                <option value="sample4.xml">Sample 4</option>
                                 <option value="fly50.xml">Fly 50</option>
                                 <option value="human50.xml">Human 50</option>
-                                <option value="human80.xml">Human 80</option>
                                 <option value="human100.xml">Human 100</option>
                                 <option value="mouse100.xml">Mouse 100</option>
                                 <option value="worm20.xml">Worm 20</option>
@@ -238,6 +254,17 @@
                         </div>
                         <div>
                             <input type="button" id="reapplyLayout" value="Reapply"/>
+                        </div>
+                        <hr/>
+                        <div>
+                            <label>Min edge weight:</label> <input id="minEdgeWeight" type="text"/>
+                        </div>
+                        <div>
+                            <label>Min node weight:</label> <input id="minNodeWeight" type="text"/>
+                        </div>
+                        <hr/>
+                        <div>
+                            <input type="button" id="toXGMML" value="XGMML"/> <input type="button" id="toGraphML" value="GraphML"/>
                         </div>
                         <hr/>
                         <div>

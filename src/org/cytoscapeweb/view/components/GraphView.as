@@ -31,6 +31,7 @@ package org.cytoscapeweb.view.components {
 	import flare.animate.Parallel;
 	import flare.animate.Transition;
 	import flare.animate.TransitionEvent;
+	import flare.display.DirtySprite;
 	import flare.util.Displays;
 	import flare.vis.data.Data;
 	import flare.vis.data.DataList;
@@ -38,19 +39,22 @@ package org.cytoscapeweb.view.components {
 	import flare.vis.data.EdgeSprite;
 	import flare.vis.data.NodeSprite;
 	
+	import flash.display.Graphics;
 	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.utils.getTimer;
 	
 	import mx.core.UIComponent;
 	
 	import org.cytoscapeweb.events.GraphViewEvent;
 	import org.cytoscapeweb.model.data.ConfigVO;
 	import org.cytoscapeweb.model.data.VisualStyleVO;
+	import org.cytoscapeweb.util.Edges;
 	import org.cytoscapeweb.util.GraphUtils;
-	import org.cytoscapeweb.util.Layouts;
-	import org.cytoscapeweb.util.VisualProperties;
+	import org.cytoscapeweb.util.Nodes;
 	import org.cytoscapeweb.util.methods.$each;
-	import org.cytoscapeweb.view.layout.PackingAlgorithms;
 	
 	public class GraphView extends UIComponent {
         
@@ -60,52 +64,32 @@ package org.cytoscapeweb.view.components {
     
 	    private var _style:VisualStyleVO;
 	    private var _config:ConfigVO;
-		private var _background:Sprite;
-		private var _graphContainer:Sprite;
 
         // ========[ PUBLIC PROPERTIES ]============================================================
 
-        public var subGraphs:Array = new Array();
-
-        public function get graphContainer():Sprite {
-            if (_graphContainer == null) {
-                _graphContainer = new Sprite();
-                _graphContainer.doubleClickEnabled = true;
-                
-                // We create a background sprite and redefine the hit area of the visualization
-	            // to use the background instead, so mouse events can work better even if happens
-	            // out of the bounds of the visualization rectangle.
-	            // It is particularly important when zooming, because we scale the visualization sprite.
-                _graphContainer.hitArea = Sprite(parent);
-               
-                // we draw a background to ensure the region receives mouse events:
-                _graphContainer.graphics.beginFill(0xffffff, 0); 
-                _graphContainer.graphics.drawRect(0, 0, width, height);
-            }
-            
-            return _graphContainer;
-        }
+        public var vis:GraphVis;
 
 		// ========[ CONSTRUCTOR ]==================================================================
 
 		public function GraphView() {
+		    doubleClickEnabled = true;
+		    
+            this.addEventListener(Event.ADDED_TO_STAGE, function(evt:Event):void {
+                hitArea = Sprite(parent);
+            });
 		}
 		
 		// ========[ PUBLIC METHODS ]===============================================================
 
-        public function draw(dataList:Array, config:ConfigVO, style:VisualStyleVO, layout:String):void {
+        public function draw(data:Data, config:ConfigVO, style:VisualStyleVO, layout:String):void {
             this._config = config;
             this._style = style;
+        	hitArea = Sprite(parent);
         	
         	dispatchEvent(new GraphViewEvent(GraphViewEvent.RENDER_INITIALIZE));
             resize();
-            
-            // Add the common background:
-            addChild(graphContainer);
-            
-            // Create the subgraphs (disconnected components) visualizations, even if it has
-            // only one connected graph:
-            addSubGraphs(dataList);
+
+            createVisualization(data, layout);
 
             // -----------------------------
             var par:Parallel = applyLayout(layout);
@@ -122,19 +106,14 @@ package org.cytoscapeweb.view.components {
             dispatchEvent(new GraphViewEvent(GraphViewEvent.LAYOUT_INITIALIZE));
             
             resize();
-            var par:Parallel = new Parallel();
-
-            for each (var sg:SubGraphView in subGraphs) {
-                sg.bounds = calculateGraphDimension(sg.data.nodes);
-                var t:Transition = sg.applyLayout(name);
-                par.add(t);
-            }
             
+            var par:Parallel = new Parallel();
+            vis.bounds = GraphUtils.calculateGraphDimension(vis.data.nodes, name, _style);
+            var t:Transition = vis.applyLayout(name);
+            par.add(t);
+          
             par.addEventListener(TransitionEvent.END, function(evt:TransitionEvent):void {
             	evt.currentTarget.removeEventListener(evt.type, arguments.callee);
-            	
-            	if (subGraphs.length > 1 && _config.currentLayout != Layouts.PRESET)
-                    repackDisconnected();
             	zoomToFit();
                 centerGraph();
                 dispatchEvent(new GraphViewEvent(GraphViewEvent.LAYOUT_COMPLETE));
@@ -153,29 +132,36 @@ package org.cytoscapeweb.view.components {
             else if (scale > _config.maxZoom)
                 scale = _config.maxZoom;
        		
-       		var delta:Number = scale / graphContainer.scaleX;
+       		var delta:Number = scale / vis.scaleX;
        		zoomBy(delta);
         }
         
         public function zoomToFit():Number {
        	    // Reset zoom first:
-        	if (graphContainer.scaleX != 1)
+        	if (vis.scaleX != 1)
         	   zoomTo(1);
         	
         	var scale:Number = 1;
-            var gb:Rectangle = getRealBounds();
-            var pw:Number = parent.parent.width;
-            var ph:Number = parent.parent.height;
+            var b:Rectangle = vis.getRealBounds();
             
-            if (gb != null && gb.width > 0 && gb.height > 0) {
-            	var graphEdge:Number = gb.width;
+            var g:Graphics = Sprite(parent).graphics;
+            g.clear();
+            g.beginFill(0xff0000, 0.4);
+            g.drawRect(b.x, b.y, b.width, b.height);
+            g.endFill();
+            
+            var pw:Number = stage.stageWidth;
+            var ph:Number = stage.stageHeight;
+            
+            if (b != null && b.width > 0 && b.height > 0) {
+            	var graphEdge:Number = b.width;
             	var canvasEdge:Number = pw;
             	
-            	if (gb.height/gb.width > ph/pw) {
-            		graphEdge = gb.height;
+            	if (b.height/b.width > ph/pw) {
+            		graphEdge = b.height;
             		canvasEdge = ph;
             	}
-	            if (graphEdge > canvasEdge) {        	
+	            if (graphEdge > canvasEdge) {
 		            scale = canvasEdge / graphEdge;
 		            zoomBy(scale);
 		        }
@@ -185,31 +171,20 @@ package org.cytoscapeweb.view.components {
         }
         
         public function panGraph(amountX:Number, amountY:Number):void {
-            Displays.panBy(graphContainer, amountX, amountY);
+            Displays.panBy(vis, amountX, amountY);
         }
         
         public function centerGraph():void {
-            resize();
-            var gb:Rectangle = getRealBounds();
+            var b:Rectangle = getRealBounds();
             
-            if (gb != null && gb.width > 0 && gb.height > 0) {
-	            var minX:Number = gb.x;
-	            var minY:Number = gb.y;
-	            var maxX:Number = minX + gb.width;
-	            var maxY:Number = minY + gb.height;
-	            
-	            // We stil have to considerate the difference between the graph position and
-	            // the container borders, wich means we have to add a possible padding:
-	            var padLeft:Number = minX - graphContainer.x;
-	            var padTop:Number = minY - graphContainer.y;
-	            
+            if (b != null && b.width > 0 && b.height > 0) {
 	            // The new coordinates:
-	            var newX:Number = ((parent.width - gb.width) / 2) - padLeft;
-	            var newY:Number = ((parent.height - gb.height) / 2) - padTop;
+	            var newX:Number = (stage.stageWidth - b.width) / 2;
+	            var newY:Number = (stage.stageHeight - b.height) / 2;
 	            
 	            // The amount to move, considering the new coordinates and the current position:
-	            var panX:Number = newX - graphContainer.x;
-                var panY:Number = newY - graphContainer.y;
+	            var panX:Number = newX - b.x;
+                var panY:Number = newY - b.y;
 	            
 	            panGraph(panX, panY);
 	        }
@@ -221,31 +196,22 @@ package org.cytoscapeweb.view.components {
          * The x and y are global (refer to the stage).
          */
         public function getRealBounds():Rectangle {
-            var gBounds:Rectangle = new Rectangle();
+            var b:Rectangle;
 
-            if (subGraphs != null) {
-	            var minX:Number = Number.POSITIVE_INFINITY, minY:Number = Number.POSITIVE_INFINITY;
-	            var maxX:Number = Number.NEGATIVE_INFINITY, maxY:Number = Number.NEGATIVE_INFINITY;
+            if (vis != null) {
+                b = vis.getRealBounds();
                 
-                for each (var sg:SubGraphView in subGraphs) {   
-                    var sgBounds:Rectangle = sg.getRealBounds();
-                    
-                    var absX:Number = (sg.x + sgBounds.x) * graphContainer.scaleX + graphContainer.x;
-                    var absY:Number = (sg.y + sgBounds.y) * graphContainer.scaleY + graphContainer.y;                    
-                    
-                    minX = Math.min(minX, absX);
-                    minY = Math.min(minY, absY);
-                    maxX = Math.max(maxX, (absX + sgBounds.width * graphContainer.scaleX));
-                    maxY = Math.max(maxY, (absY + sgBounds.height * graphContainer.scaleY));              
-                }
+                var p:Point = vis.localToGlobal(new Point(b.x, b.y));
+                b.x = p.x;
+                b.y = p.y;
                 
-                gBounds.x = minX;
-                gBounds.y = minY;
-                gBounds.width = maxX - minX;
-                gBounds.height = maxY - minY;
+                b.width *= vis.scaleX;
+                b.height *= vis.scaleY;
+            } else {
+                b = new Rectangle();
             }
             
-            return gBounds;
+            return b;
         }
         
         public function selectNodes(nodes:Array):void {
@@ -254,11 +220,8 @@ package org.cytoscapeweb.view.components {
             // would be noticed only after a rollout:
             if (nodes != null && nodes.length > 0) {
                 for each (var n:NodeSprite in nodes) {
-                    var sg:SubGraphView = getSubGraphOf(n);
-                    if (sg != null) {
-                        sg.highlightSelectedNode(n);
-                        bringNodeToFront(n);
-                    }
+                    highlightSelectedNode(n);
+                    bringToFront(n);
                 }
             }
         }
@@ -266,238 +229,155 @@ package org.cytoscapeweb.view.components {
         public function deselectNodes(nodes:Array):void {
             if (nodes != null && nodes.length > 0) {
                 $each(nodes, function(i:uint, n:NodeSprite):void {
-                    var sg:SubGraphView = getSubGraphOf(n);
-                    if (sg != null) sg.resetNode(n);
+                    resetNode(n);
                 });
             }
         }
         
         public function selectEdges(edges:Array):void {
             if (edges != null && edges.length > 0) {
-                var sg:SubGraphView;
                 $each(edges, function(i:uint, e:EdgeSprite):void {
-                    sg = getSubGraphOf(e);
-                    if (sg != null) {
-                        sg.highlightSelectedEdge(e);
-                        // Bring selected edge to front:
-                        GraphUtils.bringToFront(e);
-                    }
+                    highlightSelectedEdge(e);
+                    // Bring selected edge to front:
+                    GraphUtils.bringToFront(e);
                 });
                 // Bring all nodes to front, too, so no edge will overlap them:
-                for each (sg in subGraphs) {
-                    $each(sg.data.nodes, function(i:uint, n:NodeSprite):void {
-                        GraphUtils.bringToFront(n);
-                    });
-                }
+                $each(vis.data.nodes, function(i:uint, n:NodeSprite):void {
+                    GraphUtils.bringToFront(n);
+                });
             }
         }
         
-        public function deselectEdge(edge:EdgeSprite):void {
-            var sg:SubGraphView = getSubGraphOf(edge);
-            if (sg != null) sg.resetEdge(edge);
+        public function resetNode(n:NodeSprite):void {
+            if (n != null) {
+                n.size = Nodes.size(n);
+                n.fillColor = Nodes.fillColor(n);
+                n.lineWidth = Nodes.lineWidth(n);
+                n.lineColor = Nodes.lineColor(n);
+                n.alpha = Nodes.alpha(n);  
+                n.shape = Nodes.shape(n);
+                n.filters = Nodes.filters(n);
+            }
+        }
+        
+        public function resetEdge(e:EdgeSprite):void {
+            if (e != null) {
+                e.shape = Edges.shape(e);
+                e.lineWidth = Edges.lineWidth(e);
+                e.lineColor = Edges.lineColor(e);
+                e.props.sourceArrowColor = Edges.sourceArrowColor(e);
+                e.props.targetArrowColor = Edges.targetArrowColor(e);
+                e.alpha = Edges.alpha(e);  
+                e.arrowType = Edges.targetArrowShape(e);
+                e.props.curvature = Edges.curvature(e);
+                e.filters = Edges.filters(e);
+            }
         }
         
         public function resetAllNodes():void {
-            for each (var sg:SubGraphView in subGraphs)
-            	sg.resetAllNodes();
+            // If no nodes list was provided, we get all the nodes:
+            var nodes:DataList = vis.data.nodes;
+            
+            // Restore node properties:
+            //     Note: It is better to set only the properties that are necessary.
+            //     I tried data.nodes.setProperties(nodeProperties), but some nodes blinks when
+            //     rolling over/out
+            nodes.setProperty("lineWidth", Nodes.lineWidth);
+            nodes.setProperty("fillColor", Nodes.fillColor);
+            nodes.setProperty("lineColor", Nodes.lineColor);
+            nodes.setProperty("alpha", Nodes.alpha);
+            nodes.setProperty("filters", Nodes.filters);
+
+            DirtySprite.renderDirty();
         }
         
         public function resetAllEdges():void {
-            for each (var sg:SubGraphView in subGraphs)
-            	sg.resetAllEdges();
+            //vis.data.edges.setProperties(Edges.properties);
+            for each (var e:EdgeSprite in vis.data.edges) resetEdge(e);
+            DirtySprite.renderDirty();
+        }
+
+        public function bringAllToFront(nodes:*, edges:*=null):void {
+            if (edges != null) {
+                for each (var e:EdgeSprite in edges)
+                    bringToFront(e);
+            }
+            if (nodes != null) {
+                for each (var n:NodeSprite in nodes)
+                    bringToFront(n);
+            }
         }
         
-        public function getSubGraphOf(d:DataSprite):SubGraphView {
-        	for each (var sg:SubGraphView in subGraphs) {
-                if (sg.data.contains(d)) return sg;
-            }
-            return null;
-        }
-        
-        /**
-         * Bring a node along with its subgraph to front.
-         */
-        public function bringNodeToFront(n:NodeSprite):void {
-            if (n != null) {
-	            // First, bring the subgraph to front:
-	            GraphUtils.bringToFront(getSubGraphOf(n));
-	            // Bring the node to front, too:
-	            GraphUtils.bringToFront(n);
-	            // Do not forget the node's label!
-	            GraphUtils.bringToFront(n.props.label);
-            }
+        public function bringToFront(ds:DataSprite):void {
+            // Bring the node to front, too:
+            GraphUtils.bringToFront(ds);
+            // Do not forget the node's label!
+            GraphUtils.bringToFront(ds.props.label);
         }
         
         public function applyVisualStyle(style:VisualStyleVO):void {
             this._style = style;
-            for each (var sg:SubGraphView in subGraphs) {
-                sg.applyVisualStyle(style);
-            }
+            vis.applyVisualStyle(style);
         }
         
         public function updateLabels(group:String=null):void {
-            for each (var sg:SubGraphView in subGraphs) {
-                sg.updateLabels(group);
-            }
+            vis.updateLabels(group);
         }
         
         public function update():void {         
-            for each (var sg:SubGraphView in subGraphs) sg.update();
+            vis.update();
         }
 		
         // ========[ PRIVATE METHODS ]==============================================================
+		
+		private function highlightSelectedNode(n:NodeSprite):void {
+            if (n != null) {
+                n.fillColor = Nodes.fillColor(n);
+                n.lineWidth = Nodes.selectionLineWidth(n);
+                n.lineColor = Nodes.lineColor(n);
+                n.alpha = Nodes.selectionAlpha(n);
+                n.filters = Nodes.filters(n, true);
+                DirtySprite.renderDirty();
+            }
+        }
+        
+        private function highlightSelectedEdge(e:EdgeSprite):void {
+            if (e != null) {
+                e.lineWidth = Edges.lineWidth(e);
+                e.lineColor = Edges.lineColor(e);
+                e.props.sourceArrowColor = Edges.sourceArrowColor(e);
+                e.props.targetArrowColor = Edges.targetArrowColor(e);
+                e.alpha = Edges.alpha(e);
+                e.filters = Edges.filters(e);
+                DirtySprite.renderDirty();
+            }
+        }
 		
 		/**
          * Zoom the "camera" by the specified scale factor.
          */
         private function zoomBy(scale:Number):void { trace("-> Zoom by: " + scale);            
             if (scale > 0) {
-                Displays.zoomBy(graphContainer, scale, parent.width/2, parent.height/2);
+                Displays.zoomBy(vis, scale, stage.stageWidth/2, stage.stageHeight/2);
                 // Let others know about the new scale:
-                dispatchEvent(new GraphViewEvent(GraphViewEvent.SCALE_CHANGE, graphContainer.scaleX));
+                dispatchEvent(new GraphViewEvent(GraphViewEvent.SCALE_CHANGE, vis.scaleX));
             }
         }
 		
 		private function resize():void {
-		    width = parent.width;
-            height = parent.height;
+		    width = stage.stageWidth;
+            height = stage.stageHeight;
 		}
 		
-		private function repackDisconnected():void {			
-			var boundsList:Array = new Array();
-			var sg:SubGraphView;
-			
-			var maxWidth:Number = width;
-			
-            for each (sg in subGraphs) {
-                // The real subgraph bounds:
-                var sgBounds:Rectangle = sg.getRealBounds();
-                boundsList.push(sgBounds);
-                // Temp. props attributes, just to get the correct subgraph later:
-                sg.props.$realWidth = sgBounds.width;
-                sg.props.$realHeight = sgBounds.height;
-                
-                // If there is a subgraph that is wider than the whole canvas,
-                // use its width in the packing bounds:
-                if (sgBounds.width > maxWidth) maxWidth = sgBounds.width;
-            }
-            
-            boundsList.sort(function(a:Rectangle, b:Rectangle):int {
-                return a.width < b.width ? -1 : (a.width > b.width ? 1 : 0);
-            }, Array.DESCENDING);
-            trace("=> sorted best_rects: " + boundsList);
-            
-            // More than 8 subgraphs decreases performance when using "fill by stripes":
-            if (boundsList.length <= 7)
-                boundsList = PackingAlgorithms.fillByStripes(maxWidth, boundsList);
-            else
-                boundsList = PackingAlgorithms.fillByOneColumn(maxWidth, boundsList);
-            
-            for (var i:uint = 0; i < boundsList.length; i++) {
-                var rect:Rectangle = Rectangle(boundsList[i]);
+		private function createVisualization(data:Data, layout:String):GraphVis {
+		    vis = new GraphVis(data, _config);
+		    var b:Rectangle = GraphUtils.calculateGraphDimension(data.nodes, layout, _style);
+            vis.bounds = b;
 
-                for each (sg in subGraphs) {
-                	// Get the correct subgraph for this "packed" bounds:
-                	if (rect.width == sg.props.$realWidth && rect.height == sg.props.$realHeight) {
-                		// Set the new coordinates:
-		                sg.x = rect.x;
-		                sg.y = rect.y;
-		                // Remove the temp. props attributes:
-		                sg.props.$realWidth = null;
-                        sg.props.$realHeight = null;
-                		break;
-                	}
-                }
-            }
-		}
-		
-		private function addSubGraphs(dataList:Array):void {
-		    var length:uint = dataList.length;
-		    
-			// Sort the subgraphs by number of nodes, DESC:
-            dataList.sort(function(a:Data, b:Data):int {
-                return a.nodes.length < b.nodes.length ? -1 : (a.nodes.length > b.nodes.length ? 1 : 0);
-            }, Array.DESCENDING);
+            addChild(vis);
+            vis.applyVisualStyle(_style);
             
-            // Calculate a minimum or desired dimension for each subgraph bounds:
-            var rects:Array = new Array();
-            var numNodes:uint = 0;
-            for each (var dt:Data in dataList) numNodes += dt.nodes.length;
-            
-            for (var idx:uint = 0; idx < length; idx++) {
-                var r:Rectangle = calculateGraphDimension(dataList[idx].nodes);
-                rects.push(r);
-            }
-            
-            rects.sort(function(a:Rectangle, b:Rectangle):int {
-            	var arA:Number = a.width*a.height;
-            	var arB:Number = b.width*b.height;
-                return arA < arB ? -1 : (arA > arB ? 1 : 0);
-            }, Array.DESCENDING);
-            
-            for (var i:uint = 0; i < length; i++) {
-                var data:Data = dataList[i];
-                var bounds:Rectangle = rects[i];
-                
-                var sg:SubGraphView = createSubGraph(data, bounds);
-            }
-		}
-		
-		private function createSubGraph(data:Data, bounds:Rectangle):SubGraphView {
-		    var sgView:SubGraphView = new SubGraphView(data, _config);
-            sgView.bounds = bounds;
-
-            // This is necessary to allow all nodes from all visualizations to
-            // receive mouse events (is there any other way)?:
-            sgView.mouseEnabled = false;
-            
-            subGraphs.push(sgView);
-            graphContainer.addChild(sgView);
-            
-            sgView.applyVisualStyle(_style);
-            
-            return sgView;
-		}
-		
-		private function calculateGraphDimension(nodes:DataList):Rectangle {            
-            // The minimum square edge when we have only one node:
-            var side:Number = 40;
-            var numNodes:Number = nodes.length;
-            
-            if (numNodes > 1) {
-				if (_config.currentLayout === Layouts.CIRCLE ||
-				    _config.currentLayout === Layouts.CIRCLE_TREE ||
-				    _config.currentLayout === Layouts.RADIAL) {
-    				if (numNodes === 2) {
-    				    side *= 1.5;
-    				} else {
-        				// Based on the desired distance between the adjacent nodes, imagine an inscribed 
-        				// regular polygon that has N sides, and then calculate the circle radius:
-        				// 1. number of sides = number of nodes:
-        				var N:Number = nodes.length;
-        				// 2. Each side should have a desired size (distance between the adjacent nodes):
-        				var S:Number = 18;
-        				// 3. If we connect two adjacent vertices to the center, the angle between these two 
-        				// lines is 360/N degrees, or 2*pi/N radians:
-        				var theta:Number = 2 * Math.PI / N;
-        				// 4. To find the circle radius, using Trigonometry:
-        				// sin(theta/2) = opposite/hypotenuse
-        				var r:Number = S / Math.sin(theta/2) * 2;
-        				// 5. Finally, the square side should be the circle diameter (2r):
-        				side = 2 * r;
-                    }
-                } else if (_config.currentLayout === Layouts.FORCE_DIRECTED) {
-                    var area:Number = 0;
-                    for each (var n:NodeSprite in nodes) {
-                        var s:Number = _style.getValue(VisualProperties.NODE_SIZE, n.data);
-                        area += 9 * s * s;
-                    }
-                    side = Math.sqrt(area);
-                }
-            }
-			
-			// The subgraph area is squared:
-			return new Rectangle(0, 0, side, side);
+            return vis;
 		}
 	}
 }

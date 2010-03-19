@@ -73,7 +73,7 @@ package org.cytoscapeweb.controller {
                 if (facade.hasMediator(GraphMediator.NAME))
                     facade.removeMediator(GraphMediator.NAME);
     
-                var graphView:GraphView = CytoscapeWeb(appMediator.getViewComponent()).networkVisBox.graphView;
+                var graphView:GraphView = CytoscapeWeb(appMediator.getViewComponent()).graphView;
                 facade.registerMediator(new GraphMediator(graphView));
             
                 var graphMediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;

@@ -50,12 +50,12 @@ package org.cytoscapeweb.controller {
     public class SelectCommand extends SimpleCommand {
         
         override public function execute(notification:INotification):void {
-            var arr:Array = notification.getBody() as Array;
+            var list:* = notification.getBody();
             
-            if (arr != null && arr.length > 0) {
+            if (list != null && list.length > 0) {
                 // Separate nodes and edges:
                 var nodes:Array = [], edges:Array = [];
-                for each (var ds:DataSprite in arr) {
+                for each (var ds:DataSprite in list) {
                     if (ds is NodeSprite) nodes.push(ds);
                     else edges.push(ds);
                 }

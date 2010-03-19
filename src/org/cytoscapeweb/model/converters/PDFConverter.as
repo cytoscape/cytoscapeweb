@@ -68,7 +68,7 @@ package org.cytoscapeweb.model.converters {
 	import org.cytoscapeweb.util.Utils;
 	import org.cytoscapeweb.util.VisualProperties;
 	import org.cytoscapeweb.view.components.GraphView;
-	import org.cytoscapeweb.view.components.SubGraphView;
+	import org.cytoscapeweb.view.components.GraphVis;
 		
 	/**
 	 * Class that generates a vectorial image PDF file from the network.
@@ -114,7 +114,7 @@ package org.cytoscapeweb.model.converters {
                                      width:Number=0, height:Number=0):ByteArray {
             _style = style;
             _scale = scale;
-        	var bounds:Rectangle = _graphView.getRealBounds();
+        	var bounds:Rectangle = _graphView.vis.getRealBounds();
         	
         	// Width and height depends on the current zooming and
         	// we also add a margin to the image:
@@ -153,7 +153,7 @@ package org.cytoscapeweb.model.converters {
             pdf.end();
             
             // Get the shift, in case one or more nodes were dragged or the graph view is not at [0,0]:
-            var sp:Point = _graphView.graphContainer.globalToLocal(new Point(bounds.x, bounds.y));
+            var sp:Point = _graphView.vis.globalToLocal(new Point(bounds.x, bounds.y));
             _shiftX = sp.x + _graphView.x/scale - margin - hPad ;
             _shiftY = sp.y + _graphView.y/scale - margin;
             
@@ -477,17 +477,8 @@ package org.cytoscapeweb.model.converters {
         	for each (var sp:DataSprite in list) arr.push(sp);
         	
             arr.sort(function(a:DataSprite, b:DataSprite):int {
-            	// Remember that we may have disconnected subgraphs and, in this case,
-            	// each subgraph is inside its own sprite, so we have to consider the
-            	// subgraphs z-order too:
-            	var sg1:SubGraphView = _graphView.getSubGraphOf(a);
-            	var sg2:SubGraphView = _graphView.getSubGraphOf(b);
-            	
-            	var sgz1:int = _graphView.graphContainer.getChildIndex(sg1);
-            	var sgz2:int = _graphView.graphContainer.getChildIndex(sg2);
-
-                var z1:int = a.parent.getChildIndex(a) + sgz1*1000;
-                var z2:int = b.parent.getChildIndex(b) + sgz2*1000;
+                var z1:int = a.parent.getChildIndex(a);
+                var z2:int = b.parent.getChildIndex(b);
                 
                 return z1 < z2 ? -1 : (z1 > z2 ? 1 : 0);
             });
@@ -501,8 +492,8 @@ package org.cytoscapeweb.model.converters {
         private function toImagePoint(p:Point, display:DisplayObject):Point {
         	// Get the Global point (relative to the stage):
             var ip:Point = display.parent.localToGlobal(p);
-            // Get the local point, relative to the graph container:
-            ip = _graphView.graphContainer.globalToLocal(ip);
+            // Get the local point, relative to the graph view:
+            ip = _graphView.vis.globalToLocal(ip);
             // Remove the shift:
             ip.x -= _shiftX;
             ip.y -= _shiftY;

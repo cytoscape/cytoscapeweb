@@ -31,6 +31,7 @@
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:app="org.cytoscapeweb.view.components.*"
                 width="100%" height="100%"
                 verticalScrollPolicy="off" horizontalScrollPolicy="off"
+                initialize="onInit()"
                 creationComplete="onComplete()">
                 
 <mx:Style source="/assets/css/main.css"/>
@@ -39,16 +40,45 @@
 <![CDATA[
 	import mx.resources.ResourceBundle;
 	import org.cytoscapeweb.ApplicationFacade;
-	
-	private var facade:ApplicationFacade = ApplicationFacade.getInstance();
+	import org.cytoscapeweb.view.components.GraphView;
+
+    [Bindable]
+    public var graphView:GraphView;
+
+    private function onInit():void {
+        // Create and add the View that contains the GRAPH:
+        graphView = new GraphView();
+        graphBox.addChild(graphView);
+    }
+
+    private function onRollOverPanZoomBox():void {
+        panZoomBox.styleName = "panZoomBoxRollOver";
+    }
+    
+    private function onRollOutPanZoomBox():void {
+        panZoomBox.styleName = "panZoomBox";
+    }
 
     private function onComplete():void {
 	    // Initialize the ApplicationFacade (PureMVC Framework):
-    	facade.startup(this);
+    	ApplicationFacade.getInstance().startup(this);
     }
 ]]>
 </mx:Script>
 
-    <app:NetworkVisBox id="networkVisBox" width="100%" height="100%" />
+    <mx:Canvas styleName="rawBox"
+               width="100%" height="100%"
+               verticalScrollPolicy="off" horizontalScrollPolicy="off"
+               autoLayout="true">
+               
+        <mx:Box id="graphBox" styleName="rawBox" width="100%" height="100%"
+                verticalScrollPolicy="off" horizontalScrollPolicy="off"
+                verticalAlign="middle" horizontalAlign="center"
+                autoLayout="true"/>
+                
+        <app:PanZoomBox id="panZoomBox" visible="false"
+                        rollOver="onRollOverPanZoomBox();"
+                        rollOut="onRollOutPanZoomBox();"/>
+    </mx:Canvas>
 
 </mx:Application> 
