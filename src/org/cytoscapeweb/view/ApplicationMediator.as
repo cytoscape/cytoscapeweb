@@ -222,19 +222,14 @@ package org.cytoscapeweb.view {
             var bytes:ByteArray;
 
             if (type === "png") {
-                var bounds:Rectangle = graphView.vis.getRealBounds();
+                var bounds:Rectangle = graphView.getRealBounds();
                 var scale:Number = graphProxy.zoom;
                 var color:uint = configProxy.config.visualStyle.getValue(VisualProperties.BACKGROUND_COLOR);
                 
                 var source:BitmapData = new BitmapData(bounds.width, bounds.height, false, color);
                 
-                // Do not draw the pan-zoom copntrol:
-                if (panZoomBox.visible) panZoomBox.visible = false;
-
                 var matrix:Matrix = new Matrix(1, 0, 0, 1, -bounds.x, -bounds.y);
-                source.draw(application.graphBox, matrix);
-                
-                if (configProxy.panZoomControlVisible) panZoomBox.visible = true;
+                source.draw(graphView, matrix);
 
                 var encoder:PNGEncoder = new PNGEncoder();
                 bytes = encoder.encode(source);
