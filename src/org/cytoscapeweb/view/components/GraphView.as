@@ -143,13 +143,6 @@ package org.cytoscapeweb.view.components {
         	
         	var scale:Number = 1;
             var b:Rectangle = vis.getRealBounds();
-            
-            var g:Graphics = Sprite(parent).graphics;
-            g.clear();
-            g.beginFill(0xff0000, 0.4);
-            g.drawRect(b.x, b.y, b.width, b.height);
-            g.endFill();
-            
             var pw:Number = stage.stageWidth;
             var ph:Number = stage.stageHeight;
             
