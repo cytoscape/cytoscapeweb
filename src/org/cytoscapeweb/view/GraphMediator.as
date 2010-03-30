@@ -213,31 +213,32 @@ package org.cytoscapeweb.view {
             }
         }
         
-        public function updateFilteredNodes(updateAllProperties:Boolean):void {
-            if (updateAllProperties) {
-                vis.data.nodes.setProperties(Nodes.properties);
-            } else {
-                for each (var n:NodeSprite in graphProxy.graphData.nodes) {
-                    n.visible = Nodes.visible(n);
+        public function updateFilters(updateNodes:Boolean, updateEdges:Boolean,
+                                      updateAllProperties:Boolean):void {
+            if (updateNodes) {
+                if (updateAllProperties) {
+                    vis.data.nodes.setProperties(Nodes.properties);
+                } else {
+                    for each (var n:NodeSprite in graphProxy.graphData.nodes) {
+                        n.visible = Nodes.visible(n);
+                    }
                 }
+                vis.updateLabels(Groups.NODES);
             }
-            vis.updateLabels(Groups.NODES);
-            
             // When filtering nodes, it may be necessary to show/hide related edges as well:
-            updateFilteredEdges(updateAllProperties);
-        }
-        
-        public function updateFilteredEdges(updateAllProperties:Boolean):void {
-            if (updateAllProperties) {
-                vis.data.edges.setProperties(Edges.properties);
-            } else {
-                var edges:* = graphProxy.graphData.edges;
-                var e:EdgeSprite;
-                for each (e in edges) {
-                    e.visible = Edges.visible(e);
+            if (updateNodes || updateEdges) {
+                if (updateAllProperties) {
+                    vis.data.edges.setProperties(Edges.properties);
+                } else {
+                    var edges:* = graphProxy.graphData.edges;
+                    var e:EdgeSprite;
+                    for each (e in edges) {
+                        e.visible = Edges.visible(e);
+                    }
                 }
+                vis.updateLabels(Groups.EDGES);
             }
-            vis.updateLabels(Groups.EDGES);
+            graphView.vis.separateDisconnected();
         }
 
         public function resetDataSprite(ds:DataSprite):void {

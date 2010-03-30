@@ -172,7 +172,8 @@ package org.cytoscapeweb.view.components {
 
         public function GraphVis(data:Data, config:ConfigVO) {
         	super(data);
-        	this._config = config;
+        	_config = config;
+        	separateDisconnected();
         	
             // Tooltips:
             // --------------------------------------------------------------------------
@@ -258,8 +259,6 @@ package org.cytoscapeweb.view.components {
                 PresetLayout(layout).points = _config.nodesPoints;
                 _appliedLayouts.push(layout);
             } else {
-                _dataList = GraphUtils.separateDisconnected(data);
-                
                 if (name === Layouts.FORCE_DIRECTED) {
                     // If the previous layout is ForceDirected, we need to set the nodes' particles and
                     // the edges' springs to null, otherwise the layout may not render very well
@@ -375,6 +374,10 @@ package org.cytoscapeweb.view.components {
             }, group);
         }
 
+        public function separateDisconnected():void {
+            _dataList = GraphUtils.separateDisconnected(data);
+        }
+        
         public function getDisconnectedData(ds:DataSprite):Data {
             if (_dataList != null) {
                 for each (var d:Data in _dataList) {
