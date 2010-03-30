@@ -213,18 +213,30 @@ package org.cytoscapeweb.view {
             }
         }
         
-        public function updateFilteredNodes():void {
-            for each (var n:NodeSprite in graphProxy.graphData.nodes) {
-                n.visible = Nodes.visible(n);
+        public function updateFilteredNodes(updateAllProperties:Boolean):void {
+            if (updateAllProperties) {
+                vis.data.nodes.setProperties(Nodes.properties);
+            } else {
+                for each (var n:NodeSprite in graphProxy.graphData.nodes) {
+                    n.visible = Nodes.visible(n);
+                }
             }
-            vis.data.edges.setProperties(Edges.properties);
-            updateLabels();
+            vis.updateLabels(Groups.NODES);
+            
+            // When filtering nodes, it may be necessary to show/hide related edges as well:
+            updateFilteredEdges(updateAllProperties);
         }
         
-        public function updateFilteredEdges():void {
-            // Apply all properties again, because just setting visible is not enough,
-            // since merged edges styles must be updated.
-            vis.data.edges.setProperties(Edges.properties);
+        public function updateFilteredEdges(updateAllProperties:Boolean):void {
+            if (updateAllProperties) {
+                vis.data.edges.setProperties(Edges.properties);
+            } else {
+                var edges:* = graphProxy.graphData.edges;
+                var e:EdgeSprite;
+                for each (e in edges) {
+                    e.visible = Edges.visible(e);
+                }
+            }
             vis.updateLabels(Groups.EDGES);
         }
 

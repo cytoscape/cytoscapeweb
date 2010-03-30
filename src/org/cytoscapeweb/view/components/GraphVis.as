@@ -50,10 +50,7 @@ package org.cytoscapeweb.view.components {
     import flare.vis.events.DataEvent;
     import flare.vis.events.TooltipEvent;
     import flare.vis.events.VisualizationEvent;
-    import flare.vis.operator.layout.CircleLayout;
     import flare.vis.operator.layout.Layout;
-    import flare.vis.operator.layout.NodeLinkTreeLayout;
-    import flare.vis.operator.layout.RadialTreeLayout;
     
     import flash.display.DisplayObject;
     import flash.geom.Point;
@@ -72,8 +69,11 @@ package org.cytoscapeweb.view.components {
     import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.VisualProperties;
     import org.cytoscapeweb.util.methods.$each;
+    import org.cytoscapeweb.view.layout.CircleLayout;
     import org.cytoscapeweb.view.layout.ForceDirectedLayout;
+    import org.cytoscapeweb.view.layout.NodeLinkTreeLayout;
     import org.cytoscapeweb.view.layout.PresetLayout;
+    import org.cytoscapeweb.view.layout.RadialTreeLayout;
     import org.cytoscapeweb.view.layout.physics.Simulation;
     import org.cytoscapeweb.view.render.Labeler;
     
@@ -97,7 +97,6 @@ package org.cytoscapeweb.view.components {
         private var _dragRect:Rectangle;
         
         private var _dataList:Array = [/*flare.vis.data.Data*/];
-        private var _layoutDataGroups:Array = [/*String*/]; // Data group names
         private var _appliedLayouts:Array = [/*flare.vis.operator.layout.Layout*/];
         
         private function get tooltipControl():TooltipControl {
@@ -220,7 +219,6 @@ package org.cytoscapeweb.view.components {
             
             // Edge labels:
             // ---------------------------------------------------------
-            edgeLabeler.cacheText = false;
             edgeLabeler.textMode = TextSprite.DEVICE;
 
             edgeLabeler.fontName = Labels.labelFontName;
@@ -230,16 +228,6 @@ package org.cytoscapeweb.view.components {
             edgeLabeler.fontStyle = Labels.labelFontStyle;
             edgeLabeler.filters = Labels.filters;
             edgeLabeler.textFunction = Labels.text;
-            
-            // Without this the font styles would not change:
-            $each(data.edges, function(i:uint, e:EdgeSprite):void {
-                var lb:TextSprite = e.props.label;
-                if (lb != null) lb.applyFormat(edgeLabeler.textFormat);
-            });
-            $each(data.nodes, function(i:uint, n:NodeSprite):void {
-                var lb:TextSprite = n.props.label;
-                if (lb != null) lb.applyFormat(nodeLabeler.textFormat);
-            });
 
             if (!firstTime) {
                 if (_config.nodeLabelsVisible) updateLabels(Data.NODES);
@@ -261,19 +249,12 @@ package org.cytoscapeweb.view.components {
                 }
                 _appliedLayouts = [];
             }
-            // Remove previous data groups:
-            if (_layoutDataGroups.length > 0) {
-                for each (var grName:String in _layoutDataGroups) {
-                    data.removeGroup(grName);
-                }
-                _layoutDataGroups = [];
-            }
 
             _layoutName = name;
             var layout:Layout, fdl:ForceDirectedLayout;
             
             if (name === Layouts.PRESET) {
-                layout = createLayout(name);
+                layout = createLayout(name, data);
                 PresetLayout(layout).points = _config.nodesPoints;
                 _appliedLayouts.push(layout);
             } else {
@@ -292,20 +273,19 @@ package org.cytoscapeweb.view.components {
                     data.edges.visit(function(e:EdgeSprite):void {
                        e.props.spring = null;
                     });
-                    fdl = ForceDirectedLayout(createLayout(name));
+                    fdl = ForceDirectedLayout(createLayout(name, data));
                     _appliedLayouts.push(fdl);
                 } else {
                     // Create one layout for each disconnected component:
                     for (var i:uint = 0; i < _dataList.length; i++) {
                         var d:Data = _dataList[i];
-                        var rect:Rectangle = GraphUtils.calculateGraphDimension(d.nodes, name, _style); 
-                        var group:String = name + "_" + i;
- 
-                        data.addGroup(group, d.nodes);
-                        _layoutDataGroups.push(group);
-                        
-                        layout = createLayout(name, group, rect, d.tree.root);
-                        _appliedLayouts.push(layout);
+                        if (d.nodes.length > 1) {
+                            var rect:Rectangle = GraphUtils.calculateGraphDimension(d.nodes, name, _style); 
+                            var root:NodeSprite = d.nodes[0];
+                            
+                            layout = createLayout(name, d, rect, root);
+                            _appliedLayouts.push(layout);
+                        }
                     }
                 }    
             }
@@ -341,7 +321,7 @@ package org.cytoscapeweb.view.components {
                 
                 updateLabels();
 
-                if (_layoutName != Layouts.PRESET) {
+                if (_dataList != null && _dataList.length > 0) {
                     GraphUtils.repackDisconnected(_dataList,
                                                   Math.max(_initialWidth, stage.stageWidth),
                                                   !_config.nodeLabelsVisible,
@@ -372,6 +352,7 @@ package org.cytoscapeweb.view.components {
                 operators.remove(labeler);
                
                 if (visible) {
+                    labeler.cacheText = false;
                     operators.add(labeler);
                     labeler.operate();
                     labeler.cacheText = true;
@@ -464,7 +445,7 @@ package org.cytoscapeweb.view.components {
          * and edge settings to be applied in the demo.
          */
         private function createLayout(name:String,
-                                      group:String=Data.NODES,
+                                      d:Data,
                                       layoutBounds:Rectangle=null,
                                       layoutRoot:DataSprite=null):Layout {
         	var layout:Layout;
@@ -503,24 +484,25 @@ package org.cytoscapeweb.view.components {
 
                 layout = fdl;
             } else if (name === Layouts.CIRCLE) {
-	            var cl:CircleLayout = new CircleLayout(null, null, false, group);
+	            var cl:CircleLayout = new CircleLayout(null, null, false, d);
                 cl.angleWidth = -2 * Math.PI;
                 cl.padding = 0;
 
                 layout = cl;
             } else if (name === Layouts.CIRCLE_TREE) {
-	            var ctl:CircleLayout = new CircleLayout(null, null, true, group);
+	            var ctl:CircleLayout = new CircleLayout(null, null, true, d);
                 ctl.angleWidth = -2 * Math.PI;
                 ctl.padding = 0;
 
                 layout = ctl;
             } else if (name === Layouts.RADIAL) {
-                var rtl:RadialTreeLayout = new RadialTreeLayout(60, false);
+                var r:Number = Math.max(60, _initialWidth/8);
+                var rtl:RadialTreeLayout = new RadialTreeLayout(r, true, false, d);
                 rtl.angleWidth = -2 * Math.PI;
                 
                 layout = rtl;
             } else if (name === Layouts.TREE) {
-                var nltl:NodeLinkTreeLayout = new NodeLinkTreeLayout(Orientation.TOP_TO_BOTTOM, 50, 30, 5);
+                var nltl:NodeLinkTreeLayout = new NodeLinkTreeLayout(Orientation.TOP_TO_BOTTOM, 50, 30, 5, d);
                 nltl.layoutAnchor = new Point(0, -2 * height/5);
                 
                 layout = nltl;

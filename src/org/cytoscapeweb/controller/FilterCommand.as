@@ -48,6 +48,7 @@ package org.cytoscapeweb.controller {
         override public function execute(notification:INotification):void {
             var gr:String = notification.getBody().group;
             var arr:Array = notification.getBody().filtered;
+            var updateVisualMappers:Boolean = notification.getBody().updateVisualMappers;
 
             if (arr != null) {
                 var nodes:Array = gr === Groups.NODES || gr === Groups.NONE ? [] : null;
@@ -74,17 +75,16 @@ package org.cytoscapeweb.controller {
                         graphProxy.filteredNodes = nodes;
                         groups.push(Groups.NODES);
                     }
-    
-                    var cfgProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
-                    cfgProxy.bindGraphData(graphProxy.graphData);
-    
-                    // Update the view
+
+                    if (updateVisualMappers) {
+                        var cfgProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
+                        cfgProxy.bindGraphData(graphProxy.graphData);
+                    }
+                        
+                    // Update the view:
                     var mediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
-    
-                    if (edges != null)
-                        mediator.updateFilteredEdges();
-                    if (nodes != null)
-                        mediator.updateFilteredNodes();
+                    if (nodes != null) mediator.updateFilteredNodes(updateVisualMappers);
+                    if (edges != null) mediator.updateFilteredEdges(updateVisualMappers);
             
                     // Call external listeners:
                     var extProxy:ExternalInterfaceProxy = facade.retrieveProxy(ExternalInterfaceProxy.NAME) as ExternalInterfaceProxy;

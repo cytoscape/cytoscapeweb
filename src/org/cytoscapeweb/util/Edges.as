@@ -141,11 +141,10 @@ package org.cytoscapeweb.util {
         }
         
         public static function visible(e:EdgeSprite):Boolean {
-            var vis:Boolean = !e.props.$filteredOut;
+            var vis:Boolean = !GraphUtils.isFilteredOut(e);
 
             var merged:Boolean = configProxy.edgesMerged;
-            vis = vis && ((merged && e.props.$merged) || (!merged && !e.props.$merged) );
-            vis = vis && e.source.visible && e.target.visible;
+            vis = vis && ( (merged && e.props.$merged) || (!merged && !e.props.$merged) );
             
             return vis;
         }

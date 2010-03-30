@@ -44,15 +44,16 @@
                     },
                     nodes: {
                         shape: "ELLIPSE",
-                        color: "#cccccc",
+                        color: { defaultValue: "#cccccc", continuousMapper: { attrName: "weight",  minValue: "#ffffff", maxValue: "#0b94b1" } },
                         opacity: 0.9,
                         size: { defaultValue: 20, continuousMapper: { attrName: "weight",  minValue: 20, maxValue: 40 } },
                         borderWidth: 1,
-                        borderColor: "#707070"
+                        borderColor: "#707070",
+                        labelFontSize: { defaultValue: 12, continuousMapper: { attrName: "weight",  minValue: 10, maxValue: 24 } },
                     },
                     edges: {
                     	color: "#0b94b1",//{ defaultValue: "#0b94b1", discreteMapper: edgeColorMapper },
-                        width: 2,
+                        width: { defaultValue: 2, continuousMapper: { attrName: "weight",  minValue: 2, maxValue: 8 } },
                         mergeWidth: 2,
                         opacity: 0.8,
                         labelFontSize: 10,
@@ -108,6 +109,7 @@
                     showElapsedTime();
                     $("#layouts").val(options.layout);
                     $("input, select").attr("disabled", false);
+                    $("#updateVisualStyle").attr("disabled", true);
                 });
                 
                 vis.addListener("select", function(evt) {
@@ -139,12 +141,18 @@
                $("#minNodeWeight, #minEdgeWeight").keydown(function(evt) {
                    if (evt.which === 13) {
                        var val = parseFloat($(this).val());
+                       var reapplyMappers = $("#reapplyMappers").is(":checked");
                        val = isNaN(val) ? 0 : val;
                        var gr = $(this).attr("id") === "minNodeWeight" ? "nodes" : "edges";
                        vis.filter(gr, function(item) {
                             return item.data.weight >= val;
-                       });
+                       }, reapplyMappers);
+                       // Enable the update button when the filter did not update the view:
+                       $("#updateVisualStyle").attr("disabled", reapplyMappers);
                    }
+               });
+               $("#updateVisualStyle").click(function(evt) {
+                   vis.visualStyle(options.visualStyle);
                });
                $("#toXGMML").click(function(evt) {
                    alert(vis.xgmml());
@@ -196,11 +204,12 @@
             h1, h2 { margin-top: 8px; }
             label { color: #0b94b1; font-size: 14px; }
             hr { border: #0b94b1 1px solid; }
+            .center { text-align: center; }
             #header { width: 100%; height: 40px; padding: 4px 0; background-color: #0b94b1; color: #ffffff; }
             #cytoscapeweb { height: 640px; border-right: 2px solid #0b94b1; border-bottom: 2px solid #0b94b1; margin: 0 auto 0 auto; }
             #sidePanel { width: 120px; padding: 8px 20px 0 10px; vertical-align: top; text-align: left; }
             #controls > div { margin: 8px 0; }
-            #graphs, #createGraph, #reapplyLayout { width: 164px; }
+            #graphs, #createGraph, #reapplyLayout, #updateVisualStyle { width: 164px; }
             #nodesNumber, #edgesNumber { width: 80px; }
         </style>
     </head>
@@ -218,7 +227,7 @@
                     <div id="controls">
                         <div>
                             <label>Networks:</label>
-                            <select id="graphs" size="16">
+                            <select id="graphs" size="10">
                                 <option value="sample1.xml" selected="selected">Sample 1</option>
                                 <option value="sample2.xml">Sample 2</option>
                                 <option value="sample3.xml">Sample 3</option>
@@ -257,13 +266,14 @@
                         </div>
                         <hr/>
                         <div>
-                            <label>Min edge weight:</label> <input id="minEdgeWeight" type="text"/>
-                        </div>
-                        <div>
-                            <label>Min node weight:</label> <input id="minNodeWeight" type="text"/>
+                            <label>Filters</label><br/> <br/>
+                            <label>Min edge weight:</label> <input id="minEdgeWeight" type="text"/><br/>
+                            <label>Min node weight:</label> <input id="minNodeWeight" type="text"/><br/>
+                            <input type="checkbox" id="reapplyMappers" checked="checked"/> Reapply mappers<br/>
+                            <input type="button" id="updateVisualStyle" value="Update Visual Style"/>
                         </div>
                         <hr/>
-                        <div>
+                        <div class="center">
                             <input type="button" id="toXGMML" value="XGMML"/> <input type="button" id="toGraphML" value="GraphML"/>
                         </div>
                         <hr/>

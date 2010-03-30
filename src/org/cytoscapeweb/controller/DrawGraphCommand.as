@@ -79,6 +79,7 @@ package org.cytoscapeweb.controller {
                 var graphMediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
                 graphMediator.drawGraph();
             } catch (err:Error) {
+                trace("[ERROR]: DrawGraphCommand.execute: " + err.getStackTrace());
                 error(err.message, err.errorID, err.name, err.getStackTrace());
             }
         }

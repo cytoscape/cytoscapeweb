@@ -38,7 +38,7 @@
         this.org = {};
     }
     if (!this.org.cytoscapeweb) {
-    	/** @namespace */
+        /** @namespace */
         this.org.cytoscapeweb = {};
     }
 
@@ -275,7 +275,25 @@
         /**
          * <p>If the <code>style</code> argument is passed, it applies that visual style to the network.
          * Otherwise it just returns the current visual style object.</p>
+         * <p>You can register a listener for <code>"visualstyle"</code> events before calling <code>visualStyle(style_obj)</code>. 
+         * If you do so, the listener is called asynchronously, after the network view is updated with that style.</p>
          * @param {org.cytoscapeweb.VisualStyle} [style] An object that contains the desired visual properties and attribute mappings.
+         * @example
+	     * var style = {
+	     *         global: {
+	     *             backgroundColor: "#000000"
+	     *         },
+	     *         nodes: {
+	     *             color: "#ffffff",
+	     *             size: 40
+	     *         }
+	     * };
+	     * 
+         * vis.addListener("visualstyle", function(evt) {
+         *     alert("Network view updated!");
+         * });
+         * vis.visualStyle(style);
+         * 
          * @return <ul><li>The visual style object for <code>visualStyle()</code>.</li>
          *             <li>The Visualization object for <code>visualStyle({Object})</code>.</li></ul>
          * @see org.cytoscapeweb.VisualStyle
@@ -494,8 +512,8 @@
          * @see org.cytoscapeweb.Edge
          */
         mergedEdges: function () {
-        	var str = this.swf().getMergedEdges();
-        	return JSON.parse(str);
+            var str = this.swf().getMergedEdges();
+            return JSON.parse(str);
         },
 
         /**
@@ -538,7 +556,7 @@
          * @see org.cytoscapeweb.Visualization#selected
          */
         select: function (/*gr, items*/) {
-        	var gr, items;
+            var gr, items;
             if (arguments.length === 1) {
                 if (typeof arguments[0] === "string") { gr = arguments[0]; }
                 else { items = arguments[0]; }
@@ -610,8 +628,8 @@
         deselect: function (/*gr, items*/) {
             var gr, items;
             if (arguments.length === 1) {
-            	if (typeof arguments[0] === "string") { gr = arguments[0]; }
-            	else { items = arguments[0]; }
+                if (typeof arguments[0] === "string") { gr = arguments[0]; }
+                else { items = arguments[0]; }
             } else if (arguments.length > 1) {
                 gr = arguments[0];
                 items = arguments[1];
@@ -634,12 +652,30 @@
          * @param {Function} fn The filter function. It will receive a node or edge as argument and must
          *                      return a boolean value indicating the visibility of that element.
          *                      So, if it returns false, that node or edge will be hidden.
+         * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply all the continuous mappers
+         *                                        to the network view after the filtering action is done.
+         *                                        Remember that continuous mappers ignore filtered out elements
+         *                                        when interpolating the results.
+         *                                        The default value is <code>false</code>.
          * @return {org.cytoscapeweb.Visualization} The Visualization instance.
          * @see org.cytoscapeweb.Visualization#removeFilter
+         * @see org.cytoscapeweb.ContinuousMapper
          */
-        filter: function (/*gr, */fn) {
-            var gr;
-            if (arguments.length > 1) { gr = arguments[0]; fn = arguments[1]; }
+        filter: function (/*gr, */fn/*, updateVisualMappers*/) {
+            var gr, updateVisualMappers;
+            if (arguments.length > 2) {
+                gr = arguments[0];
+                fn = arguments[1];
+                updateVisualMappers = arguments[2];
+            } else if (arguments.length === 2) {
+                if (typeof arguments[0] === 'string') {
+                    gr = arguments[0];
+                    fn = arguments[1];
+                } else {
+                    fn = arguments[0];
+                    updateVisualMappers = arguments[1];
+                }
+            }
             gr = this._normalizeGroup(gr);
             var list = this._nodesAndEdges(gr, "getNodes", "getEdges");
             if (list.length > 0 && fn) {
@@ -648,7 +684,7 @@
                     var obj = list[i];
                     if (fn(obj)) { filtered.push(obj); }
                 }
-                this.swf().filter(gr, filtered);
+                this.swf().filter(gr, filtered, updateVisualMappers);
             }
             return this;
         },
@@ -657,12 +693,18 @@
          * <p>Remove a nodes or edges filter.</p>
          * @param {org.cytoscapeweb.Group} [gr] The group of network elements to remove the filter from.
          *                                       If <code>null</code>, remove any existing filters from both nodes and edges.
+         * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply all the continuous mappers
+         *                                        to the network view after the filtering action is done.
+         *                                        Remember that continuous mappers ignore filtered out elements
+         *                                        when interpolating the results.
+         *                                        The default value is <code>false</code>.
          * @return {org.cytoscapeweb.Visualization} The Visualization instance.
          * @see org.cytoscapeweb.Visualization#filter
+         * @see org.cytoscapeweb.ContinuousMapper
          */
-        removeFilter: function (gr) {
+        removeFilter: function (gr, updateVisualMappers) {
             gr = this._normalizeGroup(gr);
-            this.swf().removeFilter(gr);
+            this.swf().removeFilter(gr, updateVisualMappers);
             return this;
         },
 
@@ -712,7 +754,7 @@
          * @see org.cytoscapeweb.Visualization#xgmml
          */
         sif: function () {
-        	return this.swf().getNetworkAsText("sif");
+            return this.swf().getNetworkAsText("sif");
         },
 
         /**
@@ -728,7 +770,7 @@
          * @return {String} The PNG binary data encoded to a Base64 string.
          */
         png: function () {
-        	return this.swf().getNetworkAsImage("png");
+            return this.swf().getNetworkAsImage("png");
         },
 
         /**
@@ -1254,7 +1296,7 @@
                 var gr = this._normalizeGroup(evt.group);
                 var grItems = this._contextMenuItems[gr];
                 if (grItems) {
-                	evt = new org.cytoscapeweb.Event(evt);
+                    evt = new org.cytoscapeweb.Event(evt);
                     var fn = grItems[evt.value];
                     if (fn) { fn(evt); }
                 }
@@ -1368,23 +1410,23 @@
      *     <tr><td><code>edges</code></td><td>Array of filtered {@link org.cytoscapeweb.Edge} objects or <code>null</code></td><td><code>undefined</code></td></tr>
      *     <tr><td><code>none</code></td><td>Array of filtered {@link org.cytoscapeweb.Node} and {@link org.cytoscapeweb.Edge} objects or <code>null</code></td><td><code>undefined</code></td></tr>
      * </Table>
-     * <p><label><strong>layout:</strong></label> Fired after a layout is applied (see {@link org.cytoscapeweb#layout}.</p>
+     * <p><label><strong>layout:</strong></label> Fired after a layout is applied (see {@link org.cytoscapeweb.Visualization#layout}.</p>
      * <table>
      *     <tr><th>group</th><th>target</th><th>value</th></tr>
      *     <tr><td><code>none</code></td><td><code>undefined</code></td><td><code>The applied layout name</code></td></tr>
      * </Table>
-     * <p><label><strong>visualstyle:</strong></label> Fired after a visual style is applied (see {@link org.cytoscapeweb#visualStyle}.</p>
+     * <p><label><strong>visualstyle:</strong></label> Fired after a visual style or bypass is applied (see {@link org.cytoscapeweb.Visualization#visualStyle} and {@link org.cytoscapeweb.Visualization#visualStyleBypass}).</p>
      * <table>
      *     <tr><th>group</th><th>target</th><th>value</th></tr>
      *     <tr><td><code>none</code></td><td><code>undefined</code></td><td>The applied {@link org.cytoscapeweb.VisualStyle} object</td></tr>
      * </Table>
-     * <p><label><strong>zoom:</strong></label> Fired after the network is rescaled, either by calling {@link org.cytoscapeweb#zoom} or 
+     * <p><label><strong>zoom:</strong></label> Fired after the network is rescaled, either by calling {@link org.cytoscapeweb.Visualization#zoom} or 
      * when the user interacts with the visualization's pan-zoom control.</p>
      * <table>
      *     <tr><th>group</th><th>target</th><th>value</th></tr>
      *     <tr><td><code>none</code></td><td><code>undefined</code></td><td>The zoom value (float number from 0 to 1)</td></tr>
      * </Table>
-     * <p><label><strong>error:</strong></label> Fired after the network is rescaled, either by calling {@link org.cytoscapeweb#zoom} or 
+     * <p><label><strong>error:</strong></label> Fired after the network is rescaled, either by calling {@link org.cytoscapeweb.Visualization#zoom} or 
      * when the user interacts with the visualization's pan-zoom control.</p>
      * <table>
      *     <tr><th>group</th><th>target</th><th>value</th></tr>
@@ -1406,11 +1448,11 @@
      * @see org.cytoscapeweb.Visualization#removeListener
      */
     this.org.cytoscapeweb.Event = function (options) {
-    	/**
-    	 * The event type name.
+        /**
+         * The event type name.
          * @type org.cytoscapeweb.EventType
          */
-    	this.type = options.type;
+        this.type = options.type;
         /**
          * The group of network elements the event is related to.
          * @type org.cytoscapeweb.Group
@@ -1918,11 +1960,15 @@
      * <ol><li><strong>Continuous-to-Continuous Mapper:</strong> for example, you can map a continuous numerical value to a node size.</li>
      *     <li><strong>Color Gradient Mapper:</strong> This is a special case of continuous-to-continuous mapping. 
      *         Continuous numerical values are mapped to a color gradient.</li></ol>
-     * <p>* <strong>Continuous-to-Discrete</strong> mappers are not supported yet (e.g. all values below 0 are mapped to square nodes, 
-     * and all values above 0 are mapped to circular nodes).</p>
-     * <p>** Only numerical attributes and colors can be mapped with continuous mappers. For example,
-     * there is no way to smoothly morph between circular nodes and square nodes.</p>
-     * <p>*** The mapping algorithm uses a linear interpolation to calculate the values.</p>
+     * <p>Notice that:
+     * <ul>
+     *     <li><strong>Continuous-to-Discrete</strong> mappers are not supported yet (e.g. all values below 0 are mapped to square nodes, 
+     * and all values above 0 are mapped to circular nodes).</li>
+     *     <li>Only numerical attributes and colors can be mapped with continuous mappers. For example,
+     * there is no way to smoothly morph between circular nodes and square nodes.</il>
+     *     <li>The mapping algorithm uses a linear interpolation to calculate the values.</li>
+     *     <li>Continuous mappers ignore filtered out elements.</li>
+     * </ul>
      * @example
      * var sizeMapper = { attrName: "weight",  minValue: 12, maxValue: 36 };
      * @class

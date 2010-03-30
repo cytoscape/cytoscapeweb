@@ -46,8 +46,11 @@ package org.cytoscapeweb.controller {
     public class RemoveFilterCommand extends SimpleCommand {
         
         override public function execute(notification:INotification):void {
-            var gr:String = notification.getBody() as String;
+            var gr:String = notification.getBody().group;
+            var updateVisualMappers:Boolean = notification.getBody().updateVisualMappers;
+            
             if (gr == null) gr = Groups.NONE;
+            
             var graphProxy:GraphProxy = facade.retrieveProxy(GraphProxy.NAME) as GraphProxy;
             var groups:Array = [Groups.NONE];
             var updateNodes:Boolean = false;
@@ -66,16 +69,15 @@ package org.cytoscapeweb.controller {
             }
             
             if (updateNodes || updateEdges) {
-                var cfgProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
-                cfgProxy.bindGraphData(graphProxy.graphData);
+                if (updateVisualMappers) {
+                    var cfgProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
+                    cfgProxy.bindGraphData(graphProxy.graphData);
+                }
                 
                 // Update the view:
                 var mediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
-                
-                if (updateNodes)
-                    mediator.updateFilteredNodes();
-                if (updateEdges)
-                    mediator.updateFilteredEdges();
+                if (updateNodes) mediator.updateFilteredNodes(updateVisualMappers);
+                if (updateEdges) mediator.updateFilteredEdges(updateVisualMappers);
                 
                 // Call listeners:
                 var extProxy:ExternalInterfaceProxy = facade.retrieveProxy(ExternalInterfaceProxy.NAME) as ExternalInterfaceProxy;

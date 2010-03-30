@@ -50,6 +50,7 @@ package org.cytoscapeweb {
         
         /** To load and display the graph. */
         public static const DRAW_GRAPH:String = "show_graph";
+        
         /** 
          * To apply or reapply a layout to the graph.
          * The name of the Layout is the body of the notification. If it is not provided,
@@ -60,6 +61,7 @@ package org.cytoscapeweb {
         public static const SET_VISUAL_STYLE:String = "set_visual_style";
         /** To apply a visual style bypass to the network. A VsualStyleBypassVO must be sent as the notification body. */
         public static const SET_VISUAL_STYLE_BYPASS:String = "set_visual_style_bypass";
+        
         /** To export the network as an image or an XML. */
         public static const EXPORT_NETWORK:String = "export_network";
         
@@ -69,9 +71,9 @@ package org.cytoscapeweb {
         public static const SHOW_PANZOOM_CONTROL:String = "show_panzoom_control";
         /** Ask to merge or unmerge edges, according to the boolean value sent as the body of the notification. */
         public static const MERGE_EDGES:String = "merge_edges";
-        /** Ask to filter nodes or edges. The array of filtered elements must be sent as the body of the notification. */
+        /** Ask to filter nodes or edges. */
         public static const FILTER:String = "filter_network";
-        /** Ask to remove nodes/edges filter. The group must be sent as the body of the notification. */
+        /** Ask to remove nodes/edges filter. */
         public static const REMOVE_FILTER:String = "remove_network_filter";
         
         /** To pan the whole network. */

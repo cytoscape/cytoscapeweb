@@ -71,7 +71,10 @@ package org.cytoscapeweb.model.data {
         
         // ========[ CONSTRUCTOR ]==================================================================
         
-        public function ContinuousVizMapperVO(attrName:String, propName:String, minValue:Number, maxValue:Number) {
+        public function ContinuousVizMapperVO(attrName:String,
+                                              propName:String,
+                                              minValue:Number,
+                                              maxValue:Number) {
             super(attrName, propName, this);
             this._minValue = minValue;
             this._maxValue = maxValue;
@@ -81,7 +84,10 @@ package org.cytoscapeweb.model.data {
         
         public override function getValue(data:Object):* {
         	var attrValue:Number = data[attrName] as Number;
-        	if (dataList == null) return attrValue;
+        	if (dataList == null) return undefined;
+        	
+        	if (attrValue < _minAttrValue)      attrValue = _minAttrValue;
+        	else if (attrValue > _maxAttrValue) attrValue = _maxAttrValue;
         	
         	var value:*;
         	var f:Number = Maths.invLinearInterp(attrValue, _minAttrValue, _maxAttrValue);

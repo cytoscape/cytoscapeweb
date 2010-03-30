@@ -30,6 +30,7 @@
 package org.cytoscapeweb.model {
     import flare.vis.data.Data;
     import flare.vis.data.EdgeSprite;
+    import flare.vis.data.NodeSprite;
     
     import mx.utils.StringUtil;
     
@@ -39,6 +40,7 @@ package org.cytoscapeweb.model {
     import org.cytoscapeweb.model.data.VisualPropertyVO;
     import org.cytoscapeweb.model.data.VisualStyleBypassVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
+    import org.cytoscapeweb.util.GraphUtils;
     import org.cytoscapeweb.util.Layouts;
     import org.puremvc.as3.patterns.proxy.Proxy;
     
@@ -196,13 +198,15 @@ package org.cytoscapeweb.model {
         	var nodesData:Array = [], edgesData:Array = [], mergedEdgesData:Array = [];
         	
         	if (data.nodes != null) {
-        	   nodesData = data.nodes.toDataArray();
+        	   for each (var n:NodeSprite in data.nodes) {
+        	       if (!GraphUtils.isFilteredOut(n)) nodesData.push(n.data);
+        	   }
         	} if (data.edges != null) {
         	   for each (var e:EdgeSprite in data.edges) {
-        	       if (!e.props.$merged)
-        	           edgesData.push(e.data);
-        	       else if (!e.props.$filteredOut)
-        	           mergedEdgesData.push(e.data);
+        	       if (!GraphUtils.isFilteredOut(e)) {
+            	       if (!e.props.$merged) edgesData.push(e.data);
+            	       else                  mergedEdgesData.push(e.data);
+            	   }
         	   }
         	}
 

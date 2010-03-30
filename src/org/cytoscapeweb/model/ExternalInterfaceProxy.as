@@ -267,13 +267,15 @@ package org.cytoscapeweb.model {
             return graphProxy.zoom;
         }
         
-        private function filter(group:String, items:Array):void {
+        private function filter(group:String, items:Array, updateVisualMappers:Boolean=false):void {
             var filtered:Array = graphProxy.getDataSpriteList(items, group);
-            sendNotification(ApplicationFacade.FILTER, { group: group, filtered: filtered });
+            sendNotification(ApplicationFacade.FILTER, 
+                             { group: group, filtered: filtered, updateVisualMappers: updateVisualMappers });
         }
         
-        private function removeFilter(group:String):void {
-            sendNotification(ApplicationFacade.REMOVE_FILTER, group);
+        private function removeFilter(group:String, updateVisualMappers:Boolean=false):void {
+            sendNotification(ApplicationFacade.REMOVE_FILTER, 
+                             { group: group, updateVisualMappers: updateVisualMappers });
         }
         
         private function firstNeighbors(rootNodes:Array):Object {

@@ -28,8 +28,11 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.controller {
+    import org.cytoscapeweb.ApplicationFacade;
     import org.cytoscapeweb.model.ConfigProxy;
+    import org.cytoscapeweb.model.ExternalInterfaceProxy;
     import org.cytoscapeweb.model.data.VisualStyleBypassVO;
+    import org.cytoscapeweb.util.ExternalFunctions;
     import org.cytoscapeweb.view.GraphMediator;
     import org.puremvc.as3.interfaces.INotification;
     import org.puremvc.as3.patterns.command.SimpleCommand;
@@ -46,6 +49,15 @@ package org.cytoscapeweb.controller {
                 
                 var grMediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
                 grMediator.applyVisualBypass(cfgProxy.visualStyle);
+                
+                var extProxy:ExternalInterfaceProxy = facade.retrieveProxy(ExternalInterfaceProxy.NAME) as ExternalInterfaceProxy;
+
+                if (extProxy.hasListener("visualstyle")) {
+//                    var body:Object = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
+//                                        argument: { type: "visualstyle", value: bypass.toObject() } };
+//                    
+//                    sendNotification(ApplicationFacade.CALL_EXTERNAL_INTERFACE, body);
+                }
             }
         }
     }

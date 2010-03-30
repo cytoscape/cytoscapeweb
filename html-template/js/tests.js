@@ -68,6 +68,18 @@ var fneighbRes = {
 		cytoweb2: { roots: ["a01","a03"], neighbors: ["a02","a05","a04"], edgesLength: 6, mergedEdgesLength: 3 }
 };
 
+// Filters:
+
+function nfilter(n) {
+	return n.data.weight > 0.03 && n.data.weight < 0.4;
+}
+
+function efilter(e) {
+	return e.data.id % 2 === 0;
+}
+
+// Tests:
+
 function runJSTests(vis) {
 	test("Event Listeners", function() {
 		ok(!vis.hasListener("nodes", "click"), "Does not have nodes::click listener yet");
@@ -465,13 +477,100 @@ function runGraphTests(moduleName, vis, options) {
 	// TODO: select regular edges when they are merged and vice-versa
 	// TODO: select filtered edges when they are merged and when they aren't
     
+    asyncTest("Visual Style", function() {
+        expect(14);
+    	vis.addListener("visualstyle", function(evt) {
+        	start();
+        	vis.removeListener("visualstyle");
+        	var s = evt.value;
+        	same(s.global.backgroundColor, style.global.backgroundColor);
+        	same(s.nodes.shape, style.nodes.shape);
+        	same(s.nodes.opacity, style.nodes.opacity);
+        	same(s.nodes.borderColor, style.nodes.borderColor);
+        	same(s.nodes.size.defaultValue, style.nodes.size.defaultValue);
+        	same(s.nodes.size.continuousMapper.attrName, style.nodes.size.continuousMapper.attrName);
+        	same(s.nodes.size.continuousMapper.minValue, style.nodes.size.continuousMapper.minValue);
+        	same(s.nodes.size.continuousMapper.maxValue, style.nodes.size.continuousMapper.maxValue);
+        	same(s.edges.color, style.edges.color);
+        	same(s.edges.opacity, style.edges.opacity);
+        	same(s.edges.width.defaultValue, style.edges.width.defaultValue);
+        	same(s.edges.width.continuousMapper.attrName, style.edges.width.continuousMapper.attrName);
+        	same(s.edges.width.continuousMapper.minValue, style.edges.width.continuousMapper.minValue);
+        	same(s.edges.width.continuousMapper.maxValue, style.edges.width.continuousMapper.maxValue);
+        	stop();
+        });
+    	
+    	vis.visualStyle(style);
+    });
+    
+    asyncTest("Visual Style Bypass", function() {
+    	var bypass = { nodes: {}, edges: {} };
+    	var id;
+    	var nodes = vis.nodes();
+    	var edges = vis.edges();
+    	
+    	expect(nodes.length + edges.length);
+    	
+		$.each(nodes, function(i, n) {
+			id = n.data.id;
+			bypass.nodes[id] = { opacity: (id % 2 === 0 ? 0.4 : 0) };
+	    });
+		$.each(edges, function(i, e) {
+			id = e.data.id;
+			bypass.edges[id] = { opacity: (id % 2 === 0 ? 0.5 : 0) };
+		});
+
+    	vis.addListener("visualstyle", function(evt) {
+    		start();
+    		nodes = vis.nodes();
+    		edges = vis.edges();
+    		$.each(nodes, function(i, n) {
+    			var expected = (n.data.id % 2 === 0 ? 0.4 : 0);
+    			same(n.opacity, expedted);
+    	    });
+    		$.each(edges, function(i, e) {
+    			var expected = (e.data.id % 2 === 0 ? 0.5 : 0);
+    			same(e.opacity, expedted);
+    		});
+    		stop();
+    	});
+    	
+    	vis.visualStyle(style);
+    });
+    
+    asyncTest("Layout", function() {
+    	expect(2);
+    	vis.addListener("layout", function(evt) {
+			start();
+			same("Tree", evt.value, "evt.value layout");
+			same("Tree", vis.layout(), "layout()");
+			stop();
+			
+			vis.removeListener("layout");
+    	});
+    	
+    	vis.layout('  TREE '); // It should trim and be case insensitive!
+    });
+    
     test("Filter", function() {
+    	// Before filtering:
+    	var nlookup = { /*id=>node*/ }, elookup = { /*id=>edge*/ };
     	// Filtered in elements maps:
     	var inNodes = { /*id=>node*/ }, inEdges = { /*id=>edge*/ };
     	// Array of filtered elements:
     	var feList, fnList, fAllList;
     	// Counter for nodes/edges:
     	var ce = 0, cn = 0;
+    	
+    	// Create nodes and edges map:
+    	var nodes = vis.nodes();
+    	$.each(nodes, function(i, n) {
+    		nlookup[n.data.id] = n;
+    	});
+    	var edges = vis.edges();
+    	$.each(edges, function(i, e) {
+    		elookup[e.data.id] = e;
+    	});
     	
     	//Add Listeners:
     	vis.addListener("filter", "edges", function(evt) {
@@ -491,10 +590,10 @@ function runGraphTests(moduleName, vis, options) {
     	vis.filter("edges", function(e){
     		same(e.group, "edges", "Filtering edge '"+e.data.id+"'");
     		ce++;
-    		return e.data.id % 2 === 0;
+    		return efilter(e);
     	});
     	// Check:
-    	var edges = vis.edges();
+    	edges = vis.edges();
     	same(ce, edges.length, "Filter function received all edges");
     	same(feList.length, Math.floor(edges.length/2), "Filtered correct number of edges");
     	// Listeners for "edges" & "none" should get the same results:
@@ -504,6 +603,8 @@ function runGraphTests(moduleName, vis, options) {
 	    		same(e.group, "edges", "Filtered group for '"+e.data.id+"' ("+j+")");
 	    		ok(e.data.id % 2 === 0, "Edge '"+e.data.id+"' correctly filtered ("+j+")");
 	    		ok(e.visible, "Filtered edge '"+e.data.id+"' is visible ("+j+")");
+	    		// When updateVisualMappers == false:
+	    		same(e.width, elookup[e.data.id].width, "The edge width should not change ("+e.data.id+")");
 	    	});
     	});
     	same(fnList, undefined, "Listener for 'nodes' was not called when filtering edges");
@@ -520,10 +621,10 @@ function runGraphTests(moduleName, vis, options) {
     	vis.filter("nodes", function(n){
     		same(n.group, "nodes", "Filtering node '"+n.data.id+"'");
     		cn++;
-    		return n.data.weight > 0.03 && n.data.weight < 0.4;
+    		return nfilter(n);
     	});
     	// Check:
-    	var nodes = vis.nodes();
+    	nodes = vis.nodes();
     	same(cn, nodes.length, "Filter function received all nodes");
     	same(fnList.length, 3, "Filtered correct number of nodes");
     	// Listeners for "nodes" & "none" should get the same results:
@@ -533,6 +634,8 @@ function runGraphTests(moduleName, vis, options) {
 	    		same(n.group, "nodes", "Filtered group for '"+n.data.id+"' ("+j+")");
 	    		ok(n.data.weight > 0.03 && n.data.weight < 0.4, "Node '"+n.data.id+"' correctly filtered ("+j+")");
 	    		ok(n.visible, "Filtered node '"+n.data.id+"' is visible ("+j+")");
+	    		// When updateVisualMappers == false:
+	    		same(n.size, nlookup[n.data.id].size, "The node size should not change ("+n.data.id+")");
 	    	});
     	});
     	$.each(nodes, function(i, n) {
@@ -547,7 +650,7 @@ function runGraphTests(moduleName, vis, options) {
     			ok(!e.visible, "Edge '"+e.data.id+"' from filtered-out node is INVISIBLE, too");
     		}
     	});
-    	
+
     	// --- REMOVE FILTER ---
     	
     	// EDGES:
@@ -580,7 +683,7 @@ function runGraphTests(moduleName, vis, options) {
     	cn = 0;
     	vis.filter(function(item){
     		if (item.group === 'edges') { ce++; } else if (item.group === 'nodes') { cn++; }
-    		return item.data.id % 2 === 0;
+    		return efilter(item);
     	});
     	same(cn, nodes.length, "Filter function received all nodes (filter by 'none')");
     	same(ce, edges.length, "Filter function received all edges (filter by 'none')");
@@ -596,43 +699,37 @@ function runGraphTests(moduleName, vis, options) {
     	same(feList, null, "Return of listener for 'edges' after removing filter by 'none'");
     	same(fAllList, null, "Return of listener for 'none' after removing filter by 'none'");
     });
-
-    asyncTest("Visual Style", function() {
-        vis.addListener("visualstyle", function(evt) {
-        	start();
-        	var s = evt.value;
-        	same(s.global.backgroundColor, style.global.backgroundColor);
-        	same(s.nodes.shape, style.nodes.shape);
-        	same(s.nodes.opacity, style.nodes.opacity);
-        	same(s.nodes.borderColor, style.nodes.borderColor);
-        	same(s.nodes.size.defaultValue, style.nodes.size.defaultValue);
-        	same(s.nodes.size.continuousMapper.attrName, style.nodes.size.continuousMapper.attrName);
-        	same(s.nodes.size.continuousMapper.minValue, style.nodes.size.continuousMapper.minValue);
-        	same(s.nodes.size.continuousMapper.maxValue, style.nodes.size.continuousMapper.maxValue);
-        	same(s.edges.color, style.edges.color);
-        	same(s.edges.opacity, style.edges.opacity);
-        	same(s.edges.width.defaultValue, style.edges.width.defaultValue);
-        	same(s.edges.width.continuousMapper.attrName, style.edges.width.continuousMapper.attrName);
-        	same(s.edges.width.continuousMapper.minValue, style.edges.width.continuousMapper.minValue);
-        	same(s.edges.width.continuousMapper.maxValue, style.edges.width.continuousMapper.maxValue);
-        	stop();
-        });
-    	
-    	vis.visualStyle(style);
-    });
     
-    asyncTest("Layout", function() {
+    asyncTest("Filter nodes and update mappers automatically", function() {
     	expect(2);
-    	vis.addListener("layout", function(evt) {
-			start();
-			same("Tree", evt.value, "evt.value layout");
-			same("Tree", vis.layout(), "layout()");
-			stop();
-			
-			vis.removeListener("layout");
-    	});
     	
-    	vis.layout('  TREE '); // It should trim and be case insensitive!
+    	vis.addListener("filter", "nodes", function(evt) {
+        	start();
+        	vis.removeListener("filter", "nodes");
+
+        	var maxVal = -1, minVal = 999999;
+        	var larger, smaller;
+
+	    	$.each(evt.target, function(i, n) {
+	    		var size = n.size - n.borderWidth;
+	    		if (size > maxVal) {
+	    			larger = n;
+	    			maxVal = size;
+	    		} else if (size < minVal) {
+	    			smaller = n;
+	    			minVal = size;
+	    		}
+	    	});
+
+        	same(minVal, style.nodes.size.continuousMapper.minValue, "The node "+smaller.data.id+" should be smaller now");
+	    	same(maxVal, style.nodes.size.continuousMapper.maxValue, "The node "+larger.data.id+" should be bigger now");
+	    	
+	    	vis.removeFilter("nodes");
+	    	stop();
+        });
+        
+        // Filter nodes and ask to update mappers:
+        vis.filter("nodes", nfilter, true);
     });
     
     test("PNG", function() {
@@ -684,7 +781,6 @@ function runGraphTests(moduleName, vis, options) {
     
     // TODO: test graphml(), xgmml()
     // TODO: test selection styles
-    // TODO: test bypass
     // TODO: text context menu methods
 }
 
