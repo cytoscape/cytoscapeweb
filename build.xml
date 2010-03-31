@@ -21,6 +21,8 @@
     <property name="js.src.dir" value="html-template/js"/>
     
     <target name="build" depends="compile, copy resources to bin, js minify">
+    	<delete dir="${build.dir}" />
+    	<mkdir dir="${build.dir}"/>
         <zip destfile="${build.dir}/cytoscapeweb_v${build.version}.zip">
         	<zipfileset dir="${basedir}" includes="LICENSE.txt README.txt"/>
         	<zipfileset dir="${flex.bin.dir}" prefix="swf" includes="CytoscapeWeb.swf playerProductInstall.swf"/>
