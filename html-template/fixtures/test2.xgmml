@@ -32,46 +32,46 @@
   <edge id="1" target="101" source="102" weight="0.4" label="101 (25) 102">
     <att type="string" name="directed" value="true"/>
     <att type="string" name="sourceArrowShape" value="diamond"/>
-    <att type="string" name="network" value="25"/>
+    <att type="string" name="type" value="25"/>
     <att type="string" name="targetArrowShape" value="diamond"/>
     <graphics cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#e4e870" cy:sourceArrow="0" cy:targetArrow="3" width="2.2857142857142856"/>
   </edge>
   <edge id="2" target="102" source="101" weight="0.6" label="102 (14) 101">
     <att type="string" name="directed" value="true"/>
     <att type="string" name="sourceArrowShape" value="delta"/>
-    <att type="string" name="network" value="14"/>
+    <att type="string" name="type" value="14"/>
     <att type="string" name="targetArrowShape" value="T"/>
     <graphics cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#717cff" cy:sourceArrow="0" cy:targetArrow="3" width="3.1428571428571423"/>
   </edge>
   <edge id="3" target="102" source="105" weight="0.4" label="102 (15) 101">
     <att type="string" name="directed" value="true"/>
     <att type="string" name="sourceArrowShape" value="delta"/>
-    <att type="string" name="network" value="15"/>
+    <att type="string" name="type" value="15"/>
     <att type="string" name="targetArrowShape" value="T"/>
     <graphics cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#73c6cd" cy:sourceArrow="0" cy:targetArrow="3" width="3.1428571428571423"/>
   </edge>
   <edge id="4" target="103" source="104" weight="0.1" label="103 (24) 104">
     <att type="string" name="directed" value="true"/>
     <att type="string" name="sourceArrowShape" value="diamond"/>
-    <att type="string" name="network" value="15"/>
+    <att type="string" name="type" value="15"/>
     <att type="string" name="targetArrowShape" value="T"/>
     <graphics cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#73c6cd" cy:sourceArrow="0" cy:targetArrow="3" width="1"/>
   </edge>
   <edge id="5" target="105" source="101" weight="0.1" label="105 (2) 101">
     <att type="string" name="sourceArrowShape" value="circle"/>
-    <att type="string" name="network" value="2"/>
+    <att type="string" name="type" value="2"/>
     <att type="string" name="targetArrowShape" value="delta"/>
     <graphics cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#9e7ba5" cy:sourceArrow="0" cy:targetArrow="0" width="1"/>
   </edge>
   <edge id="6" target="105" source="101" weight="0.2" label="105 (24) 101">
     <att type="string" name="sourceArrowShape" value="delta"/>
-    <att type="string" name="network" value="24"/>
+    <att type="string" name="type" value="24"/>
     <att type="string" name="targetArrowShape" value="delta"/>
     <graphics cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#c67983" cy:sourceArrow="0" cy:targetArrow="0" width="1.4285714285714286"/>
   </edge>
   <edge id="7" target="105" source="101" weight="0.4" label="105 (14) 101">
     <att type="string" name="sourceArrowShape" value="none"/>
-    <att type="string" name="network" value="14"/>
+    <att type="string" name="type" value="14"/>
     <att type="string" name="targetArrowShape" value="none"/>
     <graphics cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" fill="#717cff" cy:sourceArrow="0" cy:targetArrow="0" width="2.2857142857142856"/>
   </edge>

@@ -160,6 +160,9 @@
                $("#toGraphML").click(function(evt) {
                    alert(vis.graphml());
                });
+               $("#toSIF").click(function(evt) {
+                   alert(vis.sif());
+               });
 
                draw();
             });
@@ -274,7 +277,7 @@
                         </div>
                         <hr/>
                         <div class="center">
-                            <input type="button" id="toXGMML" value="XGMML"/> <input type="button" id="toGraphML" value="GraphML"/>
+                            <input type="button" id="toXGMML" value="XGMML"/><input type="button" id="toGraphML" value="GraphML"/><input type="button" id="toSIF" value="SIF"/>
                         </div>
                         <hr/>
                         <div>

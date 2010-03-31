@@ -484,7 +484,7 @@ package org.cytoscapeweb.model {
             }
         }
         
-        public function getDataAsText(format:String="xgmml"):String {
+        public function getDataAsText(format:String="xgmml", options:Object=null):String {
             var out:IDataOutput, nodesTable:DataTable, edgesTable:DataTable, dtSet:DataSet;
             var edges:DataList = new DataList(Data.EDGES);
             var edgesData:Array = [];
@@ -512,8 +512,8 @@ package org.cytoscapeweb.model {
                 if (format === "graphml") {
                     out = new GraphMLConverter().write(dtSet);
                 } else {
-                    // SIF
-                    out = new SIFConverter().write(dtSet);
+                    var interaction:String =  options != null ? options.interactionAttr : null;
+                    out = new SIFConverter(interaction).write(dtSet);
                 }
             }
 

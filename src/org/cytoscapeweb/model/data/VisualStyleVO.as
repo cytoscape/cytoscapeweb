@@ -39,6 +39,9 @@ package org.cytoscapeweb.model.data {
 		
         // ========[ PRIVATE PROPERTIES ]===========================================================
 		
+		private var _properties:Object;
+        private var _visualStyleBypass:VisualStyleBypassVO;
+		
 		internal static const _DEFAULT_OBJ:Object = {
 		      global: {
                     backgroundColor: "#ffffff",
@@ -129,8 +132,19 @@ package org.cytoscapeweb.model.data {
 		// ========[ PUBLIC PROPERTIES ]============================================================
 		
 		/** A mapping of VisualPropertyVO objects that has the property name as keys. */
-        public var properties:Object;
-        public var visualStyleBypass:VisualStyleBypassVO;
+        public function get properties():Object {
+            return _properties;
+        }
+        public function set properties(props:Object):void {
+            _properties = props != null ? props : {};
+        }
+        
+        public function get visualStyleBypass():VisualStyleBypassVO {
+            return _visualStyleBypass;
+        }
+        public function set visualStyleBypass(bypass:VisualStyleBypassVO):void {
+            _visualStyleBypass = bypass != null ? bypass : new VisualStyleBypassVO();
+        }
 
         // ========[ CONSTRUCTOR ]==================================================================
 		

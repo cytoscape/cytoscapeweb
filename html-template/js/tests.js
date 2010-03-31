@@ -577,7 +577,7 @@ function runGraphTests(moduleName, vis, options) {
     		stop();
     	});
     	
-    	vis.visualStyleBypass({ nodes: {}, edges: {} });
+    	vis.visualStyleBypass(null);
     });
     
     asyncTest("Layout", function() {
@@ -815,8 +815,15 @@ function runGraphTests(moduleName, vis, options) {
     	var sif = vis.sif();
     	var edges = vis.edges();
     	$.each(edges, function(i, e) {
-    		var inter = e.data.interaction ? e.data.interaction : "pp";
+    		var inter = e.data.interaction ? e.data.interaction : e.data.id;
     		var line = e.data.source + "\t" + inter + "\t" + e.data.target; 
+    		ok(sif.indexOf(line) > -1, "SIF text should have the line: '"+line+"'");
+    	});
+    	// Now replace the default interaction field:
+    	var sif = vis.sif("type");
+    	var edges = vis.edges();
+    	$.each(edges, function(i, e) {
+    		var line = e.data.source + "\t" + e.data.type + "\t" + e.data.target; 
     		ok(sif.indexOf(line) > -1, "SIF text should have the line: '"+line+"'");
     	});
     });

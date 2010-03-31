@@ -86,14 +86,23 @@ package org.cytoscapeweb.model.converters {
         
         // ========[ CONSTANTS ]====================================================================
 
-        public static const DEFAULT_INTERACTION:String = "pp"; // Just like Cytoscape
-
         private static const ID:String          = "id";
         private static const LABEL:String       = "label";
         private static const INTERACTION:String = "interaction";
         private static const DIRECTED:String    = "directed";
         private static const SOURCE:String      = "source";
         private static const TARGET:String      = "target";        
+
+        // ========[ PRIVATE PROPERTIES ]===========================================================
+
+        private var _interaction:String;
+
+        // ========[ CONSTRUCTOR ]==================================================================
+
+        public function SIFConverter(interactionAttr:String=null) {
+            super();
+            _interaction = interactionAttr != null ? interactionAttr : INTERACTION;
+        }
 
         // ========[ PUBLIC PROPERTIES ]============================================================
         
@@ -115,7 +124,7 @@ package org.cytoscapeweb.model.converters {
                 for each (var e:Object in edges) {
                     var src:String = e[SOURCE];
                     var tgt:String = e[TARGET];
-                    var inter:String = e.hasOwnProperty(INTERACTION) ? e[INTERACTION] : DEFAULT_INTERACTION;
+                    var inter:String = e.hasOwnProperty(_interaction) ? e[_interaction] : e.id;
                     
                     sif += (src + "\t" + inter + "\t" + tgt + "\n");
                     lookup[src] = true;
@@ -149,7 +158,7 @@ package org.cytoscapeweb.model.converters {
 
             edgeSchema.addField(new DataField(ID, DataUtil.STRING));
             edgeSchema.addField(new DataField(LABEL, DataUtil.STRING));
-            edgeSchema.addField(new DataField(INTERACTION, DataUtil.STRING));
+            edgeSchema.addField(new DataField(_interaction, DataUtil.STRING));
             edgeSchema.addField(new DataField(SOURCE, DataUtil.STRING));
             edgeSchema.addField(new DataField(TARGET, DataUtil.STRING));
             edgeSchema.addField(new DataField(DIRECTED, DataUtil.BOOLEAN, false));
@@ -221,7 +230,7 @@ package org.cytoscapeweb.model.converters {
         protected function createEdgeData(interaction:String, source:String, target:String):Object {
             var data:Object = {};
             data[ID] = source + " (" + interaction + ") " + target;
-            data[INTERACTION] = data[LABEL] = interaction;
+            data[_interaction] = data[LABEL] = interaction;
             data[SOURCE] = source;
             data[TARGET] = target;
             data[DIRECTED] = false;

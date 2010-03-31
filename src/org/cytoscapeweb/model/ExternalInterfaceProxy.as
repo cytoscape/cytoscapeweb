@@ -109,7 +109,7 @@ package org.cytoscapeweb.model {
                                         "getSelectedNodes", "getSelectedEdges", 
                                         "getLayout", "applyLayout", 
                                         "setVisualStyle", "getVisualStyle", 
-                                        "visualStyleBypass",
+                                        "getVisualStyleBypass", "setVisualStyleBypass",
                                         "getNetworkAsText", "getNetworkAsImage", 
                                         "exportNetwork" ];
 
@@ -336,17 +336,21 @@ package org.cytoscapeweb.model {
             return configProxy.visualStyle.toObject();
         }
         
-        private function visualStyleBypass(obj:/*{group{id->{propName->value}}}*/Object):void {
+        private function setVisualStyleBypass(obj:/*{group->{id->{propName->value}}}*/Object):void {
             var bypass:VisualStyleBypassVO = VisualStyleBypassVO.fromObject(obj);
             sendNotification(ApplicationFacade.SET_VISUAL_STYLE_BYPASS, bypass);
+        }
+        
+        private function getVisualStyleBypass():Object {
+            return configProxy.visualStyleBypass.toObject();
         }
         
         private function applyLayout(name:String):void {
             sendNotification(ApplicationFacade.APPLY_LAYOUT, name);
         }
         
-        private function getNetworkAsText(format:String="xgmml"):String {
-            return graphProxy.getDataAsText(format);
+        private function getNetworkAsText(format:String="xgmml", options:Object=null):String {
+            return graphProxy.getDataAsText(format, options);
         }
         
         private function getNetworkAsImage(format:String="pdf"):String {

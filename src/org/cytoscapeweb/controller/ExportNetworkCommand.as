@@ -63,7 +63,7 @@ package org.cytoscapeweb.controller {
                     data = appMediator.getGraphImage(format, w, h);
                 } else {
                     // Get the XML:
-                    data = graphProxy.getDataAsText(format);
+                    data = graphProxy.getDataAsText(format, options);
                 }
                 
                 // Export:

@@ -104,16 +104,17 @@ package org.cytoscapeweb.model.converters {
             var data:Data = Data.fromDataSet(ds);
             var nodes:Array = data.nodes.toDataArray();
             var edges:Array = data.edges.toDataArray();
+            var n:Object, e:Object;
 
             var out:IDataOutput = new SIFConverter().write(ds);
             var sif:String = "" + out;
             
             // Does the generated SIF contain all nodes and edges?
-            for each (var n:Object in nodes) {
+            for each (n in nodes) {
                 assertTrue("Missing node: " + n.id, sif.indexOf(n.id) > -1);
             }
-            for each (var e:Object in edges) {
-                var inter:String = e.hasOwnProperty("interaction") ? e.interaction : SIFConverter.DEFAULT_INTERACTION;
+            for each (e in edges) {
+                var inter:String = e.hasOwnProperty("interaction") ? e.interaction : e.id;
                 assertTrue("Missing interaction: " + inter, sif.indexOf(inter) > -1);
             }
             
@@ -125,6 +126,14 @@ package org.cytoscapeweb.model.converters {
             
             assertEquals(nodes.length, nodes2.length);
             assertEquals(edges.length, edges2.length);
+            
+            // Test again, this time replacing the default "interaction" field:
+            out = new SIFConverter("label").write(ds);
+            sif = "" + out;
+
+            for each (e in edges) {
+                assertTrue("Missing interaction: " + e.label, sif.indexOf(e.label) > -1);
+            }
         }
         
         // ========[ PRIVATE METHODS ]==============================================================

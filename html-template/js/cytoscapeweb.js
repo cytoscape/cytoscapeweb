@@ -306,10 +306,12 @@
         },
 
         /**
-         * <p>Set a visual style bypass on top of the existing visual style.</p>
-         * <p>It allows you to override the visual styles and mappers for individual nodes and edges,
+         * <p>If the <code>bypass</code> argument is passed, it sets a visual style bypass on top of the regular styles.
+         * Otherwise it just returns the current bypass object.</p>
+         * <p>It allows you to override the visual styles (including the ones set by mappers) for individual nodes and edges,
          * which is very useful when the default visual style mechanism is not enough to create the desired effect.</p>
-         * 
+         * <p>You can register a listener for <code>"visualstyle"</code> events before calling <code>visualStyleBypass(bypass_obj)</code>. 
+         * If you do so, the listener is called asynchronously, after the network view is updated.</p>
          * @example
          * // Change the labels of selected nodes and edges:
          * var selected = vis.selected();
@@ -331,21 +333,23 @@
          * vis.visualStyleBypass(bypass);
          * 
          * @example
-         * // To remove a bypass, just set an empty object:
-         * vis.visualStyleBypass({});
+         * // To remove a bypass, just set <code>null</code> or an empty object:
+         * vis.visualStyleBypass(null);
          *
-         * @param {Object} bypass The visual properties for nodes and edges. Must be a map that has nodes/edges
-         *                        ids as keys and the desired visual properties as values.
-         *                        The visual properties are the same ones used by the VisualStyle objects, except that
-         *                        <code>global</code> properties cannot be bypassed and are just ignored. Another difference is that you
-         *                        cannot set visual mappers, but only static values.
-         * @return {org.cytoscapeweb.Visualization} The Visualization instance.
-         * @see org.cytoscapeweb.VisualStyle
+         * @param {org.cytoscapeweb.VisualStyleBypass} bypass The visual properties for nodes and edges. Must be a map that has nodes/edges
+         *                                                    ids as keys and the desired visual properties as values.
+         *                                                    The visual properties are the same ones used by the VisualStyle objects, except that
+         *                                                    <code>global</code> properties cannot be bypassed and are just ignored. Another difference is that you
+         *                                                    cannot set visual mappers, but only static values.
+         * @return <ul><li>The bypass object for <code>visualStyleBypass()</code>.</li>
+         *             <li>The Visualization instance for <code>visualStyleBypass({Object})</code>.</li></ul>
+         * @see org.cytoscapeweb.VisualStyleBypass
          * @see org.cytoscapeweb.Visualization#visualStyle
          */
-        visualStyleBypass: function (bypass) {
-            this.swf().visualStyleBypass(bypass);
-            return this;
+        visualStyleBypass: function (/*bypass*/) {
+        	var swf = this.swf();
+        	if (arguments.length > 0) { swf.setVisualStyleBypass(arguments[0]); return this; }
+            else { return swf.getVisualStyleBypass(); }
         },
 
         /**
@@ -746,15 +750,46 @@
          * <p>Return the network data as <a href="http://cytoscape.wodaklab.org/wiki/Cytoscape_User_Manual/Network_Formats/" target="_blank">Simple Interaction Format (SIF)</a>.</p>
          * <p>Cytoscape Web uses tab characters to delimit the fields, because the node and interaction names may contain spaces.</p>
          * <p>The node name in the SIF text is taken from the node's <code>data.id</code> attribute.</p>
-         * <p>Cytoscape Web first tries to get the interaction name from the edge's <code>data.interaction</code> attribute.
-         * If the edge data has no <code>interaction</code> attribute, Cytoscape Web just writes the default interaction type, which is "pp"
-         * (protein - protein interaction).</p>
+         * <p>Cytoscape Web tries to get the interaction name from the edge's <code>data.interaction</code> attribute.
+         * You can choose any other edge attribute to be the interaction name by passing an <code>interactionAttr</code> parameter.
+         * If the edge data does not have the defined interaction field, Cytoscape Web just uses the edge <code>id</code>.</p>
+         * @example
+         * var xml = '&lt;graphml&gt;' +
+         *               // Create a custom "type" attribute:
+         *               '&lt;key id="type" for="edge" attr.name="type" attr.type="string"/&gt;' +
+         *               '&lt;graph&gt;' +
+         *                   '&lt;node id="1"/&gt;' +
+         *                   '&lt;node id="2"/&gt;' +
+         *                   '&lt;edge source="1" target="2"&gt;' +
+         *                       '&lt;data key="type"&gt;co-expression&lt;/data&gt;' +
+         *                   '&lt;/edge&gt;' +
+         *                   '&lt;edge source="2" target="1"&gt;' +
+         *                       '&lt;data key="type"&gt;co-localization&lt;/data&gt;' +
+         *                   '&lt;/edge&gt;' +
+         *               '&lt;/graph&gt;' +
+         *           '&lt;/graphml&gt;';
+         *           
+         * var vis = new org.cytoscapeweb.Visualization("container_id");
+         * 
+         * vis.ready(function() {
+         *     // Export to SIF, using the "type" attribute as edge interaction:
+         *     var text = vis.sif('type');
+         *     
+         *     alert(
+         *         text == '1\tco-expression\t2\n' +
+         *                 '2\tco-localization\t1\n'
+         *     ); // true
+         * });
+         * 
+         * vis.draw({ network: xml });
+         * 
+         * @param {String} [interactionAttr] Optional edge attribute name to be used as the SIF interaction name.
          * @return {String} The SIF text.
          * @see org.cytoscapeweb.Visualization#graphml
          * @see org.cytoscapeweb.Visualization#xgmml
          */
-        sif: function () {
-            return this.swf().getNetworkAsText("sif");
+        sif: function (interactionAttr) {
+            return this.swf().getNetworkAsText("sif", { interactionAttr: interactionAttr });
         },
 
         /**
@@ -1781,6 +1816,8 @@
      * @see org.cytoscapeweb.DiscreteMapper
      * @see org.cytoscapeweb.PassthroughMapper
      * @see org.cytoscapeweb.CustomMapper
+     * @see org.cytoscapeweb.Visualization#visualStyle
+     * @see org.cytoscapeweb.VisualStyleBypass
      */
     /**
      * <p>An object that defines global visual properties.</p>
@@ -1952,6 +1989,39 @@
      * @memberOf org.cytoscapeweb.VisualStyle#
      */
 
+    // ===[ VisualStyleBypass ]===========================================================================
+    
+    /**
+     * <p>This object represents a Visual Style Bypass type, but it is actually just an untyped object.</p>
+     * <p>A visual style bypass may have two attributes:</p>
+     * <ul class="options">
+     *     <li><code>nodes</code></li>
+     *     <li><code>edges</code></li></ul>
+     * <p>Each one is an object that redefines a set of visual properties. They are dictionaries
+     * that have edges and nodes <code>id</code> values as keys, and objects that contain the visual styles as values.</p>
+     * <p>Notice that you cannot bypass <code>global</code> properties, and it is not possible to set visual mappings either.</p>
+     * <p>You can bypass any of the nodes or edges visual properties. Just use the same names listed at 
+     * {@link org.cytoscapeweb.VisualStyle}.</p>
+     * @example
+     * var bypass = {
+     *         nodes: {
+     *             "1": { color: "#ff0000", opacity: 0.5, size: 32 },
+     *             "3": { color: "#ffff00", opacity: 0.9 },
+     *             "7": { color: "#ffff00", opacity: 0.2 }
+     *         },
+     *         edges: {
+     *             "22": { width: 4, opacity: 0.2 },
+     *             "23": { width: 4, opacity: 0.2 }
+     *          }
+     * };
+     * @class
+     * @name VisualStyleBypass
+     * @type Object
+     * @memberOf org.cytoscapeweb
+     * @see org.cytoscapeweb.VisualStyle
+     * @see org.cytoscapeweb.Visualization#visualStyleBypass
+     */
+    
     // ===[ Mappers ]===============================================================================
     
     /**
