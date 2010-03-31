@@ -503,39 +503,81 @@ function runGraphTests(moduleName, vis, options) {
     	vis.visualStyle(style);
     });
     
-    asyncTest("Visual Style Bypass", function() {
+    asyncTest("Set Visual Style Bypass", function() {
     	var bypass = { nodes: {}, edges: {} };
     	var id;
     	var nodes = vis.nodes();
     	var edges = vis.edges();
     	
-    	expect(nodes.length + edges.length);
+    	expect(4 * (nodes.length + edges.length));
     	
+    	var nodeOpacity = function(id) { return (id % 2 === 0 ? 0.9 : 0.1); };
+    	var edgeOpacity = function(id) { return (id % 2 === 0 ? 0.5 : 0); };
+    	var nodeColor = "#345678";
+    	var edgeWidth = 4;
+
 		$.each(nodes, function(i, n) {
-			id = n.data.id;
-			bypass.nodes[id] = { opacity: (id % 2 === 0 ? 0.4 : 0) };
+			var o = nodeOpacity(n.data.id);
+			bypass.nodes[n.data.id] = { opacity: o, color: nodeColor };
 	    });
 		$.each(edges, function(i, e) {
-			id = e.data.id;
-			bypass.edges[id] = { opacity: (id % 2 === 0 ? 0.5 : 0) };
+			var o = edgeOpacity(e.data.id);
+			bypass.edges[e.data.id] = { opacity: o, width: edgeWidth };
 		});
-
+		
     	vis.addListener("visualstyle", function(evt) {
     		start();
+    		vis.removeListener("visualstyle");
+    		var bp = evt.value;
+    		
     		nodes = vis.nodes();
     		edges = vis.edges();
+    		
     		$.each(nodes, function(i, n) {
-    			var expected = (n.data.id % 2 === 0 ? 0.4 : 0);
-    			same(n.opacity, expedted);
+    			var expected = nodeOpacity(n.data.id);
+    			same(bp.nodes[n.data.id].opacity, expected);
+    			same(Math.round(n.opacity*100)/100, expected);
+    			
+    			same(bp.nodes[n.data.id].color, nodeColor);
+    			same(n.color, nodeColor);
     	    });
     		$.each(edges, function(i, e) {
-    			var expected = (e.data.id % 2 === 0 ? 0.5 : 0);
-    			same(e.opacity, expedted);
+    			var expected = edgeOpacity(e.data.id);
+    			same(bp.edges[e.data.id].opacity, expected);
+    			same(Math.round(e.opacity*100)/100, expected);
+    			
+    			same(bp.edges[e.data.id].width, edgeWidth);
+    			same(e.width, edgeWidth);
     		});
     		stop();
     	});
     	
-    	vis.visualStyle(style);
+    	vis.visualStyleBypass(bypass);
+    });
+    
+    asyncTest("Remove Visual Style Bypass", function() {
+    	expect(4);
+    	
+    	vis.addListener("visualstyle", function(evt) {
+    		start();
+    		vis.removeListener("visualstyle");
+    		var bp = evt.value;
+    		
+    		ok(bp.nodes != null, "bypass.nodes is NOT null");
+    		ok(bp.edges != null, "bypass.edges is NOT null");
+    		
+    		var count = 0;
+    		for (var k in bp.nodes) { count++; }
+    		ok(count === 0, "No more nodes bypass props");
+    		
+    		var count = 0;
+    		for (var k in bp.edges) { count++; }
+    		ok(count === 0, "No more edges bypass props");
+    		
+    		stop();
+    	});
+    	
+    	vis.visualStyleBypass({ nodes: {}, edges: {} });
     });
     
     asyncTest("Layout", function() {

@@ -83,7 +83,7 @@ package org.cytoscapeweb.controller {
                         
                     // Update the view:
                     var mediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
-                    mediator.updateFilters(nodes, edges, updateVisualMappers);
+                    mediator.updateFilters(nodes != null, edges != null, updateVisualMappers);
             
                     // Call external listeners:
                     var extProxy:ExternalInterfaceProxy = facade.retrieveProxy(ExternalInterfaceProxy.NAME) as ExternalInterfaceProxy;

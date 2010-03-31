@@ -496,6 +496,9 @@ package org.cytoscapeweb.view.components {
 	            var ctl:CircleLayout = new CircleLayout(null, null, true, d);
                 ctl.angleWidth = -2 * Math.PI;
                 ctl.padding = 0;
+                
+                layoutBounds.height = Math.max(200, layoutBounds.height);
+                layoutBounds.width = Math.max(200, layoutBounds.width);
 
                 layout = ctl;
             } else if (name === Layouts.RADIAL) {

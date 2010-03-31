@@ -40,7 +40,7 @@ package org.cytoscapeweb.model.data {
         
         // ========[ PRIVATE PROPERTIES ]===========================================================
         
-        private var _map:/*{group{id->{propName->value}}}*/Object;
+        private var _map:/*{group->{id->{propName->value}}}*/Object;
         
         // ========[ PUBLIC PROPERTIES ]============================================================
         
@@ -96,6 +96,35 @@ package org.cytoscapeweb.model.data {
                 }
                 propMap[propName] = value;
             }
+        }
+        
+        public function toObject():Object {
+            var obj:Object = { nodes: {}, edges: {} };
+            var groups:Array = [Groups.NODES, Groups.EDGES];
+
+            for each (var grName:String in groups) {
+                var gr:Object = _map[grName];
+                
+                for (var id:* in gr) {
+                    var props:Object = gr[id];
+                    var objProps:Object = obj[grName][id];
+                    
+                    if (objProps == null) {
+                        objProps = {};
+                        obj[grName][id] = objProps;
+                    }
+                    
+                    for (var pName:String in props) {
+                        var value:* = props[pName];
+                        value = VisualProperties.toExportValue(pName, value);
+                        
+                        pName = pName.replace(grName+".", "");
+                        objProps[pName] = value;
+                    }
+                }
+            }
+            
+            return obj;
         }
         
         public static function fromObject(obj:Object):VisualStyleBypassVO {
