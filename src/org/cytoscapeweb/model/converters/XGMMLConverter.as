@@ -55,6 +55,7 @@ package org.cytoscapeweb.model.converters {
     import org.cytoscapeweb.util.NodeShapes;
     import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.VisualProperties;
+    import org.cytoscapeweb.util.methods.$each;
 
 
     /**
@@ -487,7 +488,7 @@ package org.cytoscapeweb.model.converters {
             var schema:DataSchema = table.schema;
             var tuples:Object = (table is GraphicsDataTable) ? GraphicsDataTable(table).dataSprites : table.data;
             
-            for each (var obj:Object in tuples) {
+            $each(tuples, function(i:uint, obj:Object):void {
             	var data:Object = (obj is DataSprite) ? DataSprite(obj).data : table.data;
                 var x:XML = <{tagName}/>;
                 
@@ -527,7 +528,7 @@ package org.cytoscapeweb.model.converters {
                 }
                 
                 xml.appendChild(x);
-            }
+            });
         }
         
         private function addAtt(xml:XML, name:String, schema:DataSchema, data:Object):void {

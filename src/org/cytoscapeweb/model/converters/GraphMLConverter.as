@@ -38,6 +38,8 @@ package org.cytoscapeweb.model.converters {
 	import flash.utils.ByteArray;
 	import flash.utils.IDataInput;
 	import flash.utils.IDataOutput;
+	
+	import org.cytoscapeweb.util.methods.$each;
 
 	/**
 	 * Converts data between GraphML markup and flare DataSet instances.
@@ -276,7 +278,7 @@ package org.cytoscapeweb.model.converters {
 		}
 		
 		private static function addData(xml:XML, tuples:Array, schema:DataSchema, tag:String, attrs:Object):void {
-			for each (var tuple:Object in tuples) {
+			$each(tuples, function(i:uint, tuple:Object):void {
 				var x:XML = new XML("<"+tag+"/>");
 				
 				for (var name:String in tuple) {
@@ -295,7 +297,7 @@ package org.cytoscapeweb.model.converters {
 				}
 
 				xml.appendChild(x);
-			}
+			});
 		}	
 		
 		// -- static helpers --------------------------------------------------

@@ -322,7 +322,7 @@ package org.cytoscapeweb.view.components {
 
                 if (_dataList != null && _dataList.length > 0) {
                     GraphUtils.repackDisconnected(_dataList,
-                                                  Math.max(_initialWidth, stage.stageWidth),
+                                                  stage.stageWidth,
                                                   !_config.nodeLabelsVisible,
                                                   !_config.edgeLabelsVisible);
                 }
