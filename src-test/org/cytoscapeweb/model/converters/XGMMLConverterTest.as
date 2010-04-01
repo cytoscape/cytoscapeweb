@@ -81,7 +81,8 @@ package org.cytoscapeweb.model.converters {
                 assertTrue(e.@label.length() == 1);
                 assertTrue(e.@source.length() == 1);
                 assertTrue(e.@target.length() == 1);
-                assertTrue(e.@weight.length() == 1);
+                //assertTrue(e.@weight.length() == 1);
+                assertTrue(e.ns::att.(@name == "weight").length() == 1);
                 assertTrue(e.ns::graphics.length() == 1);
                 
                 // *** TODO: Tests visual attributes according to VizMapper:

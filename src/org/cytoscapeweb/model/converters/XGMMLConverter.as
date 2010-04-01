@@ -496,7 +496,8 @@ package org.cytoscapeweb.model.converters {
                     var field:DataField = schema.getFieldByName(name);
                     if (data[name] == field.defaultValue) continue;
                     
-                    if (attrs.hasOwnProperty(name)) {
+                    if (attrs.hasOwnProperty(name)
+                        && name !== WEIGHT) { // Cytoscape won't parse regular weight attributes...
                         // add as attribute
                         x.@[name] = toString(data[name], field.type);
                     } else {
