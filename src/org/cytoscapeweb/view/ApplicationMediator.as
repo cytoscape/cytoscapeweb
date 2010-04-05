@@ -218,16 +218,15 @@ package org.cytoscapeweb.view {
             application.graphBox.setStyle("backgroundColor", bgColor);
         }
         
-        public function getGraphImage(type:String="png", width:*=null, height:*=null):ByteArray {
+        public function getGraphImage(type:String="png", width:Number=0, height:Number=0):ByteArray {
             var bytes:ByteArray;
+            var scale:Number = graphProxy.zoom;
 
             if (type === "png") {
                 var bounds:Rectangle = graphView.getRealBounds();
-                var scale:Number = graphProxy.zoom;
                 var color:uint = configProxy.config.visualStyle.getValue(VisualProperties.BACKGROUND_COLOR);
                 
                 var source:BitmapData = new BitmapData(bounds.width, bounds.height, false, color);
-                
                 var matrix:Matrix = new Matrix(1, 0, 0, 1, -bounds.x, -bounds.y);
                 source.draw(graphView, matrix);
 
@@ -239,7 +238,7 @@ package org.cytoscapeweb.view {
                 bytes = pdfConv.convertToPDF(graphProxy.graphData,
                                              configProxy.visualStyle,
                                              configProxy.config,
-                                             graphProxy.zoom,
+                                             scale,
                                              width,
                                              height);
             }

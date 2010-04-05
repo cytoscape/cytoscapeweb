@@ -794,10 +794,15 @@
 
         /**
          * <p>Return a PDF with the network vector image.</p>
+         * @param {Object} [options] Additional options:
+         *                           <ul class="options">
+         *                               <li><code>width</code>:</strong> The desired width of the image in pixels.</li>
+         *                               <li><code>height</code>:</strong> The desired height of the image in pixels.</li>
+         *                           </ul>
          * @return {String} The PDF binary data encoded to a Base64 string.
          */
-        pdf: function () {
-            return this.swf().getNetworkAsImage("pdf");
+        pdf: function (options) {
+            return this.swf().getNetworkAsImage("pdf", options);
         },
         
         /**

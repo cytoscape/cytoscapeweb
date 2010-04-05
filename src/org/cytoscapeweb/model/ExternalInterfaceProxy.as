@@ -353,10 +353,11 @@ package org.cytoscapeweb.model {
             return graphProxy.getDataAsText(format, options);
         }
         
-        private function getNetworkAsImage(format:String="pdf"):String {
+        private function getNetworkAsImage(format:String="pdf", options:Object=null):String {
+            if (options == null) options = {};
             // TODO: Refactor - proxy should NOT use a mediator!!!
             var appMediator:ApplicationMediator = facade.retrieveMediator(ApplicationMediator.NAME) as ApplicationMediator;
-            var ba:ByteArray = appMediator.getGraphImage(format);
+            var ba:ByteArray = appMediator.getGraphImage(format, options.width, options.height);
             
             var encoder:Base64Encoder = new Base64Encoder();
             encoder.encodeBytes(ba);

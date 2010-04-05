@@ -27,76 +27,75 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
-package org.cytoscapeweb.model.converters {	
-	import flare.display.TextSprite;
-	import flare.vis.data.Data;
-	import flare.vis.data.DataList;
-	import flare.vis.data.DataSprite;
-	import flare.vis.data.EdgeSprite;
-	import flare.vis.data.NodeSprite;
-	
-	import flash.display.DisplayObject;
-	import flash.filters.BitmapFilter;
-	import flash.filters.GlowFilter;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import flash.text.TextField;
-	import flash.utils.ByteArray;
-	
-	import org.alivepdf.colors.RGBColor;
-	import org.alivepdf.display.Display;
-	import org.alivepdf.drawing.Blend;
-	import org.alivepdf.drawing.Caps;
-	import org.alivepdf.drawing.Joint;
-	import org.alivepdf.drawing.WindingRule;
-	import org.alivepdf.fonts.CoreFont;
-	import org.alivepdf.fonts.FontFamily;
-	import org.alivepdf.fonts.Style;
-	import org.alivepdf.layout.Layout;
-	import org.alivepdf.layout.Orientation;
-	import org.alivepdf.layout.Size;
-	import org.alivepdf.layout.Unit;
-	import org.alivepdf.pages.Page;
-	import org.alivepdf.pdf.PDF;
-	import org.alivepdf.saving.Method;
-	import org.cytoscapeweb.model.data.ConfigVO;
-	import org.cytoscapeweb.model.data.VisualStyleVO;
-	import org.cytoscapeweb.util.Anchors;
-	import org.cytoscapeweb.util.ArrowShapes;
-	import org.cytoscapeweb.util.Fonts;
-	import org.cytoscapeweb.util.NodeShapes;
-	import org.cytoscapeweb.util.Utils;
-	import org.cytoscapeweb.util.VisualProperties;
-	import org.cytoscapeweb.view.components.GraphView;
-	import org.cytoscapeweb.view.components.GraphVis;
-		
-	/**
-	 * Class that generates a vectorial image PDF file from the network.
-	 */
-	public class PDFConverter {
-		
-		// ========[ CONSTANTS ]====================================================================
+package org.cytoscapeweb.model.converters { 
+    import flare.display.TextSprite;
+    import flare.vis.data.Data;
+    import flare.vis.data.DataList;
+    import flare.vis.data.DataSprite;
+    import flare.vis.data.EdgeSprite;
+    import flare.vis.data.NodeSprite;
+    
+    import flash.display.DisplayObject;
+    import flash.filters.BitmapFilter;
+    import flash.filters.GlowFilter;
+    import flash.geom.Point;
+    import flash.geom.Rectangle;
+    import flash.text.TextField;
+    import flash.utils.ByteArray;
+    
+    import org.alivepdf.colors.RGBColor;
+    import org.alivepdf.display.Display;
+    import org.alivepdf.drawing.Blend;
+    import org.alivepdf.drawing.Caps;
+    import org.alivepdf.drawing.Joint;
+    import org.alivepdf.drawing.WindingRule;
+    import org.alivepdf.fonts.CoreFont;
+    import org.alivepdf.fonts.FontFamily;
+    import org.alivepdf.fonts.Style;
+    import org.alivepdf.layout.Layout;
+    import org.alivepdf.layout.Orientation;
+    import org.alivepdf.layout.Size;
+    import org.alivepdf.layout.Unit;
+    import org.alivepdf.pages.Page;
+    import org.alivepdf.pdf.PDF;
+    import org.alivepdf.saving.Method;
+    import org.cytoscapeweb.model.data.ConfigVO;
+    import org.cytoscapeweb.model.data.VisualStyleVO;
+    import org.cytoscapeweb.util.Anchors;
+    import org.cytoscapeweb.util.ArrowShapes;
+    import org.cytoscapeweb.util.Fonts;
+    import org.cytoscapeweb.util.NodeShapes;
+    import org.cytoscapeweb.util.Utils;
+    import org.cytoscapeweb.util.VisualProperties;
+    import org.cytoscapeweb.view.components.GraphView;
+        
+    /**
+     * Class that generates a vectorial image PDF file from the network.
+     */
+    public class PDFConverter {
+        
+        // ========[ CONSTANTS ]====================================================================
 
         private static const GLOW_WIDTH:Number = 3;
 
-		// ========[ PRIVATE PROPERTIES ]===========================================================
-		
-		private var _graphView:GraphView;
-		private var _style:VisualStyleVO;
-		private var _scale:Number;
-		private var _shiftX:Number;
-		private var _shiftY:Number;
-		private var _bgColor:RGBColor;
-		
-		// ========[ PUBLIC PROPERTIES ]============================================================
+        // ========[ PRIVATE PROPERTIES ]===========================================================
+        
+        private var _graphView:GraphView;
+        private var _style:VisualStyleVO;
+        private var _scale:Number;
+        private var _shiftX:Number;
+        private var _shiftY:Number;
+        private var _bgColor:RGBColor;
+        
+        // ========[ PUBLIC PROPERTIES ]============================================================
 
-		public var margin:Number = 10;
+        public var margin:Number = 10;
 
-		// ========[ CONSTRUCTOR ]==================================================================
-		
-		public function PDFConverter(view:GraphView) {
-			this._graphView = view;			
-		}
+        // ========[ CONSTRUCTOR ]==================================================================
+        
+        public function PDFConverter(view:GraphView) {
+            this._graphView = view;         
+        }
 
         // ========[ PUBLIC METHODS ]===============================================================
 
@@ -114,31 +113,31 @@ package org.cytoscapeweb.model.converters {
                                      width:Number=0, height:Number=0):ByteArray {
             _style = style;
             _scale = scale;
-        	var bounds:Rectangle = _graphView.vis.getRealBounds();
-        	
-        	// Width and height depends on the current zooming and
-        	// we also add a margin to the image:
-        	var w:Number = bounds.width/_scale + 2*margin;
-        	var h:Number = bounds.height/_scale + 2*margin;
-        	
-        	var hPad:Number = 0
-        	
-        	if (width > 0 || height > 0) {
-	        	// If the client asked a custom size image, we need a new scale factor:
-	        	_scale = calculateNewScale(w,  h,  width,  height);
-	        	// Center image horizontally:
-	        	if (width/_scale > w) hPad = (width/_scale - w)/2;
-	        	h = height;
+            var bounds:Rectangle = _graphView.getRealBounds();
+            
+            // Width and height depends on the current zooming and
+            // we also add a margin to the image:
+            var w:Number = bounds.width/_scale + 2*margin;
+            var h:Number = bounds.height/_scale + 2*margin;
+            
+            var hPad:Number = 0
+            
+            if (width > 0 || height > 0) {
+                // If the client asked a custom size image, we need a new scale factor:
+                _scale = calculateNewScale(w,  h,  width,  height);
+                // Center image horizontally:
+                if (width/_scale > w) hPad = (width/_scale - w)/2;
+                h = height;
                 w = width;
-	        } else {
-	        	// Otherwise, the other graphics elements don't need to be scaled: 
-	        	_scale = 1;
-	        }
-        	
-        	var size:Size = new Size([w, h], "", [0, 0],[0, 0] );
-        	var orientation:String = Orientation.PORTRAIT;
-        	
-        	// Create the PFD document with 1 page:
+            } else {
+                // Otherwise, the other graphics elements don't need to be scaled: 
+                _scale = 1;
+            }
+            
+            var size:Size = new Size([w, h], "", [0, 0],[0, 0] );
+            var orientation:String = Orientation.PORTRAIT;
+            
+            // Create the PFD document with 1 page:
             var pdf:PDF = new PDF(orientation, Unit.POINT, size);
             pdf.setDisplayMode(Display.FULL_PAGE, Layout.SINGLE_PAGE);
             var page:Page = new Page(orientation, Unit.POINT, size);
@@ -154,18 +153,18 @@ package org.cytoscapeweb.model.converters {
             
             // Get the shift, in case one or more nodes were dragged or the graph view is not at [0,0]:
             var sp:Point = _graphView.vis.globalToLocal(new Point(bounds.x, bounds.y));
-            _shiftX = sp.x + _graphView.x/scale - margin - hPad ;
-            _shiftY = sp.y + _graphView.y/scale - margin;
+            _shiftX = sp.x - margin - hPad ;
+            _shiftY = sp.y - margin;
             
             // Draw:
             drawEdges(pdf, graphData.edges);
             if (config.edgeLabelsVisible) drawLabels(pdf, graphData.edges);
             drawNodes(pdf, graphData.nodes);
-	        if (config.nodeLabelsVisible) drawLabels(pdf, graphData.nodes);
-   	
-   	        var bytes:ByteArray = pdf.save(Method.LOCAL);
-   	
-        	return bytes;
+            if (config.nodeLabelsVisible) drawLabels(pdf, graphData.nodes);
+    
+            var bytes:ByteArray = pdf.save(Method.LOCAL);
+    
+            return bytes;
         }
         
         // ========[ PRIVATE METHODS ]==============================================================
@@ -358,14 +357,14 @@ package org.cytoscapeweb.model.converters {
                         case Anchors.MIDDLE: p.y -= textHeight/2 * _scale; break;
                         case Anchors.BOTTOM: p.y -= d.height/2 * _scale; break;
                     }
-	                
-	                // Flare's label cordinates is relative to the label's upper-left corner (x,y)=(0,0),
-	                // but AlivePDF uses the bottom-left corner instead (x,y)=(0,fonSize):
-	                p.y += textHeight*_scale;
-	                
-	                // Finally, add the offsets:
-	                p.x += xOffset;
-	                p.y += yOffset;
+                    
+                    // Flare's label cordinates is relative to the label's upper-left corner (x,y)=(0,0),
+                    // but AlivePDF uses the bottom-left corner instead (x,y)=(0,fonSize):
+                    p.y += textHeight*_scale;
+                    
+                    // Finally, add the offsets:
+                    p.x += xOffset;
+                    p.y += yOffset;
 
                     var style:String = lbl.bold ?
                                        (lbl.italic ? Style.BOLD_ITALIC : Style.BOLD) :
@@ -471,7 +470,7 @@ package org.cytoscapeweb.model.converters {
             }
         }
         
-        private function sortByZOrder(list:DataList):Array {
+         private function sortByZOrder(list:DataList):Array {
         	var arr:Array = new Array();
         	
         	for each (var sp:DataSprite in list) arr.push(sp);
@@ -490,9 +489,9 @@ package org.cytoscapeweb.model.converters {
          * It converts a sprite coordinate to its correspondent element in the PDF.
          */
         private function toImagePoint(p:Point, display:DisplayObject):Point {
-        	// Get the Global point (relative to the stage):
+            // Get the Global point (relative to the stage):
             var ip:Point = display.parent.localToGlobal(p);
-            // Get the local point, relative to the graph view:
+            // Get the local point, relative to the graph container:
             ip = _graphView.vis.globalToLocal(ip);
             // Remove the shift:
             ip.x -= _shiftX;
@@ -504,12 +503,12 @@ package org.cytoscapeweb.model.converters {
         }
         
         private function toImagePointsArray(points:Array, display:DisplayObject):Array {
-        	var arr:Array;
-        	
-        	if (points != null) {
-        	    arr = [];
-            	for each (var p:Point in points) {
-            	   arr.push(toImagePoint(p, display));
+            var arr:Array;
+            
+            if (points != null) {
+                arr = [];
+                for each (var p:Point in points) {
+                   arr.push(toImagePoint(p, display));
                 }
             }
             
@@ -517,10 +516,10 @@ package org.cytoscapeweb.model.converters {
         }
 
         private function calculateNewScale(w:Number, h:Number, newW:Number, newH:Number):Number {
-    	    if (newW == 0) newW = w;
+            if (newW == 0) newW = w;
             if (newH == 0) newH = h;
-    	    
-    	    var graphEdge:Number = w; 
+            
+            var graphEdge:Number = w; 
             var pageEdge:Number = newW;
             
             if (h/w > newH/newW) {
@@ -530,5 +529,5 @@ package org.cytoscapeweb.model.converters {
      
             return pageEdge / graphEdge;
         }
-	}
+    }
 }

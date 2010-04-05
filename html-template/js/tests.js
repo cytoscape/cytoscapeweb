@@ -478,11 +478,14 @@ function runGraphTests(moduleName, vis, options) {
 	// TODO: select filtered edges when they are merged and when they aren't
     
     asyncTest("Visual Style", function() {
-        expect(14);
+        expect(15);
+        
     	vis.addListener("visualstyle", function(evt) {
         	start();
         	vis.removeListener("visualstyle");
         	var s = evt.value;
+        	same(s, vis.visualStyle());
+        	
         	same(s.global.backgroundColor, style.global.backgroundColor);
         	same(s.nodes.shape, style.nodes.shape);
         	same(s.nodes.opacity, style.nodes.opacity);
@@ -509,7 +512,7 @@ function runGraphTests(moduleName, vis, options) {
     	var nodes = vis.nodes();
     	var edges = vis.edges();
     	
-    	expect(4 * (nodes.length + edges.length));
+    	expect(4 * (nodes.length + edges.length) + 1);
     	
     	var nodeOpacity = function(id) { return (id % 2 === 0 ? 0.9 : 0.1); };
     	var edgeOpacity = function(id) { return (id % 2 === 0 ? 0.5 : 0); };
@@ -528,7 +531,9 @@ function runGraphTests(moduleName, vis, options) {
     	vis.addListener("visualstyle", function(evt) {
     		start();
     		vis.removeListener("visualstyle");
+    		
     		var bp = evt.value;
+    		same (bp, vis.visualStyleBypass());
     		
     		nodes = vis.nodes();
     		edges = vis.edges();
@@ -556,12 +561,14 @@ function runGraphTests(moduleName, vis, options) {
     });
     
     asyncTest("Remove Visual Style Bypass", function() {
-    	expect(4);
+    	expect(5);
     	
     	vis.addListener("visualstyle", function(evt) {
     		start();
     		vis.removeListener("visualstyle");
     		var bp = evt.value;
+    		
+    		same(bp, vis.visualStyleBypass());
     		
     		ok(bp.nodes != null, "bypass.nodes is NOT null");
     		ok(bp.edges != null, "bypass.edges is NOT null");
@@ -807,8 +814,10 @@ function runGraphTests(moduleName, vis, options) {
     
     test("PDF", function() {
     	var base64 = vis.pdf();
-    	ok(typeof base64 === 'string', "PDF returned as string");
-    	ok(base64.length > 0, "PDF string not empty");
+    	var beginning = "JVBERi0xLjUKMSAwIG9iago8PC9UeXBlIC9QYWdlcwovS2lkcyBbMyAwIFJdCi9Db3VudCAxPj4K";
+
+    	ok(base64.length > 14000, "PDF string has compatible length");
+    	same(base64.indexOf(beginning), 0, "PDF begins with correct chars");
     });
     
     test("SIF", function() {
