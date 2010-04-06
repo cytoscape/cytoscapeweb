@@ -715,14 +715,16 @@
         /**
          * <p>Return the first neighbors of one or more nodes.</p>
          * @param {Array} nodes Array of node objects or node IDs.
+         * @param {Boolean} [ignoreFilteredOut] If <code>true</code>, the algorithm will ignore any filtered out node and edge.
+         *                                      The default value is <code>false</code>.
          * @return An object that contains the following properties: 
          *         <ul class="options"><li><code>rootNodes</code> {Array}: the node objects that were passed as the function parameter.</li>
          *             <li><code>neighbors</code> {Array}: the node objects that are neighbors of the root ones.</li>
          *             <li><code>edges</code> {Array}: the edge objects that connects the root and the neighbor nodes.</li>
          *             <li><code>mergedEdges</code> {Array}: the merged edge objects that connect the returned nodes.</li></ul>.
          */
-        firstNeighbors: function (nodes) {
-            var str = this.swf().firstNeighbors(nodes);
+        firstNeighbors: function (nodes, ignoreFilteredOut) {
+            var str = this.swf().firstNeighbors(nodes, ignoreFilteredOut);
             return JSON.parse(str);
         },
 

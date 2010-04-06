@@ -278,14 +278,14 @@ package org.cytoscapeweb.model {
                              { group: group, updateVisualMappers: updateVisualMappers });
         }
         
-        private function firstNeighbors(rootNodes:Array):Object {
+        private function firstNeighbors(rootNodes:Array, ignoreFilteredOut:Boolean=false):Object {
             var obj:Object = {};
             
             if (rootNodes != null && rootNodes.length > 0) {
 	            var nodes:Array = graphProxy.getDataSpriteList(rootNodes, Groups.NODES);
 	            
 	            if (nodes != null && nodes.length > 0) {
-		            var fn:FirstNeighborsVO  = new FirstNeighborsVO(nodes);
+		            var fn:FirstNeighborsVO  = new FirstNeighborsVO(nodes, ignoreFilteredOut);
 	                obj = fn.toObject();
 	                obj = JSON.encode(obj);
 	            }

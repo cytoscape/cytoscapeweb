@@ -81,13 +81,13 @@ package org.cytoscapeweb.model.data {
 
         // ========[ CONSTRUCTOR ]==================================================================
         
-        public function FirstNeighborsVO(roots:/*NodeSprite*/Array) {
+        public function FirstNeighborsVO(roots:/*NodeSprite*/Array, ignoreFilteredOut:Boolean=false) {
             if (roots == null || roots.length === 0)
                 throw Error("The root nodes must be informed.");
             
             for each (var r:NodeSprite in roots) {
                 // Add root nodes first:
-                if (_map[r] === undefined) {
+                if (_map[r] === undefined && !(ignoreFilteredOut && GraphUtils.isFilteredOut(r))) {
                     // true indicates it's a root node!
                     _map[r] = true;
                     _rootNodes.push(r);
@@ -95,7 +95,7 @@ package org.cytoscapeweb.model.data {
             }
             for each (var n:NodeSprite in _rootNodes) {    
                 n.visitEdges(function(e:EdgeSprite):Boolean {
-                    if (_map[e] === undefined && !e.props.$filteredOut) {
+                    if (_map[e] === undefined && !(ignoreFilteredOut && GraphUtils.isFilteredOut(e))) {
                         _map[e] = false;
                         
                         if (_map[e.source] === undefined) {

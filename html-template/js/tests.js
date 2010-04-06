@@ -816,7 +816,7 @@ function runGraphTests(moduleName, vis, options) {
     	var base64 = vis.pdf();
     	var beginning = "JVBERi0xLjUKMSAwIG9iago8PC9UeXBlIC9QYWdlcwovS2lkcyBbMyAwIFJdCi9Db3VudCAxPj4K";
 
-    	ok(base64.length > 14000, "PDF string has compatible length");
+    	ok(base64.length > 13000, "PDF string has compatible length ("+base64.length+")");
     	same(base64.indexOf(beginning), 0, "PDF begins with correct chars");
     });
     
