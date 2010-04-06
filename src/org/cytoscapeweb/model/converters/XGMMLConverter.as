@@ -190,6 +190,10 @@ package org.cytoscapeweb.model.converters {
         private var _noGraphicInfo:Boolean = false;
         private var _style:VisualStyleVO;
         private var _points:Object;
+        private var _minX:Number = Number.POSITIVE_INFINITY;
+        private var _minY:Number = Number.POSITIVE_INFINITY;
+        private var _maxX:Number = Number.NEGATIVE_INFINITY
+        private var _maxY:Number = Number.NEGATIVE_INFINITY;
         
         private function get dateFormatter():DateFormatter {
             var dtf:DateFormatter = new DateFormatter();
@@ -365,6 +369,14 @@ package org.cytoscapeweb.model.converters {
             addTags(xgmml, dtset, NODE);
             addTags(xgmml, dtset, EDGE);
             
+            // To center the view:
+            var w:Number = _maxX - _minX;
+            var h:Number = _maxY - _minY;
+            if (w != Infinity && w != -Infinity)
+                xgmml.att.(@name == "GRAPH_VIEW_CENTER_X").@value = w/2;
+            if (h != Infinity && h != -Infinity)
+                xgmml.att.(@name == "GRAPH_VIEW_CENTER_Y").@value = h/2;
+            
             // Return output:
             if (output == null) output = new ByteArray();
             output.writeUTFBytes(xgmml.toXMLString());
@@ -496,8 +508,8 @@ package org.cytoscapeweb.model.converters {
                     var field:DataField = schema.getFieldByName(name);
                     if (data[name] == field.defaultValue) continue;
                     
-                    if (attrs.hasOwnProperty(name)
-                        && name !== WEIGHT) { // Cytoscape won't parse regular weight attributes...
+                    if (attrs.hasOwnProperty(name) &&
+                        name !== WEIGHT) { // Cytoscape won't parse regular weight attributes...
                         // add as attribute
                         x.@[name] = toString(data[name], field.type);
                     } else {
@@ -512,12 +524,26 @@ package org.cytoscapeweb.model.converters {
                 if (obj is DataSprite) {
                     var ds:DataSprite = DataSprite(obj);
                     var graphics:XML = <{GRAPHICS}/>;
+                    var p:Point;
                     
                     // Node position:
                     if (ds is NodeSprite) {
                         var n:NodeSprite = NodeSprite(ds);
-                        graphics.@x = n.parent != null ? n.parent.localToGlobal(new Point(n.x, n.y)).x : 0;
-                        graphics.@y = n.parent != null ? n.parent.localToGlobal(new Point(n.x, n.y)).y  : 0;
+                        
+                        if (n.parent != null)
+                            p = n.parent.localToGlobal(new Point(n.x, n.y))
+                        else
+                            p = new Point(0, 0);
+                        
+                        graphics.@x = p.x;
+                        graphics.@y = p.y;
+                        
+                        // For centering the network view:
+                        var ns:Number = n.height;
+                        _minX = Math.min(_minX, (n.x - ns/2));
+                        _minY = Math.min(_minY, (n.y - ns/2));
+                        _maxX = Math.max(_maxX, (n.x + ns/2));
+                        _maxY = Math.max(_maxY, (n.y + ns/2));
                     }
                     
                     // Styles (color, width...):
