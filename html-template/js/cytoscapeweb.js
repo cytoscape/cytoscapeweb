@@ -553,7 +553,7 @@
          * @param {org.cytoscapeweb.Group} [gr] The group of network elements.
          * @param {Array} [items] The items to be selected. The array can contain node/edge objects or only
          *                        their <code>id</code> values. Notice however that, if you inform only the id
-         *                        and do not pass the group argument, and if an edge and a node have the same id value,
+         *                        and do not pass the group argument, if an edge and a node have the same id value,
          *                        both will be selected.
          * @return {org.cytoscapeweb.Visualization} The Visualization instance.
          * @see org.cytoscapeweb.Visualization#deselect
