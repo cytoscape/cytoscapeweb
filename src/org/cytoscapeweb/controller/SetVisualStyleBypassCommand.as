@@ -52,9 +52,9 @@ package org.cytoscapeweb.controller {
                 
                 var extProxy:ExternalInterfaceProxy = facade.retrieveProxy(ExternalInterfaceProxy.NAME) as ExternalInterfaceProxy;
 
-                if (extProxy.hasListener("visualstyle")) {
+                if (extProxy.hasListener("visualstylebypass")) {
                     var body:Object = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
-                                        argument: { type: "visualstyle", value: bypass.toObject() } };
+                                        argument: { type: "visualstylebypass", value: bypass.toObject() } };
                     
                     sendNotification(ApplicationFacade.CALL_EXTERNAL_INTERFACE, body);
                 }

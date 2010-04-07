@@ -310,7 +310,7 @@
          * Otherwise it just returns the current bypass object.</p>
          * <p>It allows you to override the visual styles (including the ones set by mappers) for individual nodes and edges,
          * which is very useful when the default visual style mechanism is not enough to create the desired effect.</p>
-         * <p>You can register a listener for <code>"visualstyle"</code> events before calling <code>visualStyleBypass(bypass_obj)</code>. 
+         * <p>You can register a listener for <code>"visualstylebypass"</code> events before calling <code>visualStyleBypass(bypass_obj)</code>. 
          * If you do so, the listener is called asynchronously, after the network view is updated.</p>
          * @example
          * // Change the labels of selected nodes and edges:
@@ -1457,10 +1457,15 @@
      *     <tr><th>group</th><th>target</th><th>value</th></tr>
      *     <tr><td><code>none</code></td><td><code>undefined</code></td><td><code>The applied layout name</code></td></tr>
      * </Table>
-     * <p><label><strong>visualstyle:</strong></label> Fired after a visual style or bypass is applied (see {@link org.cytoscapeweb.Visualization#visualStyle} and {@link org.cytoscapeweb.Visualization#visualStyleBypass}).</p>
+     * <p><label><strong>visualstyle:</strong></label> Fired after a visual style is applied (see {@link org.cytoscapeweb.Visualization#visualStyle}.</p>
      * <table>
      *     <tr><th>group</th><th>target</th><th>value</th></tr>
      *     <tr><td><code>none</code></td><td><code>undefined</code></td><td>The applied {@link org.cytoscapeweb.VisualStyle} object</td></tr>
+     * </Table>
+     * <p><label><strong>visualstylebypass:</strong></label> Fired after a visual style bypass is applied (see {@link org.cytoscapeweb.Visualization#visualStyleBypass}).</p>
+     * <table>
+     *     <tr><th>group</th><th>target</th><th>value</th></tr>
+     *     <tr><td><code>none</code></td><td><code>undefined</code></td><td>The applied {@link org.cytoscapeweb.VisualStyleBypass} object</td></tr>
      * </Table>
      * <p><label><strong>zoom:</strong></label> Fired after the network is rescaled, either by calling {@link org.cytoscapeweb.Visualization#zoom} or 
      * when the user interacts with the visualization's pan-zoom control.</p>
@@ -2218,7 +2223,8 @@
      *         <li><code>filter</code>:</strong> For events dispatched after nodes or edges are filtered.</li>
      *         <li><code>zoom</code>:</strong> For events dispatched after the network is rescaled.</li>
      *         <li><code>layout</code>:</strong> For events dispatched after a new layout is applied or the current one is recomputed.</li>
-     *         <li><code>visualstyle</code>:</strong> For events dispatched after a new visual style is set.</li>
+     *         <li><code>visualstyle</code>:</strong> For events dispatched after a visual style is set.</li>
+     *         <li><code>visualstylebypass</code>:</strong> For events dispatched after a visual style bypass is applied.</li>
      *         <li><code>contextmenu</code>:</strong> For events dispatched after a right-click context menu item is selected.
      *                                                        You cannot use this type with the listener methods (e.g. {@link org.cytoscapeweb.Visualization#addListener}).
      *                                                        Events of this type are only dispatched to the callback functions that are registered with

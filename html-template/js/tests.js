@@ -528,9 +528,9 @@ function runGraphTests(moduleName, vis, options) {
 			bypass.edges[e.data.id] = { opacity: o, width: edgeWidth };
 		});
 		
-    	vis.addListener("visualstyle", function(evt) {
+    	vis.addListener("visualstylebypass", function(evt) {
     		start();
-    		vis.removeListener("visualstyle");
+    		vis.removeListener("visualstylebypass");
     		
     		var bp = evt.value;
     		same (bp, vis.visualStyleBypass());
@@ -563,9 +563,9 @@ function runGraphTests(moduleName, vis, options) {
     asyncTest("Remove Visual Style Bypass", function() {
     	expect(5);
     	
-    	vis.addListener("visualstyle", function(evt) {
+    	vis.addListener("visualstylebypass", function(evt) {
     		start();
-    		vis.removeListener("visualstyle");
+    		vis.removeListener("visualstylebypass");
     		var bp = evt.value;
     		
     		same(bp, vis.visualStyleBypass());
