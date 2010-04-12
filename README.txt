@@ -22,7 +22,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 WEBSITE
 ================================================================================
 
-Visit our Website at http://cytoweb.baderlab.org
+Visit our Website at http://cytoscapeweb.cytoscape.org/
 
 ================================================================================
 INSTALLATION AND USAGE
@@ -67,8 +67,8 @@ INSTALLATION AND USAGE
 
 --------------------------------------------------------------------------------
 
-To see other examples and the API documentation, visit
-http://cytoweb.baderlab.org/documentation.
+To see other examples and the API documentation, visit 
+http://cytoscapeweb.cytoscape.org/documentation
 
 ================================================================================
 SOURCE CODE
