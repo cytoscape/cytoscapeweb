@@ -29,6 +29,7 @@
 */
 package org.cytoscapeweb.model {
 	import flare.data.DataField;
+	import flare.data.DataSchema;
 	import flare.data.DataSet;
 	import flare.data.DataTable;
 	import flare.data.DataUtil;
@@ -72,7 +73,6 @@ package org.cytoscapeweb.model {
 
         // ========[ PRIVATE PROPERTIES ]===========================================================
 
-        private var _graphData:Data;
         private var _interactions:/*key->InteractionVO*/Object;
         private var _parentEdges:/*regularEdgeId->mergedEdgeSprite*/Object;
         private var _rolledOverNode:NodeSprite;
@@ -101,11 +101,11 @@ package org.cytoscapeweb.model {
         public var dataSet:DataSet;
         
         public function get graphData():Data {
-            return _graphData;
+            return data as Data;
         }
         
-        public function set graphData(data:Data):void {
-            this._graphData = data;
+        public override function setData(data:Object):void {
+            super.setData(data);
             
             if (data != null) {
                 // Add missing Ids:
@@ -128,6 +128,20 @@ package org.cytoscapeweb.model {
             }
                 
             sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED, data);
+        }
+        
+        public function get nodesSchema():DataSchema {
+            if (dataSet != null) {
+                return dataSet.nodes.schema;
+            }
+            return null;
+        }
+        
+        public function get edgesSchema():DataSchema {
+            if (dataSet != null) {
+                return dataSet.edges.schema;
+            }
+            return null;
         }
         
         /**
@@ -300,30 +314,123 @@ package org.cytoscapeweb.model {
             return inter;
         }
 
-        public function getDataSpriteList(objList:Array, group:String=null):Array {
+        public function addDataField(group:String, name:String, type:int, defValue:Object=null):Boolean {
+            var added:Boolean = false;
+            
+            if (group == null || group === Groups.NONE) {
+                added = addDataField(Groups.NODES, name, type, defValue);
+                added = addDataField(Groups.EDGES, name, type, defValue) || added;
+            } else {
+                name = StringUtil.trim(name);
+                var schema:DataSchema = group === Groups.NODES ? nodesSchema : edgesSchema;
+                
+                if (schema.getFieldById(name) == null) {
+                    // This field is not duplicated...
+                    var field:DataField = new DataField(name, type, defValue);
+                    schema.addField(field);
+                    added = true;
+                    
+                    // Update nodes/edges data
+                    var items:Array = group === Groups.NODES ? nodes : edges;
+                    for each (var ds:DataSprite in items) {
+                        ds.data[field.name] = field.defaultValue;
+                    }
+                }
+            }
+            
+            return added;
+        }
+        
+        public function removeDataField(group:String, name:String):Boolean {
+            var removed:Boolean = false;
+
+            if (group == null || group === Groups.NONE) {
+                removed = removeDataField(Groups.NODES, name);
+                removed = removeDataField(Groups.EDGES, name) || removed;
+            } else {
+                name = StringUtil.trim(name);
+                if ( name != "id" && name != "label" &&
+                    !(group === Groups.EDGES && (name === "source" || 
+                                                 name === "target" || 
+                                                 name === "directed")) ) {
+                
+                    var schema:DataSchema = group === Groups.NODES ? nodesSchema : edgesSchema;
+                    
+                    // No method to delete a data field? :-(
+                    // So let's just create a new schema:
+                    var newSchema:DataSchema = new DataSchema();
+                    var fields:Array = schema.fields;
+
+                    for each (var df:DataField in fields) {
+                        if (df.name != name)
+                            newSchema.addField(df);
+                        else 
+                            removed = true;
+                    }
+                    
+                    if (removed) {
+                        // Update the Data Set:
+                        if (group === Groups.NODES)
+                            dataSet.nodes.schema = newSchema;
+                        else
+                            dataSet.edges.schema = newSchema;
+                        
+                        // Update nodes/edges data
+                        var items:Array = group === Groups.NODES ? nodes : edges;
+                        for each (var ds:DataSprite in items) {
+                            delete ds.data[name];
+                        }
+                    }
+                }
+            }
+            
+            return removed;
+        }
+        
+        public function updateData(ds:DataSprite, data:Object):void {
+            if (ds != null && data != null) {
+                for (var k:String in data) {
+                    if ( ds.data[k] !== undefined && k !== "id" &&
+                        !(ds is EdgeSprite && (k === "source" || k === "target")) )
+                        ds.data[k] = data[k];
+                }
+            }
+        }
+
+        public function getDataSpriteList(objList:Array, group:String=null, mergeData:Boolean=false):Array {
         	var list:Array = null;
         	if (group == null) group = Groups.NONE;
         	
             if (objList != null) {
                 list = [];
+                
+                var push:Function = function (ds:DataSprite, d:Object):void {
+                    if (ds != null) {
+                        list.push(ds);
+                        if (mergeData) updateData(ds, d);
+                    }
+                };
+                
                 for each (var obj:* in objList) {
                     if (obj != null) {
 	                    var id:* = obj;
 	                    var gr:String = group;
+	                    var data:Object = null;
 	                    
-	                    if (obj && obj.hasOwnProperty("data") && obj.data.id)
-	                       id = obj.data.id;
+	                    if (obj && obj.hasOwnProperty("data") && obj.data.id) {
+	                       data = obj.data;
+	                       id = data.id;
+	                    }
 	                    if (group === Groups.NONE && obj.hasOwnProperty("group"))
 	                       gr = obj.group;
-	                    
-	    	            var ds:DataSprite = null;
+
+	    	            // If an edge and a node has the same requested id and group is NONE,
+	    	            // both are included:
 	    	            if (gr === Groups.NODES || gr === Groups.NONE) {
-	        	            ds = _nodesMap[id];
-	        	            if (ds != null) list.push(ds);
+	        	            push(_nodesMap[id], data);
 	        	        }
-	    	            if (ds == null && (gr === Groups.EDGES || gr === Groups.NONE)) {
-	        	            ds = _edgesMap[id];
-	        	            if (ds != null) list.push(ds);
+	    	            if (gr === Groups.EDGES || gr === Groups.NONE) {
+	        	            push(_edgesMap[id], data);
 	        	        }
                     }
                 }
@@ -474,7 +581,7 @@ package org.cytoscapeweb.model {
                         ds = new SIFConverter().parse(txt);
                     }
                     dataSet = ds;
-                    graphData = Data.fromDataSet(ds);
+                    setData(Data.fromDataSet(ds));
                 } catch (err:Error) {
                     trace("[ERROR]: onLoadGraph_result: " + err.getStackTrace());
                     throw err;
@@ -486,27 +593,16 @@ package org.cytoscapeweb.model {
         
         public function getDataAsText(format:String="xgmml", options:Object=null):String {
             var out:IDataOutput, nodesTable:DataTable, edgesTable:DataTable, dtSet:DataSet;
-            var edges:DataList = new DataList(Data.EDGES);
-            var edgesData:Array = [];
-            
-            // Use only real edges (not the merged ones):
-            for each (var e:EdgeSprite in graphData.edges) {
-                if (!e.props.$merged) {
-                    edges.add(e);
-                    edgesData.push(e.data);
-                }
-            }
-            
             format = StringUtil.trim(format.toLowerCase());
                         
             if (format === "xgmml") {
                 nodesTable = new GraphicsDataTable(graphData.nodes, dataSet.nodes.schema);
-                edgesTable = new GraphicsDataTable(edges, dataSet.edges.schema);
+                edgesTable = new GraphicsDataTable(graphData.group(GRP_REGULAR_EDGES), dataSet.edges.schema);
                 dtSet = new DataSet(nodesTable, edgesTable);
                 out = new XGMMLConverter(configProxy.visualStyle).write(dtSet);
             } else {
                 nodesTable = new DataTable(graphData.nodes.toDataArray(), dataSet.nodes.schema);
-                edgesTable = new DataTable(edgesData, dataSet.edges.schema);
+                edgesTable = new DataTable(graphData.group(GRP_REGULAR_EDGES).toDataArray(), dataSet.edges.schema);
                 dtSet = new DataSet(nodesTable, edgesTable);
 
                 if (format === "graphml") {

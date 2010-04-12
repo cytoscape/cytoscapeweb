@@ -28,35 +28,30 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.controller {
-	import flare.vis.data.Data;
-	
-	import org.cytoscapeweb.model.ConfigProxy;
-	import org.cytoscapeweb.model.GraphProxy;
-	import org.cytoscapeweb.view.GraphMediator;
-	import org.puremvc.as3.interfaces.INotification;
-	import org.puremvc.as3.patterns.command.SimpleCommand;
-	
-	
+    import org.cytoscapeweb.ApplicationFacade;
+    import org.cytoscapeweb.model.GraphProxy;
+    import org.cytoscapeweb.util.Groups;
+    import org.puremvc.as3.interfaces.INotification;
+    import org.puremvc.as3.patterns.command.SimpleCommand;
+    
+
     /**
-     * It binds the data to the configuration.
+     * Remove a custom attribute definition from the data schema.
      */
-    public class HandleDataChangeCommand extends SimpleCommand {
-    	
+    public class RemoveDataFieldCommand extends SimpleCommand {
+        
         override public function execute(notification:INotification):void {
-            var data:Data = notification.getBody() as Data;
+            var body:Object = notification.getBody();
+            var name:String = body.name;
+            if (name == null) throw new Error("The 'name' of the data field to remove is mandatory");
             
-            if (data == null) {
-                var graphProxy:GraphProxy = facade.retrieveProxy(GraphProxy.NAME) as GraphProxy;
-                data = graphProxy.graphData;
-            }
+            var group:String = body.group;
+            if (group == null) group = Groups.NONE;
             
-            // Visual Mappers must be recalculated:
-            var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
-            configProxy.bindGraphData(data);
+            var graphProxy:GraphProxy = facade.retrieveProxy(GraphProxy.NAME) as GraphProxy;
+            var removed:Boolean = graphProxy.removeDataField(group, name);
             
-            // Update the view:
-            var mediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
-            if (mediator != null) mediator.updateView();
+            if (removed) sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
         }
     }
 }

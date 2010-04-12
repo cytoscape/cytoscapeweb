@@ -89,7 +89,7 @@ package org.cytoscapeweb.fixtures {
             
             var graphProxy:GraphProxy = ApplicationFacade.getInstance().retrieveProxy(GraphProxy.NAME) as GraphProxy;
             graphProxy.dataSet = ds;
-            graphProxy.graphData = data;
+            graphProxy.setData(data);
             data = graphProxy.graphData;
 
             return data;

@@ -92,6 +92,8 @@ package org.cytoscapeweb.model {
 
         public function addCallbacks():void {
             if (ExternalInterface.available) {
+                ExternalInterface.marshallExceptions = true;
+                
                 var functions:Array = [ "draw",
                                         "addContextMenuItem", "removeContextMenuItem", 
                                         "select", "deselect", 
@@ -110,6 +112,7 @@ package org.cytoscapeweb.model {
                                         "getLayout", "applyLayout", 
                                         "setVisualStyle", "getVisualStyle", 
                                         "getVisualStyleBypass", "setVisualStyleBypass",
+                                        "addDataField", "removeDataField", "updateData",
                                         "getNetworkAsText", "getNetworkAsImage", 
                                         "exportNetwork" ];
 
@@ -347,6 +350,19 @@ package org.cytoscapeweb.model {
         
         private function applyLayout(name:String):void {
             sendNotification(ApplicationFacade.APPLY_LAYOUT, name);
+        }
+        
+        private function addDataField(group:String, dataField:Object):void {
+            sendNotification(ApplicationFacade.ADD_DATA_FIELD, { group: group, dataField: dataField });
+        }
+        
+        private function removeDataField(group:String, name:String):void {
+            sendNotification(ApplicationFacade.REMOVE_DATA_FIELD, { group: group, name: name });
+        }
+        
+        private function updateData(group:String, items:Array=null, data:Object=null):void {
+            if (items != null || data != null)
+                sendNotification(ApplicationFacade.UPDATE_DATA, { group: group, items: items, data: data });
         }
         
         private function getNetworkAsText(format:String="xgmml", options:Object=null):String {

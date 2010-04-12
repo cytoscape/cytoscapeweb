@@ -92,6 +92,10 @@ package org.cytoscapeweb {
         public static const DESELECT:String = "deselect";
         /** Ask to deselect all edges and/or nodes (send the group [nodes|edges|none] as notification body). */
         public static const DESELECT_ALL:String = "deselect_all";
+        
+        public static const ADD_DATA_FIELD:String = "add_data_field";
+        public static const REMOVE_DATA_FIELD:String = "remove_data_field";
+        public static const UPDATE_DATA:String = "update_data";
 
         public static const CLICK_EVENT:String = "click_event";
         public static const DOUBLE_CLICK_EVENT:String = "double_click_event";
@@ -149,6 +153,9 @@ package org.cytoscapeweb {
             registerCommand(SELECT_ALL, SelectAllCommand);
             registerCommand(DESELECT, DeselectCommand);
             registerCommand(DESELECT_ALL, DeselectAllCommand);
+            registerCommand(ADD_DATA_FIELD, AddDataFieldCommand);
+            registerCommand(REMOVE_DATA_FIELD, RemoveDataFieldCommand);
+            registerCommand(UPDATE_DATA, UpdateDataCommand);
             registerCommand(FILTER, FilterCommand);
             registerCommand(REMOVE_FILTER, RemoveFilterCommand);
             registerCommand(GRAPH_DATA_CHANGED, HandleDataChangeCommand);

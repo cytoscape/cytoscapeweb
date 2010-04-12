@@ -519,7 +519,167 @@
             var str = this.swf().getMergedEdges();
             return JSON.parse(str);
         },
-
+        
+        /**
+         * <p>Add a custom attribute definition to the current node or edge data schema.</p>
+         * <p>If an attribute with the same name is already defined for the same group,
+         * the attribute will not be added again or replace the previous definitions.</p>
+         * @example
+         * // 1: Add the same new field to nodes and edges data:
+         * var field = { name: "url", type: "string", defValue: "http://cytoscapeweb.cytoscape.org/" };
+         * vis.addDataField(field);
+         * 
+         * // 2: Add new field to nodes only:
+         * var field = { name: "score", type: "number", defValue: 0.15 };
+         * vis.addDataField("nodes", field);
+         * 
+         * @param {org.cytoscapeweb.Group} [gr] The group of network elements. If no group is passed,
+         *                                      Cytoscape Web will try to add the new field to both nodes and edges data schema.
+         * @param {Object} dataField An object that contains the attribute definitions:
+         *                           <ul class="options">
+         *                               <li><code>name</code>: The name of the new data attribute.</li>
+         *                               <li><code>type</code>: The data type of the attribute. One of:
+         *                                                      <code>"string"</code>, <code>"boolean"</code>, 
+         *                                                      <code>"number"</code>, <code>"int"</code>, <code>"object"</code>.</li>
+         *                               <li><code>defValue</code>: An optional default value.</li>
+         *                           </ul>
+         * @return {org.cytoscapeweb.Visualization} The Visualization instance.
+         * @see org.cytoscapeweb.Visualization#removeDataField
+         * @see org.cytoscapeweb.Visualization#updateData
+         */
+        addDataField: function (/*gr, dataField*/) {
+        	var gr, dataField, i = 0;
+        	if (arguments.length > 1) { gr = arguments[i++]; }
+        	dataField = arguments[i];
+        	if (dataField == null) { throw("The 'dataField' object is mandatory."); }
+        	if (dataField.name == null) { throw("The 'name' of the data field is mandatory."); }
+        	if (dataField.type == null)  { throw("The 'type' of the data field is mandatory."); }
+        	gr = this._normalizeGroup(gr);
+            this.swf().addDataField(gr, dataField);
+        	return this;
+        },
+        
+        /**
+         * <p>Remove a custom attribute definition from the data schema.</p>
+         * <p>Remember that only custom metadata can be removed. Any attempt to remove the following data fields will be ignored:</p>
+         * <ul>
+         *     <li><code>id</code> (nodes and edges)</li>
+         *     <li><code>label</code> (nodes and edges)</li>
+         *     <li><code>source</code> (edges)</li>
+         *     <li><code>target</code> (edges)</li>
+         *     <li><code>directed</code> (edges)</li>
+         * </ul>
+         * @example
+         * // 1: Remove a data field from nodes and edges:
+         * vis.removeDataField("url");
+         * 
+         * // 2: Remove a data field from edges only:
+         * vis.removeDataField("edges", "url");
+    	 *
+         * @param {org.cytoscapeweb.Group} [gr] The group of network elements. If no group is passed,
+         *                                      Cytoscape Web will try to remove the field from both nodes and edges data schema.
+         * @param {String} name The name of the custom data field that will be removed.
+         * @return {org.cytoscapeweb.Visualization} The Visualization instance.
+         * @see org.cytoscapeweb.Visualization#addDataField
+         * @see org.cytoscapeweb.Visualization#updateData
+         */
+        removeDataField: function (/*gr, name*/) {
+        	var gr, name, i = 0;
+        	if (arguments.length > 1) { gr = arguments[i++]; }
+        	name = arguments[i];
+            if (name == null) { throw("The 'name' of the data field is mandatory."); }
+            gr = this._normalizeGroup(gr);
+            this.swf().removeDataField(gr, name);
+        	return this;
+        },
+        
+        /**
+         * <p>This method updates nodes and edges <code>data</code> attributes. You can use it to
+         * change the value of any existing data attribute, except:</p>
+         * <ul>
+         *     <li><code>id</code> (nodes and edges)</li>
+         *     <li><code>source</code> (edges)</li>
+         *     <li><code>target</code> (edges)</li>
+         * </ul>
+         * <p>You can only update <code>data</code> attributes. Visual properties such as <code>color</code>
+         * and <code>width</code> cannot be updated with this method. In order to change visual properties,
+         * use {@link org.cytoscapeweb.Visualization#visualStyle} or {@link org.cytoscapeweb.Visualization#visualStyleBypass}.</p>
+         * <p>If you try to change an attribute that has not been previously defined, the request will be ignored.
+         * In this case, you have to add the attribute definition first, by calling {@link org.cytoscapeweb.Visualization#addDataField}.</p>
+         * <p>Another important thing to remember is that you cannot directly change merged edges attributes.</p>
+         * 
+         * @example
+         * // 1: Update only one node or edge:
+         * var n = vis.nodes()[0];
+         * n.data.label = "New Label...";
+         * n.data.weight *= 2;
+         * vis.updateData(n);
+         * 
+         * // 2: Update more than one object at once:
+         * var nodes = vis.nodes();
+         * var n1 = nodes[0];
+         * var n2 = nodes[1];
+         * n1.data.label = "New Label for N1";
+         * n2.data.label = "New Label for N2";
+         * 
+         * var e = vis.edges[0];
+         * e.data.weight = 0.8;
+         * 
+         * vis.updateData([n1, n2, e]);
+         * 
+         * // 3: Update more than one object from the same group at once,
+         * //    setting the same values to all of them:
+         * var edge_ids = ["1","3","7"];
+         * var data = { weight: 0.5, interaction: "pp" };
+         * vis.updateData("edges", edge_ids, data);
+         * 
+         * // 4: Update more than one node and edge at once,
+         * //    setting the same values to all of them:
+         * var ids = ["n1","n2","e7","e10"];
+         * var data = { weight: 0 };
+         * vis.updateData(ids, data);
+         * 
+         * // 5: Update all nodes and edges with the same attribute values:
+         * var data = { weight: 0 };
+         * vis.updateData(data);
+         * 
+         * @param {org.cytoscapeweb.Group} [gr] The group of network elements.
+         * @param {Array} [items] The items to be updated. The array can contain node/edge objects or only
+         *                        their <code>id</code> values. Notice however that, if you inform only the id
+         *                        and do not pass the group argument, if an edge and a node have the same id value,
+         *                        both will be updated.
+         * @param {Object} [data] The data object that contains the attributes with the new values to be applied
+         *                        to all the elements of the informed group or to the ones informed at the <code>items</code>
+         *                        parameter only.
+         * @return {org.cytoscapeweb.Visualization} The Visualization instance.
+         * @see org.cytoscapeweb.Visualization#addDataField
+         * @see org.cytoscapeweb.Visualization#removeDataField
+         */
+        updateData: function (/*gr, items, data*/) {
+        	var gr, items, data;
+            if (arguments.length === 1) {
+                if (typeof arguments[0] === "string") { gr = arguments[0]; }
+                else if (this._typeof(arguments[0]) === "array") { items = arguments[0]; }
+                else { data = arguments[0]; }
+            } else if (arguments.length === 2) {
+            	if (typeof arguments[0] === "string") {
+            		gr = arguments[0];
+            		if (this._typeof(arguments[1]) === "array") { items = arguments[1]; }
+            		else { data = arguments[1]; }
+            	} else {
+                	items = arguments[0];
+                	data = arguments[1];
+                }
+            } else if (arguments.length > 2) {
+            	gr = arguments[0];
+            	items = arguments[1];
+            	data = arguments[2];
+            }
+            gr = this._normalizeGroup(gr);
+            this.swf().updateData(gr, items, data);
+            return this;
+        },
+        
         /**
          * <p>Select the indicated nodes and edges.</p>
          * <p>The same method can also be used to select all nodes/edges.
@@ -1372,6 +1532,17 @@
                 list = list.concat(edges);
             }
             return list;
+        },
+        
+        _typeof: function(v) {
+        	if (typeof(v) == "object") {
+				if (v === null) return "null";
+				if (v.constructor == (new Array).constructor) return "array";
+				if (v.constructor == (new Date).constructor) return "date";
+				if (v.constructor == (new RegExp).constructor) return "regex";
+				return "object";
+        	}
+			return typeof(v);
         }
     };
 

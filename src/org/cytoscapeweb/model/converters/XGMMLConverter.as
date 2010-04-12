@@ -177,6 +177,7 @@ package org.cytoscapeweb.model.converters {
         private static const REAL:String    = "real";
         private static const LIST:String    = "list";
         private static const STRING:String  = "string";
+        private static const BOOLEAN:String  = "boolean";
         
         private static const TRUE:String  = "1";
         private static const FALSE:String = "0";
@@ -506,14 +507,15 @@ package org.cytoscapeweb.model.converters {
                 
                 for (var name:String in data) {
                     var field:DataField = schema.getFieldByName(name);
-                    if (data[name] == field.defaultValue) continue;
                     
                     if (attrs.hasOwnProperty(name) &&
                         name !== WEIGHT) { // Cytoscape won't parse regular weight attributes...
                         // add as attribute
                         x.@[name] = toString(data[name], field.type);
                     } else {
-                        addAtt(x, name, schema, data);
+                        if (data[name] != null) {
+                            addAtt(x, name, schema, data);
+                        }
                     }
                 }
                 
@@ -677,7 +679,7 @@ package org.cytoscapeweb.model.converters {
         }
         
         private static function toString(o:Object, type:int):String {
-            return o.toString(); // TODO: formatting control?
+            return o != null ? o.toString() : ""; // TODO: formatting control?
         }
         
         /**
@@ -702,7 +704,7 @@ package org.cytoscapeweb.model.converters {
                 case DataUtil.INT:      return INTEGER;
                 case DataUtil.NUMBER:   return REAL;
                 case DataUtil.OBJECT:   return LIST;
-                case DataUtil.BOOLEAN:
+                case DataUtil.BOOLEAN:  return BOOLEAN;
                 case DataUtil.DATE:
                 case DataUtil.STRING:
                 default:                return STRING;

@@ -213,6 +213,13 @@ package org.cytoscapeweb.view {
             }
         }
         
+        public function updateView():void {
+            vis.data.nodes.setProperties(Nodes.properties);
+            vis.data.edges.setProperties(Edges.properties);
+            vis.updateLabels(Groups.NODES);
+            vis.updateLabels(Groups.EDGES);
+        }
+        
         public function updateFilters(updateNodes:Boolean, updateEdges:Boolean,
                                       updateAllProperties:Boolean):void {
             if (updateNodes) {

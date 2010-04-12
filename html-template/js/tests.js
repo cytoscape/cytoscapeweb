@@ -781,6 +781,203 @@ function runGraphTests(moduleName, vis, options) {
         vis.filter("nodes", nfilter, true);
     });
     
+    test("Update Data Attributes", function() {
+    	var all, nodes = vis.nodes(), edges = vis.edges();
+    	var filter = function(o) { return o.data.id % 2 === 0; };
+    	var ids = [];
+    	
+    	// 1: Update all nodes and edges (same data):
+        var data = { weight: 1, new_attr: "ignore it!" };
+        vis.updateData(data);
+    	
+        all = vis.nodes().concat(vis.edges());
+        $.each(all, function(i, el) {
+    		same(el.data.weight, 1, "weight updated ("+el.data.id+")");
+    		same(el.data.new_attr, undefined, "New attribute ignored ("+el.data.id+")");
+    	});
+        
+        // 2: Update more than one node and edge at once (by ID - ALL groups - same data):
+        var data = { weight: 0.5, type: "new_type" };
+        $.each(all, function(i, o) {
+        	if (filter(o)) { ids.push(o.data.id); }
+        });
+
+        vis.updateData(ids, data);
+        
+        all = vis.nodes().concat(vis.edges());
+        $.each(all, function(i, el) {
+        	if (filter(el)) {
+	    		same(el.data.weight, 0.5, "weight updated ("+el.data.id+")");
+	    		same(el.data.type, "new_type", "type updated ("+el.data.id+")");
+        	} else {
+        		same(el.data.weight, 1, "weight NOT updated ("+el.data.id+")");
+	    		ok(el.data.type != "new_type", "type NOT updated ("+el.data.id+")");
+        	}
+    	});
+        
+        // 3: Update more than one object (by ID - 1 group - same data):
+        ids = ["1","3"];
+        var data = { weight: 4, source: "3", target: "5", id: "999999" };
+        vis.updateData("edges", ids, data);
+        
+        all = vis.nodes().concat(vis.edges());
+        $.each(all, function(i, el) {
+        	var id = el.data.id;
+        	if (el.group === "edges") {
+        		if (id === "1" || id === "3") {
+        			same(el.data.weight, 4, "weight updated ("+el.data.id+")");
+        		}
+		        ok(el.data.source != "3" || el.data.target != "5", "source/target is NEVER changed for edges");
+        	} else {
+        		ok(el.data.weight == 0.5 || el.data.weight == 1, "weight NOT updated ("+el.data.id+")");
+        	}
+        	ok(el.data.id != "999999", "id is NEVER changed");
+    	});
+        
+    	// 4: Update only one node (send the whole object):
+    	var n = vis.nodes()[1];
+        n.data.label = "["+n.data.label+"]";
+        n.data.weight = 2;
+        vis.updateData([n]);
+        
+        all = vis.nodes().concat(vis.edges());
+        $.each(all, function(i, el) {
+        	if (el.group === "nodes" && el.data.id === n.data.id) {
+        		same(el.data.weight, n.data.weight, "Node weight updated ("+el.data.id+")");
+        		same(el.data.label, n.data.label, "Node label updated ("+el.data.id+")");
+        	} else {
+        		ok(el.data.weight != n.data.weight, "Other nodes or edges weight NOT updated ("+el.data.id+")");
+        		ok(el.data.label != n.data.label, "Other nodes or edges label NOT updated ("+el.data.id+")");
+        	}
+    	});
+
+        // 5: Update more than one object at once (merge data):
+        var n = nodes[3];
+        var e = edges[4];
+        n.data.weight = 0;
+        n.data.label = "["+n.data.label+"]";
+        e.data.weight = 0;
+        e.data.type = "AAA";
+        
+        vis.updateData([n, e], { weight: 6 });
+        
+        all = vis.nodes().concat(vis.edges());
+        $.each(all, function(i, el) {
+        	var id = el.data.id;
+        	if (el.group === "nodes" && id === n.data.id) {
+        		same(el.data.label, n.data.label, "Node label updated ("+id+")");
+        		same(el.data.weight, 6, "Node weight updated ("+id+")");
+        	} else if (el.group === "edges" && id === e.data.id) {
+        		same(el.data.type, e.data.type, "Edge type updated ("+id+")");
+        		same(el.data.weight, 6, "Edge weight updated ("+id+")");
+        	} else {
+        		ok(el.data.weight != 6, "Other nodes or edges weight NOT updated ("+id+")");
+        		ok(el.data.label != n.data.label, "Other nodes or edges label NOT updated ("+id+")");
+        	}
+    	});
+    });
+    
+    test("Add Data Field", function() {
+    	var all, nodes, edges, field;
+    	
+    	// 1: Add new field to nodes and edges:
+        field = { name: "new_attr_1", type: "string" };
+        vis.addDataField(field);
+    	
+        all = vis.nodes().concat(vis.edges());
+        $.each(all, function(i, el) {
+    		same(el.data.new_attr_1, null, "New field added to all ("+el.group+" "+el.data.id+")");
+    	});
+        
+        // 2: Add new field to nodes only:
+        vis.addDataField("nodes", { name: "new_node_attr_1", type: "number", defValue: 0.234 })
+           .addDataField("nodes", { name: "new_node_attr_2", type: "boolean" });
+
+        nodes = vis.nodes();
+        $.each(nodes, function(i, el) {
+    		same(el.data["new_node_attr_1"], 0.234, "New field [number] added to nodes ("+el.data.id+")");
+    		same(el.data["new_node_attr_2"], null, "New field [boolean] added to nodes ("+el.data.id+")"); // TODO: should return false by default?
+    	});
+        edges = vis.edges();
+        $.each(edges, function(i, el) {
+        	same(el.data["new_node_attr_1"], undefined, "Field NOT added to edges ("+el.data.id+")");
+        });
+        
+        // 3: Ignore duplicated field:
+        field = { name: "new_attr_1", type: "string", defValue: "IGNORE IT" };
+        vis.addDataField("nodes", field);
+    	
+        nodes = vis.nodes();
+        $.each(nodes, function(i, el) {
+    		same(el.data.new_attr_1, null, "Duplicated field 'new_attr_1' ignored ("+el.data.id+")");
+    	});
+        
+        // 4: Errors:
+    	var fail;
+    	try {
+    		vis.addDataField("nodes"); fail = true;
+    	} catch (err) { fail = false; }
+    	ok(fail === false, "Null 'dataField' throws exception");
+    	try {
+    		vis.addDataField("edges", { type: "string" }); fail = true;
+    	} catch (err) { fail = false; }
+    	ok(fail === false, "Null 'dataField.name' throws exception");
+    	try {
+    		vis.addDataField({ name: "err_attr" }); fail = true;
+    	} catch (err) { fail = false; }
+    	ok(fail === false, "Null 'dataField.type' throws exception");
+    });
+    
+    test("Remove Data Field", function() {
+    	var all, nodes, edges, name;
+
+    	// 1: Remove field from nodes and edges:
+    	name = "new_attr_1";
+    	vis.removeDataField(name);
+    	
+    	all = vis.nodes().concat(vis.edges());
+    	$.each(all, function(i, el) {
+    		same(el.data[name], undefined, "Field "+name+"' removed from all ("+el.group+" "+el.data.id+")");
+    	});
+    	
+    	// 2: Remove field from nodes only:
+    	name = "new_node_attr_1";
+    	vis.addDataField({ name: name, type: "string", defValue: "delete me!" });
+    	vis.removeDataField("edges", name);
+    	
+    	edges = vis.edges();
+    	$.each(edges, function(i, el) {
+    		same(el.data[name], undefined, "Field "+name+"' removed from edges ("+el.data.id+")");
+    	});
+    	nodes = vis.nodes();
+    	$.each(nodes, function(i, el) {
+    		ok(el.data[name] !== undefined, "Field "+name+"' NOT removed from nodes ("+el.data.id+")");
+    	});
+    	
+    	// 3: Do NOT remove non-custom fields:
+    	vis.addDataField("edges", { name: "label", type: "string", defValue: "edge" }); // edges might not have labels...
+    	
+    	vis.removeDataField("id").removeDataField("label");
+    	vis.removeDataField("edges", "source").removeDataField("edges", "target").removeDataField("edges", "directed");
+    	
+    	all = vis.nodes().concat(vis.edges());
+    	$.each(all, function(i, el) {
+    		ok(el.data["id"] != null && el.data["label"] != null, "Did NOT remove mandatory fields 'id' and 'label' ("+el.data.id+")");
+    	});
+    	edges = vis.edges();
+    	$.each(edges, function(i, el) {
+    		ok(el.data["source"] != null && el.data["target"] != null && el.data["directed"] != null, 
+    	       "Did NOT remove edge fields 'directed', 'source' and 'target' ("+el.data.id+")");
+    	});
+    	
+    	// 4: Errors:
+    	var fail;
+    	try {
+    		vis.removeDataField(); fail = true;
+    	} catch (err) { fail = false; }
+    	ok(fail === false, "Null 'name' throws exception");
+    });
+    
     test("PNG", function() {
     	vis.zoom(Math.random()*2);
     	vis.panBy(Math.random()*-1000, Math.random()*1000);
