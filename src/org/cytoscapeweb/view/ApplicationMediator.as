@@ -258,7 +258,7 @@ package org.cytoscapeweb.view {
 		
 		private function onApplicationComplete(evt:FlexEvent):void {
 		    // KEY BINDINGS:
-            application.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPressed, false, 0, true);
+            application.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, false, 0, true);
 		    
             // Listeners to drag the PAN ZOOM control:
             panZoomBox.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDownPanZoom, false, 0, true);
@@ -286,7 +286,7 @@ package org.cytoscapeweb.view {
     		}
 		}
         
-        public function onKeyPressed(evt:KeyboardEvent):void {
+        private function onKeyDown(evt:KeyboardEvent):void {
             var panX:Number = 0; var panY:Number = 0;
             var amount:Number = 16;
 
@@ -304,8 +304,6 @@ package org.cytoscapeweb.view {
                 panZoomBox.zoomOutButton.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
             else if (evt.charCode == 42) // '*'
                 panZoomBox.zoomFitButton.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
-            else if (evt.ctrlKey || evt.shiftKey)
-                updateCursor();
                 
             if (panX != 0 || panY != 0)
                 sendNotification(ApplicationFacade.PAN_GRAPH, {panX: panX, panY: panY});
@@ -463,7 +461,7 @@ package org.cytoscapeweb.view {
             } else {
                 hideClosedHandCursor();
 
-                if (options.ctrlDown && !options.shiftDown) {
+                if ( (options.panningOn && graphProxy.rolledOverNode == null) || options.ctrlDown ) {
                     showOpenedHandCursor();
                     _isCustomCursor = true;
                 } else {

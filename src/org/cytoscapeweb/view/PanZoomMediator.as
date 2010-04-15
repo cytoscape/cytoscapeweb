@@ -29,8 +29,10 @@
 */
 package org.cytoscapeweb.view {
     import flash.events.Event;
+    import flash.events.KeyboardEvent;
     import flash.events.MouseEvent;
     import flash.events.TimerEvent;
+    import flash.ui.Keyboard;
     import flash.utils.Timer;
     
     import mx.controls.Button;
@@ -56,6 +58,7 @@ package org.cytoscapeweb.view {
         private var _panTimer:Timer = new Timer(16);
         private var _pressedPanButton:Button;
         private var _ignoreZoomChange:Boolean;
+        private var _panningOn:Boolean;
         
         private function get panZoomBox():PanZoomBox {
             return viewComponent as PanZoomBox;
@@ -70,10 +73,14 @@ package org.cytoscapeweb.view {
         public function PanZoomMediator(viewComponent:Object) {
             super(NAME, viewComponent, this);
 
+            panZoomBox.addEventListener(Event.ADDED_TO_STAGE, onComplete, false, 0 , true);
+
             // Setup Zoom Slider:
             panZoomBox.setZoomRange(configProxy.minZoom, configProxy.maxZoom);
 
             // Panning events:
+            panZoomBox.panButton.addEventListener(MouseEvent.CLICK, onPanToggleClick, false, 0, true);
+            
             var panButtons:Array = [panZoomBox.panDownButton, panZoomBox.panLeftButton, 
                                     panZoomBox.panRightButton, panZoomBox.panUpButton];
             
@@ -126,6 +133,39 @@ package org.cytoscapeweb.view {
         
         // ========[ PRIVATE METHODS ]==============================================================
 
+        private function onComplete(evt:Event):void {
+            panZoomBox.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, false, 0, true);
+            panZoomBox.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false, 0, true);
+        }
+
+        private function onKeyDown(evt:KeyboardEvent):void {
+            if (evt.keyCode === Keyboard.CONTROL)
+                panZoomBox.panButton.selected = true;
+        }
+        
+        private function onKeyUp(evt:KeyboardEvent):void {
+            if (!_panningOn && evt.keyCode === Keyboard.CONTROL)
+                panZoomBox.panButton.selected = false;
+        }
+
+	    private function onPanToggleClick(e:MouseEvent):void {
+            e.stopImmediatePropagation();
+            var bt:Button = e.target as Button;
+            
+	    	if (!e.ctrlKey) {
+    	    	if (bt.selected) {
+                    _panningOn = true;
+                    sendNotification(ApplicationFacade.PANNING_ON);
+    	    	} else {
+                    _panningOn = false;
+                    sendNotification(ApplicationFacade.PANNING_OFF);
+    	    	}
+            } else {
+                // Just keep the correct button state...
+                bt.selected = _panningOn || !bt.selected;
+            }
+	    }
+	    
 	    private function onPanMouseDown(e:Event):void {
             e.stopImmediatePropagation();
 	    	_pressedPanButton = e.target as Button;

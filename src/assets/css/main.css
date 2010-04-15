@@ -73,8 +73,8 @@ Alert {
     background-color: #ffffff;
     padding-left: 4;
     padding-right: 6;
-    padding-top: 4;
-    padding-bottom: 4;
+    padding-top: 2;
+    padding-bottom: 2;
     vertical-gap: 0;
     horizontal-gap: 0;
     drop-shadow-enabled: false;
@@ -94,6 +94,14 @@ Alert {
 .zoomBox {
     vertical-gap: 4;
     horizontal-gap: 4;
+}
+.panButton {
+	up-skin:   Embed(source='/assets/images/icons/pan_666666.png');
+	over-skin: Embed(source='/assets/images/icons/pan_glow.png');
+	down-skin: Embed(source='/assets/images/icons/pan_73d6ff.png');
+	selected-up-skin:   Embed(source='/assets/images/icons/pan_73d6ff.png');
+	selected-over-skin: Embed(source='/assets/images/icons/pan_73d6ff.png');
+	selected-down-skin: Embed(source='/assets/images/icons/pan_73d6ff.png');
 }
 .panUpButton {
 	up-skin: Embed(source='/assets/images/icons/arrow_u_666666.png');

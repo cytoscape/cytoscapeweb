@@ -462,7 +462,7 @@ package org.cytoscapeweb.view.components {
         		var fdl:ForceDirectedLayout = new ForceDirectedLayout(true, 5, new Simulation());
                 fdl.ticksPerIteration = 1.5,
                 fdl.simulation.dragForce.drag = 0.4;
-                fdl.simulation.nbodyForce.gravitation = -1000;
+                fdl.simulation.nbodyForce.gravitation = -500;
                 fdl.simulation.nbodyForce.minDistance = 1;
                 fdl.simulation.nbodyForce.maxDistance = 10000;
                 fdl.defaultParticleMass = 3;
@@ -527,8 +527,7 @@ package org.cytoscapeweb.view.components {
         private function operateForceDirectedLayout(fdl:ForceDirectedLayout):void {
             var startTime:int = getTimer();
             
-            const MIN_COUNT:uint = 20;
-            const MAX_COUNT:uint = 80;
+            const MIN_COUNT:uint = 120;
             const MAX_TIME:uint = 60000;
             var count:uint = 0, stableCount:uint = 0;
             
@@ -603,7 +602,7 @@ package org.cytoscapeweb.view.components {
                     _nodePoints[n.data.id] = p2;
                     
                     var d:Number = Point.distance(p1, p2);
-                    if (d > 40) stable = false;
+                    if (d > 80) stable = false;
                 }
             }
             

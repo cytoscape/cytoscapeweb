@@ -70,6 +70,7 @@ package org.cytoscapeweb.view {
         private var _draggingNode:Boolean;
         private var _draggingGraph:Boolean;
         private var _selecting:Boolean;
+        private var _panningOn:Boolean;
         private var _ctrlDown:Boolean;
         private var _shiftDown:Boolean;
         
@@ -135,11 +136,22 @@ package org.cytoscapeweb.view {
         }
         
         override public function listNotificationInterests():Array {
-            return [ApplicationFacade.PAN_GRAPH, ApplicationFacade.CENTER_GRAPH];
+            return [ApplicationFacade.PAN_GRAPH,
+                    ApplicationFacade.PANNING_ON,
+                    ApplicationFacade.PANNING_OFF,
+                    ApplicationFacade.CENTER_GRAPH];
         }
 
         override public function handleNotification(note:INotification):void {
             switch (note.getName()) {
+                case ApplicationFacade.PANNING_ON:
+                    _panningOn = true;
+                    updateCursor();
+                    break;
+                case ApplicationFacade.PANNING_OFF:
+                    _panningOn = false;
+                    updateCursor();
+                    break;
                 case ApplicationFacade.PAN_GRAPH:
                     graphView.panGraph(-note.getBody().panX, -note.getBody().panY);
                     break;
@@ -391,9 +403,9 @@ package org.cytoscapeweb.view {
         }
         
         private function onMouseDownView(evt:MouseEvent):void { trace("* Mouse DOWN [View]");
-            if (_ctrlDown && !_shiftDown) {
+            if (_panningOn || _ctrlDown) {
                 // PANNING the whole graph...
-                _draggingGraph = true
+                _draggingGraph = true;
                 updateCursor();
 
                 selectionControl.detach();
@@ -443,7 +455,8 @@ package org.cytoscapeweb.view {
         }
         
         private function onDoubleClickView(evt:MouseEvent):void { trace("* 2-CLICK [View]");
-            if (!_shiftDown && !_ctrlDown) sendNotification(ApplicationFacade.DOUBLE_CLICK_EVENT);
+            if (!_panningOn && !_ctrlDown)
+                sendNotification(ApplicationFacade.DOUBLE_CLICK_EVENT);
         }
         
         private function onDragSelectionStart(evt:MouseEvent):void { trace("* Drag Selection START [View]");
@@ -470,14 +483,15 @@ package org.cytoscapeweb.view {
             if (_draggingNode || _draggingGraph || _selecting) return;
 
             var n:NodeSprite = evt.target as NodeSprite;
-            
-            if (_ctrlDown) vis.showDragRectangle(n);
+            n.addEventListener(MouseEvent.ROLL_OUT, onRollOutNode, false, 0, true);
             
             sendNotification(ApplicationFacade.ROLLOVER_EVENT, n);
-            n.addEventListener(MouseEvent.ROLL_OUT, onRollOutNode, false, 0, true);
+            updateCursor();
             
             // When zoom < 100%, increase the label size to make it readable:
             if (_graphScale < 1) rescaleNodeLabel(n);
+            
+            if (_ctrlDown) vis.showDragRectangle(n);
         }
         
         private function onRollOutNode(evt:MouseEvent):void {
@@ -487,10 +501,10 @@ package org.cytoscapeweb.view {
             sendNotification(ApplicationFacade.ROLLOUT_EVENT, n);
             
             n.removeEventListener(MouseEvent.ROLL_OUT, onRollOutNode);
+            updateCursor();
             evt.stopImmediatePropagation();
 
             rescaleNodeLabel(n, true);
-            
             vis.hideDragRectangle();
         }
         
@@ -521,10 +535,7 @@ package org.cytoscapeweb.view {
             
             _draggingGraph = false;
             updateCursor();
-            
-            if (_ctrlDown) {
-                vis.showDragRectangle(n);
-            }
+            if (_ctrlDown) vis.showDragRectangle(n);
             
             // Return the MOUSE DOWN to the View, so panning is possible again:
             graphView.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDownView, false, 0, true);
@@ -554,7 +565,7 @@ package org.cytoscapeweb.view {
         }
         
         private function onDoubleClickNode(evt:MouseEvent):void { trace("** 2-CLICK [node]");
-            if (!_shiftDown && !_ctrlDown) {
+            if (!_ctrlDown) {
                 var n:NodeSprite = evt.target as NodeSprite;
                 sendNotification(ApplicationFacade.DOUBLE_CLICK_EVENT, n);
             }
@@ -639,7 +650,7 @@ package org.cytoscapeweb.view {
         }
         
         private function onClickEdge(evt:MouseEvent):void { trace("** Click [edge]");
-            if (!_draggingGraph && !_ctrlDown) {
+            if (!_draggingGraph && !_panningOn && !_ctrlDown) {
                 var edge:EdgeSprite = evt.target as EdgeSprite;
                 if (edge == null) return;
                 
@@ -664,7 +675,7 @@ package org.cytoscapeweb.view {
         }
         
         private function onDoubleClickEdge(evt:MouseEvent):void { trace("** 2-CLICK [edge] : " + evt.target);
-            if (!_shiftDown && !_ctrlDown) {
+            if (!_panningOn && !_ctrlDown) {
                 var e:EdgeSprite = evt.target as EdgeSprite;
                 sendNotification(ApplicationFacade.DOUBLE_CLICK_EVENT, e);
             }
@@ -713,11 +724,14 @@ package org.cytoscapeweb.view {
         }
         
         private function updateCursor():void {
+            // TODO: send separate notifications for "rollover", "drag_start", etc,
+            // instead of asking to update the cursor.
             sendNotification(ApplicationFacade.UPDATE_CURSOR, { selecting: _selecting,
                                                                 draggingNode: _draggingNode,
                                                                 draggingGraph: _draggingGraph,
                                                                 shiftDown: _shiftDown,
-                                                                ctrlDown: _ctrlDown });
+                                                                ctrlDown: _ctrlDown,
+                                                                panningOn: _panningOn });
         }
     }
 }

@@ -77,6 +77,8 @@ package org.cytoscapeweb {
         public static const REMOVE_FILTER:String = "remove_network_filter";
         
         /** To pan the whole network. */
+        public static const PANNING_ON:String = "panning_on";
+        public static const PANNING_OFF:String = "panning_off";
         public static const PAN_GRAPH:String = "pan_graph";
         public static const CENTER_GRAPH:String = "center_graph";
         

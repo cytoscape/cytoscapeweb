@@ -252,5 +252,9 @@ package org.cytoscapeweb.util {
         public static function isLinux():Boolean {
             return Capabilities.os.toLowerCase().indexOf("linux") != -1;
         }
+        
+        public static function isMacOS():Boolean {
+            return Capabilities.os.indexOf("Mac OS") != -1;
+        }
     }
 }

@@ -213,13 +213,13 @@ package org.cytoscapeweb.util {
             var visited:Dictionary = new Dictionary();
             
             // Get any node to start searching:
-            for each (var n:NodeSprite in data.nodes) {
+            $each(data.nodes, function(i:uint, n:NodeSprite):void {
                 if (!visited[n] && !isFilteredOut(n)) {
                     var d:Data = new Data(data.directedEdges);
                     depthFirst(n, visited, d);
                     dataList.push(d);
                 }
-            }
+            });
             
             return dataList;
         }

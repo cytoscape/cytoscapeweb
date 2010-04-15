@@ -34,6 +34,7 @@
 
 <mx:Script>
 <![CDATA[
+    import org.cytoscapeweb.util.Utils;
 	import org.cytoscapeweb.model.methods.$;
 	import org.cytoscapeweb.view.components.slider.TrackSkin;
 	import org.cytoscapeweb.view.components.slider.ThumbSkin;
@@ -99,6 +100,8 @@
                 <mx:Button id="panLeftButton" styleName="panLeftButton" toolTip="{$('pan.left.tooltip')}"/>
             </mx:GridItem>
             <mx:GridItem>
+                <mx:Button id="panButton" styleName="panButton" toggle="true"
+                           toolTip="{$('pan.tooltip', Utils.isMacOS() ? 'Command' : 'Ctrl')}"/>
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Button id="panRightButton" styleName="panRightButton" toolTip="{$('pan.right.tooltip')}"/>

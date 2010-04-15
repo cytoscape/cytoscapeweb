@@ -96,13 +96,14 @@
      * <pre>
      * global.wait = Please wait...
      * error.title = Error
+     * pan.tooltip = Grab to pan
      * pan.up.tooltip = Pan up
      * pan.down.tooltip = Pan down
      * pan.left.tooltip = Pan left
      * pan.right.tooltip = Pan right
-     * zoom.out.tooltip = Zoom out (-)
-     * zoom.in.tooltip = Zoom in (+)
-     * zoom.fit.tooltip = Fit to screen (*)
+     * zoom.out.tooltip = Zoom out
+     * zoom.in.tooltip = Zoom in
+     * zoom.fit.tooltip = Fit to screen
      * zoom.slider.tooltip = {0}%
      * </pre></li>
      *                    <li><code>idToken</code>: A string used to create the embedded Flash video id
