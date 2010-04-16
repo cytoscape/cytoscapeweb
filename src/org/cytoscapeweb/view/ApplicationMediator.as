@@ -78,6 +78,7 @@ package org.cytoscapeweb.view {
         
         private var _cursorIds:Object = { openedHand: -1, closedHand: -1 };
         private var _cursorOptions:Object;
+        private var _customCursorsEnabled:Boolean = true;
         private var _isCustomCursor:Boolean = false;
         private var _isMouseOverApp:Boolean = false;
         
@@ -175,7 +176,8 @@ package org.cytoscapeweb.view {
                     ApplicationFacade.RESOURCE_BUNDLE_CHANGED,
                     ApplicationFacade.GRAPH_DRAWN,
                     ApplicationFacade.CONFIG_CHANGED,
-                    ApplicationFacade.UPDATE_CURSOR];
+                    ApplicationFacade.UPDATE_CURSOR,
+                    ApplicationFacade.ENABLE_CUSTOM_CURSORS];
         }
 
         /**
@@ -207,6 +209,11 @@ package org.cytoscapeweb.view {
                 case ApplicationFacade.UPDATE_CURSOR:
                     _cursorOptions = n.getBody();
                     updateCursor(_cursorOptions);
+                    break;
+                case ApplicationFacade.ENABLE_CUSTOM_CURSORS:
+                    _customCursorsEnabled = n.getBody();
+                    if (_customCursorsEnabled === true) updateCursor(_cursorOptions);
+                    else hideAllCustomCursors();
                     break;
                 default:
                     break;      
@@ -461,7 +468,9 @@ package org.cytoscapeweb.view {
             } else {
                 hideClosedHandCursor();
 
-                if ( (options.panningOn && graphProxy.rolledOverNode == null) || options.ctrlDown ) {
+                if ( options.ctrlDown || 
+                    (configProxy.grabToPanEnabled &&
+                     graphProxy.rolledOverNode == null && graphProxy.rolledOverEdge == null) ) {
                     showOpenedHandCursor();
                     _isCustomCursor = true;
                 } else {
@@ -473,7 +482,7 @@ package org.cytoscapeweb.view {
         
         private function showOpenedHandCursor():void {
             // On most of the major Linux distributions the system cursor cannot be hidden!
-            if (_isMouseOverApp && !Utils.isLinux()) {
+            if (_isMouseOverApp && _customCursorsEnabled && !Utils.isLinux()) {
                 if (_cursorIds.openedHand === -1)
                     _cursorIds.openedHand = CursorManager.setCursor(_openedHandCursor, CursorManagerPriority.MEDIUM, -5);
                 CursorManager.showCursor();
@@ -481,7 +490,7 @@ package org.cytoscapeweb.view {
         }
         
         private function showClosedHandCursor():void {
-            if (_isMouseOverApp && !Utils.isLinux()) {
+            if (_isMouseOverApp && _customCursorsEnabled && !Utils.isLinux()) {
                 if (_cursorIds.closedHand === -1)
                     _cursorIds.closedHand = CursorManager.setCursor(_closedHandCursor, CursorManagerPriority.HIGH, -5);
                 CursorManager.showCursor();

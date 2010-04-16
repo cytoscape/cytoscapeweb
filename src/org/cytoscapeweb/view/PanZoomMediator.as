@@ -58,7 +58,6 @@ package org.cytoscapeweb.view {
         private var _panTimer:Timer = new Timer(16);
         private var _pressedPanButton:Button;
         private var _ignoreZoomChange:Boolean;
-        private var _panningOn:Boolean;
         
         private function get panZoomBox():PanZoomBox {
             return viewComponent as PanZoomBox;
@@ -113,7 +112,8 @@ package org.cytoscapeweb.view {
         }
         
         override public function listNotificationInterests():Array {
-            return [ApplicationFacade.ZOOM_CHANGED];
+            return [ApplicationFacade.ZOOM_CHANGED,
+                    ApplicationFacade.ENABLE_GRAB_TO_PAN];
         }
 
         override public function handleNotification(note:INotification):void {
@@ -125,6 +125,10 @@ package org.cytoscapeweb.view {
                     panZoomBox.scale = scale;
                     zoomSlider.addEventListener(SliderEvent.CHANGE, onZoomSliderChange);
                     graphProxy.zoom = scale;
+                    break;
+                case ApplicationFacade.ENABLE_GRAB_TO_PAN:
+                    panZoomBox.panButton.selected = note.getBody();
+                    configProxy.grabToPanEnabled = note.getBody();
                     break;
                 default:
                     break;
@@ -144,7 +148,7 @@ package org.cytoscapeweb.view {
         }
         
         private function onKeyUp(evt:KeyboardEvent):void {
-            if (!_panningOn && evt.keyCode === Keyboard.CONTROL)
+            if (!configProxy.grabToPanEnabled && evt.keyCode === Keyboard.CONTROL)
                 panZoomBox.panButton.selected = false;
         }
 
@@ -153,16 +157,10 @@ package org.cytoscapeweb.view {
             var bt:Button = e.target as Button;
             
 	    	if (!e.ctrlKey) {
-    	    	if (bt.selected) {
-                    _panningOn = true;
-                    sendNotification(ApplicationFacade.PANNING_ON);
-    	    	} else {
-                    _panningOn = false;
-                    sendNotification(ApplicationFacade.PANNING_OFF);
-    	    	}
+                sendNotification(ApplicationFacade.ENABLE_GRAB_TO_PAN, bt.selected);
             } else {
                 // Just keep the correct button state...
-                bt.selected = _panningOn || !bt.selected;
+                bt.selected = configProxy.grabToPanEnabled || !bt.selected;
             }
 	    }
 	    

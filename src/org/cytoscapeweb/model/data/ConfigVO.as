@@ -43,6 +43,7 @@ package org.cytoscapeweb.model.data {
         // ========[ PUBLIC PROPERTIES ]============================================================
         
         public var panZoomControlVisible:Boolean = true;
+        public var grabToPanEnabled:Boolean;
         public var edgesMerged:Boolean;
         public var nodeLabelsVisible:Boolean = true;
         public var edgeLabelsVisible:Boolean;

@@ -70,7 +70,6 @@ package org.cytoscapeweb.view {
         private var _draggingNode:Boolean;
         private var _draggingGraph:Boolean;
         private var _selecting:Boolean;
-        private var _panningOn:Boolean;
         private var _ctrlDown:Boolean;
         private var _shiftDown:Boolean;
         
@@ -137,19 +136,13 @@ package org.cytoscapeweb.view {
         
         override public function listNotificationInterests():Array {
             return [ApplicationFacade.PAN_GRAPH,
-                    ApplicationFacade.PANNING_ON,
-                    ApplicationFacade.PANNING_OFF,
+                    ApplicationFacade.ENABLE_GRAB_TO_PAN,
                     ApplicationFacade.CENTER_GRAPH];
         }
 
         override public function handleNotification(note:INotification):void {
             switch (note.getName()) {
-                case ApplicationFacade.PANNING_ON:
-                    _panningOn = true;
-                    updateCursor();
-                    break;
-                case ApplicationFacade.PANNING_OFF:
-                    _panningOn = false;
+                case ApplicationFacade.ENABLE_GRAB_TO_PAN:
                     updateCursor();
                     break;
                 case ApplicationFacade.PAN_GRAPH:
@@ -341,7 +334,7 @@ package org.cytoscapeweb.view {
                 e.addEventListener(MouseEvent.ROLL_OUT, onRollOutEdge, false, 0, true);
                 e.doubleClickEnabled = true;
                 e.addEventListener(MouseEvent.DOUBLE_CLICK, onDoubleClickEdge, false, 0, true);
-                e.addEventListener(MouseEvent.CLICK, onClickEdge, false, 0, true);
+                e.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDownEdge, false, 0, true);
             }
             
             dragControl.attach(vis);
@@ -403,15 +396,17 @@ package org.cytoscapeweb.view {
         }
         
         private function onMouseDownView(evt:MouseEvent):void { trace("* Mouse DOWN [View]");
-            if (_panningOn || _ctrlDown) {
+            if (_ctrlDown || (configProxy.grabToPanEnabled && graphProxy.rolledOverEdge == null)) {
                 // PANNING the whole graph...
                 _draggingGraph = true;
                 updateCursor();
 
+                // Remove other actions that should not occur when panning:
                 selectionControl.detach();
+                
                 vis.startDrag();
                 graphView.addEventListener(MouseEvent.MOUSE_UP, onMouseUpToStopPanning, false, 0, true);
-            } else {
+            } else if (!configProxy.grabToPanEnabled) {
                 updateCursor();
             	// Add the SELECTION CONTROL again:
                 selectionControl.detach();
@@ -455,8 +450,10 @@ package org.cytoscapeweb.view {
         }
         
         private function onDoubleClickView(evt:MouseEvent):void { trace("* 2-CLICK [View]");
-            if (!_panningOn && !_ctrlDown)
-                sendNotification(ApplicationFacade.DOUBLE_CLICK_EVENT);
+            if (!_shiftDown && configProxy.grabToPanEnabled)
+                sendNotification(ApplicationFacade.DESELECT_ALL);
+                
+            sendNotification(ApplicationFacade.DOUBLE_CLICK_EVENT);
         }
         
         private function onDragSelectionStart(evt:MouseEvent):void { trace("* Drag Selection START [View]");
@@ -641,16 +638,30 @@ package org.cytoscapeweb.view {
             evt.stopImmediatePropagation();
             var e:EdgeSprite = evt.target as EdgeSprite;
             sendNotification(ApplicationFacade.ROLLOVER_EVENT, e);
+            updateCursor();
         }
         
         private function onRollOutEdge(evt:MouseEvent):void {
             evt.stopImmediatePropagation();
             var e:EdgeSprite = evt.target as EdgeSprite;
             sendNotification(ApplicationFacade.ROLLOUT_EVENT, e);
+            updateCursor();
+        }
+        
+        private function onMouseDownEdge(evt:MouseEvent):void { trace("** Mouse DOWN [edge]");
+            if (!_draggingGraph && !_ctrlDown) {
+                var e:EdgeSprite = evt.target as EdgeSprite;
+                //e.addEventListener(MouseEvent.MOUSE_UP, onMouseUpEdge, false, 0, true);
+                e.addEventListener(MouseEvent.CLICK, onClickEdge, false, 0, true);
+                // Remove the SELECTION CONTROL:
+                selectionControl.detach();
+            }
         }
         
         private function onClickEdge(evt:MouseEvent):void { trace("** Click [edge]");
-            if (!_draggingGraph && !_panningOn && !_ctrlDown) {
+            evt.currentTarget.removeEventListener(evt.type, arguments.callee);
+            
+            if (!_draggingGraph && !_ctrlDown) {
                 var edge:EdgeSprite = evt.target as EdgeSprite;
                 if (edge == null) return;
                 
@@ -670,12 +681,13 @@ package org.cytoscapeweb.view {
                     sendNotification(ApplicationFacade.SELECT, edgesList);
                 }
             }
+            
             graphView.removeEventListener(MouseEvent.MOUSE_MOVE, onDragSelectionStart);
             evt.stopImmediatePropagation();
         }
         
         private function onDoubleClickEdge(evt:MouseEvent):void { trace("** 2-CLICK [edge] : " + evt.target);
-            if (!_panningOn && !_ctrlDown) {
+            if (!_ctrlDown) {
                 var e:EdgeSprite = evt.target as EdgeSprite;
                 sendNotification(ApplicationFacade.DOUBLE_CLICK_EVENT, e);
             }
@@ -730,8 +742,7 @@ package org.cytoscapeweb.view {
                                                                 draggingNode: _draggingNode,
                                                                 draggingGraph: _draggingGraph,
                                                                 shiftDown: _shiftDown,
-                                                                ctrlDown: _ctrlDown,
-                                                                panningOn: _panningOn });
+                                                                ctrlDown: _ctrlDown });
         }
     }
 }

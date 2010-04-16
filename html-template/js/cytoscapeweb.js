@@ -430,22 +430,46 @@
             if (arguments.length > 0) { swf.enableEdgeTooltips(arguments[0]); return this; }
             else { return swf.isEdgeTooltipsEnabled(); }
         },
+        
+        customCursorsEnabled: function (visible) {
+            this.swf().enableCustomCursor(visible);
+            return this;
+        },
 
+        /**
+         * <p>If the boolean argument is passed, it enables or disables the "grab to pan" mode.
+         * It's like clicking the "grab to pan" button in the pan-zoom control.</p>
+         * <p>If no argument is passed, it returns a boolean value indicating whether or not the pan mode is enabled.</p>
+         * @param {Boolean} [enabled] If <code>true</code>, clicking and dragging the background will pan the network.
+         *                            If <code>false</code>, the pan mode is turned off - clicking and dragging the background
+         *                            will start a drag-selection action.
+         * @return <ul><li>A boolean value for <code>panEnabled()</code>.</li>
+         *             <li>The Visualization object for <code>panEnabled({Boolean})</code>.</li></ul>
+         * @see org.cytoscapeweb.Visualization#panBy
+         * @see org.cytoscapeweb.Visualization#panToCenter
+         */
+        panEnabled: function (/*enabled*/) {
+        	if (arguments.length > 0) { this.swf().enableGrabToPan(arguments[0]); return this; }
+        	else { return this.swf().isGrabToPanEnabled(); }
+        },
+        
         /**
          * <p>Pan the "camera" by the specified amount, in pixels.</p>
          * @param {Number} amountX If negative, pan left (the network moves to the right side).
          * @param {Number} amountY If negative, pan up (the network moves down).
          * @return {org.cytoscapeweb.Visualization} The Visualization instance.
+         * @see org.cytoscapeweb.Visualization#panEnabled
          * @see org.cytoscapeweb.Visualization#panToCenter
          */
         panBy: function (amountX, amountY) {
-            this.swf().panBy(amountX, amountY);
-            return this;
+        	this.swf().panBy(amountX, amountY);
+        	return this;
         },
 
         /**
          * <p>Center the network in the canvas area.</p>
          * @return {org.cytoscapeweb.Visualization} The Visualization instance.
+         * @see org.cytoscapeweb.Visualization#panEnabled
          * @see org.cytoscapeweb.Visualization#panBy
          */
         panToCenter: function () {

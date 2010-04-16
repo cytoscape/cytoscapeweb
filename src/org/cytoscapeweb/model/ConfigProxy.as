@@ -76,6 +76,14 @@ package org.cytoscapeweb.model {
             config.panZoomControlVisible = visible;
         }
         
+        public function set grabToPanEnabled(enable:Boolean):void {
+            config.grabToPanEnabled = enable;
+        }
+        
+        public function get grabToPanEnabled():Boolean {
+            return config.grabToPanEnabled;
+        }
+        
         public function get edgesMerged():Boolean {
             return config.edgesMerged;
         }

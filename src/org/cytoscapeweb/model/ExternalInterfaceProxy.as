@@ -102,8 +102,9 @@ package org.cytoscapeweb.model {
                                         "showEdgeLabels", "isEdgeLabelsVisible", 
                                         "enableNodeTooltips", "isNodeTooltipsEnabled", 
                                         "enableEdgeTooltips", "isEdgeTooltipsEnabled", 
-                                        "showPanZoomControl", "isPanZoomControlVisible", 
-                                        "panBy", "panToCenter", 
+                                        "showPanZoomControl", "isPanZoomControlVisible",
+                                        "enableCustomCursor", 
+                                        "enableGrabToPan", "isGrabToPanEnabled", "panBy", "panToCenter", 
                                         "zoomTo", "zoomToFit", "getZoom", 
                                         "filter", "removeFilter", 
                                         "firstNeighbors", 
@@ -250,6 +251,18 @@ package org.cytoscapeweb.model {
             return configProxy.panZoomControlVisible;
         }
 
+        private function enableCustomCursor(value:Boolean):void {
+            sendNotification(ApplicationFacade.ENABLE_CUSTOM_CURSORS, value);
+        }
+
+        private function enableGrabToPan(value:Boolean):void {
+            sendNotification(ApplicationFacade.ENABLE_GRAB_TO_PAN, value);
+        }
+        
+        private function isGrabToPanEnabled():Boolean {
+            return configProxy.grabToPanEnabled;
+        }
+        
         private function panBy(panX:Number, panY:Number):void {
             sendNotification(ApplicationFacade.PAN_GRAPH, {panX: panX, panY: panY});
         }

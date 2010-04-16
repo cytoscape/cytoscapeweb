@@ -47,6 +47,7 @@ package org.cytoscapeweb {
         
         public static const ERROR:String = "error";
         public static const UPDATE_CURSOR:String = "update_cursor";
+        public static const ENABLE_CUSTOM_CURSORS:String = "enable_custom_cursors";
         
         /** To load and display the graph. */
         public static const DRAW_GRAPH:String = "show_graph";
@@ -77,8 +78,7 @@ package org.cytoscapeweb {
         public static const REMOVE_FILTER:String = "remove_network_filter";
         
         /** To pan the whole network. */
-        public static const PANNING_ON:String = "panning_on";
-        public static const PANNING_OFF:String = "panning_off";
+        public static const ENABLE_GRAB_TO_PAN:String = "enable_grab_to_pan";
         public static const PAN_GRAPH:String = "pan_graph";
         public static const CENTER_GRAPH:String = "center_graph";
         
