@@ -102,12 +102,8 @@ package org.cytoscapeweb.view.components {
         private function get tooltipControl():TooltipControl {
             if (_tooltipControl == null) {
                 var filter:Function = function(d:DisplayObject):Boolean {  
-                    var show:Boolean = _config.nodeTooltipsEnabled && 
-                                       _config.edgeTooltipsEnabled && 
-                                       d is DataSprite;
-                    show = show || (_config.nodeTooltipsEnabled && d is NodeSprite);
-                    show = show || (_config.edgeTooltipsEnabled && d is EdgeSprite);
-                    return show;
+                    var show:Boolean = _config.nodeTooltipsEnabled && d is NodeSprite;
+                    return show || (_config.edgeTooltipsEnabled && d is EdgeSprite);
                 };
             	_tooltipControl = new TooltipControl(filter, null, onTooltipShow);
             }

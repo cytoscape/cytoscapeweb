@@ -45,6 +45,13 @@ package org.cytoscapeweb.util {
         public static const EDGES:String = "edges";
         public static const NONE:String = "none";
         
+        public static const REGULAR_EDGES:String = "regularEdges";
+        public static const MERGED_EDGES:String = "mergedEdges";
+        public static const SELECTED_NODES:String = "selectedNodes";
+        public static const SELECTED_EDGES:String = "selectedEdges";
+        public static const FILTERED_NODES:String = "filteredNodes";
+        public static const FILTERED_EDGES:String = "filteredEdges";
+        
         // ========[ CONSTRUCTOR ]==================================================================
         
         /**

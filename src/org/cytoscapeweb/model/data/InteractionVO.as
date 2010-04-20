@@ -100,6 +100,10 @@ package org.cytoscapeweb.model.data {
 			return (this._node1 == node1 && this._node2 == node2) || (this._node1 == node2 && this._node2 == node1);
 		}
 		
+		public function update():void {
+			// TODO:
+		}
+		
 		public static function createKey(node1:NodeSprite, node2:NodeSprite):String {
 		    var id1:* = node1.data.id;
 		    var id2:* = node2.data.id;

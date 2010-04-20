@@ -978,6 +978,27 @@ function runGraphTests(moduleName, vis, options) {
     	ok(fail === false, "Null 'name' throws exception");
     });
     
+    test("Remove Edges", function() {
+    	var all, nodes = vis.nodes(), edges = vis.edges();
+    	var edgesCount = edges.length, nodesCount = nodes.length;
+    	
+    	// 1: Remove one edge by ID:
+    	vis.remove("edges", ["4"], true);
+
+    	edges = vis.edges();
+    	same(edges.length, edgesCount-1, "New edges length");
+    	$.each(edges, function(i, el) {
+    		ok(el.data.id != "4", "Edge '4' deleted");
+    	});
+    	same(nodes.length, nodesCount, "Nodes not affected");
+    	
+// TODO
+    });
+    
+    test("Remove Nodes", function() {
+// TODO:
+    });
+    
     test("PNG", function() {
     	vis.zoom(Math.random()*2);
     	vis.panBy(Math.random()*-1000, Math.random()*1000);

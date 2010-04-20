@@ -110,6 +110,12 @@
                     $("#layouts").val(options.layout);
                     $("input, select").attr("disabled", false);
                     $("#updateVisualStyle").attr("disabled", true);
+                    vis.addContextMenuItem("Delete node", "nodes", function(evt) {
+                        vis.remove([evt.target], true);
+                    });
+                    vis.addContextMenuItem("Delete edge", "edges", function(evt) {
+                        vis.remove([evt.target], true);
+                    });
                 });
                 
                 vis.addListener("select", function(evt) {

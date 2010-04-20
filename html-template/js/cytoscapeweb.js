@@ -545,6 +545,67 @@
             return JSON.parse(str);
         },
         
+	    /**
+	     * <p>Throw exception if missing id ??? No! Just add an id...</p>
+	     * @param {Object} data The object that contains the node attributes.
+	     * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply all the continuous mappers
+         *                                        to the network view after adding the node.
+         *                                        The default value is <code>false</code>.
+	     * @return {org.cytoscapeweb.Node} The new created node object.
+	     */
+	    addNode: function (data/*, updateVisualMappers*/) {
+        	var updateVisualMappers;
+        	if (arguments.length > 1) { updateVisualMappers = arguments[1]; }
+        	return this.swf().addNode(data, updateVisualMappers);
+	    },
+	     
+	    /**
+	     * <p>Throw exception if missing source or target.</p>
+	     * @param {Object} data The object that contains the edge attributes.
+	     * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply all the continuous mappers
+         *                                        to the network view after adding the edge.
+	     * @return {org.cytoscapeweb.Edge} The new created edge object.
+	     */
+	    addEdge: function (data/*, updateVisualMappers*/) {
+	    	if (data == null) { throw("The 'data' object is mandatory."); }
+        	if (data.source == null) { throw("The 'source' node ID mandatory."); }
+        	if (data.target == null) { throw("The 'target' node ID mandatory."); }
+        	var updateVisualMappers;
+        	if (arguments.length > 1) { updateVisualMappers = arguments[1]; }
+	    	return this.swf().addEdge(data, updateVisualMappers);
+	    },
+	    
+	    /**
+	     * <p>Permanently delete nodes and edges from the network.</p>
+	     * <p>If a node is deleted, all of its connected edges will be removed as well.</p>
+         * @param {org.cytoscapeweb.Group} [gr] The group of network elements.
+         * @param {Array} [items] The items to be removed from the network. The array can contain node/edge objects or only
+         *                        their <code>id</code> values. Remember that, if you inform only the id
+         *                        and do not pass the group argument, if an edge and a node have the same id value,
+         *                        both will be removed.
+	     * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to reapply all the continuous mappers
+         *                                        to the network view after removing the elements.
+         * @return {org.cytoscapeweb.Visualization} The Visualization instance.
+         * @see org.cytoscapeweb.Visualization#addNode
+         * @see org.cytoscapeweb.Visualization#addEdge
+         */
+	    remove: function(/*gr, items, updateVisualMappers*/) {
+	    	var gr, items, updateVisualMappers;
+        	if (arguments.length >= 1) {
+        		if (typeof arguments[0] === "string") { gr = arguments[0]; }
+                else if (this._typeof(arguments[0]) === "array") { items = arguments[0]; }
+                else if (typeof arguments[0] === "boolean") { updateVisualMappers = arguments[0]; }
+        	}
+        	if (arguments.length >= 2) {
+        		if (this._typeof(arguments[1]) === "array") { items = arguments[1]; }
+        		else if (typeof arguments[1] === "boolean") { updateVisualMappers = arguments[1]; }
+        	}
+        	if (arguments.length > 2) { updateVisualMappers = arguments[2]; }
+            gr = this._normalizeGroup(gr);
+            this.swf().removeItems(gr, items, updateVisualMappers);
+        	return this;
+	    },
+        
         /**
          * <p>Add a custom attribute definition to the current node or edge data schema.</p>
          * <p>If an attribute with the same name is already defined for the same group,

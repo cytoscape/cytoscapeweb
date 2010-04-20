@@ -113,6 +113,7 @@ package org.cytoscapeweb.model {
                                         "getLayout", "applyLayout", 
                                         "setVisualStyle", "getVisualStyle", 
                                         "getVisualStyleBypass", "setVisualStyleBypass",
+                                        "addNode", "addEdge", "removeItems",
                                         "addDataField", "removeDataField", "updateData",
                                         "getNetworkAsText", "getNetworkAsImage", 
                                         "exportNetwork" ];
@@ -363,6 +364,23 @@ package org.cytoscapeweb.model {
         
         private function applyLayout(name:String):void {
             sendNotification(ApplicationFacade.APPLY_LAYOUT, name);
+        }
+        
+        private function addNode(data:Object, updateVisualMappers:Boolean=false):void {
+            sendNotification(ApplicationFacade.ADD_NODE,
+                             { data: data, updateVisualMappers: updateVisualMappers });
+        }
+        
+        private function addEdge(data:Object, updateVisualMappers:Boolean=false):void {
+            sendNotification(ApplicationFacade.ADD_EDGE,
+                             { data: data, updateVisualMappers: updateVisualMappers });
+        }
+        
+        private function removeItems(group:String=Groups.NONE,
+                                     items:Array=null, 
+                                     updateVisualMappers:Boolean=false):void {
+            sendNotification(ApplicationFacade.REMOVE_ITEMS,
+                             { group: group, items: items, updateVisualMappers: updateVisualMappers });
         }
         
         private function addDataField(group:String, dataField:Object):void {

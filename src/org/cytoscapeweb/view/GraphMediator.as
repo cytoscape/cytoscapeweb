@@ -35,6 +35,7 @@ package org.cytoscapeweb.view {
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
     import flare.vis.events.SelectionEvent;
+    import flare.vis.events.TooltipEvent;
     
     import flash.display.DisplayObject;
     import flash.events.KeyboardEvent;
@@ -256,6 +257,21 @@ package org.cytoscapeweb.view {
         public function resetDataSprite(ds:DataSprite):void {
             if (ds is NodeSprite) graphView.resetNode(NodeSprite(ds));
             else if (ds is EdgeSprite) graphView.resetEdge(EdgeSprite(ds));
+        }
+        
+        public function dispose(items:Array):void {
+            // Remove event listeners:
+            for each (var ds:DataSprite in items) {
+                disposeDataSprite(ds);
+                
+                if (ds is NodeSprite) {
+                    // Also dispose its linked edges:
+                    NodeSprite(ds).visitEdges(function(e:EdgeSprite):Boolean {
+                        disposeDataSprite(e);
+                        return false;
+                    });
+                }
+            }
         }
         
         public function zoomGraphTo(scale:Number):void {
@@ -651,7 +667,6 @@ package org.cytoscapeweb.view {
         private function onMouseDownEdge(evt:MouseEvent):void { trace("** Mouse DOWN [edge]");
             if (!_draggingGraph && !_ctrlDown) {
                 var e:EdgeSprite = evt.target as EdgeSprite;
-                //e.addEventListener(MouseEvent.MOUSE_UP, onMouseUpEdge, false, 0, true);
                 e.addEventListener(MouseEvent.CLICK, onClickEdge, false, 0, true);
                 // Remove the SELECTION CONTROL:
                 selectionControl.detach();
@@ -733,6 +748,36 @@ package org.cytoscapeweb.view {
                 _selectionControl.lineAlpha = style.getDefaultValue(VisualProperties.SELECTION_LINE_ALPHA) as Number;
             if (style.hasVisualProperty(VisualProperties.SELECTION_LINE_WIDTH))
                 _selectionControl.lineWidth = style.getDefaultValue(VisualProperties.SELECTION_LINE_WIDTH) as Number;
+        }
+        
+        private function disposeDataSprite(ds:DataSprite):void {
+            // Force a roll-out, to keep things in a good state:
+            ds.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OUT));
+            
+            // Remove event listeners:
+            if (ds is NodeSprite) {
+                ds.removeEventListener(MouseEvent.ROLL_OVER, onRollOverNode);
+                ds.removeEventListener(MouseEvent.ROLL_OUT, onRollOutNode);
+                ds.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDownNode);
+                ds.removeEventListener(MouseEvent.MOUSE_UP, onMouseUpNode);
+                ds.removeEventListener(MouseEvent.CLICK, onClickNode);
+                ds.removeEventListener(MouseEvent.DOUBLE_CLICK, onDoubleClickNode);
+                
+                // Delete its label:
+                if (ds.props.label != null) {
+                    vis.labels.removeChild(ds.props.label);
+                    ds.props.label = null;
+                }
+            } else if (ds is EdgeSprite) {
+                ds.removeEventListener(MouseEvent.ROLL_OVER, onRollOverEdge);
+                ds.removeEventListener(MouseEvent.ROLL_OUT, onRollOutEdge);
+                ds.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDownEdge);
+                ds.removeEventListener(MouseEvent.CLICK, onClickEdge);
+                ds.removeEventListener(MouseEvent.DOUBLE_CLICK, onDoubleClickEdge);
+            }
+            
+            // Avoinding errors in case the tooltip is about to be shown:
+            ds.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OUT, true, false, 0, 0, vis));
         }
         
         private function updateCursor():void {

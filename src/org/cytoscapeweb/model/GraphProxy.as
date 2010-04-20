@@ -65,20 +65,13 @@ package org.cytoscapeweb.model {
         // ========[ CONSTANTS ]====================================================================
 
         public static const NAME:String = 'GraphProxy';
-        
-        public static const GRP_SELECTED_NODES:String = "selectedNodes";
-        public static const GRP_SELECTED_EDGES:String = "selectedEdges";
-        public static const GRP_REGULAR_EDGES:String = "regularEdges";
-        public static const GRP_MERGED_EDGES:String = "mergedEdges";
 
         // ========[ PRIVATE PROPERTIES ]===========================================================
 
         private var _interactions:/*key->InteractionVO*/Object;
-        private var _parentEdges:/*regularEdgeId->mergedEdgeSprite*/Object;
+        private var _parentEdges:/*regularEdge->mergedEdgeSprite*/Object;
         private var _rolledOverNode:NodeSprite;
         private var _rolledOverEdge:EdgeSprite;
-        private var _filteredNodes:Array;
-        private var _filteredEdges:Array;
         private var _nodesMap:Object = {};
         private var _edgesMap:Object = {};
         // Scale factor, between 0 and 1:
@@ -116,8 +109,8 @@ package org.cytoscapeweb.model {
                 
                 // TODO: do we really need these Flare groups?
                 // Add data groups to house selected nodes and edges:
-                data.addGroup(GraphProxy.GRP_SELECTED_NODES);
-                data.addGroup(GraphProxy.GRP_SELECTED_EDGES);
+                data.addGroup(Groups.SELECTED_NODES);
+                data.addGroup(Groups.SELECTED_EDGES);
                 
                 // Create a mapping of nodes and edges, with their IDs as key,
                 // in order to make it easier to get them later:
@@ -161,11 +154,7 @@ package org.cytoscapeweb.model {
         
         public function get nodes():Array {
             var arr:Array = [];
-            
-            for each (var n:NodeSprite in graphData.nodes) {
-                arr.push(n);
-            }
-            
+            for each (var n:NodeSprite in graphData.nodes) arr.push(n);
             return arr;
         }
         
@@ -175,63 +164,92 @@ package org.cytoscapeweb.model {
         public function get mergedEdges():Array {
             var arr:Array = [];
             
-            var list:DataList = graphData.group(GRP_MERGED_EDGES);           
+            var list:DataList = graphData.group(Groups.MERGED_EDGES);
             for each (var e:EdgeSprite in list) arr.push(e);
             
             return arr;
         }
 
         public function get filteredNodes():Array {
-            return _filteredNodes;
+            var arr:Array = null;
+            var list:DataList = graphData.group(Groups.FILTERED_NODES);
+            if (list != null) {
+                arr = [];
+                for each (var n:NodeSprite in list) arr.push(n);
+            }
+            return arr;
         }
 
         /**
          * @param value Array of edge data objects. 
          */
         public function set filteredNodes(value:Array):void {
-            if (_filteredNodes != value) {
-                _filteredNodes = value;
-                
-                for each (var n:NodeSprite in graphData.nodes) n.props.$filteredOut = value != null;
-                if (value != null) {
-                    for each (n in value) n.props.$filteredOut = false;
-                }
+            var list:DataList = graphData.group(Groups.FILTERED_NODES);
+            var n:NodeSprite;
+            
+            if (list == null && value != null) {
+                list = graphData.addGroup(Groups.FILTERED_NODES);
             }
+
+            for each (n in graphData.nodes) {
+                n.props.$filteredOut = value != null;
+                if (value != null) list.remove(n);
+            }
+            for each (n in value) {
+                n.props.$filteredOut = false;
+                list.add(n);
+            }
+            if (value == null) graphData.removeGroup(Groups.FILTERED_NODES);
         }
 
         public function get filteredEdges():Array {
-            return _filteredEdges;
+            var arr:Array = null;
+            var list:DataList = graphData.group(Groups.FILTERED_EDGES);
+            if (list != null) {
+                arr = [];
+                for each (var e:EdgeSprite in list) arr.push(e);
+            }
+            return arr;
         }
 
         /**
          * @param value Array of edge data objects. 
          */
         public function set filteredEdges(value:Array):void {
-        	if (_filteredEdges != value) {
-	            _filteredEdges = value;
-	            
-                for each (var e:EdgeSprite in graphData.edges) {
-                    e.props.$filteredOut = value != null;
+            var list:DataList = graphData.group(Groups.FILTERED_EDGES);
+            var e:EdgeSprite;
+        	
+        	if (list == null && value != null) {
+                list = graphData.addGroup(Groups.FILTERED_EDGES);
+            }
+        	
+            for each (e in graphData.edges) {
+                e.props.$filteredOut = value != null;
+                if (value != null) list.remove(e);
+            }
+            
+	        if (value != null) {
+                for each (e in value) {
+                    e.props.$filteredOut = false;
+                    list.add(e);
                 }
-                
-    	        if (value != null) {
-                    for each (e in value) e.props.$filteredOut = false;
-    	        }
-    	        
-    	        for each (e in graphData.edges) {
-        	        if (e.props.$merged) {
-                        for each (var ee:EdgeSprite in e.props.$edges) {
-                            if (!ee.props.$filteredOut) {
-                                e.props.$filteredOut = false;
-                                break;
-                            }
+	        }
+	        
+	        for each (e in graphData.edges) {
+    	        if (e.props.$merged) {
+                    for each (var ee:EdgeSprite in e.props.$edges) {
+                        if (!ee.props.$filteredOut) {
+                            e.props.$filteredOut = false;
+                            break;
                         }
                     }
                 }
-	            
-	            updateMergedEdgesSelection();
-	            updateMergedEdgesData();
-	        }
+            }
+            
+            if (value == null) graphData.removeGroup(Groups.FILTERED_EDGES);
+            
+            updateMergedEdgesSelection();
+            updateMergedEdgesData(graphData.group(Groups.MERGED_EDGES));
         }
 
         public function get edgesMerged():Boolean {
@@ -252,7 +270,7 @@ package org.cytoscapeweb.model {
         
         public function get selectedNodes():Array {
         	var arr:Array = [];
-        	var list:DataList = graphData.group(GRP_SELECTED_NODES);
+        	var list:DataList = graphData.group(Groups.SELECTED_NODES);
         	for each (var n:NodeSprite in list) arr.push(n);
 
             return arr;
@@ -260,7 +278,7 @@ package org.cytoscapeweb.model {
         
         public function get selectedEdges():Array {
             var arr:Array = [];
-            var list:DataList = graphData.group(GRP_SELECTED_EDGES);           
+            var list:DataList = graphData.group(Groups.SELECTED_EDGES);           
             for each (var e:EdgeSprite in list) arr.push(e);
             
             return arr;
@@ -446,7 +464,7 @@ package org.cytoscapeweb.model {
             var selected:Array = [];
             
             if (nodes != null && nodes.length > 0) {
-                var list:DataList = graphData.group(GRP_SELECTED_NODES);
+                var list:DataList = graphData.group(Groups.SELECTED_NODES);
                 
                 for each (var n:NodeSprite in nodes) {
 	                if (!list.contains(n)) {
@@ -467,7 +485,7 @@ package org.cytoscapeweb.model {
             var deselected:Array = [];
             
             if (nodes != null && nodes.length > 0) {
-                var list:DataList = graphData.group(GRP_SELECTED_NODES);
+                var list:DataList = graphData.group(Groups.SELECTED_NODES);
                 
                 for each (var n:NodeSprite in nodes) {
                     if (list.contains(n)) {
@@ -490,7 +508,7 @@ package org.cytoscapeweb.model {
             var bundled:Array = [];
             
             if (edges != null && edges.length > 0) {
-                var list:DataList = graphData.group(GRP_SELECTED_EDGES);
+                var list:DataList = graphData.group(Groups.SELECTED_EDGES);
 
                 for each (var e:EdgeSprite in edges) {
                     if (e.props.$merged) {
@@ -514,6 +532,80 @@ package org.cytoscapeweb.model {
             return selected;
         }
         
+        public function remove(items:Array):void {
+            // Remove event listeners:
+            for each (var ds:DataSprite in items) {
+                if (ds is NodeSprite) {
+                    removeNode(NodeSprite(ds));
+                } else {
+                    removeEdge(EdgeSprite(ds));
+                }
+            }
+        }
+        
+        public function removeNode(n:NodeSprite):void {
+            if (n == null) return;
+            delete _nodesMap[n.data.id];
+            
+            if (n.props.$selected) graphData.group(Groups.SELECTED_NODES).remove(n);
+            
+            var filterList:DataList = graphData.group(Groups.FILTERED_NODES);
+            if (filterList != null) filterList.remove(n);
+       
+            // Also remove its linked edges:
+            var edges:Array = [];
+            n.visitEdges(function(e:EdgeSprite):Boolean {
+                edges.push(e);
+                return false;
+            });
+            remove(edges);
+            
+            graphData.removeNode(n);
+        }
+        
+        public function removeEdge(e:EdgeSprite):void {
+            if (e == null) return;
+            delete _edgesMap[e.data.id];
+            
+            if (e.props.$selected) graphData.group(Groups.SELECTED_EDGES).remove(e);
+            
+            graphData.removeEdge(e);
+            
+            if (e.props.$merged) {
+                graphData.group(Groups.MERGED_EDGES).remove(e);
+                // Delete children ("regular") edges:
+                var children:Array = e.props.$edges;
+                if (children.length > 0) remove(children);
+            } else {
+                graphData.group(Groups.REGULAR_EDGES).remove(e);
+                
+                var filterList:DataList = graphData.group(Groups.FILTERED_EDGES);
+                if (filterList != null) filterList.remove(e);
+                
+                // Update or delete its merged edge:
+                var parent:EdgeSprite = _parentEdges[e];
+                if (parent != null) {
+                    delete _parentEdges[e];
+                    var edges:Array = parent.props.$edges;
+                    var newEdges:Array = [];
+                    for each (var ee:EdgeSprite in edges) {
+                        if (_edgesMap[ee.data.id] != null) newEdges.push(ee);
+                    }
+                    parent.props.$edges = newEdges;
+                    if (newEdges.length === 0) removeEdge(parent);
+                    else updateMergedEdgesData([parent]);
+                }
+                // TODO: Update the sibling edges index:
+                var inter:InteractionVO = getInteraction(e.source, e.target);
+                if (inter != null) {
+                    if (_nodesMap[e.source.data.id] != null && _nodesMap[e.target.data.id] != null)
+                        inter.update();
+                    else
+                        delete _interactions[inter.key];
+                }
+            }
+        }
+        
         /**
          * @param edges Array of edges (they can be merged edges as well).
          * @return The edges that were actually deselected (does NOT contain any "fake" merged edge).
@@ -523,7 +615,7 @@ package org.cytoscapeweb.model {
             var bundled:Array = [];
             
             if (edges != null && edges.length > 0) {
-                var list:DataList = graphData.group(GRP_SELECTED_EDGES);
+                var list:DataList = graphData.group(Groups.SELECTED_EDGES);
                 
                 for each (var e:EdgeSprite in edges) {
                     if (e.props.$merged) {
@@ -597,12 +689,12 @@ package org.cytoscapeweb.model {
                         
             if (format === "xgmml") {
                 nodesTable = new GraphicsDataTable(graphData.nodes, dataSet.nodes.schema);
-                edgesTable = new GraphicsDataTable(graphData.group(GRP_REGULAR_EDGES), dataSet.edges.schema);
+                edgesTable = new GraphicsDataTable(graphData.group(Groups.REGULAR_EDGES), dataSet.edges.schema);
                 dtSet = new DataSet(nodesTable, edgesTable);
                 out = new XGMMLConverter(configProxy.visualStyle).write(dtSet);
             } else {
                 nodesTable = new DataTable(graphData.nodes.toDataArray(), dataSet.nodes.schema);
-                edgesTable = new DataTable(graphData.group(GRP_REGULAR_EDGES).toDataArray(), dataSet.edges.schema);
+                edgesTable = new DataTable(graphData.group(Groups.REGULAR_EDGES).toDataArray(), dataSet.edges.schema);
                 dtSet = new DataSet(nodesTable, edgesTable);
 
                 if (format === "graphml") {
@@ -681,11 +773,11 @@ package org.cytoscapeweb.model {
         }
         
         private function createMergedEdges():void {
-            var reList:DataList = new DataList(GraphProxy.GRP_REGULAR_EDGES);
-            graphData.addGroup(GraphProxy.GRP_REGULAR_EDGES, reList);
+            var reList:DataList = new DataList(Groups.REGULAR_EDGES);
+            graphData.addGroup(Groups.REGULAR_EDGES, reList);
             
-            var meList:DataList = new DataList(GraphProxy.GRP_MERGED_EDGES);
-            graphData.addGroup(GraphProxy.GRP_MERGED_EDGES, meList);
+            var meList:DataList = new DataList(Groups.MERGED_EDGES);
+            graphData.addGroup(Groups.MERGED_EDGES, meList);
             
             _parentEdges = {};
             
@@ -718,17 +810,17 @@ package org.cytoscapeweb.model {
                 
                 meList.add(me);
                 for each (var e:EdgeSprite in edges) {
-                    _parentEdges[e.data.id] = me;
+                    _parentEdges[e] = me;
                     // Separate the regular edges in another list, because data.edges will have both
                     // regular and merged ones:
                     reList.add(e);
                 }
             }
 
-            updateMergedEdgesData();
+            updateMergedEdgesData(graphData.group(Groups.MERGED_EDGES));
         }
         
-        private function updateMergedEdgesData():void {
+        private function updateMergedEdgesData(edges:*):void {
             var fields:Array = dataSet.edges.schema.fields;
             var numericFields:Array = [];
             var df:DataField;
@@ -738,7 +830,7 @@ package org.cytoscapeweb.model {
                     numericFields.push(df);
             }
 
-            for each (var edge:EdgeSprite in graphData.edges) {
+            for each (var edge:EdgeSprite in edges) {
                 if (!edge.props.$merged) continue;
                 
                 // Create sum and avg data values for numeric attributes:
