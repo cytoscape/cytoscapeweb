@@ -546,31 +546,40 @@
         },
         
 	    /**
-	     * <p>Throw exception if missing id ??? No! Just add an id...</p>
-	     * @param {Object} data The object that contains the node attributes.
+	     * <p>Create a new node and add it to the network view.<p>
+	     * <p>If the node <code>id</code> is not informed, Cytoscape Web creates a new one automatically.</p>
+	     * @param {Object} x The horizontal coordinate of the node.
+	     * @param {Object} y The vertical coordinate of the node.
+	     * @param {Object} [data] The object that contains the node attributes.
 	     * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply all the continuous mappers
          *                                        to the network view after adding the node.
          *                                        The default value is <code>false</code>.
 	     * @return {org.cytoscapeweb.Node} The new created node object.
+	     * @see org.cytoscapeweb.Visualization#addEdge
+	     * @see org.cytoscapeweb.Visualization#remove
 	     */
-	    addNode: function (data/*, updateVisualMappers*/) {
-        	var updateVisualMappers;
-        	if (arguments.length > 1) { updateVisualMappers = arguments[1]; }
-        	return this.swf().addNode(data, updateVisualMappers);
+	    addNode: function (x, y/*, data, updateVisualMappers*/) {
+        	var data, updateVisualMappers = false, i = 2;
+        	if (arguments.length > i && typeof arguments[i] === "object") { data = arguments[i++]; }
+        	if (arguments.length > i && typeof arguments[i] === "boolean") { updateVisualMappers = arguments[i]; }
+        	return this.swf().addNode(x, y, data, updateVisualMappers);
 	    },
 	     
 	    /**
-	     * <p>Throw exception if missing source or target.</p>
+	     * <p>Create a new edge linking two nodes and add it to the network view.<p>
+	     * <p>Throw exception if missing <code>source</code> or <code>target</code>.</p>
 	     * @param {Object} data The object that contains the edge attributes.
 	     * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply all the continuous mappers
          *                                        to the network view after adding the edge.
 	     * @return {org.cytoscapeweb.Edge} The new created edge object.
+	     * @see org.cytoscapeweb.Visualization#addNode
+	     * @see org.cytoscapeweb.Visualization#remove
 	     */
 	    addEdge: function (data/*, updateVisualMappers*/) {
+	    	var updateVisualMappers = false;
 	    	if (data == null) { throw("The 'data' object is mandatory."); }
         	if (data.source == null) { throw("The 'source' node ID mandatory."); }
         	if (data.target == null) { throw("The 'target' node ID mandatory."); }
-        	var updateVisualMappers;
         	if (arguments.length > 1) { updateVisualMappers = arguments[1]; }
 	    	return this.swf().addEdge(data, updateVisualMappers);
 	    },
@@ -590,7 +599,7 @@
          * @see org.cytoscapeweb.Visualization#addEdge
          */
 	    remove: function(/*gr, items, updateVisualMappers*/) {
-	    	var gr, items, updateVisualMappers;
+	    	var gr, items, updateVisualMappers = false;
         	if (arguments.length >= 1) {
         		if (typeof arguments[0] === "string") { gr = arguments[0]; }
                 else if (this._typeof(arguments[0]) === "array") { items = arguments[0]; }
@@ -912,7 +921,7 @@
          * @see org.cytoscapeweb.ContinuousMapper
          */
         filter: function (/*gr, */fn/*, updateVisualMappers*/) {
-            var gr, updateVisualMappers;
+            var gr, updateVisualMappers = false;
             if (arguments.length > 2) {
                 gr = arguments[0];
                 fn = arguments[1];
@@ -1777,6 +1786,16 @@
          * the new scale, but for <code>"error"</code> events it is an error object.
          */
         this.value = options.value;
+        /**
+         * The local x coordinate of the mouse position, in pixels.
+         * Available only when the event was triggered by the mouse.
+         */
+        this.mouseX = options.mouseX;
+        /**
+         * The local y coordinate of the mouse position, in pixels.
+         * Available only when the event was triggered by the mouse.
+         */
+        this.mouseY = options.mouseY;
     };
 
     // ===[ Node ]==================================================================================

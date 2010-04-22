@@ -85,12 +85,8 @@ package org.cytoscapeweb.fixtures {
         
         public static function getData(fixtureClass:Class):Data {
         	var ds:DataSet = getDataSet(fixtureClass);
-            var data:Data = Data.fromDataSet(ds);
-            
-            var graphProxy:GraphProxy = ApplicationFacade.getInstance().retrieveProxy(GraphProxy.NAME) as GraphProxy;
-            graphProxy.dataSet = ds;
-            graphProxy.setData(data);
-            data = graphProxy.graphData;
+            var graphProxy:GraphProxy = new GraphProxy(ds);
+            var data:Data = graphProxy.graphData;
 
             return data;
         }

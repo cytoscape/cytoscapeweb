@@ -68,13 +68,18 @@ package org.cytoscapeweb.model {
 
         // ========[ PRIVATE PROPERTIES ]===========================================================
 
+        private var _nodesSchema:DataSchema;
+        private var _edgesSchema:DataSchema;
+
+        private var _ids:Object;
+        private var _nodesMap:Object;
+        private var _edgesMap:Object;
         private var _interactions:/*key->InteractionVO*/Object;
-        private var _parentEdges:/*regularEdge->mergedEdgeSprite*/Object;
+        
         private var _rolledOverNode:NodeSprite;
         private var _rolledOverEdge:EdgeSprite;
-        private var _nodesMap:Object = {};
-        private var _edgesMap:Object = {};
-        // Scale factor, between 0 and 1:
+        
+        /** Scale factor, between 0 and 1 */
         private var _zoom:Number = 1;
 
         private var _configProxy:ConfigProxy;
@@ -91,50 +96,38 @@ package org.cytoscapeweb.model {
 
         // ========[ PUBLIC PROPERTIES ]============================================================
         
-        public var dataSet:DataSet;
-        
         public function get graphData():Data {
             return data as Data;
         }
         
         public override function setData(data:Object):void {
             super.setData(data);
+
+            _ids = { "nodes": 1, "edges": 1 };
+            _nodesMap = {};
+            _edgesMap = {};
+            _interactions = {};
+            data.addGroup(Groups.SELECTED_NODES);
+            data.addGroup(Groups.SELECTED_EDGES);
+            data.addGroup(Groups.REGULAR_EDGES);
+            data.addGroup(Groups.MERGED_EDGES);
             
             if (data != null) {
                 // Add missing Ids:
-                setIdentifiers(data.nodes);
-                createInteractions();
+                cacheItems(data.nodes);
+                cacheItems(data.edges);
                 createMergedEdges();
-                setIdentifiers(data.edges);
-                
-                // TODO: do we really need these Flare groups?
-                // Add data groups to house selected nodes and edges:
-                data.addGroup(Groups.SELECTED_NODES);
-                data.addGroup(Groups.SELECTED_EDGES);
-                
-                // Create a mapping of nodes and edges, with their IDs as key,
-                // in order to make it easier to get them later:
-                _nodesMap = {};
-                for each (var n:NodeSprite in data.nodes) _nodesMap[n.data.id] = n;
-                _edgesMap = {};
-                for each (var e:EdgeSprite in data.edges) _edgesMap[e.data.id] = e;
             }
                 
             sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED, data);
         }
         
         public function get nodesSchema():DataSchema {
-            if (dataSet != null) {
-                return dataSet.nodes.schema;
-            }
-            return null;
+            return _nodesSchema;
         }
         
         public function get edgesSchema():DataSchema {
-            if (dataSet != null) {
-                return dataSet.edges.schema;
-            }
-            return null;
+            return _edgesSchema;
         }
         
         /**
@@ -315,12 +308,27 @@ package org.cytoscapeweb.model {
 
         // ========[ CONSTRUCTOR ]==================================================================
 
-        public function GraphProxy() {
+        public function GraphProxy(ds:DataSet=null) {
             super(NAME);
+            
+            if (ds != null) {
+                _nodesSchema = ds.nodes.schema;
+                _edgesSchema = ds.edges.schema;
+                var data:Data = Data.fromDataSet(ds);
+                setData(data);
+            }
         }
 
         // ========[ PUBLIC METHODS ]===============================================================
 
+        public function getNode(id:String):NodeSprite {
+            return _nodesMap[id];
+        }
+        
+        public function getEdge(id:String):EdgeSprite {
+            return _edgesMap[id];
+        }
+        
         public function getInteraction(node1:NodeSprite, node2:NodeSprite):InteractionVO {
             var inter:InteractionVO = null;
             
@@ -389,9 +397,9 @@ package org.cytoscapeweb.model {
                     if (removed) {
                         // Update the Data Set:
                         if (group === Groups.NODES)
-                            dataSet.nodes.schema = newSchema;
+                            _nodesSchema = newSchema;
                         else
-                            dataSet.edges.schema = newSchema;
+                            _edgesSchema = newSchema;
                         
                         // Update nodes/edges data
                         var items:Array = group === Groups.NODES ? nodes : edges;
@@ -445,10 +453,10 @@ package org.cytoscapeweb.model {
 	    	            // If an edge and a node has the same requested id and group is NONE,
 	    	            // both are included:
 	    	            if (gr === Groups.NODES || gr === Groups.NONE) {
-	        	            push(_nodesMap[id], data);
+	        	            push(getNode(id), data);
 	        	        }
 	    	            if (gr === Groups.EDGES || gr === Groups.NONE) {
-	        	            push(_edgesMap[id], data);
+	        	            push(getEdge(id), data);
 	        	        }
                     }
                 }
@@ -460,7 +468,7 @@ package org.cytoscapeweb.model {
         /**
          * @return The nodes that were actually selected.
          */
-        public function addSelectedNodes(nodes:Array):Array {
+        public function selectNodes(nodes:Array):Array {
             var selected:Array = [];
             
             if (nodes != null && nodes.length > 0) {
@@ -481,7 +489,7 @@ package org.cytoscapeweb.model {
         /**
          * @return The nodes that were actually deselected.
          */
-        public function removeSelectedNodes(nodes:Array):Array {
+        public function deselectNodes(nodes:Array):Array {
             var deselected:Array = [];
             
             if (nodes != null && nodes.length > 0) {
@@ -503,7 +511,7 @@ package org.cytoscapeweb.model {
          * @param edges Array of edges (they can be merged edges as well).
          * @return The edges that were actually selected (does NOT contain any merged edge).
          */
-        public function addSelectedEdges(edges:Array):Array {
+        public function selectEdges(edges:Array):Array {
             var selected:Array = [];
             var bundled:Array = [];
             
@@ -524,12 +532,74 @@ package org.cytoscapeweb.model {
                 }
                 
                 if (bundled.length > 0) {
-                    selected = selected.concat(addSelectedEdges(bundled));
+                    selected = selected.concat(selectEdges(bundled));
                 }      
                 updateMergedEdgesSelection();      
             }
             
             return selected;
+        }
+        
+        public function addNode(data:Object):NodeSprite {
+            if (data == null) data = {};
+            
+            if (data.id == null) data.id = nextId(Groups.NODES);
+            else if (hasId(Groups.NODES, data.id)) throw new Error("Duplicate node id ('"+data.id+"')");
+            
+            // Set default values :
+            for each (var f:DataField in _nodesSchema.fields) {
+                if (data[f.name] == null) data[f.name] = f.defaultValue;
+            }
+            
+            if (data.label == null) data.label = data.id;
+
+            var n:NodeSprite = graphData.addNode(data);
+            createCache(n);
+            
+            return n;
+        }
+        
+        public function addEdge(data:Object):Array {
+            if (data == null) throw new Error("The 'data' argument is mandatory");
+            
+            var src:NodeSprite = getNode(data.source);
+            var tgt:NodeSprite = getNode(data.target);
+            
+            if (src == null) throw new Error("Cannot find source node with id '"+data.source+"'");
+            if (tgt == null) throw new Error("Cannot find target node with id '"+data.target+"'");
+            
+            if (data.id == null) data.id = nextId(Groups.EDGES);
+            else if (hasId(Groups.EDGES, data.id)) throw new Error("Duplicate edge id ("+data.id+"')");
+            
+            // Set default values :
+            for each (var f:DataField in _edgesSchema.fields) {
+                if (data[f.name] == null) data[f.name] = f.defaultValue;
+            }
+            
+            // TODO: create Cytoscape format label:
+            if (data.label == null) data.label = data.id;
+
+            // Create edge:
+            var ret:Array = [];
+            var e:EdgeSprite = graphData.addEdgeFor(src, tgt, data.directed, data);
+            ret.push(e);
+            
+            // Add it to cache:
+            createCache(e);
+
+            // Get and update the interaction between the source and target nodes,
+            // or create a new one if these pair of nodes are not linked yet:
+            var inter:InteractionVO = getInteraction(e.source, e.target);
+            
+            if (inter == null) {
+                inter = createInteraction(e.source, e.target);
+                ret.push(inter.mergedEdge);
+            } else {
+                inter.update();
+                updateMergedEdgesData([inter.mergedEdge])
+            }
+            
+            return ret;
         }
         
         public function remove(items:Array):void {
@@ -545,7 +615,7 @@ package org.cytoscapeweb.model {
         
         public function removeNode(n:NodeSprite):void {
             if (n == null) return;
-            delete _nodesMap[n.data.id];
+            deleteCache(n);
             
             if (n.props.$selected) graphData.group(Groups.SELECTED_NODES).remove(n);
             
@@ -557,7 +627,7 @@ package org.cytoscapeweb.model {
             n.visitEdges(function(e:EdgeSprite):Boolean {
                 edges.push(e);
                 return false;
-            });
+            }, NodeSprite.GRAPH_LINKS);
             remove(edges);
             
             graphData.removeNode(n);
@@ -565,43 +635,32 @@ package org.cytoscapeweb.model {
         
         public function removeEdge(e:EdgeSprite):void {
             if (e == null) return;
-            delete _edgesMap[e.data.id];
+            deleteCache(e);
             
-            if (e.props.$selected) graphData.group(Groups.SELECTED_EDGES).remove(e);
-            
+            // Delete edge:
             graphData.removeEdge(e);
             
+            // Delete or update related objects:
             if (e.props.$merged) {
-                graphData.group(Groups.MERGED_EDGES).remove(e);
+                // MERGED...
                 // Delete children ("regular") edges:
                 var children:Array = e.props.$edges;
                 if (children.length > 0) remove(children);
             } else {
-                graphData.group(Groups.REGULAR_EDGES).remove(e);
-                
-                var filterList:DataList = graphData.group(Groups.FILTERED_EDGES);
-                if (filterList != null) filterList.remove(e);
-                
-                // Update or delete its merged edge:
-                var parent:EdgeSprite = _parentEdges[e];
-                if (parent != null) {
-                    delete _parentEdges[e];
-                    var edges:Array = parent.props.$edges;
-                    var newEdges:Array = [];
-                    for each (var ee:EdgeSprite in edges) {
-                        if (_edgesMap[ee.data.id] != null) newEdges.push(ee);
-                    }
-                    parent.props.$edges = newEdges;
-                    if (newEdges.length === 0) removeEdge(parent);
-                    else updateMergedEdgesData([parent]);
-                }
-                // TODO: Update the sibling edges index:
+                // REGULAR EDGE:
+                // Update or delete the interaction:
                 var inter:InteractionVO = getInteraction(e.source, e.target);
+                
                 if (inter != null) {
-                    if (_nodesMap[e.source.data.id] != null && _nodesMap[e.target.data.id] != null)
+                    var edgeCount:int = inter.edges.length;
+                    
+                    if (edgeCount > 0) {
                         inter.update();
-                    else
+                        updateMergedEdgesData([inter.mergedEdge]);
+                    } else {
                         delete _interactions[inter.key];
+                        removeEdge(inter.mergedEdge);
+                    }
                 }
             }
         }
@@ -610,7 +669,7 @@ package org.cytoscapeweb.model {
          * @param edges Array of edges (they can be merged edges as well).
          * @return The edges that were actually deselected (does NOT contain any "fake" merged edge).
          */
-        public function removeSelectedEdges(edges:Array):Array {
+        public function deselectEdges(edges:Array):Array {
             var deselected:Array = [];
             var bundled:Array = [];
             
@@ -631,7 +690,7 @@ package org.cytoscapeweb.model {
                 }
                 
                 if (bundled.length > 0) {
-                    deselected = deselected.concat(removeSelectedEdges(bundled));       
+                    deselected = deselected.concat(deselectEdges(bundled));       
                 }
                 updateMergedEdgesSelection();
             }
@@ -641,9 +700,8 @@ package org.cytoscapeweb.model {
 
         public function loadGraph(options:Object):void {
         	var txt:String = options.network;
-            var empty:Boolean = (txt == null || StringUtil.trim(txt) === "");
             
-            if (!empty) {
+            if (txt != null) {
                 try {
                     var xml:XML = new XML(txt);
                     var ds:DataSet;
@@ -672,7 +730,10 @@ package org.cytoscapeweb.model {
                         // SIF:
                         ds = new SIFConverter().parse(txt);
                     }
-                    dataSet = ds;
+                    
+                    _nodesSchema = ds.nodes.schema;
+                    _edgesSchema = ds.edges.schema;
+                    
                     setData(Data.fromDataSet(ds));
                 } catch (err:Error) {
                     trace("[ERROR]: onLoadGraph_result: " + err.getStackTrace());
@@ -688,13 +749,13 @@ package org.cytoscapeweb.model {
             format = StringUtil.trim(format.toLowerCase());
                         
             if (format === "xgmml") {
-                nodesTable = new GraphicsDataTable(graphData.nodes, dataSet.nodes.schema);
-                edgesTable = new GraphicsDataTable(graphData.group(Groups.REGULAR_EDGES), dataSet.edges.schema);
+                nodesTable = new GraphicsDataTable(graphData.nodes, nodesSchema);
+                edgesTable = new GraphicsDataTable(graphData.group(Groups.REGULAR_EDGES), edgesSchema);
                 dtSet = new DataSet(nodesTable, edgesTable);
                 out = new XGMMLConverter(configProxy.visualStyle).write(dtSet);
             } else {
-                nodesTable = new DataTable(graphData.nodes.toDataArray(), dataSet.nodes.schema);
-                edgesTable = new DataTable(graphData.group(Groups.REGULAR_EDGES).toDataArray(), dataSet.edges.schema);
+                nodesTable = new DataTable(graphData.nodes.toDataArray(), nodesSchema);
+                edgesTable = new DataTable(graphData.group(Groups.REGULAR_EDGES).toDataArray(), edgesSchema);
                 dtSet = new DataSet(nodesTable, edgesTable);
 
                 if (format === "graphml") {
@@ -723,105 +784,110 @@ package org.cytoscapeweb.model {
         // ========[ PRIVATE METHODS ]==============================================================
         
         /**
-         * Set a unique number to missing nodes or edges IDs.  
+         * Create a mapping of nodes and edges, with their IDs as key,
+         * in order to make it easier to get them later.
+         * Also set a unique number to missing nodes or edges IDs.  
          */
-        private function setIdentifiers(list:*):void {
-        	if (list != null) {
-                var ids:Object = {};
-                var count:int = 1;
-    			
-        		var sp:DataSprite;
-        		// 1rs iteration: get existing IDs:
-        		for each (sp in list) {
-        			if (sp.data.id != null) ids[""+sp.data.id] = true;
-        		}
-        		// 2nd iteration: set missing IDs:
-                for each (sp in list) {
-                    if (sp.data.id == null) {
-                    	while (ids[count.toString()]) ++count;
-                        sp.data.id = count.toString();
-                        count++;
-                    }
+        private function cacheItems(list:*):void {
+            var ds:DataSprite;
+            var missing:Array = [];
+            
+            // 1rs iteration: cache items that have id:
+            for each (ds in list) {
+                if (ds.data.id != null) createCache(ds);
+                else missing.push(ds);
+            }
+            // 2nd iteration: set missing IDs:
+            for each (ds in missing) {
+               ds.data.id = nextId(ds is NodeSprite ? Groups.NODES : Groups.EDGES);
+               createCache(ds);
+            }
+        }
+        
+        private function createCache(ds:DataSprite):void {
+            if (ds is NodeSprite) {
+                _nodesMap[ds.data.id] = ds;
+            } else if (ds is EdgeSprite) {
+                _edgesMap[ds.data.id] = ds;
+                
+                if (ds.props.$merged) {
+                    graphData.group(Groups.MERGED_EDGES).add(ds);
+                } else {
+                    graphData.group(Groups.REGULAR_EDGES).add(ds);
                 }
             }
         }
         
-        private function createInteractions():void {
-            _interactions = new Object();
+        private function deleteCache(ds:DataSprite):void {
+            var fl:DataList;
+            
+            if (ds is NodeSprite) {
+                delete _nodesMap[ds.data.id];
+                
+                graphData.group(Groups.SELECTED_NODES).remove(ds);
+                
+                fl = graphData.group(Groups.FILTERED_NODES);
+                if (fl != null) fl.remove(ds);
+                
+            } else if (ds is EdgeSprite) {
+                delete _edgesMap[ds.data.id];
+
+                graphData.group(Groups.SELECTED_EDGES).remove(ds);
+                
+                fl = graphData.group(Groups.FILTERED_EDGES);
+                if (fl != null) fl.remove(ds);
+                
+                if (ds.props.$merged) {
+                    graphData.group(Groups.MERGED_EDGES).remove(ds);
+                } else {
+                    graphData.group(Groups.REGULAR_EDGES).remove(ds);
+                }
+            }
+        }
+        
+        private function nextId(gr:String):String {
+    		var id:int = _ids[gr];
+    		while (hasId(gr, id)) { id++; }
+    		_ids[gr] = id;
+    		return ""+id;
+        }
+        
+        private function hasId(gr:String, id:*):Boolean {
+        	return gr === Groups.EDGES ? _edgesMap[""+id] !== undefined : _nodesMap[""+id] !== undefined;
+        }
+        
+        private function createMergedEdges():void {            
+            var inter:InteractionVO;
+
+            for each (var e:EdgeSprite in graphData.edges) {
+                if (!e.props.$merged) {
+                    inter = getInteraction(e.source, e.target);
+                    if (inter == null) createInteraction(e.source, e.target);
+                }
+            }
+        }
+        
+        private function createInteraction(source:NodeSprite, target:NodeSprite):InteractionVO {
             var inter:InteractionVO;
             
-            if (graphData != null) {
-                for each (var edge:EdgeSprite in graphData.edges) {
-                    inter = getInteraction(edge.source, edge.target);
-                    
-                    if (inter == null) {
-                        inter = new InteractionVO(edge.source, edge.target);
-                        _interactions[inter.key] = inter;
-                    }
-                    
-                    inter.addEdge(edge);
-                }
-
-                for (var k:String in _interactions) {
-                    inter = _interactions[k];
-                    for each (var e:EdgeSprite in inter.edges) {
-                        // It will be important to correctly render multiple edges:
-                        e.props.adjacentIndex = inter.getAdjacentIndex(e);
-                    }
-                }
-            }
-        }
-        
-        private function createMergedEdges():void {
-            var reList:DataList = new DataList(Groups.REGULAR_EDGES);
-            graphData.addGroup(Groups.REGULAR_EDGES, reList);
-            
-            var meList:DataList = new DataList(Groups.MERGED_EDGES);
-            graphData.addGroup(Groups.MERGED_EDGES, meList);
-            
-            _parentEdges = {};
-            
-            for (var k:String in _interactions) {
-                var inter:InteractionVO = _interactions[k];
-                var edges:Array = inter.edges;
+            if (getInteraction(source, target) == null) {
+                inter = new InteractionVO(source, target);
+                _interactions[inter.key] = inter;
                 
-                // Create a fake merged edge:
-                var src:NodeSprite = inter.node1;
-                var tgt:NodeSprite = inter.node2;
-                var dt:Object = { source: src.data.id, target: tgt.data.id };
-                var me:EdgeSprite = graphData.addEdgeFor(src, tgt, false, dt);
-                me.data.directed = false;
-                me.props.$merged = true;
-                me.props.$edges = edges;
-                me.props.$getDataList = function():Array {
-                    var dataList:Array = [];
-                    for each (var e:EdgeSprite in this.$edges) {
-                        if (!e.props.$filteredOut) dataList.push(e.data);
-                    }
-                    return dataList;
-                }
-                me.props.$getFilteredEdges = function():Array {
-                    var filteredList:Array = [];
-                    for each (var e:EdgeSprite in this.$edges) {
-                        if (!e.props.$filteredOut) filteredList.push(e);
-                    }
-                    return filteredList;
-                }
-                
-                meList.add(me);
-                for each (var e:EdgeSprite in edges) {
-                    _parentEdges[e] = me;
-                    // Separate the regular edges in another list, because data.edges will have both
-                    // regular and merged ones:
-                    reList.add(e);
-                }
+                var me:EdgeSprite = inter.mergedEdge;
+                me.data.id = nextId(Groups.EDGES);
+                graphData.addEdge(me);
+                createCache(me);
+   
+                // TODO: refactor!!! let interractionVO do it!
+                updateMergedEdgesData([me]);
             }
-
-            updateMergedEdgesData(graphData.group(Groups.MERGED_EDGES));
+            
+            return inter;
         }
         
         private function updateMergedEdgesData(edges:*):void {
-            var fields:Array = dataSet.edges.schema.fields;
+            var fields:Array = edgesSchema.fields;
             var numericFields:Array = [];
             var df:DataField;
             
@@ -831,29 +897,31 @@ package org.cytoscapeweb.model {
             }
 
             for each (var edge:EdgeSprite in edges) {
-                if (!edge.props.$merged) continue;
-                
-                // Create sum and avg data values for numeric attributes:
-                for each (df in numericFields) {
-                    edge.data["sum:"+df.name] = edge.data["avg:"+df.name] = 0;
-                }
-                
-                var count:Number = 0;
-                
-                for each (var e:EdgeSprite in edge.props.$edges) {
-                    if (!e.props.$filteredOut) {
-                        count++;
-                        for each (df in numericFields) {
-                            var v:Number = e.data[df.name] as Number;
-                            edge.data["sum:"+df.name] = edge.data["avg:"+df.name] += v;
+                if (!edge.props.$merged) {
+                    // TODO: remove avg:
+                    
+                    // Create sum and avg data values for numeric attributes:
+                    for each (df in numericFields) {
+                        edge.data["sum:"+df.name] = edge.data["avg:"+df.name] = 0;
+                    }
+                    
+                    var count:Number = 0;
+                    
+                    for each (var e:EdgeSprite in edge.props.$edges) {
+                        if (!e.props.$filteredOut) {
+                            count++;
+                            for each (df in numericFields) {
+                                var v:Number = e.data[df.name] as Number;
+                                edge.data["sum:"+df.name] = edge.data["avg:"+df.name] += v;
+                            }
                         }
                     }
-                }
-                for each (df in numericFields) {
-                    if (count > 1) edge.data["avg:"+df.name] /= count;
-                    if (df.type === DataUtil.INT) {
-                        edge.data["sum:"+df.name] = Math.round(edge.data["sum:"+df.name]);
-                        edge.data["avg:"+df.name] = Math.round(edge.data["avg:"+df.name]);
+                    for each (df in numericFields) {
+                        if (count > 1) edge.data["avg:"+df.name] /= count;
+                        if (df.type === DataUtil.INT) {
+                            edge.data["sum:"+df.name] = Math.round(edge.data["sum:"+df.name]);
+                            edge.data["avg:"+df.name] = Math.round(edge.data["avg:"+df.name]);
+                        }
                     }
                 }
             }

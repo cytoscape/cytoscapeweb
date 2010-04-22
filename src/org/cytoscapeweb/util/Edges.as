@@ -110,7 +110,7 @@ package org.cytoscapeweb.util {
         public static function shape(e:EdgeSprite):String {
             var shape:String = Shapes.BEZIER;
             
-            if (e.props.$merged || e.props.adjacentIndex == 0)
+            if (e.props.$merged || e.props.$adjacentIndex == 0)
                 shape = Shapes.LINE;
 
             return shape;
@@ -161,7 +161,7 @@ package org.cytoscapeweb.util {
         
         public static function curvature(e:EdgeSprite):Number {
             var curvature:Number = style.getDefaultValue(VisualProperties.EDGE_CURVATURE) as Number;
-            return e.props.adjacentIndex * curvature;
+            return e.props.$adjacentIndex * curvature;
         }
         
         public static function selectionGlow(e:EdgeSprite):GlowFilter {

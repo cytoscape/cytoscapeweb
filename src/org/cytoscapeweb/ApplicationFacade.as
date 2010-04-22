@@ -158,6 +158,8 @@ package org.cytoscapeweb {
             registerCommand(SELECT_ALL, SelectAllCommand);
             registerCommand(DESELECT, DeselectCommand);
             registerCommand(DESELECT_ALL, DeselectAllCommand);
+            registerCommand(ADD_NODE, AddNodeCommand);
+            registerCommand(ADD_EDGE, AddEdgeCommand);
             registerCommand(REMOVE_ITEMS, RemoveItemsCommand);
             registerCommand(ADD_DATA_FIELD, AddDataFieldCommand);
             registerCommand(REMOVE_DATA_FIELD, RemoveDataFieldCommand);

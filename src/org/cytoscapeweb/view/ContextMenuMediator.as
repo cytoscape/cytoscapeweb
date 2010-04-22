@@ -154,8 +154,12 @@ package org.cytoscapeweb.view {
                         target = GraphUtils.toExtObject(target);
                         
                         var body:Object = { functionName: ExternalFunctions.INVOKE_CONTEXT_MENU_CALLBACK, 
-                                            argument: { type: "contextmenu", group: group, 
-                                                        value: evt.target.caption, target: target } };
+                                            argument: { type: "contextmenu",
+                                                        group: group, 
+                                                        value: evt.target.caption,
+                                                        target: target,
+                                                        mouseX: application.mouseX,
+                                                        mouseY: application.mouseY } };
                         
                         sendNotification(ApplicationFacade.CALL_EXTERNAL_INTERFACE, body);
                     });

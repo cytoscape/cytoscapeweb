@@ -30,12 +30,12 @@
 package org.cytoscapeweb.view {
     import flare.animate.Parallel;
     import flare.display.TextSprite;
+    import flare.util.Arrays;
     import flare.vis.data.Data;
     import flare.vis.data.DataSprite;
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
     import flare.vis.events.SelectionEvent;
-    import flare.vis.events.TooltipEvent;
     
     import flash.display.DisplayObject;
     import flash.events.KeyboardEvent;
@@ -259,6 +259,22 @@ package org.cytoscapeweb.view {
             else if (ds is EdgeSprite) graphView.resetEdge(EdgeSprite(ds));
         }
         
+        public function initialize(gr:String, items:Array):void { 
+            // Set properties:
+            var props:Object = gr === Groups.NODES ? Nodes.properties : Edges.properties;
+            
+            for (var name:String in props) {
+                Arrays.setProperty(items, name, props[name], null);
+            }
+            
+            vis.updateLabels(gr);
+            
+            // Add initial event listeners:
+            addListeners(items);
+            
+            vis.separateDisconnected();
+        }
+        
         public function dispose(items:Array):void {
             // Remove event listeners:
             for each (var ds:DataSprite in items) {
@@ -301,7 +317,25 @@ package org.cytoscapeweb.view {
         }
 
         private function onRenderComplete(evt:GraphViewEvent):void {
-            addListeners();
+            // First, add all the initial listeners to each NODE:
+            // --------------------------------------------------
+            addListeners(vis.data.nodes);
+            addListeners(vis.data.edges);
+            
+            dragControl.attach(vis);
+            
+            // Then add the VIEW listeners:
+            // ---------------------------------
+            // 1. KEY events:
+            graphView.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, false, 0, true);
+            graphView.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false, 0, true);
+            // 2. DRAG the whole graph:
+            graphView.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDownView, false, 0, true);
+            // 3. Click:
+            graphView.addEventListener(MouseEvent.CLICK, onClickView, false, 0, true);
+            // 4. 2-Click:
+            graphView.addEventListener(MouseEvent.DOUBLE_CLICK, onDoubleClickView, false, 0, true);
+            
             evt.currentTarget.removeEventListener(evt.type, arguments.callee);
             sendNotification(ApplicationFacade.GRAPH_DRAWN);
         }
@@ -334,38 +368,21 @@ package org.cytoscapeweb.view {
             }
         }
         
-        private function addListeners():void {
-            // First, add all the initial listeners to each NODE:
-            // --------------------------------------------------
-            for each (var n:NodeSprite in vis.data.nodes) {
-                n.addEventListener(MouseEvent.ROLL_OVER, onRollOverNode, false, 0, true);
-                n.doubleClickEnabled = true;
-                n.addEventListener(MouseEvent.DOUBLE_CLICK, onDoubleClickNode, false, 0, true);
-				n.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDownNode, false, 0, true);
+        private function addListeners(items:*):void {
+            for each (var ds:DataSprite in items) {
+                ds.doubleClickEnabled = true;
+                
+                if (ds is NodeSprite) {
+                    ds.addEventListener(MouseEvent.ROLL_OVER, onRollOverNode, false, 0, true);
+                    ds.addEventListener(MouseEvent.DOUBLE_CLICK, onDoubleClickNode, false, 0, true);
+                    ds.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDownNode, false, 0, true);
+                } else {
+                    ds.addEventListener(MouseEvent.ROLL_OVER, onRollOverEdge, false, 0, true);
+                    ds.addEventListener(MouseEvent.ROLL_OUT, onRollOutEdge, false, 0, true);
+                    ds.addEventListener(MouseEvent.DOUBLE_CLICK, onDoubleClickEdge, false, 0, true);
+                    ds.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDownEdge, false, 0, true);
+                }
             }
-            // Then, add listeners EDGES:
-            // --------------------------------------------------
-            for each (var e:EdgeSprite in vis.data.edges) {
-                e.addEventListener(MouseEvent.ROLL_OVER, onRollOverEdge, false, 0, true);
-                e.addEventListener(MouseEvent.ROLL_OUT, onRollOutEdge, false, 0, true);
-                e.doubleClickEnabled = true;
-                e.addEventListener(MouseEvent.DOUBLE_CLICK, onDoubleClickEdge, false, 0, true);
-                e.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDownEdge, false, 0, true);
-            }
-            
-            dragControl.attach(vis);
-            
-            // Then add the VIEW listeners:
-            // ---------------------------------
-            // 1. KEY events:
-            graphView.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, false, 0, true);
-            graphView.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false, 0, true);
-            // 2. DRAG the whole graph:
-            graphView.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDownView, false, 0, true);
-            // 3. Click:
-            graphView.addEventListener(MouseEvent.CLICK, onClickView, false, 0, true);
-            // 4. 2-Click:
-            graphView.addEventListener(MouseEvent.DOUBLE_CLICK, onDoubleClickView, false, 0, true);
         }
         
         // VIEW listener functions:

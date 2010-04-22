@@ -366,14 +366,16 @@ package org.cytoscapeweb.model {
             sendNotification(ApplicationFacade.APPLY_LAYOUT, name);
         }
         
-        private function addNode(data:Object, updateVisualMappers:Boolean=false):void {
+        private function addNode(x:Number, y:Number, data:Object, updateVisualMappers:Boolean=false):void {
             sendNotification(ApplicationFacade.ADD_NODE,
-                             { data: data, updateVisualMappers: updateVisualMappers });
+                             { x: x, y: y, data: data, updateVisualMappers: updateVisualMappers });
+// TODO: how to return the new node?
         }
         
         private function addEdge(data:Object, updateVisualMappers:Boolean=false):void {
             sendNotification(ApplicationFacade.ADD_EDGE,
                              { data: data, updateVisualMappers: updateVisualMappers });
+// TODO: how to return the new edge?
         }
         
         private function removeItems(group:String=Groups.NONE,

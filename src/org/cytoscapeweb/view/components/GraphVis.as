@@ -523,7 +523,7 @@ package org.cytoscapeweb.view.components {
         private function operateForceDirectedLayout(fdl:ForceDirectedLayout):void {
             var startTime:int = getTimer();
             
-            const MIN_COUNT:uint = 120;
+            const MIN_COUNT:uint = 80;
             const MAX_TIME:uint = 60000;
             var count:uint = 0, stableCount:uint = 0;
             

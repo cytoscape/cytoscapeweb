@@ -62,16 +62,14 @@ package org.cytoscapeweb.controller {
  
                 // First add the information to the model:
                 var graphProxy:GraphProxy = facade.retrieveProxy(GraphProxy.NAME) as GraphProxy;
-                nodes = graphProxy.addSelectedNodes(nodes);
-                edges = graphProxy.addSelectedEdges(edges);
+                if (nodes.length > 0) nodes = graphProxy.selectNodes(nodes);
+                if (edges.length > 0) edges = graphProxy.selectEdges(edges);
 
                 // Then update the view:
                 var mediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
 
-                if (nodes.length > 0)
-                    mediator.selectNodes(nodes);
-                if (edges.length > 0)
-                    mediator.selectEdges(edges);
+                if (nodes.length > 0) mediator.selectNodes(nodes);
+                if (edges.length > 0) mediator.selectEdges(edges);
 
                 // Call external listeners:
                 var extProxy:ExternalInterfaceProxy = facade.retrieveProxy(ExternalInterfaceProxy.NAME) as ExternalInterfaceProxy;

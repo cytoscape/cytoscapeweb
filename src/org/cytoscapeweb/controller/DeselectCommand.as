@@ -61,8 +61,8 @@ package org.cytoscapeweb.controller {
                 
                 // First remove the selection from the model:
                 var graphProxy:GraphProxy = facade.retrieveProxy(GraphProxy.NAME) as GraphProxy;
-                nodes = graphProxy.removeSelectedNodes(nodes);
-                edges = graphProxy.removeSelectedEdges(edges);
+                nodes = graphProxy.deselectNodes(nodes);
+                edges = graphProxy.deselectEdges(edges);
 
                 // Then update the view:
                 var mediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
