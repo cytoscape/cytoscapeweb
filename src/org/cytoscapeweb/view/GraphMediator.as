@@ -29,6 +29,7 @@
 */
 package org.cytoscapeweb.view {
     import flare.animate.Parallel;
+    import flare.display.DirtySprite;
     import flare.display.TextSprite;
     import flare.util.Arrays;
     import flare.vis.data.Data;
@@ -50,6 +51,7 @@ package org.cytoscapeweb.view {
     import org.cytoscapeweb.util.ExternalFunctions;
     import org.cytoscapeweb.util.Groups;
     import org.cytoscapeweb.util.Nodes;
+    import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.VisualProperties;
     import org.cytoscapeweb.view.components.GraphView;
     import org.cytoscapeweb.view.components.GraphVis;
@@ -656,6 +658,8 @@ package org.cytoscapeweb.view {
                     n.props.label.y += evt.amountY;
                 }
             }
+            
+            if (Utils.isLinux()) DirtySprite.renderDirty();
             
             vis.updateDragRectangle(evt.amountX, evt.amountY);
         }
