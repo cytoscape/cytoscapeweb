@@ -78,7 +78,8 @@ package org.cytoscapeweb.view {
         private var _cursorOptions:Object;
         private var _customCursorsEnabled:Boolean = true;
         private var _isCustomCursor:Boolean = false;
-        private var _isMouseOverApp:Boolean = false;
+        private var _overApp:Boolean = false;
+        private var _overPanZoom:Boolean = false;
         
         private var _waitMsgLabel:Label;
         private var _executingTasks:uint = 0;
@@ -243,6 +244,8 @@ package org.cytoscapeweb.view {
             // Listeners to drag the PAN ZOOM control:
             panZoomBox.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDownPanZoom, false, 0, true);
             panZoomBox.addEventListener(MouseEvent.MOUSE_UP, onMouseUpPanZoom, false, 0, true);
+            panZoomBox.addEventListener(MouseEvent.ROLL_OVER, onRollOverPanZoom, false, 0, true);
+            panZoomBox.addEventListener(MouseEvent.ROLL_OUT, onRollOutPanZoom, false, 0, true);
             panZoomBox.addEventListener(DragEvent.DRAG_COMPLETE, onDragCompletePanZoom, false, 0, true);
 
             application.stage.focus = panZoomBox;
@@ -318,9 +321,19 @@ package org.cytoscapeweb.view {
                 // Another workaround: it seems that forcing roll-over node/edge can bubble it up
                 // to the application, causing a roll-over app. as well,
                 // which can prevent the correct cursor icon to be displayed.
-                if (!_isMouseOverApp)
+                if (!_overApp)
                     application.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OVER));
             }
+	    }
+	    
+	    private function onRollOverPanZoom(evt:MouseEvent):void {
+	        _overPanZoom = true;
+	        updateCursor();
+	    }
+	    
+	    private function onRollOutPanZoom(evt:MouseEvent):void {
+	        _overPanZoom = false;
+	        updateCursor();
 	    }
 	    
 	    private function onDragCompletePanZoom(evt:DragEvent):void {
@@ -333,7 +346,7 @@ package org.cytoscapeweb.view {
 	    }
         
         private function onRollOverApplication(evt:MouseEvent):void { trace("<<== ROLL OVER [APP]");
-            _isMouseOverApp = true;
+            _overApp = true;
             // Workaround to avoid the system cursor to disappear when drag-selecting and the mouse
             // roll out the Flash player area and then over again.
             // That happens when the plus cursor is being displayed.
@@ -345,7 +358,7 @@ package org.cytoscapeweb.view {
         }
         
         private function onRollOutApplication(evt:MouseEvent):void { trace("==>> ROLL OUT [APP]");
-            _isMouseOverApp = false;
+            _overApp = false;
             hideAllCustomCursors();
             sendNotification(ApplicationFacade.ROLLOUT_EVENT);
         }
@@ -433,7 +446,7 @@ package org.cytoscapeweb.view {
 	    
         private function updateCursor(options:Object=null):void {
             if (options == null) options = {};
-            if (!_isMouseOverApp || options.selecting) return;
+            if (!_overApp || options.selecting) return;
             
             if (options.draggingGraph) {
                 showClosedHandCursor();
@@ -441,9 +454,10 @@ package org.cytoscapeweb.view {
             } else {
                 hideClosedHandCursor();
 
-                if ( options.ctrlDown || 
-                    (configProxy.grabToPanEnabled &&
-                     graphProxy.rolledOverNode == null && graphProxy.rolledOverEdge == null) ) {
+                if ( !_overPanZoom &&
+                     (options.ctrlDown || (configProxy.grabToPanEnabled && 
+                                           graphProxy.rolledOverNode == null && 
+                                           graphProxy.rolledOverEdge == null)) ) {
                     showOpenedHandCursor();
                     _isCustomCursor = true;
                 } else {
@@ -455,7 +469,7 @@ package org.cytoscapeweb.view {
         
         private function showOpenedHandCursor():void {
             // On most of the major Linux distributions the system cursor cannot be hidden!
-            if (_isMouseOverApp && _customCursorsEnabled && !Utils.isLinux()) {
+            if (_overApp && _customCursorsEnabled && !Utils.isLinux()) {
                 if (_cursorIds.openedHand === -1)
                     _cursorIds.openedHand = CursorManager.setCursor(_openedHandCursor, CursorManagerPriority.MEDIUM, -5);
                 CursorManager.showCursor();
@@ -463,7 +477,7 @@ package org.cytoscapeweb.view {
         }
         
         private function showClosedHandCursor():void {
-            if (_isMouseOverApp && _customCursorsEnabled && !Utils.isLinux()) {
+            if (_overApp && _customCursorsEnabled && !Utils.isLinux()) {
                 if (_cursorIds.closedHand === -1)
                     _cursorIds.closedHand = CursorManager.setCursor(_closedHandCursor, CursorManagerPriority.HIGH, -5);
                 CursorManager.showCursor();
