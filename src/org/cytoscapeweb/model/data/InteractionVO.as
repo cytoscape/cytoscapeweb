@@ -59,6 +59,22 @@ package org.cytoscapeweb.model.data {
             _mergedEdge.data.directed = false;
 
             _mergedEdge.props.$merged = true;
+            
+            mergedEdge.props.$getDataList = function():Array {
+                var dataList:Array = [];
+                for each (var e:EdgeSprite in this.$edges) {
+                    if (!e.props.$filteredOut) dataList.push(e.data);
+                }
+                return dataList;
+            }
+            
+            mergedEdge.props.$getFilteredEdges = function():Array {
+                var filteredList:Array = [];
+                for each (var e:EdgeSprite in this.$edges) {
+                    if (!e.props.$filteredOut) filteredList.push(e);
+                }
+                return filteredList;
+            }
 			
 			update();
 		}
@@ -135,12 +151,28 @@ package org.cytoscapeweb.model.data {
                 }
             }
 
+            // Update merged edge cached data:
+            mergedEdge.props.$edges = edgesList;
+            mergedEdge.props.$selected = false;
+            mergedEdge.props.$filteredOut = true;
+            var weight:Number = 0;
+
             for each (e in edgesList) {
                 // It will be important to correctly render multiple edges:
                 e.props.$adjacentIndex = getAdjacentIndex(e);
+                
+                // Summed weight:
+                var w:Number = Number(e.data.weight);
+                if (!isNaN(w)) weight += w;
+                
+                // States:
+                if (!e.props.$filteredOut) {
+                    mergedEdge.props.$filteredOut = false;
+                    if (e.props.$selected) mergedEdge.props.$selected = true;
+                }
             }
             
-            updateMergedEdge();
+            mergedEdge.data.weight = weight;
 		}
 		
 		public static function createKey(node1:NodeSprite, node2:NodeSprite):String {
@@ -152,26 +184,6 @@ package org.cytoscapeweb.model.data {
 	    }
 
         // ========[ PRIVATE METHODS ]==============================================================
-		
-        private function updateMergedEdge():void {
-            mergedEdge.props.$edges = edges;
-                
-            mergedEdge.props.$getDataList = function():Array {
-                var dataList:Array = [];
-                for each (var e:EdgeSprite in this.$edges) {
-                    if (!e.props.$filteredOut) dataList.push(e.data);
-                }
-                return dataList;
-            }
-            
-            mergedEdge.props.$getFilteredEdges = function():Array {
-                var filteredList:Array = [];
-                for each (var e:EdgeSprite in this.$edges) {
-                    if (!e.props.$filteredOut) filteredList.push(e);
-                }
-                return filteredList;
-            }
-        }
         
         /**
          * Return the distance that the informed edge has from an imaginary straight line that

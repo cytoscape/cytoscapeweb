@@ -27,22 +27,25 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
-package org.cytoscapeweb.controller {
-    import org.cytoscapeweb.model.ExternalInterfaceProxy;
-    import org.cytoscapeweb.util.ExternalFunctions;
-    import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
+package org.cytoscapeweb.util.methods {
+    import org.cytoscapeweb.ApplicationFacade;
+    import org.cytoscapeweb.view.ExternalMediator;
+    
 
-    public class CallExternalInterfaceCommand extends SimpleCommand {
+    /**
+     * Global method for calling a JavaScript function.
+     * 
+     * @param functionName The name of the JavaScript function.
+     * @param argument The argument value.
+     * @param json Whether or not the argument must be converted to the JSON format before
+     *             the function is invoked.
+     * @return The return of the JavaScript function or <code>undefined</code> if the external
+     *         function returns void.
+     */
+    public function $extFunction(functionName:String, argument:*, json:Boolean=false):* {
+        var ext:ExternalMediator = ApplicationFacade.getInstance()
+                                   .retrieveMediator(ExternalMediator.NAME) as ExternalMediator;
         
-        // ========[ PUBLIC METHODS ]===============================================================
-        
-        override public function execute(notification:INotification):void {
-            var options:Object = notification.getBody();
-            var json:Boolean = ExternalFunctions.isJSON(options.functionName);
-            
-            var proxy:ExternalInterfaceProxy = facade.retrieveProxy(ExternalInterfaceProxy.NAME) as ExternalInterfaceProxy;
-            proxy.callExternalInterface(options.functionName, options.argument, json);
-        }
+        return ext.callExternalInterface(functionName, argument, json);
     }
 }

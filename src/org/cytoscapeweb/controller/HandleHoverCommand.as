@@ -33,21 +33,17 @@ package org.cytoscapeweb.controller {
     import flare.vis.data.NodeSprite;
     
     import org.cytoscapeweb.ApplicationFacade;
-    import org.cytoscapeweb.model.ExternalInterfaceProxy;
-    import org.cytoscapeweb.model.GraphProxy;
     import org.cytoscapeweb.util.ExternalFunctions;
     import org.cytoscapeweb.util.GraphUtils;
     import org.cytoscapeweb.util.Groups;
-    import org.cytoscapeweb.view.GraphMediator;
     import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
     
 
     /**
      * Take the necessary actions after a node or edge was rolled-over/rolled-out.
      * The target DataSprite (node or edge) must be sent as the notification body.
      */
-    public class HandleHoverCommand extends SimpleCommand {
+    public class HandleHoverCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
             var ds:DataSprite = notification.getBody() as DataSprite;
@@ -55,8 +51,6 @@ package org.cytoscapeweb.controller {
             var group:String = Groups.groupOf(ds);
             
             var type:String = action === ApplicationFacade.ROLLOVER_EVENT ? "mouseover" : "mouseout";
-            
-            var graphProxy:GraphProxy = facade.retrieveProxy(GraphProxy.NAME) as GraphProxy;
             var previousDs:DataSprite;
             
             switch (action) {
@@ -80,14 +74,11 @@ package org.cytoscapeweb.controller {
             }
             
             // Reset visual properties:
-            var mediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
-            if (previousDs != null) mediator.resetDataSprite(previousDs);
-            if (ds != null) mediator.resetDataSprite(ds);
+            if (previousDs != null) graphMediator.resetDataSprite(previousDs);
+            if (ds != null) graphMediator.resetDataSprite(ds);
                 
-            // Call external listener:
-            var extProxy:ExternalInterfaceProxy = facade.retrieveProxy(ExternalInterfaceProxy.NAME) as ExternalInterfaceProxy;
-            
-            if (extProxy.hasListener(type, group)) {
+            // Call external listener:            
+            if (extMediator.hasListener(type, group)) {
                 var target:Object = GraphUtils.toExtObject(ds);
 
                 var body:Object = { functionName: ExternalFunctions.INVOKE_LISTENERS, 

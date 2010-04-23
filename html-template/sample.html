@@ -54,7 +54,8 @@
                     edges: {
                     	color: "#0b94b1",//{ defaultValue: "#0b94b1", discreteMapper: edgeColorMapper },
                         width: { defaultValue: 2, continuousMapper: { attrName: "weight",  minValue: 2, maxValue: 8 } },
-                        mergeWidth: 2,
+                        mergeWidth: 3,
+                        mergeColor: "#0b94b1",
                         opacity: 0.8,
                         labelFontSize: 10,
                         labelFontWeight: "bold"
@@ -119,6 +120,7 @@
                     $("#layouts").val(options.layout);
                     $("input, select").attr("disabled", false);
                     $("#updateVisualStyle").attr("disabled", true);
+                    $("#mergeEdges").attr("checked", vis.edgesMerged());
                     
                     vis.addContextMenuItem("Delete node", "nodes", function(evt) {
                         vis.remove([evt.target], true);
@@ -152,22 +154,25 @@
 
                 // Register control liteners:
                 $("#layouts").change(function(evt) {
-                   d1 = new Date();
-                   vis.layout($("#layouts").val());
-               });
-               $("#graphs").change(function(evt) {
-                   draw();
-               });
-               $("#reapplyLayout").click(function(evt) {
-            	   d1 = new Date();
-                   vis.layout($("#layouts").val());
-               });
-               $("#createGraph").click(function(evt) {
-                   var data = createData($("#nodesNumber").val(), $("#edgesNumber").val());
-                   draw(data);
-               });
-               $("#minNodeWeight, #minEdgeWeight").keydown(function(evt) {
-                   if (evt.which === 13) {
+                    d1 = new Date();
+                    vis.layout($("#layouts").val());
+                });
+                $("#graphs").change(function(evt) {
+                    draw();
+                });
+                $("#reapplyLayout").click(function(evt) {
+            	    d1 = new Date();
+                    vis.layout($("#layouts").val());
+                });
+                $("#mergeEdges").change(function(evt) {
+                    vis.edgesMerged($("#mergeEdges").is(":checked"));
+                });
+                $("#createGraph").click(function(evt) {
+                    var data = createData($("#nodesNumber").val(), $("#edgesNumber").val());
+                    draw(data);
+                });
+                $("#minNodeWeight, #minEdgeWeight").keydown(function(evt) {
+                    if (evt.which === 13) {
                        var val = parseFloat($(this).val());
                        var reapplyMappers = $("#reapplyMappers").is(":checked");
                        val = isNaN(val) ? 0 : val;
@@ -177,22 +182,22 @@
                        }, reapplyMappers);
                        // Enable the update button when the filter did not update the view:
                        $("#updateVisualStyle").attr("disabled", reapplyMappers);
-                   }
-               });
-               $("#updateVisualStyle").click(function(evt) {
-                   vis.visualStyle(options.visualStyle);
-               });
-               $("#toXGMML").click(function(evt) {
-                   alert(vis.xgmml());
-               });
-               $("#toGraphML").click(function(evt) {
-                   alert(vis.graphml());
-               });
-               $("#toSIF").click(function(evt) {
-                   alert(vis.sif());
-               });
+                    }
+                });
+                $("#updateVisualStyle").click(function(evt) {
+                    vis.visualStyle(options.visualStyle);
+                });
+                $("#toXGMML").click(function(evt) {
+                    alert(vis.xgmml());
+                });
+                $("#toGraphML").click(function(evt) {
+                    alert(vis.graphml());
+                });
+                $("#toSIF").click(function(evt) {
+                    alert(vis.sif());
+                });
 
-               draw();
+                draw();
             });
 
             function createData(nodesNumber, edgesNumber) {
@@ -298,6 +303,11 @@
                         </div>
                         <div>
                             <input type="button" id="reapplyLayout" value="Reapply"/>
+                        </div>
+                        <hr/>
+                        <div>
+                            <input type="checkbox" id="mergeEdges"/>
+                            <label for="mergeEdges">Merge edges</label>
                         </div>
                         <hr/>
                         <div>

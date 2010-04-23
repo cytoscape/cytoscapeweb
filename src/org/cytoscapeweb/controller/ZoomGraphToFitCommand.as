@@ -29,36 +29,25 @@
 */
 package org.cytoscapeweb.controller {
     import org.cytoscapeweb.ApplicationFacade;
-    import org.cytoscapeweb.model.ExternalInterfaceProxy;
-    import org.cytoscapeweb.model.GraphProxy;
     import org.cytoscapeweb.util.ExternalFunctions;
-    import org.cytoscapeweb.view.GraphMediator;
     import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
     
 
     /**
      * Scale the graph to 100% or less until it fits the canvas. 
      */
-    public class ZoomGraphToFitCommand extends SimpleCommand {
+    public class ZoomGraphToFitCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
-            var graphProxy:GraphProxy = facade.retrieveProxy(GraphProxy.NAME) as GraphProxy;
-            var mediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
-            
             var scale:Number = graphProxy.zoom;
             
-            mediator.zoomGraphToFit();
+            graphMediator.zoomGraphToFit();
 
             var newScale:Number = graphProxy.zoom;
             
             if (newScale != scale) {
                 // Call external listener:
-                var extProxy:ExternalInterfaceProxy = facade.retrieveProxy(ExternalInterfaceProxy.NAME) as ExternalInterfaceProxy;
-
-                if (extProxy.hasListener("zoom")) {
-                    
-                    
+                if (extMediator.hasListener("zoom")) {
                     var body:Object = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
                                         argument: { type: "zoom", value: newScale } };
                     

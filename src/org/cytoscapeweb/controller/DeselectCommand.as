@@ -32,21 +32,17 @@ package org.cytoscapeweb.controller {
     import flare.vis.data.NodeSprite;
     
     import org.cytoscapeweb.ApplicationFacade;
-    import org.cytoscapeweb.model.ExternalInterfaceProxy;
-    import org.cytoscapeweb.model.GraphProxy;
     import org.cytoscapeweb.util.ExternalFunctions;
     import org.cytoscapeweb.util.GraphUtils;
     import org.cytoscapeweb.util.Groups;
-    import org.cytoscapeweb.view.GraphMediator;
     import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
     
 
     /**
      * Handle the deselection of one or more nodes.
      * A nodes array must be sent as the body of the notification. 
      */
-    public class DeselectCommand extends SimpleCommand {
+    public class DeselectCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
             var arr:Array = notification.getBody() as Array;
@@ -60,23 +56,19 @@ package org.cytoscapeweb.controller {
                 }
                 
                 // First remove the selection from the model:
-                var graphProxy:GraphProxy = facade.retrieveProxy(GraphProxy.NAME) as GraphProxy;
-                nodes = graphProxy.deselectNodes(nodes);
-                edges = graphProxy.deselectEdges(edges);
+                nodes = graphProxy.changeNodesSelection(nodes, false);
+                edges = graphProxy.changeEdgesSelection(edges, false);
 
                 // Then update the view:
-                var mediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
-
                 if (nodes.length > 0)
-                    mediator.deselectNodes(nodes);
+                    graphMediator.deselectNodes(nodes);
                 if (edges.length > 0)
-                    mediator.deselectEdges(edges);
+                    graphMediator.deselectEdges(edges);
                 
                 // Finally ,call the external lsiteners:
-                var extProxy:ExternalInterfaceProxy = facade.retrieveProxy(ExternalInterfaceProxy.NAME) as ExternalInterfaceProxy;
                 var objs:Array, body:Object, type:String = "deselect";
                 
-                if (nodes.length > 0 && extProxy.hasListener(type, Groups.NODES)) {
+                if (nodes.length > 0 && extMediator.hasListener(type, Groups.NODES)) {
                     objs = GraphUtils.toExtObjectsArray(nodes);
                     body = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
                              argument: { type: type, group: Groups.NODES, target: objs } };
@@ -84,7 +76,7 @@ package org.cytoscapeweb.controller {
                     sendNotification(ApplicationFacade.CALL_EXTERNAL_INTERFACE, body);
                 }
                 
-                if (edges.length > 0 && extProxy.hasListener(type, Groups.EDGES)) {
+                if (edges.length > 0 && extMediator.hasListener(type, Groups.EDGES)) {
                     objs = GraphUtils.toExtObjectsArray(edges);
                     body = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
                              argument: { type: type, group: Groups.EDGES, target: objs } };
@@ -92,7 +84,7 @@ package org.cytoscapeweb.controller {
                     sendNotification(ApplicationFacade.CALL_EXTERNAL_INTERFACE, body);
                 }
 
-                if ((nodes.length > 0 || edges.length > 0) && extProxy.hasListener(type, Groups.NONE)) {
+                if ((nodes.length > 0 || edges.length > 0) && extMediator.hasListener(type, Groups.NONE)) {
                     var all:Array = [];
                     all = all.concat(nodes).concat(edges);
                     

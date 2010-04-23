@@ -28,10 +28,7 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.controller {
-    import org.cytoscapeweb.model.ConfigProxy;
-    import org.cytoscapeweb.view.ApplicationMediator;
     import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
     
 
     /**
@@ -39,18 +36,14 @@ package org.cytoscapeweb.controller {
      * If the value of the body of the notification is true, it will be displayed.
      * If false, it will be hidden.
      */
-    public class ShowPanZoomControlCommand extends SimpleCommand {
+    public class ShowPanZoomControlCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
             var visible:Boolean = notification.getBody() as Boolean;
-            
-            var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
-                        
+                                    
             if (visible != configProxy.panZoomControlVisible) {
                 configProxy.panZoomControlVisible = visible;
-
-                var mediator:ApplicationMediator = facade.retrieveMediator(ApplicationMediator.NAME) as ApplicationMediator;
-                mediator.showPanZoomControl(visible);
+                appMediator.showPanZoomControl(visible);
             }
         }
     }

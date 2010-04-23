@@ -29,23 +29,19 @@
 */
 package org.cytoscapeweb.controller {
     import flare.vis.data.DataSprite;
-    import flare.vis.data.EdgeSprite;
-    import flare.vis.data.NodeSprite;
     
     import org.cytoscapeweb.ApplicationFacade;
-    import org.cytoscapeweb.model.ExternalInterfaceProxy;
     import org.cytoscapeweb.util.ExternalFunctions;
     import org.cytoscapeweb.util.GraphUtils;
     import org.cytoscapeweb.util.Groups;
     import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
     
 
     /**
      * Take the necessary actions after a node or edge was clicked or double-clicked.
      * The target DataSprite (node or edge) must be sent as the notification body.
      */
-    public class HandleClickCommand extends SimpleCommand {
+    public class HandleClickCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
             var ds:DataSprite = notification.getBody() as DataSprite;
@@ -54,10 +50,8 @@ package org.cytoscapeweb.controller {
             
             var type:String = action === ApplicationFacade.DOUBLE_CLICK_EVENT ? "dblclick" : "click";
             
-            // Call external listener:
-            var extProxy:ExternalInterfaceProxy = facade.retrieveProxy(ExternalInterfaceProxy.NAME) as ExternalInterfaceProxy;
-            
-            if (extProxy.hasListener(type, group)) {
+            // Call external listener:            
+            if (extMediator.hasListener(type, group)) {
                 var target:Object = GraphUtils.toExtObject(ds);
                 
                 var body:Object = { functionName: ExternalFunctions.INVOKE_LISTENERS, 

@@ -28,10 +28,7 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.controller {
-    import org.cytoscapeweb.model.ConfigProxy;
-    import org.cytoscapeweb.view.GraphMediator;
     import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
     
 
     /**
@@ -39,18 +36,14 @@ package org.cytoscapeweb.controller {
      * If the value of the body of the notification is true, edges will be merged.
      * If false, they will be unmerged. 
      */
-    public class MergeEdgesCommand extends SimpleCommand {
+    public class MergeEdgesCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
             var merge:Boolean = notification.getBody() as Boolean;
-            
-            var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
-                        
-            if (merge != configProxy.config.edgesMerged) {
-                configProxy.config.edgesMerged = merge;
-
-                var mediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
-                mediator.mergeEdges(merge);
+    
+            if (merge != configProxy.edgesMerged) {
+                configProxy.edgesMerged = merge;
+                graphMediator.mergeEdges(merge);
             }
         }
     }

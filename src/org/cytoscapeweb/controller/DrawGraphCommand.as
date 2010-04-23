@@ -29,55 +29,45 @@
 */
 package org.cytoscapeweb.controller {
     
-    import org.cytoscapeweb.model.ConfigProxy;
-    import org.cytoscapeweb.model.GraphProxy;
     import org.cytoscapeweb.model.data.VisualStyleVO;
     import org.cytoscapeweb.model.methods.error;
-    import org.cytoscapeweb.view.ApplicationMediator;
     import org.cytoscapeweb.view.GraphMediator;
     import org.cytoscapeweb.view.components.GraphView;
     import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
     
     
-    public class DrawGraphCommand extends SimpleCommand {
+    public class DrawGraphCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
             try {
                 var options:Object = notification.getBody();
-                var cfgProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
     
                 if (options.visualStyle != null)
-                    cfgProxy.visualStyle = VisualStyleVO.fromObject(options.visualStyle);
+                    configProxy.visualStyle = VisualStyleVO.fromObject(options.visualStyle);
                 if (options.layout != null)
-                    cfgProxy.currentLayout = options.layout;
+                    configProxy.currentLayout = options.layout;
                 if (options.edgesMerged != null)
-                    cfgProxy.edgesMerged = options.edgesMerged;
+                    configProxy.edgesMerged = options.edgesMerged;
                 if (options.nodeTooltipsEnabled != null)
-                    cfgProxy.nodeTooltipsEnabled = options.nodeTooltipsEnabled;
+                    configProxy.nodeTooltipsEnabled = options.nodeTooltipsEnabled;
                 if (options.edgeTooltipsEnabled != null)
-                    cfgProxy.edgeTooltipsEnabled = options.edgeTooltipsEnabled;
+                    configProxy.edgeTooltipsEnabled = options.edgeTooltipsEnabled;
                 if (options.nodeLabelsVisible != null)
-                    cfgProxy.nodeLabelsVisible = options.nodeLabelsVisible;
+                    configProxy.nodeLabelsVisible = options.nodeLabelsVisible;
                 if (options.edgeLabelsVisible != null)
-                    cfgProxy.edgeLabelsVisible = options.edgeLabelsVisible;
+                    configProxy.edgeLabelsVisible = options.edgeLabelsVisible;
                 if (options.panZoomControlVisible != null)
-                    cfgProxy.panZoomControlVisible = options.panZoomControlVisible;
+                    configProxy.panZoomControlVisible = options.panZoomControlVisible;
                 
-                var graphProxy:GraphProxy = facade.retrieveProxy(GraphProxy.NAME) as GraphProxy;
                 graphProxy.loadGraph(options);
                 
-                var appMediator:ApplicationMediator = facade.retrieveMediator(ApplicationMediator.NAME) as ApplicationMediator;
-                appMediator.applyVisualStyle(cfgProxy.visualStyle);
-                
-                if (facade.hasMediator(GraphMediator.NAME))
-                    facade.removeMediator(GraphMediator.NAME);
-    
+                appMediator.applyVisualStyle(configProxy.visualStyle);
+
                 var graphView:GraphView = CytoscapeWeb(appMediator.getViewComponent()).graphView;
                 facade.registerMediator(new GraphMediator(graphView));
-            
-                var graphMediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
+
                 graphMediator.drawGraph();
+                
             } catch (err:Error) {
                 trace("[ERROR]: DrawGraphCommand.execute: " + err.getStackTrace());
                 error(err.message, err.errorID, err.name, err.getStackTrace());

@@ -33,18 +33,15 @@ package org.cytoscapeweb.controller {
     import flash.geom.Point;
     
     import org.cytoscapeweb.ApplicationFacade;
-    import org.cytoscapeweb.model.GraphProxy;
     import org.cytoscapeweb.model.methods.error;
     import org.cytoscapeweb.util.Groups;
-    import org.cytoscapeweb.view.GraphMediator;
     import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
     
 
     /**
      * Create a new node and add it to the view.
      */
-    public class AddNodeCommand extends SimpleCommand {
+    public class AddNodeCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
             try {
@@ -53,20 +50,17 @@ package org.cytoscapeweb.controller {
                 var x:Number = notification.getBody().x;
                 var y:Number = notification.getBody().y;
                 
-                var graphProxy:GraphProxy = facade.retrieveProxy(GraphProxy.NAME) as GraphProxy;
-                var mediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
-                
                 // Create node:
                 var n:NodeSprite = graphProxy.addNode(data);
 
                 // Position it:
                 var p:Point = new Point(x, y);
-                p = mediator.vis.globalToLocal(p);
+                p = graphMediator.vis.globalToLocal(p);
                 n.x = p.x;
                 n.y = p.y;
 
                 // Set listeners, styles, etc:
-                mediator.initialize(Groups.NODES, [n]);
+                graphMediator.initialize(Groups.NODES, [n]);
                 
                 if (updateVisualMappers) sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
             } catch (err:Error) {

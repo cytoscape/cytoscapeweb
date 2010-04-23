@@ -31,16 +31,14 @@ package org.cytoscapeweb.controller {
     import flare.data.DataUtil;
     
     import org.cytoscapeweb.ApplicationFacade;
-    import org.cytoscapeweb.model.GraphProxy;
     import org.cytoscapeweb.util.Groups;
     import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
     
 
     /**
      * Add a custom attribute definition to the current node or edge data schema.
      */
-    public class AddDataFieldCommand extends SimpleCommand {
+    public class AddDataFieldCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
             var body:Object = notification.getBody();
@@ -63,7 +61,6 @@ package org.cytoscapeweb.controller {
                 default:        type = DataUtil.OBJECT;
             }
             
-            var graphProxy:GraphProxy = facade.retrieveProxy(GraphProxy.NAME) as GraphProxy;
             var added:Boolean = graphProxy.addDataField(group, df.name, type, df.defValue);
             
             if (added) sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);

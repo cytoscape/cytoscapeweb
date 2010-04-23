@@ -30,33 +30,23 @@
 package org.cytoscapeweb.controller {
 	import flare.vis.data.Data;
 	
-	import org.cytoscapeweb.model.ConfigProxy;
-	import org.cytoscapeweb.model.GraphProxy;
-	import org.cytoscapeweb.view.GraphMediator;
 	import org.puremvc.as3.interfaces.INotification;
-	import org.puremvc.as3.patterns.command.SimpleCommand;
 	
 	
     /**
      * It binds the data to the configuration.
      */
-    public class HandleDataChangeCommand extends SimpleCommand {
+    public class HandleDataChangeCommand extends BaseSimpleCommand {
     	
         override public function execute(notification:INotification):void {
             var data:Data = notification.getBody() as Data;
-            
-            if (data == null) {
-                var graphProxy:GraphProxy = facade.retrieveProxy(GraphProxy.NAME) as GraphProxy;
-                data = graphProxy.graphData;
-            }
+            if (data == null) data = graphProxy.graphData;
             
             // Visual Mappers must be recalculated:
-            var configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
             configProxy.bindGraphData(data);
             
             // Update the view:
-            var mediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
-            if (mediator != null) mediator.updateView();
+            if (graphMediator != null) graphMediator.updateView();
         }
     }
 }

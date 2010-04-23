@@ -28,11 +28,8 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.controller {
-    import org.cytoscapeweb.model.ConfigProxy;
     import org.cytoscapeweb.util.Groups;
-    import org.cytoscapeweb.view.GraphMediator;
     import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
     
 
     /**
@@ -40,28 +37,24 @@ package org.cytoscapeweb.controller {
      * If the value of the body of the notification is true, the labels will be displayed.
      * If false, they will be hidden.
      */
-    public class ShowLabelsCommand extends SimpleCommand {
+    public class ShowLabelsCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
             var v:Boolean = notification.getBody().value;
             var group:String = notification.getBody().group;
             if (group == null) group = "none";
             
-            var cfgProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
             var different:Boolean = false;
             
-            if ((group === "none" || group === Groups.NODES) && v != cfgProxy.nodeLabelsVisible) {
+            if ((group === "none" || group === Groups.NODES) && v != configProxy.nodeLabelsVisible) {
                 different = true;
-                cfgProxy.nodeLabelsVisible = v;
-            } else if ((group === "none" || group === Groups.EDGES) && v != cfgProxy.edgeLabelsVisible) {
+                configProxy.nodeLabelsVisible = v;
+            } else if ((group === "none" || group === Groups.EDGES) && v != configProxy.edgeLabelsVisible) {
                 different = true;
-                cfgProxy.edgeLabelsVisible = v;
+                configProxy.edgeLabelsVisible = v;
             }
             
-            if (different) {
-                var mediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
-                mediator.updateLabels();
-            }
+            if (different) graphMediator.updateLabels();
         }
     }
 }

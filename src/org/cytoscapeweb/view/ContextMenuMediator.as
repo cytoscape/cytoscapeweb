@@ -46,7 +46,7 @@ package org.cytoscapeweb.view {
     /**
      * Top level mediator for the application.
      */
-    public class ContextMenuMediator extends BaseAppMediator {
+    public class ContextMenuMediator extends BaseMediator {
 
         // ========[ CONSTANTS ]====================================================================
 

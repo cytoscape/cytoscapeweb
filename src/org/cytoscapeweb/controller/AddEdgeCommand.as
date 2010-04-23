@@ -28,35 +28,27 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.controller {
-    import flare.vis.data.EdgeSprite;
-    
     import org.cytoscapeweb.ApplicationFacade;
-    import org.cytoscapeweb.model.GraphProxy;
     import org.cytoscapeweb.model.methods.error;
     import org.cytoscapeweb.util.Groups;
-    import org.cytoscapeweb.view.GraphMediator;
     import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
     
 
     /**
      * Create a new edge and add it to the view.
      */
-    public class AddEdgeCommand extends SimpleCommand {
+    public class AddEdgeCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
             try {
                 var data:Object = notification.getBody().data;
                 var updateVisualMappers:Boolean = notification.getBody().updateVisualMappers;
                 
-                var graphProxy:GraphProxy = facade.retrieveProxy(GraphProxy.NAME) as GraphProxy;
-                var mediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
-                
                 // Create edge:
                 var edges:Array = graphProxy.addEdge(data); // could return a new merged edge, too!
 
                 // Set listeners, styles, etc:
-                mediator.initialize(Groups.EDGES, edges);
+                graphMediator.initialize(Groups.EDGES, edges);
                 
                 if (updateVisualMappers) sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
             } catch (err:Error) {

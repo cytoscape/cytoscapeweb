@@ -29,16 +29,14 @@
 */
 package org.cytoscapeweb.controller {
     import org.cytoscapeweb.ApplicationFacade;
-    import org.cytoscapeweb.model.GraphProxy;
     import org.cytoscapeweb.util.Groups;
     import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
     
 
     /**
      * Remove a custom attribute definition from the data schema.
      */
-    public class RemoveDataFieldCommand extends SimpleCommand {
+    public class RemoveDataFieldCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
             var body:Object = notification.getBody();
@@ -48,7 +46,6 @@ package org.cytoscapeweb.controller {
             var group:String = body.group;
             if (group == null) group = Groups.NONE;
             
-            var graphProxy:GraphProxy = facade.retrieveProxy(GraphProxy.NAME) as GraphProxy;
             var removed:Boolean = graphProxy.removeDataField(group, name);
             
             if (removed) sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);

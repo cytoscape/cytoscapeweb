@@ -29,21 +29,18 @@
 */
 package org.cytoscapeweb.controller {
     import org.cytoscapeweb.ApplicationFacade;
-    import org.cytoscapeweb.model.GraphProxy;
     import org.cytoscapeweb.util.Groups;
     import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
     
 
     /**
      * Handle the deselection of all nodes and edges.
      */
-    public class DeselectAllCommand extends SimpleCommand {
+    public class DeselectAllCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
             var group:String = notification.getBody() as String;
             if (group == null) group = Groups.NONE;
-            var graphProxy:GraphProxy = facade.retrieveProxy(GraphProxy.NAME) as GraphProxy;
 
             if (group === Groups.NODES) {
                 sendNotification(ApplicationFacade.DESELECT, graphProxy.selectedNodes);

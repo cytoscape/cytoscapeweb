@@ -133,8 +133,8 @@ package org.cytoscapeweb {
         // ========[ PROTECTED METHODS ]============================================================
         
         /**
-        * Register Commands with the Controller.
-        */
+         * Register Commands with the Controller.
+         */
         override protected function initializeController():void {
             // Call super to use the PureMVC Controller Singleton:
             super.initializeController();
@@ -142,8 +142,6 @@ package org.cytoscapeweb {
             // Register all Commands:
             registerCommand(ERROR, ShowErrorCommand);
             registerCommand(STARTUP, StartupCommand);
-            registerCommand(ADD_CALLBACKS, AddCallbacksCommand);
-            registerCommand(CALL_EXTERNAL_INTERFACE, CallExternalInterfaceCommand);
             registerCommand(DRAW_GRAPH, DrawGraphCommand);
             registerCommand(SHOW_PANZOOM_CONTROL, ShowPanZoomControlCommand);
             registerCommand(ZOOM_GRAPH, ZoomGraphCommand);

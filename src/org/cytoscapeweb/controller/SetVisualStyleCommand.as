@@ -29,42 +29,28 @@
 */
 package org.cytoscapeweb.controller {
 	import org.cytoscapeweb.ApplicationFacade;
-	import org.cytoscapeweb.model.ConfigProxy;
-	import org.cytoscapeweb.model.ExternalInterfaceProxy;
-	import org.cytoscapeweb.model.GraphProxy;
 	import org.cytoscapeweb.model.data.VisualStyleVO;
 	import org.cytoscapeweb.util.ExternalFunctions;
-	import org.cytoscapeweb.view.ApplicationMediator;
-	import org.cytoscapeweb.view.GraphMediator;
 	import org.puremvc.as3.interfaces.INotification;
-	import org.puremvc.as3.patterns.command.SimpleCommand;
 	
 
-    public class SetVisualStyleCommand extends SimpleCommand {
+    public class SetVisualStyleCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
             var style:VisualStyleVO = notification.getBody() as VisualStyleVO;
             
             if (style != null) {
-	            var cfgProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
                 // Set the new style:
-                cfgProxy.visualStyle = style;
-
+                configProxy.visualStyle = style;
 	            // Then bind the data again, so the new vizMappers can work:
-	            var graphProxy:GraphProxy = facade.retrieveProxy(GraphProxy.NAME) as GraphProxy;
-	            cfgProxy.bindGraphData(graphProxy.graphData);
+	            configProxy.bindGraphData(graphProxy.graphData);
 	            
-	            // Finally ask the mediator to apply the new style to the graph:
-	            var appMediator:ApplicationMediator = facade.retrieveMediator(ApplicationMediator.NAME) as ApplicationMediator;
-	            appMediator.applyVisualStyle(cfgProxy.visualStyle);
-	            
-	            var grMediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
-	            grMediator.applyVisualStyle(cfgProxy.visualStyle);
+	            // Finally ask the mediators to apply the new style:
+	            appMediator.applyVisualStyle(configProxy.visualStyle);
+	            graphMediator.applyVisualStyle(configProxy.visualStyle);
     
                 // Call external listener:
-                var extProxy:ExternalInterfaceProxy = facade.retrieveProxy(ExternalInterfaceProxy.NAME) as ExternalInterfaceProxy;
-
-                if (extProxy.hasListener("visualstyle")) {
+                if (extMediator.hasListener("visualstyle")) {
                     var body:Object = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
                                         argument: { type: "visualstyle", value: style.toObject() } };
                     

@@ -29,33 +29,24 @@
 */
 package org.cytoscapeweb.controller {
     import org.cytoscapeweb.ApplicationFacade;
-    import org.cytoscapeweb.model.ExternalInterfaceProxy;
-    import org.cytoscapeweb.model.GraphProxy;
     import org.cytoscapeweb.util.ExternalFunctions;
-    import org.cytoscapeweb.view.GraphMediator;
     import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
     
 
     /**
      * Change the graph scale to the desired zoom level, which must be sent as the body
      * of the notification (in percents). 
      */
-    public class ZoomGraphCommand extends SimpleCommand {
+    public class ZoomGraphCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
             var scale:Number = notification.getBody() as Number;
-            var mediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
-            var graphProxy:GraphProxy = facade.retrieveProxy(GraphProxy.NAME) as GraphProxy;
 
             if (scale != graphProxy.zoom) {
-                mediator.zoomGraphTo(scale);
+                graphMediator.zoomGraphTo(scale);
 
                 // Call external listener:
-                var extProxy:ExternalInterfaceProxy = facade.retrieveProxy(ExternalInterfaceProxy.NAME) as ExternalInterfaceProxy;
-                
-
-                if (extProxy.hasListener("zoom")) {
+                if (extMediator.hasListener("zoom")) {
                     var newScale:Number = graphProxy.zoom;
                     
                     var body:Object = { functionName: ExternalFunctions.INVOKE_LISTENERS, 

@@ -28,17 +28,12 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.controller {
-    import flash.utils.ByteArray;
-    
     import mx.utils.StringUtil;
     
-    import org.cytoscapeweb.model.GraphProxy;
     import org.cytoscapeweb.model.methods.error;
-    import org.cytoscapeweb.view.ApplicationMediator;
     import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
 
-    public class ExportNetworkCommand extends SimpleCommand {
+    public class ExportNetworkCommand extends BaseSimpleCommand {
     	
         override public function execute(notification:INotification):void {
             try {
@@ -54,12 +49,9 @@ package org.cytoscapeweb.controller {
                     window = options.window;
                 }
                 if (window == null) window = "_self";
-                
-                var graphProxy:GraphProxy = facade.retrieveProxy(GraphProxy.NAME) as GraphProxy;
 
                 if (format === "pdf" || format === "png") {
                     // Get the image bytes from the graph mediator class:
-                    var appMediator:ApplicationMediator = facade.retrieveMediator(ApplicationMediator.NAME) as ApplicationMediator;
                     data = appMediator.getGraphImage(format, w, h);
                 } else {
                     // Get the XML:

@@ -29,18 +29,15 @@
 */
 package org.cytoscapeweb.controller {
     import org.cytoscapeweb.ApplicationFacade;
-    import org.cytoscapeweb.model.GraphProxy;
     import org.cytoscapeweb.model.methods.error;
     import org.cytoscapeweb.util.Groups;
-    import org.cytoscapeweb.view.GraphMediator;
     import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
     
 
     /**
      * Permanently remove nodes and edges from the network.
      */
-    public class RemoveItemsCommand extends SimpleCommand {
+    public class RemoveItemsCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
             try {
@@ -50,7 +47,6 @@ package org.cytoscapeweb.controller {
                 
                 if (group == null) group = Groups.NONE;
                 
-                var graphProxy:GraphProxy = facade.retrieveProxy(GraphProxy.NAME) as GraphProxy;
                 items = graphProxy.getDataSpriteList(items, group);
                             
                 if (items.length === 0) {
@@ -58,15 +54,12 @@ package org.cytoscapeweb.controller {
                     if (group === Groups.EDGES || group === Groups.NONE) items = items.concat(graphProxy.edges);
                 }
     
-                var mediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
-                mediator.dispose(items);
-                
+                graphMediator.dispose(items);
                 graphProxy.remove(items);
                 
-                // TODO: create mediator method for it:
-                mediator.graphView.vis.separateDisconnected();
-                
                 if (updateVisualMappers) sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
+                else graphMediator.separateDisconnected();
+                
             } catch (err:Error) {
                 trace("[ERROR]: RemoveItemsCommand.execute: " + err.getStackTrace());
                 error(err.message, err.errorID, err.name, err.getStackTrace());

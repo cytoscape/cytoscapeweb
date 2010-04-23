@@ -28,15 +28,12 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.model.data {
-    import org.cytoscapeweb.ApplicationFacade;
-    import org.cytoscapeweb.model.ExternalInterfaceProxy;
+    import org.cytoscapeweb.util.methods.$extFunction;
     
 
     public class CustomVizMapperVO extends VizMapperVO {
         
         // ========[ PRIVATE PROPERTIES ]===========================================================
-        
-        private var _proxy:ExternalInterfaceProxy = ApplicationFacade.getInstance().retrieveProxy(ExternalInterfaceProxy.NAME) as ExternalInterfaceProxy;
         
         // ========[ PUBLIC PROPERTIES ]============================================================
         
@@ -54,7 +51,7 @@ package org.cytoscapeweb.model.data {
         
         public override function getValue(data:Object):* {
             // Call an external JavaScript function:
-            var value:* = _proxy.callExternalInterface(functionName, data, true);
+            var value:* = $extFunction(functionName, data, true);
             return value;
         }
         

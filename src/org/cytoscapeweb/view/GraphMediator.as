@@ -58,7 +58,7 @@ package org.cytoscapeweb.view {
     import org.puremvc.as3.interfaces.INotification;
 
 
-    public class GraphMediator extends BaseAppMediator {
+    public class GraphMediator extends BaseMediator {
     
         // ========[ CONSTANTS ]====================================================================
     
@@ -131,16 +131,19 @@ package org.cytoscapeweb.view {
 
         // ========[ PUBLIC METHODS ]===============================================================
 
+        /** @inheritDoc */
         override public function getMediatorName():String {
             return NAME;
         }
         
+        /** @inheritDoc */
         override public function listNotificationInterests():Array {
             return [ApplicationFacade.PAN_GRAPH,
                     ApplicationFacade.ENABLE_GRAB_TO_PAN,
                     ApplicationFacade.CENTER_GRAPH];
         }
 
+        /** @inheritDoc */
         override public function handleNotification(note:INotification):void {
             switch (note.getName()) {
                 case ApplicationFacade.ENABLE_GRAB_TO_PAN:
@@ -224,6 +227,7 @@ package org.cytoscapeweb.view {
             vis.data.edges.setProperties(Edges.properties);
             vis.updateLabels(Groups.NODES);
             vis.updateLabels(Groups.EDGES);
+            separateDisconnected();
         }
         
         public function updateFilters(updateNodes:Boolean, updateEdges:Boolean,
@@ -251,7 +255,7 @@ package org.cytoscapeweb.view {
                 }
                 vis.updateLabels(Groups.EDGES);
             }
-            graphView.vis.separateDisconnected();
+            separateDisconnected();
         }
 
         public function resetDataSprite(ds:DataSprite):void {
@@ -268,10 +272,11 @@ package org.cytoscapeweb.view {
             }
             
             vis.updateLabels(gr);
-            
-            // Add initial event listeners:
             addListeners(items);
-            
+            separateDisconnected();
+        }
+        
+        public function separateDisconnected():void {
             vis.separateDisconnected();
         }
         
@@ -361,7 +366,7 @@ package org.cytoscapeweb.view {
             
             // Call external listener:
             // TODO: should be handled by a command instead?
-            if (extProxy.hasListener("layout")) {
+            if (extMediator.hasListener("layout")) {
                 var body:Object = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
                                     argument: { type: "layout", value: configProxy.currentLayout } };
                 sendNotification(ApplicationFacade.CALL_EXTERNAL_INTERFACE, body);

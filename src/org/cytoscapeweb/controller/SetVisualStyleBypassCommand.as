@@ -29,30 +29,21 @@
 */
 package org.cytoscapeweb.controller {
     import org.cytoscapeweb.ApplicationFacade;
-    import org.cytoscapeweb.model.ConfigProxy;
-    import org.cytoscapeweb.model.ExternalInterfaceProxy;
     import org.cytoscapeweb.model.data.VisualStyleBypassVO;
     import org.cytoscapeweb.util.ExternalFunctions;
-    import org.cytoscapeweb.view.GraphMediator;
     import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
     
 
-    public class SetVisualStyleBypassCommand extends SimpleCommand {
+    public class SetVisualStyleBypassCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
             var bypass:VisualStyleBypassVO = notification.getBody() as VisualStyleBypassVO;
             
             if (bypass != null) {
-                var cfgProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
-                cfgProxy.visualStyleBypass = bypass;
+                configProxy.visualStyleBypass = bypass;
+                graphMediator.applyVisualBypass(configProxy.visualStyle);
                 
-                var grMediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
-                grMediator.applyVisualBypass(cfgProxy.visualStyle);
-                
-                var extProxy:ExternalInterfaceProxy = facade.retrieveProxy(ExternalInterfaceProxy.NAME) as ExternalInterfaceProxy;
-
-                if (extProxy.hasListener("visualstylebypass")) {
+                if (extMediator.hasListener("visualstylebypass")) {
                     var body:Object = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
                                         argument: { type: "visualstylebypass", value: bypass.toObject() } };
                     

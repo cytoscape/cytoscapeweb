@@ -51,12 +51,12 @@ package org.cytoscapeweb.controller {
             facade.registerProxy(new ResourceBundleProxy(app.parameters));
             facade.registerProxy(new GraphProxy());
             facade.registerProxy(new ContextMenuProxy());
-            facade.registerProxy(new ExternalInterfaceProxy());
 
             // Then, register the view:
             facade.registerMediator(new ApplicationMediator(app));
             facade.registerMediator(new ContextMenuMediator(app));
             facade.registerMediator(new PanZoomMediator(app.panZoomBox));
+            facade.registerMediator(new ExternalMediator(app));
             
             // Should be called before addind the callbacks, because of a bug in Internet Explorer:
             sendNotification(ApplicationFacade.CALL_EXTERNAL_INTERFACE, { functionName: ExternalFunctions.BEFORE_COMPLETE });

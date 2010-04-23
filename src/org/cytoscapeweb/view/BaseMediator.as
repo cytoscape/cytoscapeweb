@@ -31,7 +31,7 @@ package org.cytoscapeweb.view {
 	import flash.errors.IllegalOperationError;
 	
 	import org.cytoscapeweb.model.ConfigProxy;
-	import org.cytoscapeweb.model.ExternalInterfaceProxy;
+	import org.cytoscapeweb.model.ContextMenuProxy;
 	import org.cytoscapeweb.model.GraphProxy;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 
@@ -39,7 +39,7 @@ package org.cytoscapeweb.view {
      * Abstract superclass of all mediators used by Cytoscape Web.
      * It just caches and exposes the proxies to its subclasses.
      */ 
-    public class BaseAppMediator extends Mediator {
+    public class BaseMediator extends Mediator {
 
         // ========[ CONSTANTS ]====================================================================
         
@@ -47,7 +47,8 @@ package org.cytoscapeweb.view {
         
         private var _configProxy:ConfigProxy;
         private var _graphProxy:GraphProxy;
-        private var _extProxy:ExternalInterfaceProxy;
+        private var _menuProxy:ContextMenuProxy;
+        private var _extMediator:ExternalMediator;
 
         // ========[ PROTECTED PROPERTIES ]=========================================================
    
@@ -63,15 +64,21 @@ package org.cytoscapeweb.view {
             return _configProxy;
         }
         
-        protected function get extProxy():ExternalInterfaceProxy {
-            if (_extProxy == null)
-                _extProxy = facade.retrieveProxy(ExternalInterfaceProxy.NAME) as ExternalInterfaceProxy;
-            return _extProxy;
+        protected function get menuProxy():ContextMenuProxy {
+            if (_menuProxy == null)
+                _menuProxy = facade.retrieveProxy(ContextMenuProxy.NAME) as ContextMenuProxy;
+            return _menuProxy;
+        }
+        
+        protected function get extMediator():ExternalMediator {
+            if (_extMediator == null)
+                _extMediator = facade.retrieveMediator(ExternalMediator.NAME) as ExternalMediator;
+            return _extMediator;
         }
 
         // ========[ CONSTRUCTOR ]==================================================================
    
-        public function BaseAppMediator(name:String, viewComponent:Object, self:Object) {
+        public function BaseMediator(name:String, viewComponent:Object, self:Object) {
         	super(name, viewComponent);
         	
         	if (self != this)

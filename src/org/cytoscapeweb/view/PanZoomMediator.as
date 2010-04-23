@@ -46,7 +46,7 @@ package org.cytoscapeweb.view {
     /**
      * 
      */
-    public class PanZoomMediator extends BaseAppMediator {
+    public class PanZoomMediator extends BaseMediator {
 
         // ========[ CONSTANTS ]====================================================================
         

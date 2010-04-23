@@ -58,11 +58,9 @@ package org.cytoscapeweb.view {
 	import org.cytoscapeweb.view.components.GraphView;
 	import org.cytoscapeweb.view.components.PanZoomBox;
 	import org.puremvc.as3.interfaces.INotification;
-	    
-    /**
-     * Top level mediator for the application.
-     */
-    public class ApplicationMediator extends BaseAppMediator {
+	
+	
+    public class ApplicationMediator extends BaseMediator {
 
         // ========[ CONSTANTS ]====================================================================
 
@@ -146,29 +144,12 @@ package org.cytoscapeweb.view {
 
         // ========[ PUBLIC METHODS ]===============================================================
     
-        /**
-         * Get the Mediator name.
-         * <P>
-         * Called by the framework to get the name of this
-         * mediator. If there is only one instance, we may
-         * define it in a constant and return it here. If
-         * there are multiple instances, this method must
-         * return the unique name of this instance.</P>
-         * 
-         * @return String the Mediator name
-         */
+        /** @inheritDoc */
         override public function getMediatorName():String {
             return NAME;
         }
         
-        /**
-         * List all notifications this Mediator is interested in.
-         * <P>
-         * Automatically called by the framework when the mediator
-         * is registered with the view.</P>
-         * 
-         * @return Array the list of Nofitication names
-         */
+        /** @inheritDoc */
         override public function listNotificationInterests():Array {
             return [ApplicationFacade.EXT_INTERFACE_NOT_AVAILABLE,
                     ApplicationFacade.INDETERMINATE_TASK_START,
@@ -180,15 +161,7 @@ package org.cytoscapeweb.view {
                     ApplicationFacade.ENABLE_CUSTOM_CURSORS];
         }
 
-        /**
-         * Handle all notifications this Mediator is interested in.
-         * <P>
-         * Called by the framework when a notification is sent that
-         * this mediator expressed an interest in when registered
-         * (see <code>listNotificationInterests</code>.</P>
-         * 
-         * @param INotification a notification 
-         */
+        /** @inheritDoc */
         override public function handleNotification(n:INotification):void {
             switch (n.getName()) {
                 case ApplicationFacade.INDETERMINATE_TASK_START:

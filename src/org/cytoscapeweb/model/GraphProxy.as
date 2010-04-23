@@ -32,7 +32,6 @@ package org.cytoscapeweb.model {
 	import flare.data.DataSchema;
 	import flare.data.DataSet;
 	import flare.data.DataTable;
-	import flare.data.DataUtil;
 	import flare.vis.data.Data;
 	import flare.vis.data.DataList;
 	import flare.vis.data.DataSprite;
@@ -134,7 +133,6 @@ package org.cytoscapeweb.model {
          * @return All edges, except the merged ones. 
          */
         public function get edges():Array {
-            // TODO: cache it (use data groups???)
             var arr:Array = [];
             
             for each (var e:EdgeSprite in graphData.edges) {
@@ -228,21 +226,12 @@ package org.cytoscapeweb.model {
                 }
 	        }
 	        
-	        for each (e in graphData.edges) {
-    	        if (e.props.$merged) {
-                    for each (var ee:EdgeSprite in e.props.$edges) {
-                        if (!ee.props.$filteredOut) {
-                            e.props.$filteredOut = false;
-                            break;
-                        }
-                    }
-                }
+	        for (var key:String in _interactions) {
+    	        var inter:InteractionVO = _interactions[key];
+    	        inter.update();
             }
             
             if (value == null) graphData.removeGroup(Groups.FILTERED_EDGES);
-            
-            updateMergedEdgesSelection();
-            updateMergedEdgesData(graphData.group(Groups.MERGED_EDGES));
         }
 
         public function get edgesMerged():Boolean {
@@ -466,78 +455,73 @@ package org.cytoscapeweb.model {
         }
         
         /**
-         * @return The nodes that were actually selected.
+         * @param nodes Array of nodes to select or deselect.
+         * @param select true to select the nodes or false to deselect them.
+         * @return The nodes that were actually changed.
          */
-        public function selectNodes(nodes:Array):Array {
-            var selected:Array = [];
+        public function changeNodesSelection(nodes:Array, select:Boolean):Array {
+            var changed:Array = [];
             
             if (nodes != null && nodes.length > 0) {
                 var list:DataList = graphData.group(Groups.SELECTED_NODES);
                 
                 for each (var n:NodeSprite in nodes) {
-	                if (!list.contains(n)) {
-                        n.props.$selected = true;
-                        list.add(n);
-                        selected.push(n);
+	                if (n.props.$selected !== select) {
+                        n.props.$selected = select;
+                        if (select) list.add(n)
+                        else list.remove(n);
+                        changed.push(n);
                     }
                 }
             }
             
-            return selected;
-        }
-        
-        /**
-         * @return The nodes that were actually deselected.
-         */
-        public function deselectNodes(nodes:Array):Array {
-            var deselected:Array = [];
-            
-            if (nodes != null && nodes.length > 0) {
-                var list:DataList = graphData.group(Groups.SELECTED_NODES);
-                
-                for each (var n:NodeSprite in nodes) {
-                    if (list.contains(n)) {
-                        n.props.$selected = false;
-                        list.remove(n);
-                        deselected.push(n);
-                    }
-                }
-            }
-            
-            return deselected;
+            return changed;
         }
         
         /**
          * @param edges Array of edges (they can be merged edges as well).
-         * @return The edges that were actually selected (does NOT contain any merged edge).
+         * @param select true to select the edges or false to deselect them.
+         * @return The edges that were actually changed (does NOT contain any merged edge).
          */
-        public function selectEdges(edges:Array):Array {
-            var selected:Array = [];
-            var bundled:Array = [];
+        public function changeEdgesSelection(edges:Array, select:Boolean):Array {
+            var changed:Array = [];
+            var interactions:Object = {}; // to update...
+            var list:DataList = graphData.group(Groups.SELECTED_EDGES);
             
-            if (edges != null && edges.length > 0) {
-                var list:DataList = graphData.group(Groups.SELECTED_EDGES);
-
-                for each (var e:EdgeSprite in edges) {
-                    if (e.props.$merged) {
-                        // If this is a merged edge, select its bundled edges instead:
-                        for each (var ee:EdgeSprite in e.props.$edges) {
-                            if (!ee.props.$filteredOut) bundled.push(ee);
-                        }
-                    } else if (!list.contains(e)) {
-                        e.props.$selected = true;
-                        list.add(e);
-                        selected.push(e);
-                    }
-                }
-                
-                if (bundled.length > 0) {
-                    selected = selected.concat(selectEdges(bundled));
-                }      
-                updateMergedEdgesSelection();      
+            var change:Function = function(e:EdgeSprite):void {
+                e.props.$selected = select;
+                if (select) list.add(e)
+                else list.remove(e);
+                changed.push(e);
             }
             
-            return selected;
+            if (edges != null && edges.length > 0) {
+                for each (var e:EdgeSprite in edges) {
+                    var update:Boolean = false;
+                    
+                    if (e.props.$merged) {
+                        // If this is a merged edge, select or deselect its regular edges instead:
+                        for each (var ee:EdgeSprite in e.props.$edges) {
+                            if (!ee.props.$filteredOut && ee.props.$selected !== select) {
+                                change(ee);
+                                update = true;
+                            }
+                        }
+                    } else if (e.props.$selected !== select) {
+                        change(e);
+                        update = true;
+                    }
+                    
+                    if (update) {
+                        var inter:InteractionVO = getInteraction(e.source, e.target);
+                        interactions[inter.key] = inter;
+                    }
+                }
+
+                for (var key:String in interactions) interactions[key].update();
+            }
+            
+            return changed;
         }
         
         public function addNode(data:Object):NodeSprite {
@@ -596,7 +580,6 @@ package org.cytoscapeweb.model {
                 ret.push(inter.mergedEdge);
             } else {
                 inter.update();
-                updateMergedEdgesData([inter.mergedEdge])
             }
             
             return ret;
@@ -656,46 +639,12 @@ package org.cytoscapeweb.model {
                     
                     if (edgeCount > 0) {
                         inter.update();
-                        updateMergedEdgesData([inter.mergedEdge]);
                     } else {
                         delete _interactions[inter.key];
                         removeEdge(inter.mergedEdge);
                     }
                 }
             }
-        }
-        
-        /**
-         * @param edges Array of edges (they can be merged edges as well).
-         * @return The edges that were actually deselected (does NOT contain any "fake" merged edge).
-         */
-        public function deselectEdges(edges:Array):Array {
-            var deselected:Array = [];
-            var bundled:Array = [];
-            
-            if (edges != null && edges.length > 0) {
-                var list:DataList = graphData.group(Groups.SELECTED_EDGES);
-                
-                for each (var e:EdgeSprite in edges) {
-                    if (e.props.$merged) {
-                        // If this is a merged edge, deselect its referenced edges instead:
-                        for each (var ee:EdgeSprite in e.props.$edges) {
-                            if (!ee.props.$filteredOut) bundled.push(ee);
-                        }
-                    } else if (list.contains(e)) {
-                        e.props.$selected = false;
-                        list.remove(e);
-                        deselected.push(e);
-                    }
-                }
-                
-                if (bundled.length > 0) {
-                    deselected = deselected.concat(deselectEdges(bundled));       
-                }
-                updateMergedEdgesSelection();
-            }
-            
-            return deselected;
         }
 
         public function loadGraph(options:Object):void {
@@ -878,68 +827,9 @@ package org.cytoscapeweb.model {
                 me.data.id = nextId(Groups.EDGES);
                 graphData.addEdge(me);
                 createCache(me);
-   
-                // TODO: refactor!!! let interractionVO do it!
-                updateMergedEdgesData([me]);
             }
             
             return inter;
-        }
-        
-        private function updateMergedEdgesData(edges:*):void {
-            var fields:Array = edgesSchema.fields;
-            var numericFields:Array = [];
-            var df:DataField;
-            
-            for each (df in fields) {
-                if ((df.type === DataUtil.NUMBER || df.type === DataUtil.INT) && df.name !== "id")
-                    numericFields.push(df);
-            }
-
-            for each (var edge:EdgeSprite in edges) {
-                if (!edge.props.$merged) {
-                    // TODO: remove avg:
-                    
-                    // Create sum and avg data values for numeric attributes:
-                    for each (df in numericFields) {
-                        edge.data["sum:"+df.name] = edge.data["avg:"+df.name] = 0;
-                    }
-                    
-                    var count:Number = 0;
-                    
-                    for each (var e:EdgeSprite in edge.props.$edges) {
-                        if (!e.props.$filteredOut) {
-                            count++;
-                            for each (df in numericFields) {
-                                var v:Number = e.data[df.name] as Number;
-                                edge.data["sum:"+df.name] = edge.data["avg:"+df.name] += v;
-                            }
-                        }
-                    }
-                    for each (df in numericFields) {
-                        if (count > 1) edge.data["avg:"+df.name] /= count;
-                        if (df.type === DataUtil.INT) {
-                            edge.data["sum:"+df.name] = Math.round(edge.data["sum:"+df.name]);
-                            edge.data["avg:"+df.name] = Math.round(edge.data["avg:"+df.name]);
-                        }
-                    }
-                }
-            }
-        }
-        
-        private function updateMergedEdgesSelection():void {
-            for each (var e:EdgeSprite in graphData.edges) {
-                if (e.props.$merged) e.props.$selected = isMergedEdgeSelected(e);
-            }
-        }
-        
-        private function isMergedEdgeSelected(edge:EdgeSprite):Boolean {
-            if (edge.props.$edges) {
-                for each (var e:EdgeSprite in edge.props.$edges) {
-                    if (e.props.$selected && !e.props.$filteredOut) return true;
-                }
-            }
-            return false;
         }
     }
 }

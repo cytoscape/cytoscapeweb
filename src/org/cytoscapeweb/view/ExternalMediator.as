@@ -27,7 +27,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
-package org.cytoscapeweb.model {
+package org.cytoscapeweb.view {
     import com.adobe.serialization.json.JSON;
     
     import flash.external.ExternalInterface;
@@ -43,89 +43,54 @@ package org.cytoscapeweb.model {
     import org.cytoscapeweb.util.ExternalFunctions;
     import org.cytoscapeweb.util.GraphUtils;
     import org.cytoscapeweb.util.Groups;
-    import org.cytoscapeweb.view.ApplicationMediator;
-    import org.puremvc.as3.patterns.proxy.Proxy;
-	
+    import org.puremvc.as3.interfaces.INotification;
+        
     /**
-    * This proxy encapsulates the interaction with the JavaScript API.
-    */
-    public class ExternalInterfaceProxy extends Proxy {
+     * This mediator encapsulates the interaction with the JavaScript API.
+     */
+    public class ExternalMediator extends BaseMediator {
 
         // ========[ CONSTANTS ]====================================================================
 
-        public static const NAME:String = 'ExternalInterfaceProxy';
+        /** Cannonical name of the Mediator. */
+        public static const NAME:String = "ExternalInterfaceMediator";
         
         // ========[ PRIVATE PROPERTIES ]===========================================================
         
-        private var _graphProxy:GraphProxy;
-        private var _configProxy:ConfigProxy;
-        private var _contextMenuProxy:ContextMenuProxy;
-		
-		private function get graphProxy():GraphProxy {
-			if (_graphProxy == null)
-                _graphProxy = ApplicationFacade.getInstance().retrieveProxy(GraphProxy.NAME) as GraphProxy;
-            return _graphProxy;
-		}
 
-		private function get configProxy():ConfigProxy {
-            if (_configProxy == null)
-                _configProxy = ApplicationFacade.getInstance().retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
-            return _configProxy;
-        }
-
-        protected function get contextMenuProxy():ContextMenuProxy {
-            if (_contextMenuProxy == null)
-                _contextMenuProxy = facade.retrieveProxy(ContextMenuProxy.NAME) as ContextMenuProxy;
-            return _contextMenuProxy;
-        }
-		
-        // ========[ PUBLIC PROPERTIES ]============================================================
-   
-   
         // ========[ CONSTRUCTOR ]==================================================================
-		
-        public function ExternalInterfaceProxy() {
-            super(NAME);
+   
+        public function ExternalMediator(viewComponent:Object) {
+            super(NAME, viewComponent, this);
         }
 
         // ========[ PUBLIC METHODS ]===============================================================
-
-        public function addCallbacks():void {
-            if (ExternalInterface.available) {
-                ExternalInterface.marshallExceptions = true;
-                
-                var functions:Array = [ "draw",
-                                        "addContextMenuItem", "removeContextMenuItem", 
-                                        "select", "deselect", 
-                                        "mergeEdges", "isEdgesMerged", 
-                                        "showNodeLabels", "isNodeLabelsVisible", 
-                                        "showEdgeLabels", "isEdgeLabelsVisible", 
-                                        "enableNodeTooltips", "isNodeTooltipsEnabled", 
-                                        "enableEdgeTooltips", "isEdgeTooltipsEnabled", 
-                                        "showPanZoomControl", "isPanZoomControlVisible",
-                                        "enableCustomCursor", 
-                                        "enableGrabToPan", "isGrabToPanEnabled", "panBy", "panToCenter", 
-                                        "zoomTo", "zoomToFit", "getZoom", 
-                                        "filter", "removeFilter", 
-                                        "firstNeighbors", 
-                                        "getNodes", "getEdges", "getMergedEdges", 
-                                        "getSelectedNodes", "getSelectedEdges", 
-                                        "getLayout", "applyLayout", 
-                                        "setVisualStyle", "getVisualStyle", 
-                                        "getVisualStyleBypass", "setVisualStyleBypass",
-                                        "addNode", "addEdge", "removeItems",
-                                        "addDataField", "removeDataField", "updateData",
-                                        "getNetworkAsText", "getNetworkAsImage", 
-                                        "exportNetwork" ];
-
-	            for each (var f:String in functions) addFunction(f);
-
-            } else {
-                sendNotification(ApplicationFacade.EXT_INTERFACE_NOT_AVAILABLE);
-	        }
+    
+        /** @inheritDoc */
+        override public function getMediatorName():String {
+            return NAME;
         }
         
-        public function hasListener(type:String, group:String="none"):Boolean {
+        /** @inheritDoc */
+        override public function listNotificationInterests():Array {
+            return [ApplicationFacade.ADD_CALLBACKS, ApplicationFacade.CALL_EXTERNAL_INTERFACE];
+        }
+
+        /** @inheritDoc */
+        override public function handleNotification(n:INotification):void {
+            switch (n.getName()) {
+                case ApplicationFacade.ADD_CALLBACKS:
+                    addCallbacks();
+                    break;
+                case ApplicationFacade.CALL_EXTERNAL_INTERFACE:
+                    var options:Object = n.getBody();
+                    var json:Boolean = ExternalFunctions.isJSON(options.functionName);
+                    callExternalInterface(options.functionName, options.argument, json);
+                    break;
+            }
+        }
+        
+        public function hasListener(type:String, group:String=Groups.NONE):Boolean {
             return callExternalInterface(ExternalFunctions.HAS_LISTENER, {type: type, group: group});
         }
         
@@ -147,19 +112,19 @@ package org.cytoscapeweb.model {
          *         function returns void.
          */
         public function callExternalInterface(functionName:String, argument:*, json:Boolean=false):* {
-        	if (ExternalInterface.available) {
-        	    var desigFunction:String;
-        	    
-        	    if (json && argument != null) {
+            if (ExternalInterface.available) {
+                var desigFunction:String;
+                
+                if (json && argument != null) {
                     argument = JSON.encode(argument);
                     // Call a proxy function instead, sending the name of the designated function.
                     desigFunction = functionName;
                     functionName = ExternalFunctions.DISPATCH;
-        	    }
-        	    
-        	    functionName = "_cytoscapeWebInstances." + configProxy.id + "." + functionName;
-        	    try {
-            	    if (desigFunction != null)
+                }
+                
+                functionName = "_cytoscapeWebInstances." + configProxy.id + "." + functionName;
+                try {
+                    if (desigFunction != null)
                         return ExternalInterface.call(functionName, desigFunction, argument);
                     else
                         return ExternalInterface.call(functionName, argument);
@@ -171,9 +136,9 @@ package org.cytoscapeweb.model {
                 return undefined;
             }
         }
-	    
+        
         // ========[ PRIVATE METHODS ]==============================================================
-
+        
         // Callbacks ---------------------------------------------------
         
         private function draw(options:Object):void {
@@ -182,25 +147,25 @@ package org.cytoscapeweb.model {
         
         private function addContextMenuItem(label:String, group:String=null):void {
             if (group == null) group = Groups.NONE;
-            contextMenuProxy.addMenuItem(label, group);
+            menuProxy.addMenuItem(label, group);
         }
         
         private function removeContextMenuItem(label:String, group:String=null):void {
             if (group == null) group = Groups.NONE;
-            contextMenuProxy.removeMenuItem(label, group);
+            menuProxy.removeMenuItem(label, group);
         }
         
         private function select(group:String, items:Array):void {
-        	if (items == null)
+            if (items == null)
                 sendNotification(ApplicationFacade.SELECT_ALL, group);
             else
                 sendNotification(ApplicationFacade.SELECT, graphProxy.getDataSpriteList(items, group));
         }
         
         private function deselect(group:String, items:Array):void {
-        	if (items == null)
+            if (items == null)
                 sendNotification(ApplicationFacade.DESELECT_ALL, group);
-        	else
+            else
                 sendNotification(ApplicationFacade.DESELECT, graphProxy.getDataSpriteList(items, group));
         }
        
@@ -299,13 +264,13 @@ package org.cytoscapeweb.model {
             var obj:Object = {};
             
             if (rootNodes != null && rootNodes.length > 0) {
-	            var nodes:Array = graphProxy.getDataSpriteList(rootNodes, Groups.NODES);
-	            
-	            if (nodes != null && nodes.length > 0) {
-		            var fn:FirstNeighborsVO  = new FirstNeighborsVO(nodes, ignoreFilteredOut);
-	                obj = fn.toObject();
-	                obj = JSON.encode(obj);
-	            }
+                var nodes:Array = graphProxy.getDataSpriteList(rootNodes, Groups.NODES);
+                
+                if (nodes != null && nodes.length > 0) {
+                    var fn:FirstNeighborsVO  = new FirstNeighborsVO(nodes, ignoreFilteredOut);
+                    obj = fn.toObject();
+                    obj = JSON.encode(obj);
+                }
             }
             
             return obj;
@@ -419,7 +384,42 @@ package org.cytoscapeweb.model {
         }
 
         // ------------------------------------------------------------
+        
+        private function addCallbacks():void {
+            if (ExternalInterface.available) {
+                ExternalInterface.marshallExceptions = true;
+                
+                var functions:Array = [ "draw",
+                                        "addContextMenuItem", "removeContextMenuItem", 
+                                        "select", "deselect", 
+                                        "mergeEdges", "isEdgesMerged", 
+                                        "showNodeLabels", "isNodeLabelsVisible", 
+                                        "showEdgeLabels", "isEdgeLabelsVisible", 
+                                        "enableNodeTooltips", "isNodeTooltipsEnabled", 
+                                        "enableEdgeTooltips", "isEdgeTooltipsEnabled", 
+                                        "showPanZoomControl", "isPanZoomControlVisible",
+                                        "enableCustomCursor", 
+                                        "enableGrabToPan", "isGrabToPanEnabled", "panBy", "panToCenter", 
+                                        "zoomTo", "zoomToFit", "getZoom", 
+                                        "filter", "removeFilter", 
+                                        "firstNeighbors", 
+                                        "getNodes", "getEdges", "getMergedEdges", 
+                                        "getSelectedNodes", "getSelectedEdges", 
+                                        "getLayout", "applyLayout", 
+                                        "setVisualStyle", "getVisualStyle", 
+                                        "getVisualStyleBypass", "setVisualStyleBypass",
+                                        "addNode", "addEdge", "removeItems",
+                                        "addDataField", "removeDataField", "updateData",
+                                        "getNetworkAsText", "getNetworkAsImage", 
+                                        "exportNetwork" ];
 
+                for each (var f:String in functions) addFunction(f);
+
+            } else {
+                sendNotification(ApplicationFacade.EXT_INTERFACE_NOT_AVAILABLE);
+            }
+        }
+        
         private function addFunction(name:String):void {
             try {
                 ExternalInterface.addCallback(name, this[name]);

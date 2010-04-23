@@ -32,18 +32,13 @@ package org.cytoscapeweb.controller {
     import flare.vis.data.NodeSprite;
     
     import org.cytoscapeweb.ApplicationFacade;
-    import org.cytoscapeweb.model.ConfigProxy;
-    import org.cytoscapeweb.model.ExternalInterfaceProxy;
-    import org.cytoscapeweb.model.GraphProxy;
     import org.cytoscapeweb.util.ExternalFunctions;
     import org.cytoscapeweb.util.GraphUtils;
     import org.cytoscapeweb.util.Groups;
-    import org.cytoscapeweb.view.GraphMediator;
     import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
     
 
-    public class FilterCommand extends SimpleCommand {
+    public class FilterCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
             var gr:String = notification.getBody().group;
@@ -64,7 +59,6 @@ package org.cytoscapeweb.controller {
                 
                 if (nodes != null || edges != null) {
                     // Update the model:
-                    var graphProxy:GraphProxy = facade.retrieveProxy(GraphProxy.NAME) as GraphProxy;
                     var groups:Array = [Groups.NONE];
                     
                     if (edges != null) {
@@ -76,20 +70,15 @@ package org.cytoscapeweb.controller {
                         groups.push(Groups.NODES);
                     }
 
-                    if (updateVisualMappers) {
-                        var cfgProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
-                        cfgProxy.bindGraphData(graphProxy.graphData);
-                    }
+                    if (updateVisualMappers) configProxy.bindGraphData(graphProxy.graphData);
                         
                     // Update the view:
-                    var mediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
-                    mediator.updateFilters(nodes != null, edges != null, updateVisualMappers);
+                    graphMediator.updateFilters(nodes != null, edges != null, updateVisualMappers);
             
                     // Call external listeners:
-                    var extProxy:ExternalInterfaceProxy = facade.retrieveProxy(ExternalInterfaceProxy.NAME) as ExternalInterfaceProxy;
                     var objs:Array, body:Object, type:String = "filter";
                 
-                    if (nodes != null && extProxy.hasListener(type, Groups.NODES)) {
+                    if (nodes != null && extMediator.hasListener(type, Groups.NODES)) {
                         objs = GraphUtils.toExtObjectsArray(nodes);
                         body = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
                                  argument: { type: type, group: Groups.NODES, target: objs } };
@@ -97,7 +86,7 @@ package org.cytoscapeweb.controller {
                         sendNotification(ApplicationFacade.CALL_EXTERNAL_INTERFACE, body);
                     }
                     
-                    if (edges != null && extProxy.hasListener(type, Groups.EDGES)) {
+                    if (edges != null && extMediator.hasListener(type, Groups.EDGES)) {
                         objs = GraphUtils.toExtObjectsArray(edges);
                         body = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
                                  argument: { type: type, group: Groups.EDGES, target: objs } };
@@ -105,7 +94,7 @@ package org.cytoscapeweb.controller {
                         sendNotification(ApplicationFacade.CALL_EXTERNAL_INTERFACE, body);
                     }
                     
-                    if ((nodes != null || edges != null) && extProxy.hasListener(type, Groups.NONE)) {
+                    if ((nodes != null || edges != null) && extMediator.hasListener(type, Groups.NONE)) {
                         objs = GraphUtils.toExtObjectsArray(arr);
                         body = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
                                  argument: { type: type, group: Groups.NONE, target: objs } };

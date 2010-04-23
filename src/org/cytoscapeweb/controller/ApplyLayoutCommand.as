@@ -30,16 +30,10 @@
 package org.cytoscapeweb.controller {
     import mx.utils.StringUtil;
     
-    import org.cytoscapeweb.ApplicationFacade;
-    import org.cytoscapeweb.model.ConfigProxy;
-    import org.cytoscapeweb.model.ExternalInterfaceProxy;
-    import org.cytoscapeweb.util.ExternalFunctions;
-    import org.cytoscapeweb.view.GraphMediator;
     import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
     
 
-    public class ApplyLayoutCommand extends SimpleCommand {
+    public class ApplyLayoutCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
             var name:String = notification.getBody() as String;
@@ -47,12 +41,10 @@ package org.cytoscapeweb.controller {
             if (name != null) {
                 name = StringUtil.trim(name);
                 // Fisrt, we have to set the new current layout:
-	            var cfgProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
-	            cfgProxy.currentLayout = name;
+	            configProxy.currentLayout = name;
 	            
 	            // Then, ask the mediator to apply it:
-	            var mediator:GraphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
-                mediator.applyLayout(cfgProxy.currentLayout);
+                graphMediator.applyLayout(configProxy.currentLayout);
             }
         }
     }

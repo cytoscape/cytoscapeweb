@@ -29,19 +29,16 @@
 */
 package org.cytoscapeweb.controller {
     import org.cytoscapeweb.ApplicationFacade;
-    import org.cytoscapeweb.model.ExternalInterfaceProxy;
     import org.cytoscapeweb.util.ExternalFunctions;
     import org.cytoscapeweb.util.Groups;
-    import org.cytoscapeweb.view.ApplicationMediator;
     import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
     
 
     /**
      * If there is an external listener (JavaScript) for "error" events, just call it.
      * Otherwise, ask Cytoscape Web to display it.
      */
-    public class ShowErrorCommand extends SimpleCommand {
+    public class ShowErrorCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
             var b:* = notification.getBody();
@@ -56,9 +53,7 @@ package org.cytoscapeweb.controller {
                 if (b.hasOwnProperty("stackTrace")) stackTrace = b.stackTrace;
             }
 
-            var extProxy:ExternalInterfaceProxy = facade.retrieveProxy(ExternalInterfaceProxy.NAME) as ExternalInterfaceProxy;
-            
-            if (extProxy.hasListener("error", Groups.NONE)) {
+            if (extMediator.hasListener("error", Groups.NONE)) {
                 var err:Object = { msg: msg };
                 if (id != null) err.id = id;
                 if (name != null) err.name = name;
@@ -69,8 +64,7 @@ package org.cytoscapeweb.controller {
                 
                 sendNotification(ApplicationFacade.CALL_EXTERNAL_INTERFACE, body);
             } else {
-                var mediator:ApplicationMediator = facade.retrieveMediator(ApplicationMediator.NAME) as ApplicationMediator;
-                mediator.showError(msg);
+                appMediator.showError(msg);
             }
         }
         

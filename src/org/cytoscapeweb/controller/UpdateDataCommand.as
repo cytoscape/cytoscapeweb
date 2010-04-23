@@ -31,17 +31,15 @@ package org.cytoscapeweb.controller {
     import flare.vis.data.DataSprite;
     
     import org.cytoscapeweb.ApplicationFacade;
-    import org.cytoscapeweb.model.GraphProxy;
     import org.cytoscapeweb.util.Groups;
     import org.cytoscapeweb.util.methods.$each;
     import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
     
 
     /**
      * Update node and edge data attributes.
      */
-    public class UpdateDataCommand extends SimpleCommand {
+    public class UpdateDataCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
             var body:Object = notification.getBody();
@@ -49,8 +47,6 @@ package org.cytoscapeweb.controller {
             if (group == null) group = Groups.NONE;
             var items:Array = body.items;
             var data:Object = body.data;
-            
-            var graphProxy:GraphProxy = facade.retrieveProxy(GraphProxy.NAME) as GraphProxy;
             
             items = graphProxy.getDataSpriteList(items, group, true);
             if (items == null) items = [];
