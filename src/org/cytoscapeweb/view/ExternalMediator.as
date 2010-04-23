@@ -30,7 +30,11 @@
 package org.cytoscapeweb.view {
     import com.adobe.serialization.json.JSON;
     
+    import flare.vis.data.EdgeSprite;
+    import flare.vis.data.NodeSprite;
+    
     import flash.external.ExternalInterface;
+    import flash.geom.Point;
     import flash.utils.ByteArray;
     
     import mx.utils.Base64Encoder;
@@ -331,16 +335,50 @@ package org.cytoscapeweb.view {
             sendNotification(ApplicationFacade.APPLY_LAYOUT, name);
         }
         
-        private function addNode(x:Number, y:Number, data:Object, updateVisualMappers:Boolean=false):void {
-            sendNotification(ApplicationFacade.ADD_NODE,
-                             { x: x, y: y, data: data, updateVisualMappers: updateVisualMappers });
-// TODO: how to return the new node?
+        private function addNode(x:Number, y:Number, 
+                                 data:Object, updateVisualMappers:Boolean=false):Object {
+            var o:Object;
+
+            try {                
+                // Create node:
+                var n:NodeSprite = graphProxy.addNode(data);
+                // Position it:
+                var p:Point = new Point(x, y);
+                p = graphMediator.vis.globalToLocal(p);
+                n.x = p.x;
+                n.y = p.y;
+                // Set listeners, styles, etc:
+                graphMediator.initialize(Groups.NODES, [n]);
+                
+                if (updateVisualMappers) sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
+                o = GraphUtils.toExtObject(n);
+
+            } catch (err:Error) {
+                trace("[ERROR]: addNode: " + err.getStackTrace());
+                error(err.message, err.errorID, err.name, err.getStackTrace());
+            }
+
+            return o;
         }
         
-        private function addEdge(data:Object, updateVisualMappers:Boolean=false):void {
-            sendNotification(ApplicationFacade.ADD_EDGE,
-                             { data: data, updateVisualMappers: updateVisualMappers });
-// TODO: how to return the new edge?
+        private function addEdge(data:Object, updateVisualMappers:Boolean=false):Object {
+            var o:Object;
+            
+            try {
+                // Create edge:
+                var e:EdgeSprite = graphProxy.addEdge(data);
+                // Set listeners, styles, etc:
+                graphMediator.initialize(Groups.EDGES, [e]);
+                
+                if (updateVisualMappers) sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
+                o = GraphUtils.toExtObject(e);
+                
+            } catch (err:Error) {
+                trace("[ERROR]: addEdge: " + err.getStackTrace());
+                error(err.message, err.errorID, err.name, err.getStackTrace());
+            }
+            
+            return o;
         }
         
         private function removeItems(group:String=Groups.NONE,

@@ -543,7 +543,7 @@ package org.cytoscapeweb.model {
             return n;
         }
         
-        public function addEdge(data:Object):Array {
+        public function addEdge(data:Object):EdgeSprite {
             if (data == null) throw new Error("The 'data' argument is mandatory");
             
             var src:NodeSprite = getNode(data.source);
@@ -564,9 +564,7 @@ package org.cytoscapeweb.model {
             if (data.label == null) data.label = data.id;
 
             // Create edge:
-            var ret:Array = [];
             var e:EdgeSprite = graphData.addEdgeFor(src, tgt, data.directed, data);
-            ret.push(e);
             
             // Add it to cache:
             createCache(e);
@@ -577,12 +575,11 @@ package org.cytoscapeweb.model {
             
             if (inter == null) {
                 inter = createInteraction(e.source, e.target);
-                ret.push(inter.mergedEdge);
             } else {
                 inter.update();
             }
             
-            return ret;
+            return e;
         }
         
         public function remove(items:Array):void {

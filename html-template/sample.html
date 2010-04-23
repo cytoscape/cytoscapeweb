@@ -47,7 +47,7 @@
                         color: { defaultValue: "#cccccc", continuousMapper: { attrName: "weight",  minValue: "#ffffff", maxValue: "#0b94b1" } },
                         opacity: 0.9,
                         size: { defaultValue: 20, continuousMapper: { attrName: "weight",  minValue: 20, maxValue: 40 } },
-                        borderWidth: 1,
+                        borderWidth: 2,
                         borderColor: "#707070",
                         labelFontSize: { defaultValue: 12, continuousMapper: { attrName: "weight",  minValue: 10, maxValue: 24 } },
                     },
@@ -104,7 +104,7 @@
             function clickNodeToAddEdge(evt) {
                 if (_srcId != null) {
                 	vis.removeListener("click", "nodes", clickNodeToAddEdge);
-                	vis.addEdge({ source: _srcId, target: evt.target.data.id, weight: Math.random() }, true);
+                	var e = vis.addEdge({ source: _srcId, target: evt.target.data.id, weight: Math.random() }, true);
                 	_srcId = null;
                 }
             }
@@ -129,7 +129,7 @@
                         vis.remove([evt.target], true);
                     })
                     .addContextMenuItem("Add new node", function(evt) {
-                        vis.addNode(evt.mouseX, evt.mouseY, { weight: Math.random() }, true);
+                        var n = vis.addNode(evt.mouseX, evt.mouseY, { weight: Math.random() }, true);
                     })
                     .addContextMenuItem("Add new edge", "nodes", function(evt) {
                     	_srcId = evt.target.data.id;

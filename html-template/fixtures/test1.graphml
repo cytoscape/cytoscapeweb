@@ -5,7 +5,9 @@
   <key id="label" for="node" attr.name="label" attr.type="string"/>
   
   <key id="type" for="edge" attr.name="type" attr.type="string"/>
-  <key id="interaction" for="edge" attr.name="interaction" attr.type="string"/>
+  <key id="interaction" for="edge" attr.name="interaction" attr.type="string">
+      <default>pp</default>
+  </key>
   <key id="weight" for="edge" attr.name="weight" attr.type="double"/>
   <key id="sourceArrowShape" for="edge" attr.name="sourceArrowShape" attr.type="string"/>
   <key id="targetArrowShape" for="edge" attr.name="targetArrowShape" attr.type="string"/>

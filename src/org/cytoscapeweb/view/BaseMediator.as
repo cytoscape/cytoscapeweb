@@ -49,6 +49,7 @@ package org.cytoscapeweb.view {
         private var _graphProxy:GraphProxy;
         private var _menuProxy:ContextMenuProxy;
         private var _extMediator:ExternalMediator;
+        private var _graphMediator:GraphMediator;
 
         // ========[ PROTECTED PROPERTIES ]=========================================================
    
@@ -74,6 +75,12 @@ package org.cytoscapeweb.view {
             if (_extMediator == null)
                 _extMediator = facade.retrieveMediator(ExternalMediator.NAME) as ExternalMediator;
             return _extMediator;
+        }
+        
+        protected function get graphMediator():GraphMediator {
+            if (_graphMediator == null)
+                _graphMediator = facade.retrieveMediator(GraphMediator.NAME) as GraphMediator;
+            return _graphMediator;
         }
 
         // ========[ CONSTRUCTOR ]==================================================================

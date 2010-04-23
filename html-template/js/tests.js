@@ -781,6 +781,75 @@ function runGraphTests(moduleName, vis, options) {
         vis.filter("nodes", nfilter, true);
     });
     
+    test("Add Node", function() {
+    	var all, nodes = vis.nodes();
+    	var count = nodes.length;
+    	var n;
+    	
+    	// 1: NO id and NO (x,y):
+    	n = vis.addNode();
+    	ok(n.data.id != null, "New node has auto-incremented ID");
+    	same(n.data.label, n.data.id, "New node has default label");
+    	same(n.size, style.nodes.size.continuousMapper.minValue + n.borderWidth, "Min node size");
+    	same(vis.nodes().length, ++count, "New nodes length");
+    	
+    	// 2: Id and (x,y):
+    	n = vis.addNode(30, 45, { id: "NN1", label: "New Node 1", weight: 4 }, true);
+    	same(n.data.id, "NN1", "New node has correct ID");
+    	same(n.data.label, "New Node 1", "New node has correct label");
+    	same(n.x, 30, "New node x");
+    	same(n.y, 45, "New node y");
+    	ok(n.size > style.nodes.size.continuousMapper.minValue + n.borderWidth, "Node size updated");
+    	same(vis.nodes().length, ++count, "New nodes length");
+    	
+    	// TODO: test duplicate ID (FireFox does not catch Flash exceptions...)
+    });
+    
+    test("Add Edge", function() {
+    	var all, edges = vis.edges(), nodes = vis.nodes();
+    	var count = edges.length;
+    	var e;
+    	var src = nodes[0], tgt = nodes[3];
+    	
+    	// 1: NO id:
+    	e = vis.addEdge({ source: src.data.id, target: tgt.data.id });
+    	ok(e.data.id != null, "New edge has auto-incremented ID");
+    	same(e.data.label, e.data.id, "New edge has default label");
+    	same(e.data.source, src.data.id, "New edge source ID");
+    	same(e.data.target, tgt.data.id, "New edge target ID");
+    	same(vis.edges().length, ++count, "New edges length");
+    	
+    	// 2: Id:
+    	e = vis.addEdge({ id: "NE1", label: "New Edge 1",
+    		              source: src.data.id, target: tgt.data.id,
+    		              weight: 2.5 }, true);
+    	same(e.data.id, "NE1", "New edge has correct ID");
+    	same(e.data.label, "New Edge 1", "New node has correct label");
+    	same(e.data.source, src.data.id, "New edge target ID");
+    	same(e.data.target, tgt.data.id, "New edge target ID");
+    	same(vis.edges().length, ++count, "New edges length");
+    });
+    
+    test("Remove Edges", function() {
+    	var all, nodes = vis.nodes(), edges = vis.edges();
+    	var edgesCount = edges.length, nodesCount = nodes.length;
+    	
+    	// 1: Remove one edge by ID:
+    	vis.remove("edges", ["4"], true);
+
+    	edges = vis.edges();
+    	same(edges.length, edgesCount-1, "New edges length");
+    	$.each(edges, function(i, el) {
+    		ok(el.data.id != "4", "Edge '4' deleted");
+    	});
+    	same(nodes.length, nodesCount, "Nodes not affected");
+// TODO: other parameters...
+    });
+    
+    test("Remove Nodes", function() {
+// TODO:
+    });
+    
     test("Update Data Attributes", function() {
     	var all, nodes = vis.nodes(), edges = vis.edges();
     	var filter = function(o) { return o.data.id % 2 === 0; };
@@ -955,7 +1024,7 @@ function runGraphTests(moduleName, vis, options) {
     	});
     	
     	// 3: Do NOT remove non-custom fields:
-    	vis.addDataField("edges", { name: "label", type: "string", defValue: "edge" }); // edges might not have labels...
+    	vis.addDataField("edges", { name: "label", type: "string", defValue: "edge" });
     	
     	vis.removeDataField("id").removeDataField("label");
     	vis.removeDataField("edges", "source").removeDataField("edges", "target").removeDataField("edges", "directed");
@@ -976,27 +1045,6 @@ function runGraphTests(moduleName, vis, options) {
     		vis.removeDataField(); fail = true;
     	} catch (err) { fail = false; }
     	ok(fail === false, "Null 'name' throws exception");
-    });
-    
-    test("Remove Edges", function() {
-    	var all, nodes = vis.nodes(), edges = vis.edges();
-    	var edgesCount = edges.length, nodesCount = nodes.length;
-    	
-    	// 1: Remove one edge by ID:
-    	vis.remove("edges", ["4"], true);
-
-    	edges = vis.edges();
-    	same(edges.length, edgesCount-1, "New edges length");
-    	$.each(edges, function(i, el) {
-    		ok(el.data.id != "4", "Edge '4' deleted");
-    	});
-    	same(nodes.length, nodesCount, "Nodes not affected");
-    	
-// TODO
-    });
-    
-    test("Remove Nodes", function() {
-// TODO:
     });
     
     test("PNG", function() {
