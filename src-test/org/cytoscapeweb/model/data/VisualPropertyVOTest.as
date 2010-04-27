@@ -31,6 +31,7 @@ package org.cytoscapeweb.model.data {
     
     import flexunit.framework.TestCase;
     
+    import org.cytoscapeweb.util.ArrowShapes;
     import org.cytoscapeweb.util.NodeShapes;
     import org.cytoscapeweb.util.VisualProperties;
     
@@ -45,15 +46,44 @@ package org.cytoscapeweb.model.data {
         public function testNew():void {
             var vp:VisualPropertyVO = new VisualPropertyVO(VisualProperties.BACKGROUND_COLOR);
             assertEquals(VisualProperties.BACKGROUND_COLOR, vp.name);
-            assertNull(vp.defaultValue);
+            assertNotNull(vp.defaultValue);
             assertNull(vp.vizMapper);
-            
+
             var mapper:PassthroughVizMapperVO = new PassthroughVizMapperVO("attr", VisualProperties.EDGE_CURVATURE);
             vp = new VisualPropertyVO(VisualProperties.NODE_COLOR, 0xff00ffff, mapper);
             assertEquals(VisualProperties.NODE_COLOR, vp.name);
             assertEquals(vp.name, mapper.propName);
             assertEquals(0xff00ffff, vp.defaultValue);
             assertEquals(mapper, vp.vizMapper);
+        }
+        
+        public function testDefaultValue():void {
+            // Default values should not be null:
+            // COLORS:
+            var vp:VisualPropertyVO = new VisualPropertyVO(VisualProperties.BACKGROUND_COLOR);
+            assertEquals(0x000000, vp.defaultValue);
+            vp = new VisualPropertyVO(VisualProperties.NODE_COLOR, null);
+            assertEquals(0xff000000, vp.defaultValue);
+            
+            // SHAPES:
+            vp = new VisualPropertyVO(VisualProperties.NODE_SHAPE);
+            assertEquals(NodeShapes.ELLIPSE, vp.defaultValue);
+            vp = new VisualPropertyVO(VisualProperties.EDGE_SOURCE_ARROW_SHAPE);
+            assertEquals(ArrowShapes.NONE, vp.defaultValue);
+            vp = new VisualPropertyVO(VisualProperties.EDGE_TARGET_ARROW_SHAPE);
+            assertEquals(ArrowShapes.NONE, vp.defaultValue);
+            
+            // NUMBERS:
+            vp = new VisualPropertyVO(VisualProperties.NODE_SIZE);
+            assertEquals(0, vp.defaultValue);
+            vp = new VisualPropertyVO(VisualProperties.EDGE_ALPHA);
+            assertEquals(0, vp.defaultValue);
+            
+            // STRINGS:
+            vp = new VisualPropertyVO(VisualProperties.EDGE_LABEL);
+            assertEquals("", vp.defaultValue);
+            vp = new VisualPropertyVO(VisualProperties.NODE_TOOLTIP_TEXT);
+            assertEquals("", vp.defaultValue);
         }
 
         public function testToObject():void {

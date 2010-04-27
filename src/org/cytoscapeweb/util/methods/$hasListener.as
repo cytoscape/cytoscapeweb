@@ -27,30 +27,19 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
-package org.cytoscapeweb.model.data {
+package org.cytoscapeweb.util.methods {
+    import org.cytoscapeweb.ApplicationFacade;
+    import org.cytoscapeweb.util.Groups;
+    import org.cytoscapeweb.view.ExternalMediator;
     
-    import flexunit.framework.TestCase;
-    
-    import org.cytoscapeweb.util.Layouts;
-    
-    
-    public class ConfigVOTest extends TestCase {
+
+    /**
+     * Tells whether or not there is an external (JavaScript) event listener.
+     */
+    public function $hasListener(type:String, group:String=Groups.NONE):Boolean {
+        var ext:ExternalMediator = ApplicationFacade.getInstance()
+                                   .retrieveMediator(ExternalMediator.NAME) as ExternalMediator;
         
-        public function testNew():void {
-            var cfg:ConfigVO = new ConfigVO();
-            // Default values:
-            assertTrue(cfg.panZoomControlVisible);
-            assertFalse(cfg.edgesMerged);
-            assertTrue(cfg.nodeLabelsVisible);
-            assertFalse(cfg.nodeTooltipsEnabled);
-            assertFalse(cfg.edgeTooltipsEnabled);
-            assertNull(cfg.visualStyle);
-            assertTrue(cfg.currentLayout.name === Layouts.FORCE_DIRECTED);
-        }
-        
-        public function testGetDefault():void {
-            var cfg:ConfigVO = ConfigVO.getDefault();
-            assertNotNull(cfg.visualStyle);
-        }
+        return ext.hasListener(type, group);
     }
 }

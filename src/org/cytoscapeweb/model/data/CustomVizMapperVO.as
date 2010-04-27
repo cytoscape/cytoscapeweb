@@ -28,6 +28,7 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.model.data {
+    import org.cytoscapeweb.util.VisualProperties;
     import org.cytoscapeweb.util.methods.$extFunction;
     
 
@@ -52,6 +53,8 @@ package org.cytoscapeweb.model.data {
         public override function getValue(data:Object):* {
             // Call an external JavaScript function:
             var value:* = $extFunction(functionName, data, true);
+            value = VisualProperties.parseValue(propName, value);
+            
             return value;
         }
         

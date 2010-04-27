@@ -28,6 +28,10 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.util {
+    import flare.util.Orientation;
+    import flare.vis.operator.layout.Layout;
+    import flare.vis.operator.layout.NodeLinkTreeLayout;
+    
     
     
     /**
@@ -44,6 +48,40 @@ package org.cytoscapeweb.util {
         public static const TREE:String = "Tree";
         public static const PRESET:String = "Preset";
         
+        public static const DEFAULT_OPTIONS:Object = {
+            Circle:  {
+                angleWidth: -2 * Math.PI
+            },
+            CircleTree:  {
+                angleWidth: -2 * Math.PI
+            },
+            Radial:  {
+                angleWidth: -2 * Math.PI
+                //radius: 60
+            },
+            Tree:  {
+                orientation:  Orientation.TOP_TO_BOTTOM, // "leftToRight","rightToLeft","topToBottom","bottomToTop"
+                depthSpace:   50,
+                breadthSpace: 30,
+                subtreeSpace: 5
+            },
+            ForceDirected:  {
+                drag:        0.4,
+                gravitation: -500,
+                minDistance: 1,
+                maxDistance: 10000,
+                mass:        3,
+                tension:     0.1,
+                //restLength: 60
+                iterations: 80,
+                maxTime:    60000,
+                autoStabilize: true
+            },
+            Preset: {
+                
+            }
+        };
+        
         // ========[ CONSTRUCTOR ]==================================================================
         
         /**
@@ -54,6 +92,19 @@ package org.cytoscapeweb.util {
         }
         
         // ========[ PUBLIC METHODS ]===============================================================
+        
+        public static function mergeOptions(name:String, o:Object):Object {
+            var opt:Object = DEFAULT_OPTIONS[name];
+            if (o == null) o = {};
+            
+            if (opt != null) {
+                for (var k:String in opt) {
+                    if (o[k] === undefined) o[k] = opt[k];
+                }
+            }
+            
+            return o;
+        }
         
         // ========[ PRIVATE METHODS ]==============================================================
 

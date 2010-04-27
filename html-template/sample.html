@@ -13,22 +13,6 @@
             var d1, d2;
             var div_id = "cytoscapeweb";
             var vis;
-
-            var edgeColorMapper = {
-                    attrName: "networkGroupCode",
-                    entries: [
-                          { attrValue: "coexp"  , value: "#8b6593" }, //Co-expression
-                          { attrValue: "coloc"  , value: "#b56371" }, //Co-localization
-                          { attrValue: "gi"     , value: "#2fb56d" }, //Genetic interactions
-                          { attrValue: "path"   , value: "#68bbc1" }, //Pathway
-                          { attrValue: "pi"     , value: "#6261fc" }, //Physical interactions
-                          { attrValue: "predict", value: "#c3844c" }, //Predicted
-                          { attrValue: "spd"    , value: "#84ca6a" }, //Shared protein domains
-//                        { attrValue: "????"   , value: "#8e56fc" }, //---RESERVED---
-                          { attrValue: "other"  , value: "#de789a" }, //Other
-                          { attrValue: "user"   , value: "#d2cd4f" } //User-defined
-                    ]
-            };
             
             // options used for Cytoscape Web
             var options = {
@@ -52,7 +36,7 @@
                         labelFontSize: { defaultValue: 12, continuousMapper: { attrName: "weight",  minValue: 10, maxValue: 24 } },
                     },
                     edges: {
-                    	color: "#0b94b1",//{ defaultValue: "#0b94b1", discreteMapper: edgeColorMapper },
+                    	color: "#0b94b1",
                         width: { defaultValue: 2, continuousMapper: { attrName: "weight",  minValue: 2, maxValue: 8 } },
                         mergeWidth: 3,
                         mergeColor: "#0b94b1",
@@ -265,7 +249,7 @@
                     <div id="controls">
                         <div>
                             <label>Networks:</label>
-                            <select id="graphs" size="10">
+                            <select id="graphs" size="1">
                                 <option value="sample1.xml" selected="selected">Sample 1</option>
                                 <option value="sample2.xml">Sample 2</option>
                                 <option value="sample3.xml">Sample 3</option>

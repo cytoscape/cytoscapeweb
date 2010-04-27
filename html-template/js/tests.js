@@ -52,17 +52,6 @@ var style = {
 	}
 };
 
-function setCallbacks(vis) {
-	vis.$callbacks = {};
-
-	vis.addListener("zoom", function(evt) {
-		vis.$callbacks["zoom"] = evt.value;
-	});
-	vis.addListener("layout", function(evt) {
-		vis.$callbacks["layout"] = evt.layout;
-	});
-}
-
 var fneighbRes = {
 		cytoweb1: { roots: ["2","3"], neighbors: ["1"], edgesLength: 4, mergedEdgesLength: 2 },
 		cytoweb2: { roots: ["a01","a03"], neighbors: ["a02","a05","a04"], edgesLength: 6, mergedEdgesLength: 3 }
@@ -160,7 +149,6 @@ function runJSTests(vis) {
 }
 
 function runGraphTests(moduleName, vis, options) {
-	setCallbacks(vis);
 	module(moduleName);
 
 	test("Initialization Parameters", function() {
@@ -177,22 +165,27 @@ function runGraphTests(moduleName, vis, options) {
         vis.panZoomControlVisible(true);
         ok(vis.panZoomControlVisible(), "Pan-zoom control should be visible");
 
+        var callbackZoom = -1;
+        vis.addListener("zoom", function(evt) {
+        	callbackZoom = evt.value;
+    	});
+        
         vis.zoom(0.02322);
-        same(Math.round(vis.$callbacks.zoom*10000)/10000, 0.0232, "Zoom out");
+        same(Math.round(callbackZoom*10000)/10000, 0.0232, "Zoom out");
         same(Math.round(vis.zoom()*10000)/10000, 0.0232, "zoom() returns the correct value after zoom out.");
         vis.zoom(2.1);
-        same(Math.round(vis.$callbacks.zoom*100)/100, 2.1, "Zoom in");
+        same(Math.round(callbackZoom*100)/100, 2.1, "Zoom in");
         same(Math.round(vis.zoom()*100)/100, 2.1, "zoom() returns the correct value after zoom in.");
 
         vis.panBy(100, 200);
         vis.zoomToFit();
-        ok(vis.$callbacks.zoom <= 1, "Zoom to fit (value <= 1 ?):" + vis.$callbacks.zoom);
-        same(vis.zoom(), vis.$callbacks.zoom, "zoom() returns the correct value after zoomToFit().");
+        ok(callbackZoom <= 1, "Zoom to fit (value <= 1 ?):" + callbackZoom);
+        same(vis.zoom(), callbackZoom, "zoom() returns the correct value after zoomToFit().");
 
-        var zoom = vis.$callbacks.zoom;
+        var zoom = callbackZoom;
         vis.panBy(320, 160);
         vis.panToCenter();
-        same(vis.$callbacks.zoom, zoom, "Zoom value should NOT change after panning");
+        same(callbackZoom, zoom, "Zoom value should NOT change after panning");
         same(vis.zoom(), zoom, "zoom() returns the correct value again.");
     });
 

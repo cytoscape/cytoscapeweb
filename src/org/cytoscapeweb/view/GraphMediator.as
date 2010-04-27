@@ -53,6 +53,7 @@ package org.cytoscapeweb.view {
     import org.cytoscapeweb.util.Nodes;
     import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.VisualProperties;
+    import org.cytoscapeweb.util.methods.$hasListener;
     import org.cytoscapeweb.view.components.GraphView;
     import org.cytoscapeweb.view.components.GraphVis;
     import org.cytoscapeweb.view.controls.EnclosingSelectionControl;
@@ -163,10 +164,7 @@ package org.cytoscapeweb.view {
         }
         
         public function drawGraph():void {
-            graphView.draw(graphProxy.graphData,
-                           configProxy.config,
-                           configProxy.visualStyle,
-                           configProxy.currentLayout);
+            graphView.draw(graphProxy.graphData, configProxy.config, configProxy.visualStyle);
         }
         
         public function applyVisualStyle(style:VisualStyleVO):void {
@@ -179,8 +177,8 @@ package org.cytoscapeweb.view {
             graphView.applyVisualStyle(style);
         }
         
-        public function applyLayout(name:String):void {
-            var par:Parallel = graphView.applyLayout(name);
+        public function applyLayout(name:String, options:Object):void {
+            var par:Parallel = graphView.applyLayout(name, options);
             par.play();
         }
         
@@ -367,10 +365,9 @@ package org.cytoscapeweb.view {
             graphView.addEventListener(GraphViewEvent.LAYOUT_INITIALIZE, onLayoutInitialize, false, 0, true);
             
             // Call external listener:
-            // TODO: should be handled by a command instead?
-            if (extMediator.hasListener("layout")) {
+            if ($hasListener("layout")) {
                 var body:Object = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
-                                    argument: { type: "layout", value: configProxy.currentLayout } };
+                                    argument: { type: "layout", value: configProxy.currentLayout.name } };
                 sendNotification(ApplicationFacade.CALL_EXTERNAL_INTERFACE, body);
             }
         }

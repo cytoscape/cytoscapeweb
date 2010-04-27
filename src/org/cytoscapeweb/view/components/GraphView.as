@@ -81,7 +81,7 @@ package org.cytoscapeweb.view.components {
 		
 		// ========[ PUBLIC METHODS ]===============================================================
 
-        public function draw(data:Data, config:ConfigVO, style:VisualStyleVO, layout:String):void {
+        public function draw(data:Data, config:ConfigVO, style:VisualStyleVO):void {
             this._config = config;
             this._style = style;
         	hitArea = Sprite(parent);
@@ -89,10 +89,10 @@ package org.cytoscapeweb.view.components {
         	dispatchEvent(new GraphViewEvent(GraphViewEvent.RENDER_INITIALIZE));
             resize();
 
-            createVisualization(data, layout);
+            createVisualization(data, config.currentLayout.name);
 
             // -----------------------------
-            var par:Parallel = applyLayout(layout);
+            var par:Parallel = applyLayout(config.currentLayout.name, config.currentLayout.options);
             
             par.addEventListener(TransitionEvent.END, function(evt:TransitionEvent):void {
             	evt.currentTarget.removeEventListener(evt.type, arguments.callee);
@@ -102,14 +102,14 @@ package org.cytoscapeweb.view.components {
             par.play();
         }
 
-        public function applyLayout(name:String):Parallel {
+        public function applyLayout(name:String, options:Object):Parallel {
             dispatchEvent(new GraphViewEvent(GraphViewEvent.LAYOUT_INITIALIZE));
             
             resize();
             
             var par:Parallel = new Parallel();
             vis.bounds = GraphUtils.calculateGraphDimension(vis.data.nodes, name, _style);
-            var t:Transition = vis.applyLayout(name);
+            var t:Transition = vis.applyLayout(name, options);
             par.add(t);
           
             par.addEventListener(TransitionEvent.END, function(evt:TransitionEvent):void {
@@ -361,9 +361,9 @@ package org.cytoscapeweb.view.components {
             height = stage.stageHeight;
 		}
 		
-		private function createVisualization(data:Data, layout:String):GraphVis {
+		private function createVisualization(data:Data, layoutName:String):GraphVis {
 		    vis = new GraphVis(data, _config);
-		    var b:Rectangle = GraphUtils.calculateGraphDimension(data.nodes, layout, _style);
+		    var b:Rectangle = GraphUtils.calculateGraphDimension(data.nodes, layoutName, _style);
             vis.bounds = b;
 
             addChild(vis);

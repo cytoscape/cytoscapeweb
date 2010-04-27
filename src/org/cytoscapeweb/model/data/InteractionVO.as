@@ -31,6 +31,8 @@ package org.cytoscapeweb.model.data {
 	import flare.vis.data.EdgeSprite;
 	import flare.vis.data.NodeSprite;
 	
+	import org.cytoscapeweb.util.GraphUtils;
+	
 	public class InteractionVO {
 		
 		private var _key:String;
@@ -113,7 +115,10 @@ package org.cytoscapeweb.model.data {
 		
 		public function update():void {
             _edgeIndexes = [];
-            var edgesList:Array = edges;
+            
+            mergedEdge.props.$edges = edges;
+            
+            var edgesList:Array = mergedEdge.props.$getFilteredEdges();
             var e:EdgeSprite;
             
             // Update the each edge index:
@@ -152,24 +157,37 @@ package org.cytoscapeweb.model.data {
             }
 
             // Update merged edge cached data:
-            mergedEdge.props.$edges = edgesList;
             mergedEdge.props.$selected = false;
             mergedEdge.props.$filteredOut = true;
             var weight:Number = 0;
 
+
             for each (e in edgesList) {
                 // It will be important to correctly render multiple edges:
-                e.props.$adjacentIndex = getAdjacentIndex(e);
+                var idx:Number = 0;
+                
+                for each (var arr:Array in _edgeIndexes) {
+                    if (arr[0] == e) {
+                        idx = arr[1];
+                        
+                        // If the number of edges is even, we have to subtract 0.5
+                        // to avoid a larger gap in the middle
+                        var corection:Number = idx > 0 ? -0.5 : 0.5;
+                        idx = (edgesList.length%2 != 0) ? idx : idx + corection;
+                        break;
+                    }
+                }
+                // It is the distance that the informed edge has from an imaginary straight line
+                // that links two nodes by their centers:
+                e.props.$adjacentIndex = idx;
                 
                 // Summed weight:
                 var w:Number = Number(e.data.weight);
                 if (!isNaN(w)) weight += w;
                 
                 // States:
-                if (!e.props.$filteredOut) {
-                    mergedEdge.props.$filteredOut = false;
-                    if (e.props.$selected) mergedEdge.props.$selected = true;
-                }
+                mergedEdge.props.$filteredOut = false;
+                if (e.props.$selected) mergedEdge.props.$selected = true;
             }
             
             mergedEdge.data.weight = weight;
@@ -185,27 +203,5 @@ package org.cytoscapeweb.model.data {
 
         // ========[ PRIVATE METHODS ]==============================================================
         
-        /**
-         * Return the distance that the informed edge has from an imaginary straight line that
-         * links two nodes by their centers.
-         */
-        private function getAdjacentIndex(edge:EdgeSprite):Number {
-            var edgesList:Array = edges;
-            
-            for each (var arr:Array in _edgeIndexes) {
-                if (arr[0] == edge) {
-                    var idx:Number = arr[1];
-                    
-                    // If the number of edges is even, we have to subtract 0.5
-                    // to avoid a larger gap in the middle
-                    var corection:Number = idx > 0 ? -0.5 : 0.5;
-                    idx = (edgesList.length%2 != 0) ? idx : idx + corection;
-                    
-                    return idx;
-                }
-            }
-            
-            return -1;
-        }
 	}
 }

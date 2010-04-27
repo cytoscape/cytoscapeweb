@@ -263,13 +263,17 @@
          * vis.layout('ForceDirected');
          *
          * @param {org.cytoscapeweb.Layout} [layoutName] The layout name.
-         * @return <ul><li>A current layout name for <code>layout()</code>.</li>
+         * @return <ul><li>The current layout name for <code>layout()</code>.</li>
          *             <li>The Visualization object for <code>layout({String})</code>.</li></ul>
          * @see org.cytoscapeweb.Layout
          */
-        layout: function (/*layoutName*/) {
+        layout: function (/*layoutName, options*/) {
             var swf = this.swf();
-            if (arguments.length > 0) { swf.applyLayout(arguments[0]); return this; }
+            if (arguments.length > 0) {
+            	var name = arguments[0], options;
+            	if (arguments.length > 1) { options = arguments[1]; }
+            	swf.applyLayout(name, options); return this;
+            }
             else { return swf.getLayout(); }
         },
 

@@ -668,8 +668,8 @@ package org.cytoscapeweb.model {
                             var points:Object = xgmmlConverter.points;
                             if (points != null) {
                                 // TODO: do not force the preset layout??? Users might want to load an XGMML with another layout!
-                                config.currentLayout = Layouts.PRESET;
-                                config.nodesPoints = points;
+                                config.currentLayout = { name: Layouts.PRESET, 
+                                                         options: { points: points } };
                             }
                         }
                     } else {

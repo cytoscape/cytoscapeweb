@@ -36,15 +36,14 @@ package org.cytoscapeweb.controller {
     public class ApplyLayoutCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
-            var name:String = notification.getBody() as String;
-
-            if (name != null) {
-                name = StringUtil.trim(name);
+            var layout:Object = notification.getBody();
+            
+            if (layout != null) {
                 // Fisrt, we have to set the new current layout:
-	            configProxy.currentLayout = name;
+	            configProxy.currentLayout = layout;
 	            
 	            // Then, ask the mediator to apply it:
-                graphMediator.applyLayout(configProxy.currentLayout);
+                graphMediator.applyLayout(configProxy.currentLayout.name, configProxy.currentLayout.options);
             }
         }
     }

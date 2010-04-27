@@ -45,37 +45,37 @@ package org.cytoscapeweb.util {
         
         public function testParseValue():void {
             assertEquals(0xeeffee, VisualProperties.parseValue(VisualProperties.BACKGROUND_COLOR, "eeffee"));
-            assertEquals(0, VisualProperties.parseValue(VisualProperties.BACKGROUND_COLOR, null));
+            assertEquals(null, VisualProperties.parseValue(VisualProperties.BACKGROUND_COLOR, null));
             assertEquals(0xffeeffee, VisualProperties.parseValue(VisualProperties.NODE_COLOR, "#eeffee"));
             assertEquals(0xff000000, VisualProperties.parseValue(VisualProperties.NODE_COLOR, "000000"));
             assertEquals(0xff000000, VisualProperties.parseValue(VisualProperties.NODE_COLOR, "#000000"));
-            assertEquals(0xff000000, VisualProperties.parseValue(VisualProperties.EDGE_COLOR, null));
-            assertEquals(0xff000000, VisualProperties.parseValue(VisualProperties.EDGE_COLOR, undefined));
+            assertEquals(null, VisualProperties.parseValue(VisualProperties.EDGE_COLOR, null));
+            assertEquals(null, VisualProperties.parseValue(VisualProperties.EDGE_COLOR, undefined));
             
             assertEquals(32, VisualProperties.parseValue(VisualProperties.NODE_SIZE, 32));
             assertEquals(32, VisualProperties.parseValue(VisualProperties.NODE_SIZE, "  32.0 "));
             assertEquals(0.8, VisualProperties.parseValue(VisualProperties.NODE_ALPHA, "0.8"));
             assertEquals(0, VisualProperties.parseValue(VisualProperties.EDGE_CURVATURE, ""));
             assertEquals(0, VisualProperties.parseValue(VisualProperties.EDGE_CURVATURE, " "));
-            assertEquals(0, VisualProperties.parseValue(VisualProperties.EDGE_CURVATURE, null));
-            assertEquals(0, VisualProperties.parseValue(VisualProperties.EDGE_WIDTH, undefined));
+            assertEquals(null, VisualProperties.parseValue(VisualProperties.EDGE_CURVATURE, null));
+            assertEquals(null, VisualProperties.parseValue(VisualProperties.EDGE_WIDTH, undefined));
             
             assertEquals("1.15", VisualProperties.parseValue(VisualProperties.NODE_TOOLTIP_TEXT, 1.15));
             assertEquals(" ", VisualProperties.parseValue(VisualProperties.NODE_TOOLTIP_TEXT, " "));
-            assertEquals("", VisualProperties.parseValue(VisualProperties.NODE_TOOLTIP_TEXT, null));
-            assertEquals("", VisualProperties.parseValue(VisualProperties.NODE_TOOLTIP_TEXT, undefined));
+            assertEquals(null, VisualProperties.parseValue(VisualProperties.NODE_TOOLTIP_TEXT, null));
+            assertEquals(null, VisualProperties.parseValue(VisualProperties.NODE_TOOLTIP_TEXT, undefined));
             
             assertEquals(NodeShapes.ELLIPSE, VisualProperties.parseValue(VisualProperties.NODE_SHAPE, 0));
             assertEquals(NodeShapes.ELLIPSE, VisualProperties.parseValue(VisualProperties.NODE_SHAPE, "NotAShape!"));
             assertEquals(NodeShapes.ELLIPSE, VisualProperties.parseValue(VisualProperties.NODE_SHAPE, ""));
-            assertEquals(NodeShapes.ELLIPSE, VisualProperties.parseValue(VisualProperties.NODE_SHAPE, null));
-            assertEquals(NodeShapes.ELLIPSE, VisualProperties.parseValue(VisualProperties.NODE_SHAPE, undefined));
+            assertEquals(null, VisualProperties.parseValue(VisualProperties.NODE_SHAPE, null));
+            assertEquals(null, VisualProperties.parseValue(VisualProperties.NODE_SHAPE, undefined));
             
             assertEquals(ArrowShapes.NONE, VisualProperties.parseValue(VisualProperties.EDGE_SOURCE_ARROW_SHAPE, 0));
             assertEquals(ArrowShapes.NONE, VisualProperties.parseValue(VisualProperties.EDGE_TARGET_ARROW_SHAPE, "NotAShape!"));
             assertEquals(ArrowShapes.NONE, VisualProperties.parseValue(VisualProperties.EDGE_SOURCE_ARROW_SHAPE, ""));
-            assertEquals(ArrowShapes.NONE, VisualProperties.parseValue(VisualProperties.EDGE_TARGET_ARROW_SHAPE, null));
-            assertEquals(ArrowShapes.NONE, VisualProperties.parseValue(VisualProperties.EDGE_SOURCE_ARROW_SHAPE, undefined));
+            assertEquals(null, VisualProperties.parseValue(VisualProperties.EDGE_TARGET_ARROW_SHAPE, null));
+            assertEquals(null, VisualProperties.parseValue(VisualProperties.EDGE_SOURCE_ARROW_SHAPE, undefined));
         }
         
         public function testToExportValue():void {

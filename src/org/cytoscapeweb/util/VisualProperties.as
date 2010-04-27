@@ -162,22 +162,22 @@ package org.cytoscapeweb.util {
          * @param value the visual property value to be converted.
          */
         public static function parseValue(name:String, value:*):* {
-        	if (value === undefined) value = null;
-
-            if (isColor(name)) {
-            	var color:uint = Utils.rgbColorAsUint(value);
-            	// Add alpha, which is required by for most of the colors:
-            	if (name != BACKGROUND_COLOR) color += 0xff000000;
-                value = color;
-            } else if (isNumber(name)) {
-            	value = Number(value);
-            } else if (name == VisualProperties.NODE_SHAPE) {
-                value = NodeShapes.parse(value);
-            } else if (name == VisualProperties.EDGE_SOURCE_ARROW_SHAPE ||
-                       name == VisualProperties.EDGE_TARGET_ARROW_SHAPE) {
-                value = ArrowShapes.parse(value);
-            } else if (isString(name)) {
-                if (value == null) value = "";
+        	if (value != null) {
+                if (isColor(name)) {
+                	var color:uint = Utils.rgbColorAsUint(value);
+                	// Add alpha, which is required by for most of the colors:
+                	if (name != BACKGROUND_COLOR) color += 0xff000000;
+                    value = color;
+                } else if (isNumber(name)) {
+                	value = Number(value);
+                } else if (name == VisualProperties.NODE_SHAPE) {
+                    value = NodeShapes.parse(value);
+                } else if (name == VisualProperties.EDGE_SOURCE_ARROW_SHAPE ||
+                           name == VisualProperties.EDGE_TARGET_ARROW_SHAPE) {
+                    value = ArrowShapes.parse(value);
+                } else if (isString(name)) {
+                    if (value == null) value = "";
+                }
             }
             
             return value;

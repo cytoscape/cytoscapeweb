@@ -308,7 +308,11 @@ package org.cytoscapeweb.view {
         }
         
         private function getLayout():String {
-            return configProxy.currentLayout;
+            return configProxy.currentLayout.name;
+        }
+        
+        private function applyLayout(name:Object, options:Object):void {
+            sendNotification(ApplicationFacade.APPLY_LAYOUT, { name: name, options: options });
         }
         
         private function setVisualStyle(style:Object):void {
@@ -329,10 +333,6 @@ package org.cytoscapeweb.view {
         
         private function getVisualStyleBypass():Object {
             return configProxy.visualStyleBypass.toObject();
-        }
-        
-        private function applyLayout(name:String):void {
-            sendNotification(ApplicationFacade.APPLY_LAYOUT, name);
         }
         
         private function addNode(x:Number, y:Number, 

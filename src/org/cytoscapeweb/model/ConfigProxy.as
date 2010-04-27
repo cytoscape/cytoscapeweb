@@ -124,10 +124,6 @@ package org.cytoscapeweb.model {
             config.edgesMerged = merged;
         }
         
-        public function get layouts():Array {
-            return config.layouts;
-        }
-        
         public function get visualStyle():VisualStyleVO {
             return config.visualStyle;
         }
@@ -147,25 +143,37 @@ package org.cytoscapeweb.model {
             config.visualStyle.visualStyleBypass = bypass;
         }
         
-        public function get currentLayout():String {
+        public function get currentLayout():Object {
             return config.currentLayout;
         }
 
-        public function set currentLayout(layout:String):void {
-            if (layout != null) {
-                layout = StringUtil.trim(layout).toLowerCase();
-                
-                switch (layout) {
-                    case Layouts.CIRCLE.toLowerCase():         layout = Layouts.CIRCLE; break;
-                    case Layouts.CIRCLE_TREE.toLowerCase():    layout = Layouts.CIRCLE_TREE; break;
-                    case Layouts.FORCE_DIRECTED.toLowerCase(): layout = Layouts.FORCE_DIRECTED; break;
-                    case Layouts.PRESET.toLowerCase():         layout = Layouts.PRESET; break;
-                    case Layouts.RADIAL.toLowerCase():         layout = Layouts.RADIAL; break;
-                    case Layouts.TREE.toLowerCase():           layout = Layouts.TREE; break;
-                }
-            }
+        public function set currentLayout(layout:Object):void {
+            var name:String, options:Object;
             
-            if (layout != null) {
+            if (layout is String) {
+                name = String(layout);
+                options = {};
+                layout = {};
+            } else {
+                name = layout.name;
+                options = layout.options;
+            }
+            name = StringUtil.trim(name).toLowerCase();
+            
+            if (name != null) {
+                switch (name) {
+                    case Layouts.CIRCLE.toLowerCase():         name = Layouts.CIRCLE; break;
+                    case Layouts.CIRCLE_TREE.toLowerCase():    name = Layouts.CIRCLE_TREE; break;
+                    case Layouts.FORCE_DIRECTED.toLowerCase(): name = Layouts.FORCE_DIRECTED; break;
+                    case Layouts.PRESET.toLowerCase():         name = Layouts.PRESET; break;
+                    case Layouts.RADIAL.toLowerCase():         name = Layouts.RADIAL; break;
+                    case Layouts.TREE.toLowerCase():           name = Layouts.TREE; break;
+                }
+                
+                options = Layouts.mergeOptions(name, options);
+                layout.name = name;
+                layout.options = options;
+                
                 config.currentLayout = layout;
             }
         }

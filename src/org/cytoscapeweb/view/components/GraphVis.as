@@ -236,7 +236,7 @@ package org.cytoscapeweb.view.components {
             tooltipControl.showDelay = _style.getValue(VisualProperties.TOOLTIP_DELAY) as Number;
         }
 
-        public function applyLayout(name:String):Transition {
+        public function applyLayout(name:String, options:Object):Transition {
             continuousUpdates = false;
 
             // Remove previous layouts:
@@ -251,8 +251,7 @@ package org.cytoscapeweb.view.components {
             var layout:Layout, fdl:ForceDirectedLayout;
             
             if (name === Layouts.PRESET) {
-                layout = createLayout(name, data);
-                PresetLayout(layout).points = _config.nodesPoints;
+                layout = createLayout(name, options, data);
                 _appliedLayouts.push(layout);
             } else {
                 if (name === Layouts.FORCE_DIRECTED) {
@@ -268,7 +267,7 @@ package org.cytoscapeweb.view.components {
                     data.edges.visit(function(e:EdgeSprite):void {
                        e.props.spring = null;
                     });
-                    fdl = ForceDirectedLayout(createLayout(name, data));
+                    fdl = ForceDirectedLayout(createLayout(name, options, data));
                     _appliedLayouts.push(fdl);
                 } else {
                     // Create one layout for each disconnected component:
@@ -278,7 +277,7 @@ package org.cytoscapeweb.view.components {
                             var rect:Rectangle = GraphUtils.calculateGraphDimension(d.nodes, name, _style); 
                             var root:NodeSprite = d.nodes[0];
                             
-                            layout = createLayout(name, d, rect, root);
+                            layout = createLayout(name, options, d, rect, root);
                             _appliedLayouts.push(layout);
                         }
                     }
@@ -303,7 +302,7 @@ package org.cytoscapeweb.view.components {
             seq.addEventListener(TransitionEvent.END, function(evt:TransitionEvent):void {
                 evt.currentTarget.removeEventListener(evt.type, arguments.callee);
 
-                if (fdl != null) operateForceDirectedLayout(fdl);
+                if (fdl != null) operateForceDirectedLayout(fdl, options);
 
                 if (_layoutName != Layouts.PRESET)
                     realignGraph();
@@ -444,6 +443,7 @@ package org.cytoscapeweb.view.components {
          * and edge settings to be applied in the demo.
          */
         private function createLayout(name:String,
+                                      options:Object,
                                       d:Data,
                                       layoutBounds:Rectangle=null,
                                       layoutRoot:DataSprite=null):Layout {
@@ -457,15 +457,20 @@ package org.cytoscapeweb.view.components {
                 
         		var fdl:ForceDirectedLayout = new ForceDirectedLayout(true, 5, new Simulation());
                 fdl.ticksPerIteration = 1.5,
-                fdl.simulation.dragForce.drag = 0.4;
-                fdl.simulation.nbodyForce.gravitation = -500;
-                fdl.simulation.nbodyForce.minDistance = 1;
-                fdl.simulation.nbodyForce.maxDistance = 10000;
-                fdl.defaultParticleMass = 3;
-                fdl.defaultSpringTension = 0.1;
+                fdl.simulation.dragForce.drag = options.drag;
+                fdl.simulation.nbodyForce.gravitation = options.gravitation;
+                fdl.simulation.nbodyForce.minDistance = options.minDistance;
+                fdl.simulation.nbodyForce.maxDistance = options.maxDistance;
+                fdl.defaultParticleMass = options.mass;
+                fdl.defaultSpringTension = options.tension;
 
-                var desiredLength:Number = 60 + (el > 0 ? 2*Math.log(el) : 0);
-                fdl.defaultSpringLength = Math.min(200, desiredLength);
+                var length:Number = options.restLength;
+                
+                if (isNaN(length)) {
+                    length = 60 + (el > 0 ? 2*Math.log(el) : 0);
+                    length = Math.min(200, length);
+                }
+                fdl.defaultSpringLength = length;
 
                 var tension:Function = fdl.tension;
                 fdl.tension = function(e:EdgeSprite):Number {
@@ -484,13 +489,13 @@ package org.cytoscapeweb.view.components {
                 layout = fdl;
             } else if (name === Layouts.CIRCLE) {
 	            var cl:CircleLayout = new CircleLayout(null, null, false, d);
-                cl.angleWidth = -2 * Math.PI;
+                cl.angleWidth = options.angleWidth;
                 cl.padding = 0;
 
                 layout = cl;
             } else if (name === Layouts.CIRCLE_TREE) {
 	            var ctl:CircleLayout = new CircleLayout(null, null, true, d);
-                ctl.angleWidth = -2 * Math.PI;
+                ctl.angleWidth = options.angleWidth;
                 ctl.padding = 0;
                 
                 layoutBounds.height = Math.max(200, layoutBounds.height);
@@ -498,18 +503,24 @@ package org.cytoscapeweb.view.components {
 
                 layout = ctl;
             } else if (name === Layouts.RADIAL) {
-                var r:Number = Math.max(60, _initialWidth/8);
+                var r:Number = options.radius;
+                if (isNaN(r)) r = Math.max(60, _initialWidth/8);
+                
                 var rtl:RadialTreeLayout = new RadialTreeLayout(r, true, false, d);
-                rtl.angleWidth = -2 * Math.PI;
+                rtl.angleWidth = options.angleWidth;
                 
                 layout = rtl;
             } else if (name === Layouts.TREE) {
-                var nltl:NodeLinkTreeLayout = new NodeLinkTreeLayout(Orientation.TOP_TO_BOTTOM, 50, 30, 5, d);
+                var nltl:NodeLinkTreeLayout = new NodeLinkTreeLayout(options.orientation,
+                                                                     options.depthSpace,
+                                                                     options.breadthSpace,
+                                                                     options.subtreeSpace,
+                                                                     d);
                 nltl.layoutAnchor = new Point(0, -2 * height/5);
                 
                 layout = nltl;
             } else if (name === Layouts.PRESET) {
-                var psl:PresetLayout = new PresetLayout(_config.nodesPoints);
+                var psl:PresetLayout = new PresetLayout(options.points);
                 
                 layout = psl;
             }
@@ -520,60 +531,62 @@ package org.cytoscapeweb.view.components {
             return layout;
         }
         
-        private function operateForceDirectedLayout(fdl:ForceDirectedLayout):void {
+        private function operateForceDirectedLayout(fdl:ForceDirectedLayout, options:Object):void {
             var startTime:int = getTimer();
-            
-            const MIN_COUNT:uint = 80;
-            const MAX_TIME:uint = 60000;
-            var count:uint = 0, stableCount:uint = 0;
-            
+
             try {
+                var iterations:uint = options.iterations;
+                var maxTime:uint = options.maxTime;
+                var count:uint = 0, stableCount:uint = 0;
+                
                 // Always operate the layout a few times first:
-                while (count++ < MIN_COUNT  && (getTimer()-startTime < MAX_TIME)) {
+                while (count++ < iterations  && (getTimer()-startTime < maxTime)) {
                     fdl.operate();
                 }
                 
                 // Then operate the layout until it's stable:
-                var reset:Boolean = false;
-                storeInitialNodePoints();
-                var stable:Boolean = false;
-                const MAX_M:Number = 1, MAX_D:Number = 1, MAX_L:Number = 240;
-           
-                while ( !stable &&  (getTimer()-startTime < MAX_TIME) ) {
-                    fdl.operate();
-                    count++;
-                    
-                    stable = stable || isLayoutStable();
-                    
-                    if (!stable) {
-                        // Start tuning the Layout, because it's hard to make the
-                        // layout stable with the current values:
-                        var m:Number = fdl.defaultParticleMass;          
-                        var d:Number = fdl.simulation.dragForce.drag;
-                        var l:Number = fdl.defaultSpringLength;
-                        var g:Number = fdl.simulation.nbodyForce.gravitation;
-                        var t:Number = fdl.defaultSpringTension;
-                        
-                        m = fdl.defaultParticleMass = Math.max(MAX_M, m*0.9);
-                        d = fdl.simulation.dragForce.drag = Math.min(MAX_D, d*1.1);
-                        l = fdl.defaultSpringLength = Math.min(MAX_L, l*1.1);
-    
-                        if (m === MAX_M && d === MAX_D && l === MAX_L) {
-                            // It has not worked so far, so decrease gravity/tension and do not verify anymore:
-                            g = fdl.simulation.nbodyForce.gravitation = -10;
-                            //t = fdl.defaultSpringTension = Math.max(0.05, t/2);
-                            stable = true;
-                        }
-                        
-                        trace("\t% Stabilizing ForceDirectedLayout ["+count+"] Grav="+g+" Tens="+t+" Drag="+d+" Mass="+m+" Length="+l);
-                        reset = true;
-                        
+                if (options.autoStabilize) {
+                    var reset:Boolean = false;
+                    storeInitialNodePoints();
+                    var stable:Boolean = false;
+                    const MAX_M:Number = 1, MAX_D:Number = 1, MAX_L:Number = 240;
+               
+                    while ( !stable &&  (getTimer()-startTime < maxTime) ) {
                         fdl.operate();
                         count++;
-                    } else {
-                        // Just consider the layout stable:
-                        stable = true;
-                        break;
+                        
+                        stable = stable || isLayoutStable();
+                        
+                        if (!stable) {
+                            // Start tuning the Layout, because it's hard to make the
+                            // layout stable with the current values:
+                            var m:Number = fdl.defaultParticleMass;          
+                            var d:Number = fdl.simulation.dragForce.drag;
+                            var l:Number = fdl.defaultSpringLength;
+                            var g:Number = fdl.simulation.nbodyForce.gravitation;
+                            var t:Number = fdl.defaultSpringTension;
+                            
+                            m = fdl.defaultParticleMass = Math.max(MAX_M, m*0.9);
+                            d = fdl.simulation.dragForce.drag = Math.min(MAX_D, d*1.1);
+                            l = fdl.defaultSpringLength = Math.min(MAX_L, l*1.1);
+        
+                            if (m === MAX_M && d === MAX_D && l === MAX_L) {
+                                // It has not worked so far, so decrease gravity/tension and do not verify anymore:
+                                g = fdl.simulation.nbodyForce.gravitation = -10;
+                                //t = fdl.defaultSpringTension = Math.max(0.05, t/2);
+                                stable = true;
+                            }
+                            
+                            trace("\t% Stabilizing ForceDirectedLayout ["+count+"] Grav="+g+" Tens="+t+" Drag="+d+" Mass="+m+" Length="+l);
+                            reset = true;
+                            
+                            fdl.operate();
+                            count++;
+                        } else {
+                            // Just consider the layout stable:
+                            stable = true;
+                            break;
+                        }
                     }
                 }
             } catch (err:Error) {

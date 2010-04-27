@@ -28,6 +28,8 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.model.data {
+    import org.cytoscapeweb.util.VisualProperties;
+    
     
     public class PassthroughVizMapperVO extends VizMapperVO {
         
@@ -44,7 +46,10 @@ package org.cytoscapeweb.model.data {
         // ========[ PUBLIC METHODS ]===============================================================
         
         public override function getValue(data:Object):* {
-            return data[attrName];
+            var value:* = data[attrName];
+            value = VisualProperties.parseValue(propName, value);
+            
+            return value;
         }
 
         public override function toObject():Object {

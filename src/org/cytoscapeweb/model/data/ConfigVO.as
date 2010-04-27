@@ -50,20 +50,17 @@ package org.cytoscapeweb.model.data {
         public var nodeTooltipsEnabled:Boolean;
         public var edgeTooltipsEnabled:Boolean;
         public var visualStyle:VisualStyleVO;
-        public var layouts:Array = [Layouts.FORCE_DIRECTED, 
-                                    Layouts.CIRCLE, 
-                                    Layouts.CIRCLE_TREE, 
-                                    Layouts.RADIAL, 
-                                    Layouts.TREE,
-                                    Layouts.PRESET];
-        public var currentLayout:String = Layouts.FORCE_DIRECTED;
+        public var currentLayout:Object;
         public var minZoom:Number = 0.002;
         public var maxZoom:Number = 3;
-        public var nodesPoints:/*nodeId->flash.geom.Point*/Object;
         
         // ========[ CONSTRUCTOR ]==================================================================
         
         public function ConfigVO() {
+            currentLayout = {
+                name: Layouts.FORCE_DIRECTED,
+                options: Layouts.DEFAULT_OPTIONS[Layouts.FORCE_DIRECTED]
+            };
         }
         
         // ========[ PUBLIC METHODS ]===============================================================
