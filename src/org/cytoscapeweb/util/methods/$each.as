@@ -34,7 +34,8 @@ package org.cytoscapeweb.util.methods {
     * The advantage of this method over regular "for" and "while" loops is that it ignores the
     * timeout exceptions that occur when the loop lasts more than 60 seconds.
     * @param listOrLength an array-like object or just the number of times to call the function.
-    * @param fn the callback function to be called each time - e.g. function(i:uint, o:Object):void { }.
+    * @param fn the callback function to be called each time - e.g. function(i:uint, o:Object):Boolean { }.
+    *           If the function return true, the iteration is ended with an early exit.
     * @param mutable if true, indicates that the number of elements in the list may change between each iteration.
     */
     public function $each(listOrLength:*, fn:Function, mutable:Boolean=false):void {
@@ -56,13 +57,13 @@ package org.cytoscapeweb.util.methods {
                 try {
                     if (list != null)
                         while (i < length) {
-                            fn(i, list[i]);
+                            if (fn(i, list[i])) break;
                             i++;
                             if (mutable) length = list.length;
                         }
                     else {
                         while (i < length) {
-                            fn(i, null);
+                            if (fn(i, null)) break;
                             i++;
                         }
                     }

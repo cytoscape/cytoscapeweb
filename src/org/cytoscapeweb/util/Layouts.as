@@ -33,7 +33,6 @@ package org.cytoscapeweb.util {
     import flare.vis.operator.layout.NodeLinkTreeLayout;
     
     
-    
     /**
      * Abstract utility class defining constants for the layout names used by Cytoscape Web.
      */
@@ -73,7 +72,7 @@ package org.cytoscapeweb.util {
                 mass:        3,
                 tension:     0.1,
                 //restLength: 60
-                iterations: 80,
+                iterations: 400,
                 maxTime:    60000,
                 autoStabilize: true
             },

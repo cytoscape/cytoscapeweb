@@ -36,7 +36,6 @@ package org.cytoscapeweb.view.components {
     import flare.animate.Transitioner;
     import flare.display.DirtySprite;
     import flare.display.TextSprite;
-    import flare.util.Orientation;
     import flare.util.Property;
     import flare.util.Shapes;
     import flare.vis.Visualization;
@@ -55,11 +54,9 @@ package org.cytoscapeweb.view.components {
     import flash.display.DisplayObject;
     import flash.geom.Point;
     import flash.geom.Rectangle;
-    import flash.utils.getTimer;
     
     import org.cytoscapeweb.model.data.ConfigVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
-    import org.cytoscapeweb.model.methods.error;
     import org.cytoscapeweb.util.Edges;
     import org.cytoscapeweb.util.GraphUtils;
     import org.cytoscapeweb.util.Groups;
@@ -93,7 +90,6 @@ package org.cytoscapeweb.view.components {
         private var _tooltipControl:TooltipControl;
         private var _initialWidth:Number;
         private var _initialHeight:Number;
-        private var _nodePoints:Object;
         private var _dragRect:Rectangle;
         
         private var _dataList:Array = [/*flare.vis.data.Data*/];
@@ -286,7 +282,7 @@ package org.cytoscapeweb.view.components {
             
             // The layouts must be enabled in order to allow a layout change:
             for each (layout in _appliedLayouts) {
-                layout.enabled = true;
+                layout.enabled = false;
                 operators.add(layout);
             }
 
@@ -302,17 +298,10 @@ package org.cytoscapeweb.view.components {
             seq.addEventListener(TransitionEvent.END, function(evt:TransitionEvent):void {
                 evt.currentTarget.removeEventListener(evt.type, arguments.callee);
 
-                if (fdl != null) operateForceDirectedLayout(fdl, options);
+                for each (layout in _appliedLayouts) layout.operate();
+                if (_layoutName != Layouts.PRESET) realignGraph();
 
-                if (_layoutName != Layouts.PRESET)
-                    realignGraph();
-                
-                // After new layout is rendered, disable it so users can drag the nodes:
-                for each (layout in _appliedLayouts) {
-                    layout.enabled = false;
-                }
                 DirtySprite.renderDirty();
-                
                 updateLabels();
 
                 if (_dataList != null && _dataList.length > 0) {
@@ -453,10 +442,12 @@ package org.cytoscapeweb.view.components {
         	   layoutBounds = new Rectangle(bounds.x, bounds.y, _initialWidth, _initialHeight);
 
             if (name === Layouts.FORCE_DIRECTED) {
-                var el:uint = data.edges.length;
+                var iter:uint = Math.max(1, options.iterations);
+                var maxTime:uint = options.maxTime;
+                var autoStab:Boolean = options.autoStabilize;
                 
-        		var fdl:ForceDirectedLayout = new ForceDirectedLayout(true, 5, new Simulation());
-                fdl.ticksPerIteration = 1.5,
+        		var fdl:ForceDirectedLayout = new ForceDirectedLayout(true, iter, maxTime, autoStab, new Simulation());
+                //fdl.ticksPerIteration = 1,
                 fdl.simulation.dragForce.drag = options.drag;
                 fdl.simulation.nbodyForce.gravitation = options.gravitation;
                 fdl.simulation.nbodyForce.minDistance = options.minDistance;
@@ -465,6 +456,7 @@ package org.cytoscapeweb.view.components {
                 fdl.defaultSpringTension = options.tension;
 
                 var length:Number = options.restLength;
+                var el:uint = data.edges.length;
                 
                 if (isNaN(length)) {
                     length = 60 + (el > 0 ? 2*Math.log(el) : 0);
@@ -529,100 +521,6 @@ package org.cytoscapeweb.view.components {
             layout.layoutRoot = layoutRoot;
 
             return layout;
-        }
-        
-        private function operateForceDirectedLayout(fdl:ForceDirectedLayout, options:Object):void {
-            var startTime:int = getTimer();
-
-            try {
-                var iterations:uint = options.iterations;
-                var maxTime:uint = options.maxTime;
-                var count:uint = 0, stableCount:uint = 0;
-                
-                // Always operate the layout a few times first:
-                while (count++ < iterations  && (getTimer()-startTime < maxTime)) {
-                    fdl.operate();
-                }
-                
-                // Then operate the layout until it's stable:
-                if (options.autoStabilize) {
-                    var reset:Boolean = false;
-                    storeInitialNodePoints();
-                    var stable:Boolean = false;
-                    const MAX_M:Number = 1, MAX_D:Number = 1, MAX_L:Number = 240;
-               
-                    while ( !stable &&  (getTimer()-startTime < maxTime) ) {
-                        fdl.operate();
-                        count++;
-                        
-                        stable = stable || isLayoutStable();
-                        
-                        if (!stable) {
-                            // Start tuning the Layout, because it's hard to make the
-                            // layout stable with the current values:
-                            var m:Number = fdl.defaultParticleMass;          
-                            var d:Number = fdl.simulation.dragForce.drag;
-                            var l:Number = fdl.defaultSpringLength;
-                            var g:Number = fdl.simulation.nbodyForce.gravitation;
-                            var t:Number = fdl.defaultSpringTension;
-                            
-                            m = fdl.defaultParticleMass = Math.max(MAX_M, m*0.9);
-                            d = fdl.simulation.dragForce.drag = Math.min(MAX_D, d*1.1);
-                            l = fdl.defaultSpringLength = Math.min(MAX_L, l*1.1);
-        
-                            if (m === MAX_M && d === MAX_D && l === MAX_L) {
-                                // It has not worked so far, so decrease gravity/tension and do not verify anymore:
-                                g = fdl.simulation.nbodyForce.gravitation = -10;
-                                //t = fdl.defaultSpringTension = Math.max(0.05, t/2);
-                                stable = true;
-                            }
-                            
-                            trace("\t% Stabilizing ForceDirectedLayout ["+count+"] Grav="+g+" Tens="+t+" Drag="+d+" Mass="+m+" Length="+l);
-                            reset = true;
-                            
-                            fdl.operate();
-                            count++;
-                        } else {
-                            // Just consider the layout stable:
-                            stable = true;
-                            break;
-                        }
-                    }
-                }
-            } catch (err:Error) {
-                if (err.errorID === 1502 || err.errorID === 1503)
-                    trace("[ visit ] Timeout at iteration " + count + ": " + err.getStackTrace());
-                else
-                    error("Error operating ForceDirected Layout: "+err.message, err.errorID, err.name, err.getStackTrace());
-            }
-            
-            var elapsed:Number = getTimer() - startTime;
-            trace("% >> ForceDirectedLayout runned "+count+"x for "+elapsed/1000+" seconds.");
-        }
-        
-        private function isLayoutStable():Boolean {
-            var stable:Boolean = true;
-            var nodes:DataList = data.nodes;
-            
-            if (nodes.length > 1) {
-                for each (var n:NodeSprite in nodes) {
-                    var p1:Point = _nodePoints[n.data.id];
-                    var p2:Point = new Point(n.x, n.y);
-                    _nodePoints[n.data.id] = p2;
-                    
-                    var d:Number = Point.distance(p1, p2);
-                    if (d > 80) stable = false;
-                }
-            }
-            
-            return stable;
-        }
-        
-        private function storeInitialNodePoints():void {
-            _nodePoints = {};
-            for each (var n:NodeSprite in data.nodes) {
-                _nodePoints[n.data.id] = new Point(n.x, n.y);
-            }
         }
         
         /**
