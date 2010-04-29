@@ -581,11 +581,20 @@ function runGraphTests(moduleName, vis, options) {
     });
     
     asyncTest("Layout", function() {
-    	expect(2);
+    	expect(6);
     	vis.addListener("layout", function(evt) {
 			start();
-			same("Tree", evt.value, "evt.value layout");
-			same("Tree", vis.layout(), "layout()");
+			var elay = evt.value;
+			var lay = vis.layout();
+			var opt = lay.options;
+
+			same(lay.name, "Tree", "layout name");
+			same(opt.orientation, "topToBottom", "orientation");
+			ok(opt.depthSpace > 0, "depthSpace > 0");
+			ok(opt.breadthSpace > 0, "breadthSpace > 0");
+			ok(opt.subtreeSpace > 0, "subtreeSpace > 0");
+			
+			same(elay, lay, "evt layout object");
 			stop();
 			
 			vis.removeListener("layout");

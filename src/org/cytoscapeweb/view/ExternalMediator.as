@@ -425,8 +425,6 @@ package org.cytoscapeweb.view {
         
         private function addCallbacks():void {
             if (ExternalInterface.available) {
-                ExternalInterface.marshallExceptions = true;
-                
                 var functions:Array = [ "draw",
                                         "addContextMenuItem", "removeContextMenuItem", 
                                         "select", "deselect", 

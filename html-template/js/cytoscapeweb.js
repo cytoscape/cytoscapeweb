@@ -1748,7 +1748,7 @@
      * <p><label><strong>layout:</strong></label> Fired after a layout is applied (see {@link org.cytoscapeweb.Visualization#layout}.</p>
      * <table>
      *     <tr><th>group</th><th>target</th><th>value</th></tr>
-     *     <tr><td><code>none</code></td><td><code>undefined</code></td><td><code>The applied layout name</code></td></tr>
+     *     <tr><td><code>none</code></td><td><code>undefined</code></td><td><code>The applied {@link org.cytoscapeweb.Layout} object</code></td></tr>
      * </Table>
      * <p><label><strong>visualstyle:</strong></label> Fired after a visual style is applied (see {@link org.cytoscapeweb.Visualization#visualStyle}.</p>
      * <table>
@@ -2149,10 +2149,12 @@
      *     </ul>
      * <li><b>Preset:</b></li>
      *     <ul class="options">
+     *         <li><code>fitToScreen</code>: If <code>true</code>, the network is centered, and can be zoomed out to fit the screen.</li>
      *         <li><code>points</code>: A map where you set each node <code>id</code> and their <code>x</code>/<code>y</code>
      *                                  coordinate points. Example:<br>
-     * <pre><code class="js"
+     * <pre class="example ln-"><code class="js"
      * >var options = {
+     *     fitToScreen: false,
      *     points: {
      *         "1": { x:  10, y:  60 },
      *         "2": { x: -54, y:  32 },

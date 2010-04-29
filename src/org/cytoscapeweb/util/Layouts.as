@@ -55,8 +55,8 @@ package org.cytoscapeweb.util {
                 angleWidth: 360
             },
             Radial:  {
-                angleWidth: 360
-                //radius: 60
+                angleWidth: 360,
+                radius: "auto"
             },
             Tree:  {
                 orientation:  Orientation.TOP_TO_BOTTOM, // "leftToRight","rightToLeft","topToBottom","bottomToTop"
@@ -71,13 +71,14 @@ package org.cytoscapeweb.util {
                 maxDistance: 10000,
                 mass:        3,
                 tension:     0.1,
-                //restLength: 60,
+                restLength: "auto",
                 iterations: 400,
                 maxTime:    30000, // milliseconds
                 autoStabilize: true
             },
             Preset: {
-                points: { /*node_id -> {x,y}*/ }
+                points: { /*node_id -> {x,y}*/ },
+                fitToScreen: true
             }
         };
         

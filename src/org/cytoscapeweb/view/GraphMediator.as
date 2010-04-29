@@ -367,7 +367,7 @@ package org.cytoscapeweb.view {
             // Call external listener:
             if ($hasListener("layout")) {
                 var body:Object = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
-                                    argument: { type: "layout", value: configProxy.currentLayout.name } };
+                                    argument: { type: "layout", value: configProxy.currentLayout } };
                 sendNotification(ApplicationFacade.CALL_EXTERNAL_INTERFACE, body);
             }
         }

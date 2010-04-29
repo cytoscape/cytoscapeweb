@@ -232,7 +232,7 @@ package org.cytoscapeweb.view.components {
             tooltipControl.showDelay = _style.getValue(VisualProperties.TOOLTIP_DELAY) as Number;
         }
 
-        public function applyLayout(obj:Object):Transition {
+        public function applyLayout(layoutObj:Object):Transition {
             continuousUpdates = false;
 
             // Remove previous layouts:
@@ -243,11 +243,12 @@ package org.cytoscapeweb.view.components {
                 _appliedLayouts = [];
             }
 
-            _layoutName = obj.name;
+            _layoutName = layoutObj.name;
+            
             var layout:Layout, fdl:ForceDirectedLayout;
             
             if (_layoutName === Layouts.PRESET) {
-                layout = createLayout(obj, data);
+                layout = createLayout(layoutObj, data);
                 _appliedLayouts.push(layout);
             } else {
                 if (_layoutName === Layouts.FORCE_DIRECTED) {
@@ -263,7 +264,7 @@ package org.cytoscapeweb.view.components {
                     data.edges.visit(function(e:EdgeSprite):void {
                        e.props.spring = null;
                     });
-                    fdl = ForceDirectedLayout(createLayout(obj, data));
+                    fdl = ForceDirectedLayout(createLayout(layoutObj, data));
                     _appliedLayouts.push(fdl);
                 } else {
                     // Create one layout for each disconnected component:
@@ -273,7 +274,7 @@ package org.cytoscapeweb.view.components {
                             var rect:Rectangle = GraphUtils.calculateGraphDimension(d.nodes, _layoutName, _style); 
                             var root:NodeSprite = d.nodes[0];
                             
-                            layout = createLayout(obj, d, rect, root);
+                            layout = createLayout(layoutObj, d, rect, root);
                             _appliedLayouts.push(layout);
                         }
                     }
@@ -303,8 +304,10 @@ package org.cytoscapeweb.view.components {
 
                 DirtySprite.renderDirty();
                 updateLabels();
+                
+                var repack:Boolean = _layoutName !== Layouts.PRESET;
 
-                if (_dataList != null && _dataList.length > 0) {
+                if ( repack && _dataList != null && _dataList.length > 0) {
                     GraphUtils.repackDisconnected(_dataList,
                                                   stage.stageWidth,
                                                   !_config.nodeLabelsVisible,

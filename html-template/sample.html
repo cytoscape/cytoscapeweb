@@ -63,7 +63,27 @@
 
             function draw(data) {
             	$("input, select").attr("disabled", true);
-                options.layout = { name: $("#layouts").val(), options: {} };
+                if (data) {
+                    var xml = $(data);
+                    if (xml.length > 0 && xml[0].tagName === "GRAPHML") {
+                        options.layout = { name: $("#layouts").val(), options: {} };
+                    } else {
+                    	//options.layout = { name: "Preset", options: {} };
+                    }
+                }
+                
+                var pp = {
+                        "a01": {x: 0, y: 0 },    
+                        "a02": {x: 110, y: 200 },   
+                        "a03": {x: 210, y: 200 },
+                        "a04": {x: 310, y: 200 },
+
+                        "a08": {x: 310, y: 300 },
+                        "a07": {x: 210, y: 300 },
+                        "a06": {x: 110, y: 300 },
+                        "a05": {x: 0, y: 300 }
+                    };
+                //options.layout = { name: "preset", options: { points:pp, fitToScreen: false } };
                 
                 if (data) {
                 	options.network = data;
@@ -101,7 +121,8 @@
 
                 vis.ready(function() {
                     showElapsedTime();
-                    $("#layouts").val(options.layout.name);
+                    var layout = vis.layout();console.log(layout)
+                    $("#layouts").val(layout.name);
                     $("input, select").attr("disabled", false);
                     $("#updateVisualStyle").attr("disabled", true);
                     $("#mergeEdges").attr("checked", vis.edgesMerged());
@@ -145,8 +166,23 @@
                     draw();
                 });
                 $("#reapplyLayout").click(function(evt) {
-            	    d1 = new Date();               
-            	    vis.layout({ name: $("#layouts").val() });
+            	    d1 = new Date();
+                    var layout = vis.layout();               
+            	    vis.layout(layout);
+                    /*
+                    var pp = {
+                            "a01": {x: 0, y: 0 },    
+                            "a02": {x: 110, y: 200 },   
+                            "a03": {x: 210, y: 200 },
+                            "a04": {x: 310, y: 200 },
+
+                            "a08": {x: 310, y: 300 },
+                            "a07": {x: 210, y: 300 },
+                            "a06": {x: 110, y: 300 },
+                            "a05": {x: 0, y: 300 }
+                        };
+                    vis.layout({ name: "preset", options: { points:pp } });
+                    */
                 });
                 $("#mergeEdges").change(function(evt) {
                     vis.edgesMerged($("#mergeEdges").is(":checked"));
@@ -265,6 +301,7 @@
                                 <option value="yeast20.xml">Yeast 20</option>
                                 <option value="yeast100.xml">Yeast 100</option>
                                 <option value="interactions.sif">Interactions (SIF)</option>
+                                <option value="network_2.xgmml" selected="selected">XGMML</option>
                                 <option value="1000.xml">1K nodes | 2K edges</option>
                                 <option value="2000.xml">2K nodes | 3K edges</option>
                                 <option value="30K_edges.xml">1K nodes | 30K edges</option>
@@ -283,6 +320,7 @@
                                 <option value="CircleTree">Circle Tree</option>
                                 <option value="Radial">Radial</option>
                                 <option value="Tree">Tree</option>
+                                <option value="Preset">Preset</option>
                             </select>
                         </div>
                         <div>

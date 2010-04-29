@@ -477,7 +477,7 @@ package org.cytoscapeweb.model.converters {
                 	if (!isNaN(x) && !isNaN(y)) {
                 	    var p:Point = new Point(x, y);
                 	    if (_points == null) _points = {};
-                	    _points[id] = p;
+                	    _points[id] = { x: p.x, y: p.y };
                     }
                 }
             }

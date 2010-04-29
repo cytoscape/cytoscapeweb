@@ -39,12 +39,10 @@ package org.cytoscapeweb.view.components {
 	import flare.vis.data.EdgeSprite;
 	import flare.vis.data.NodeSprite;
 	
-	import flash.display.Graphics;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import flash.utils.getTimer;
 	
 	import mx.core.UIComponent;
 	
@@ -53,6 +51,7 @@ package org.cytoscapeweb.view.components {
 	import org.cytoscapeweb.model.data.VisualStyleVO;
 	import org.cytoscapeweb.util.Edges;
 	import org.cytoscapeweb.util.GraphUtils;
+	import org.cytoscapeweb.util.Layouts;
 	import org.cytoscapeweb.util.Nodes;
 	import org.cytoscapeweb.util.methods.$each;
 	
@@ -114,8 +113,13 @@ package org.cytoscapeweb.view.components {
           
             par.addEventListener(TransitionEvent.END, function(evt:TransitionEvent):void {
             	evt.currentTarget.removeEventListener(evt.type, arguments.callee);
-            	zoomToFit();
-                centerGraph();
+            	
+            	var layout:Object = _config.currentLayout;
+            	if (layout.name !== Layouts.PRESET || layout.options.fitToScreen === true) {
+                	zoomToFit();
+                    centerGraph();
+                }
+                
                 dispatchEvent(new GraphViewEvent(GraphViewEvent.LAYOUT_COMPLETE));
             });
             

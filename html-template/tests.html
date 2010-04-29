@@ -64,6 +64,7 @@
 
         $.get("fixtures/test1.graphml", function(xml){
             options1.network = xml;
+            options1.layout = { name: "circle", options: {} };
             vis1.draw(options1);
         });
         
