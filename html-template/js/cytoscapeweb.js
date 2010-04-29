@@ -168,6 +168,7 @@
          * @description
          * <p>Just remember that you probably want to register a callback function with {@link org.cytoscapeweb.Visualization#ready}
          * before calling <code>draw()</code>.</p>
+         * 
          * @example
          * var vis = new org.cytoscapeweb.Visualization("container-id");
          * vis.ready(function () {
@@ -183,7 +184,13 @@
          *                                              <a href="http://cytoscape.wodaklab.org/wiki/Cytoscape_User_Manual/Network_Formats/" target="_blank">SIF</a>.
          *                                              Only this option is mandatory.</li>
          *                    <li><code>visualStyle</code>: an optional {@link org.cytoscapeweb.VisualStyle} object to be applied on this network.</li>
-         *                    <li><code>layout</code>: an optional {@link org.cytoscapeweb.Layout} name to be applied on this network. The default is "ForceDirected"</li>
+         *                    <li><code>layout</code>: an optional {@link org.cytoscapeweb.Layout} object, or just the layout name.
+         *                                             The default is "ForceDirected", unless the network data is an 
+         *                              			   <a href="http://www.cs.rpi.edu/~puninj/XGMML/" target="_blank">XGMML</a>, whose 
+         *                                             <code><a href="http://www.cs.rpi.edu/~puninj/XGMML/draft-xgmml-20010628.html#NodeE" target="_blank">node</a></code>
+         *                                             elements contain
+         *                                             <code><a href="http://www.cs.rpi.edu/~puninj/XGMML/draft-xgmml-20010628.html#GraphicsA" target="_blank">graphics</a></code>
+         *                                             tags with defined <code>x</code> and <code>y</code> attributes. In that case, the "Preset" layout is applied by default.</li>
          *                    <li><code>nodeLabelsVisible</code>: Boolean that defines whether or not the node labels will be visible.
          *                                                        The default value is <code>true</code>.
          *                                                        You can call {@link org.cytoscapeweb.Visualization#nodeLabelsVisible} 
@@ -250,30 +257,46 @@
         },
 
         /**
-         * <p>If the <code>layoutName</code> argument is passed, it applies the layout to the network.
-         * Otherwise it just returns the name of the current one.</p>
+         * <p>If the <code>layout</code> argument is passed, it applies the layout to the network.
+         * Otherwise it just returns the the current layout object.</p>
+         * <p>In order to set a layout, you can send a layout object or just the layout name, 
+         * if you want to use the default options.</p>
+         * <p>See {@link org.cytoscapeweb.Layout} for the available options.</p>
          *
          * @example
+         * // 1. Initialize Cytoscape Web with a Circle layout (default layout options):
          * var vis = new org.cytoscapeweb.Visualization("container-id");
          * vis.draw({ network: '&lt;graphml&gt;...&lt;/graphml&gt;', layout: 'Circle' });
          *
-         * // Get the current layout:
-         * var layout = vis.layout(); // returns 'Circle'
-         * // Apply a new layout:
+         * // 2. Get the current layout:
+         * var layout = vis.layout(); // returns: { name: 'Circle', options: { angleWidth: 360 } };
+         * 
+         * // 3. Apply a new layout, using default options:
          * vis.layout('ForceDirected');
          *
-         * @param {org.cytoscapeweb.Layout} [layoutName] The layout name.
-         * @return <ul><li>The current layout name for <code>layout()</code>.</li>
-         *             <li>The Visualization object for <code>layout({String})</code>.</li></ul>
+         * // 4. Apply a new layout with custom options:
+         * var options = { 
+         *      drag:          0.2,
+         *      gravitation:   -200,
+         *      minDistance:   1,
+         *      maxDistance:   400,
+         *      mass:          2,
+         *      tension:       0.2,
+         *      restLength:    100,
+         *      iterations:    200,
+         *      maxTime:       10000,
+         *      autoStabilize: false
+         * };
+         * vis.layout({ name: 'ForceDirected', options: options });
+         *
+         * @param {Object} [layout] The {@link org.cytoscapeweb.Layout} object or the layout name.
+         * @return <ul><li>The current {@link org.cytoscapeweb.Layout} object for <code>layout()</code>.</li>
+         *             <li>The {@link org.cytoscapeweb.Visualization} object for <code>layout({Object})</code>.</li></ul>
          * @see org.cytoscapeweb.Layout
          */
-        layout: function (/*layoutName, options*/) {
+        layout: function (/*layout*/) {
             var swf = this.swf();
-            if (arguments.length > 0) {
-            	var name = arguments[0], options;
-            	if (arguments.length > 1) { options = arguments[1]; }
-            	swf.applyLayout(name, options); return this;
-            }
+            if (arguments.length > 0) { swf.applyLayout(arguments[0]); return this; }
             else { return swf.getLayout(); }
         },
 
@@ -299,8 +322,8 @@
          * });
          * vis.visualStyle(style);
          * 
-         * @return <ul><li>The visual style object for <code>visualStyle()</code>.</li>
-         *             <li>The Visualization object for <code>visualStyle({Object})</code>.</li></ul>
+         * @return <ul><li>The {@link org.cytoscapeweb.VisualStyle} object for <code>visualStyle()</code>.</li>
+         *             <li>The {@link org.cytoscapeweb.Visualization} object for <code>visualStyle({Object})</code>.</li></ul>
          * @see org.cytoscapeweb.VisualStyle
          * @see org.cytoscapeweb.Visualization#visualStyleBypass
          */
@@ -346,8 +369,8 @@
          *                                                    The visual properties are the same ones used by the VisualStyle objects, except that
          *                                                    <code>global</code> properties cannot be bypassed and are just ignored. Another difference is that you
          *                                                    cannot set visual mappers, but only static values.
-         * @return <ul><li>The bypass object for <code>visualStyleBypass()</code>.</li>
-         *             <li>The Visualization instance for <code>visualStyleBypass({Object})</code>.</li></ul>
+         * @return <ul><li>The {@link org.cytoscapeweb.VisualStyleBypass} object for <code>visualStyleBypass()</code>.</li>
+         *             <li>The {@link org.cytoscapeweb.Visualization} instance for <code>visualStyleBypass({Object})</code>.</li></ul>
          * @see org.cytoscapeweb.VisualStyleBypass
          * @see org.cytoscapeweb.Visualization#visualStyle
          */
@@ -362,7 +385,7 @@
          * <p>If not, it just returns a boolean value indicating whether or not the control is visible.</p>
          * @param {Boolean} [visible] true to show it and false to hide it.
          * @return <ul><li>A boolean value for <code>panZoomControlVisible()</code>.</li>
-         *             <li>The Visualization object for <code>panZoomControlVisible({Boolean})</code>.</li></ul>
+         *             <li>The {@link org.cytoscapeweb.Visualization} object for <code>panZoomControlVisible({Boolean})</code>.</li></ul>
          */
         panZoomControlVisible: function (/*visible*/) {
             var swf = this.swf();
@@ -375,7 +398,7 @@
          * <p>If not, it returns a boolean value indicating whether or not the edges are merged.</p>
          * @param {Boolean} [merged] true to merge the edges or false to unmerge them.
          * @return <ul><li>A boolean value for <code>edgesMerged()</code>.</li>
-         *             <li>The Visualization object for <code>edgesMerged({Boolean})</code>.</li></ul>
+         *             <li>The {@link org.cytoscapeweb.Visualization} object for <code>edgesMerged({Boolean})</code>.</li></ul>
          */
         edgesMerged: function (/*merged*/) {
             var swf = this.swf();
@@ -388,7 +411,7 @@
          * <p>If not, it returns a boolean value indicating whether or not the node labels are visible.</p>
          * @param {Boolean} [visible] true to show the labels or false to hide them.
          * @return <ul><li>A boolean value for <code>nodeLabelsVisible()</code>.</li>
-         *             <li>The Visualization object for <code>nodeLabelsVisible({Boolean})</code>.</li></ul>
+         *             <li>The {@link org.cytoscapeweb.Visualization} object for <code>nodeLabelsVisible({Boolean})</code>.</li></ul>
          */
         nodeLabelsVisible: function (/*visible*/) {
             var swf = this.swf();
@@ -401,7 +424,7 @@
          * <p>If not, it returns a boolean value indicating whether or not the edge labels are visible.</p>
          * @param {Boolean} [visible] true to show the labels or false to hide them.
          * @return <ul><li>A boolean value for <code>edgeLabelsVisible()</code>.</li>
-         *             <li>The Visualization object for <code>edgeLabelsVisible({Boolean})</code>.</li></ul>
+         *             <li>The {@link org.cytoscapeweb.Visualization} object for <code>edgeLabelsVisible({Boolean})</code>.</li></ul>
          */
         edgeLabelsVisible: function (/*visible*/) {
             var swf = this.swf();
@@ -414,7 +437,7 @@
          * <p>If not, it returns a boolean value indicating whether or not the node tooltips are enabled.</p>
          * @param {Boolean} [enabled] true to enable the tooltips or false to disable them.
          * @return <ul><li>A boolean value for <code>nodeTooltipsEnabled()</code>.</li>
-         *             <li>The Visualization object for <code>nodeTooltipsEnabled({Boolean})</code>.</li></ul>
+         *             <li>The {@link org.cytoscapeweb.Visualization} object for <code>nodeTooltipsEnabled({Boolean})</code>.</li></ul>
          */
         nodeTooltipsEnabled: function (/*enabled*/) {
             var swf = this.swf();
@@ -427,7 +450,7 @@
          * <p>If not, it returns a boolean value indicating whether or not the edge tooltips are enabled.</p>
          * @param {Boolean} [enabled] true to enable the tooltips or false to disable them.
          * @return <ul><li>A boolean value for <code>edgeTooltipsEnabled()</code>.</li>
-         *             <li>The Visualization object for <code>edgeTooltipsEnabled({Boolean})</code>.</li></ul>
+         *             <li>The {@link org.cytoscapeweb.Visualization} object for <code>edgeTooltipsEnabled({Boolean})</code>.</li></ul>
          */
         edgeTooltipsEnabled: function (/*enabled*/) {
             var swf = this.swf();
@@ -448,7 +471,7 @@
          *                            If <code>false</code>, the pan mode is turned off - clicking and dragging the background
          *                            will start a drag-selection action.
          * @return <ul><li>A boolean value for <code>panEnabled()</code>.</li>
-         *             <li>The Visualization object for <code>panEnabled({Boolean})</code>.</li></ul>
+         *             <li>The {@link org.cytoscapeweb.Visualization} object for <code>panEnabled({Boolean})</code>.</li></ul>
          * @see org.cytoscapeweb.Visualization#panBy
          * @see org.cytoscapeweb.Visualization#panToCenter
          */
@@ -486,7 +509,7 @@
          * Otherwise it gets the current zoom value.</p>
          * @param {Number} [scale] Value between 0 and 1.
          * @return <ul><li>A number for <code>zoom()</code>.</li>
-         *             <li>The Visualization object for <code>zoom({Number})</code>.</li></ul>
+         *             <li>The {@link org.cytoscapeweb.Visualization} object for <code>zoom({Number})</code>.</li></ul>
          * @see org.cytoscapeweb.Visualization#zoomToFit
          */
         zoom: function (/*scale*/) {
@@ -2051,6 +2074,99 @@
      * @memberOf org.cytoscapeweb.Edge#
      */
      
+    // ===[ Layout ]================================================================================
+    
+    /**
+     * <p>Layouts are just untyped objects.</p>
+     * @example
+     * var layout = {
+     *     name:    "Radial",
+     *     options: { angleWidth: 180, radius: 80 }
+     * };
+     * @class
+     * @name Layout
+     * @type String
+     * @memberOf org.cytoscapeweb
+     * @see org.cytoscapeweb.Visualization#layout
+     */
+    /**
+     * <p>The layout name. This field is mandatory and must be one of:</p>
+     * <ul class="options"><li><code>ForceDirected</code>
+     *     <li><code>Circle</code></li>
+     *     <li><code>CircleTree</code></li>
+     *     <li><code>Radial</code></li>
+     *     <li><code>Tree</code></li>
+     *     <li><code>Preset</code></li></ul>
+     * @property
+     * @name name
+     * @type String
+     * @memberOf org.cytoscapeweb.Layout#
+     */
+    /**
+     * <p>The available options for each layout type are:</p>
+     * <ol class="options">
+     * <li><b>ForceDirected:</b></li>
+     *     <ul class="options">
+     *         <li><code>mass</code>: The default mass value for nodes.</li>
+     *         <li><code>gravitation</code>: The gravitational attraction (or repulsion, for
+     *                                       negative values) between nodes.</li>
+     *         <li><code>tension</code>: The default spring tension for edges.</li>
+     *         <li><code>restLength</code>: The default spring rest length for edges.</li>
+     *         <li><code>drag</code>: The co-efficient for frictional drag forces.</li>
+     *         <li><code>iterations</code>: The number of iterations to run the simulation.</li>
+     *         <li><code>maxTime</code>: The maximum time to run the simulation, in milliseconds.</li>
+     *         <li><code>minDistance</code>: The minimum effective distance over which forces are exerted.
+     *                                       Any lesser distances will be treated as the minimum.</li>
+     *         <li><code>maxDistance</code>: The maximum distance over which forces are exerted. 
+     *                                       Any greater distances will be ignored.</li>
+     *         <li><code>autoStabilize</code>: A common problem with force-directed layouts is that they can be highly unstable.
+     *                                         If this parameter is <code>true</code> and the edges are being stretched too much
+     *                                         between each iteration, Cytoscape Web automatically tries to stabilize 
+     *                                         the network. The stabilization attempt is executed after the determined number
+     *                                         of <code>iterations</code>, until each edge length seems constant or until the 
+     *                                         <code>maxTime</code> is reached. Set <code>false</code> if you think the results
+     *                                         look worse than expected, or if the layout is taking too long to execute.</li>
+     *     </ul>
+     * <li><b>Circle:</b></li>
+     *     <ul class="options">
+     *         <li><code>angleWidth</code>: The angular width of the layout, in degrees.</li>
+     *     </ul>
+     * <li><b>CircleTree:</b></li>
+     *     <ul class="options">
+     *         <li><code>angleWidth</code>: The angular width of the layout, in degrees.</li>
+     *     </ul>
+     * <li><b>Radial:</b></li>
+     *     <ul class="options">
+     *         <li><code>angleWidth</code>: The angular width of the layout, in degrees.</li>
+     *         <li><code>radius</code>: The radius increment between depth levels.</li>
+     *     </ul>
+     * <li><b>Tree:</b></li>
+     *     <ul class="options">
+     *         <li><code>orientation</code>: The orientation of the tree. One of: "leftToRight", "rightToLeft", "topToBottom", "bottomToTop".</li>
+     *         <li><code>depthSpace</code>: The space between depth levels in the tree.</li>
+     *         <li><code>breadthSpace</code>: The space between siblings in the tree.</li>
+     *         <li><code>subtreeSpace</code>: The space between different sub-trees.</li>
+     *     </ul>
+     * <li><b>Preset:</b></li>
+     *     <ul class="options">
+     *         <li><code>points</code>: A map where you set each node <code>id</code> and their <code>x</code>/<code>y</code>
+     *                                  coordinate points. Example:<br>
+     * <pre><code class="js"
+     * >var options = {
+     *     points: {
+     *         "1": { x:  10, y:  60 },
+     *         "2": { x: -54, y:  32 },
+     *         "3": { x: 120, y: -12 }
+     *     }
+     * };</code></pre></li>
+     *     </ul>
+     * </ol>
+     * @property
+     * @name options
+     * @type Object
+     * @memberOf org.cytoscapeweb.Layout#
+     */
+
     // ===[ VisualStyle ]===========================================================================
     
     /**
@@ -2547,26 +2663,5 @@
      * @name ArrowShape
      * @type String
      * @memberOf org.cytoscapeweb
-     */
-    /**
-     * <p>This object represents available network layouts. In actuality, it is just a string.</p>
-     * <p>Its value must be one of:</p>
-     * <ul class="options"><li><code>ForceDirected</code>
-     *     <li><code>Circle</code></li>
-     *     <li><code>CircleTree</code></li>
-     *     <li><code>Radial</code></li>
-     *     <li><code>Tree</code></li>
-     *     <li><code>Preset</code>: This layout is only available when the network was loaded from an 
-     *                              <a href="http://www.cs.rpi.edu/~puninj/XGMML/" target="_blank">XGMML</a> data format, whose 
-     *                              <code><a href="http://www.cs.rpi.edu/~puninj/XGMML/draft-xgmml-20010628.html#NodeE" target="_blank">node</a></code>
-     *                              elements contain
-     *                              <code><a href="http://www.cs.rpi.edu/~puninj/XGMML/draft-xgmml-20010628.html#GraphicsA" target="_blank">graphics</a></code>
-     *                              tags with defined <code>x</code> and <code>y</code> attributes. In this case, by reapplying the "Preset" layout, you can reset
-     *                              the nodes position according to the original x/y values.</li></ul>
-     * @class
-     * @name Layout
-     * @type String
-     * @memberOf org.cytoscapeweb
-     * @see org.cytoscapeweb.Visualization#layout
      */
 })();

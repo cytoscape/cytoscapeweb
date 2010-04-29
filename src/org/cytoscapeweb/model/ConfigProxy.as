@@ -147,16 +147,16 @@ package org.cytoscapeweb.model {
             return config.currentLayout;
         }
 
-        public function set currentLayout(layout:Object):void {
+        public function set currentLayout(obj:Object):void {
             var name:String, options:Object;
             
-            if (layout is String) {
-                name = String(layout);
+            if (obj is String) {
+                name = String(obj);
                 options = {};
-                layout = {};
+                obj = {};
             } else {
-                name = layout.name;
-                options = layout.options;
+                name = obj.name;
+                options = obj.options;
             }
             name = StringUtil.trim(name).toLowerCase();
             
@@ -171,10 +171,10 @@ package org.cytoscapeweb.model {
                 }
                 
                 options = Layouts.mergeOptions(name, options);
-                layout.name = name;
-                layout.options = options;
+                obj.name = name;
+                obj.options = options;
                 
-                config.currentLayout = layout;
+                config.currentLayout = obj;
             }
         }
         

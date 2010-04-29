@@ -177,8 +177,8 @@ package org.cytoscapeweb.view {
             graphView.applyVisualStyle(style);
         }
         
-        public function applyLayout(name:String, options:Object):void {
-            var par:Parallel = graphView.applyLayout(name, options);
+        public function applyLayout(layout:Object):void {
+            var par:Parallel = graphView.applyLayout(layout);
             par.play();
         }
         

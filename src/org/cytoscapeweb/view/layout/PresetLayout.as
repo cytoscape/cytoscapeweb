@@ -55,7 +55,7 @@ package org.cytoscapeweb.view.layout {
         
         // ========[ CONSTRUCTOR ]==================================================================
 		
-		public function PresetLayout(points:Object) {
+		public function PresetLayout(points:Object=null) {
 			this.points = points;
 		}
 		

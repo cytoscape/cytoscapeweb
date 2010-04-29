@@ -232,7 +232,7 @@ package org.cytoscapeweb.view.components {
             tooltipControl.showDelay = _style.getValue(VisualProperties.TOOLTIP_DELAY) as Number;
         }
 
-        public function applyLayout(name:String, options:Object):Transition {
+        public function applyLayout(obj:Object):Transition {
             continuousUpdates = false;
 
             // Remove previous layouts:
@@ -243,14 +243,14 @@ package org.cytoscapeweb.view.components {
                 _appliedLayouts = [];
             }
 
-            _layoutName = name;
+            _layoutName = obj.name;
             var layout:Layout, fdl:ForceDirectedLayout;
             
-            if (name === Layouts.PRESET) {
-                layout = createLayout(name, options, data);
+            if (_layoutName === Layouts.PRESET) {
+                layout = createLayout(obj, data);
                 _appliedLayouts.push(layout);
             } else {
-                if (name === Layouts.FORCE_DIRECTED) {
+                if (_layoutName === Layouts.FORCE_DIRECTED) {
                     // If the previous layout is ForceDirected, we need to set the nodes' particles and
                     // the edges' springs to null, otherwise the layout may not render very well
                     // when it is applied again.
@@ -263,17 +263,17 @@ package org.cytoscapeweb.view.components {
                     data.edges.visit(function(e:EdgeSprite):void {
                        e.props.spring = null;
                     });
-                    fdl = ForceDirectedLayout(createLayout(name, options, data));
+                    fdl = ForceDirectedLayout(createLayout(obj, data));
                     _appliedLayouts.push(fdl);
                 } else {
                     // Create one layout for each disconnected component:
                     for (var i:uint = 0; i < _dataList.length; i++) {
                         var d:Data = _dataList[i];
                         if (d.nodes.length > 1) {
-                            var rect:Rectangle = GraphUtils.calculateGraphDimension(d.nodes, name, _style); 
+                            var rect:Rectangle = GraphUtils.calculateGraphDimension(d.nodes, _layoutName, _style); 
                             var root:NodeSprite = d.nodes[0];
                             
-                            layout = createLayout(name, options, d, rect, root);
+                            layout = createLayout(obj, d, rect, root);
                             _appliedLayouts.push(layout);
                         }
                     }
@@ -431,12 +431,13 @@ package org.cytoscapeweb.view.components {
          * This method builds a collection of layout operators and node
          * and edge settings to be applied in the demo.
          */
-        private function createLayout(name:String,
-                                      options:Object,
+        private function createLayout(obj:Object,
                                       d:Data,
                                       layoutBounds:Rectangle=null,
                                       layoutRoot:DataSprite=null):Layout {
         	var layout:Layout;
+        	var name:String = obj.name;
+        	var options:Object = obj.options;
         	
         	if (layoutBounds == null)
         	   layoutBounds = new Rectangle(bounds.x, bounds.y, _initialWidth, _initialHeight);
@@ -481,13 +482,13 @@ package org.cytoscapeweb.view.components {
                 layout = fdl;
             } else if (name === Layouts.CIRCLE) {
 	            var cl:CircleLayout = new CircleLayout(null, null, false, d);
-                cl.angleWidth = options.angleWidth;
+                cl.angleWidth = options.angleWidth * Math.PI / 180;
                 cl.padding = 0;
 
                 layout = cl;
             } else if (name === Layouts.CIRCLE_TREE) {
 	            var ctl:CircleLayout = new CircleLayout(null, null, true, d);
-                ctl.angleWidth = options.angleWidth;
+                ctl.angleWidth = options.angleWidth * Math.PI / 180;
                 ctl.padding = 0;
                 
                 layoutBounds.height = Math.max(200, layoutBounds.height);
@@ -496,10 +497,10 @@ package org.cytoscapeweb.view.components {
                 layout = ctl;
             } else if (name === Layouts.RADIAL) {
                 var r:Number = options.radius;
-                if (isNaN(r)) r = Math.max(60, _initialWidth/8);
+                if (isNaN(r)) r = Math.max(60, Math.sqrt(layoutBounds.width*layoutBounds.height)/8);
                 
                 var rtl:RadialTreeLayout = new RadialTreeLayout(r, true, false, d);
-                rtl.angleWidth = options.angleWidth;
+                rtl.angleWidth = options.angleWidth * Math.PI / 180;
                 
                 layout = rtl;
             } else if (name === Layouts.TREE) {
@@ -512,7 +513,15 @@ package org.cytoscapeweb.view.components {
                 
                 layout = nltl;
             } else if (name === Layouts.PRESET) {
-                var psl:PresetLayout = new PresetLayout(options.points);
+                var psl:PresetLayout = new PresetLayout();
+                
+                var points:Object = options.points;
+                if (points != null) {
+                    for (var id:String in points) {
+                        var p:Object = points[id];
+                        psl.addPoint(id, new Point(p.x, p.y));
+                    }
+                }
                 
                 layout = psl;
             }

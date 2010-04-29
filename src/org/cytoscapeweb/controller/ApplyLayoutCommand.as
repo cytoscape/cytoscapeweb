@@ -43,7 +43,7 @@ package org.cytoscapeweb.controller {
 	            configProxy.currentLayout = layout;
 	            
 	            // Then, ask the mediator to apply it:
-                graphMediator.applyLayout(configProxy.currentLayout.name, configProxy.currentLayout.options);
+                graphMediator.applyLayout(configProxy.currentLayout);
             }
         }
     }

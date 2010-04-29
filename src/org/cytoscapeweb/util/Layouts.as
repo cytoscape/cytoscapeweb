@@ -49,13 +49,13 @@ package org.cytoscapeweb.util {
         
         public static const DEFAULT_OPTIONS:Object = {
             Circle:  {
-                angleWidth: -2 * Math.PI
+                angleWidth: 360 // in degrees
             },
             CircleTree:  {
-                angleWidth: -2 * Math.PI
+                angleWidth: 360
             },
             Radial:  {
-                angleWidth: -2 * Math.PI
+                angleWidth: 360
                 //radius: 60
             },
             Tree:  {
@@ -71,13 +71,13 @@ package org.cytoscapeweb.util {
                 maxDistance: 10000,
                 mass:        3,
                 tension:     0.1,
-                //restLength: 60
+                //restLength: 60,
                 iterations: 400,
-                maxTime:    30000,
+                maxTime:    30000, // milliseconds
                 autoStabilize: true
             },
             Preset: {
-                
+                points: { /*node_id -> {x,y}*/ }
             }
         };
         

@@ -307,12 +307,12 @@ package org.cytoscapeweb.view {
             return JSON.encode(arr);
         }
         
-        private function getLayout():String {
-            return configProxy.currentLayout.name;
+        private function getLayout():Object {
+            return configProxy.currentLayout;
         }
         
-        private function applyLayout(name:Object, options:Object):void {
-            sendNotification(ApplicationFacade.APPLY_LAYOUT, { name: name, options: options });
+        private function applyLayout(layout:Object):void {
+            sendNotification(ApplicationFacade.APPLY_LAYOUT, layout);
         }
         
         private function setVisualStyle(style:Object):void {

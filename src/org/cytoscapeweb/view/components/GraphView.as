@@ -92,7 +92,7 @@ package org.cytoscapeweb.view.components {
             createVisualization(data, config.currentLayout.name);
 
             // -----------------------------
-            var par:Parallel = applyLayout(config.currentLayout.name, config.currentLayout.options);
+            var par:Parallel = applyLayout(config.currentLayout);
             
             par.addEventListener(TransitionEvent.END, function(evt:TransitionEvent):void {
             	evt.currentTarget.removeEventListener(evt.type, arguments.callee);
@@ -102,14 +102,14 @@ package org.cytoscapeweb.view.components {
             par.play();
         }
 
-        public function applyLayout(name:String, options:Object):Parallel {
+        public function applyLayout(layout:Object):Parallel {
             dispatchEvent(new GraphViewEvent(GraphViewEvent.LAYOUT_INITIALIZE));
             
             resize();
             
             var par:Parallel = new Parallel();
             vis.bounds = GraphUtils.calculateGraphDimension(vis.data.nodes, name, _style);
-            var t:Transition = vis.applyLayout(name, options);
+            var t:Transition = vis.applyLayout(layout);
             par.add(t);
           
             par.addEventListener(TransitionEvent.END, function(evt:TransitionEvent):void {

@@ -8,7 +8,7 @@
         <script type="text/javascript" src="js/json2.js"></script>
         <script type="text/javascript" src="js/cytoscapeweb.js"></script>
         <script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
-        <script type="text/javascript">
+        <script type="text/javascript"><!--
 
             var d1, d2;
             var div_id = "cytoscapeweb";
@@ -63,7 +63,7 @@
 
             function draw(data) {
             	$("input, select").attr("disabled", true);
-                options.layout = $("#layouts").val();
+                options.layout = { name: $("#layouts").val(), options: {} };
                 
                 if (data) {
                 	options.network = data;
@@ -92,7 +92,7 @@
                 	_srcId = null;
                 }
             }
-            
+
             $(document).ready(function() {
                 $("input").attr("disabled", true);
 
@@ -101,7 +101,7 @@
 
                 vis.ready(function() {
                     showElapsedTime();
-                    $("#layouts").val(options.layout);
+                    $("#layouts").val(options.layout.name);
                     $("input, select").attr("disabled", false);
                     $("#updateVisualStyle").attr("disabled", true);
                     $("#mergeEdges").attr("checked", vis.edgesMerged());
@@ -145,8 +145,8 @@
                     draw();
                 });
                 $("#reapplyLayout").click(function(evt) {
-            	    d1 = new Date();
-                    vis.layout($("#layouts").val());
+            	    d1 = new Date();               
+            	    vis.layout({ name: $("#layouts").val() });
                 });
                 $("#mergeEdges").change(function(evt) {
                     vis.edgesMerged($("#mergeEdges").is(":checked"));
@@ -218,7 +218,7 @@
 
                 return data;
             }
-        </script>
+        --></script>
         
         <style>
             /* The Cytoscape Web container must have its dimensions set. */

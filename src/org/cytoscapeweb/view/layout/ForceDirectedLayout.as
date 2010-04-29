@@ -196,7 +196,7 @@ package org.cytoscapeweb.view.layout {
                 var d2:Number = Point.distance(p1, p2);
                 _eLengths[e] = d2;
 
-                if (stable && (d1 === 0 || Math.abs(d2-d1) > 80)) {trace("***** " + Math.abs(d2-d1) + " *****")
+                if (stable && (d1 === 0 || Math.abs(d2-d1) > 80)) {
                     stable = false;
                 }
             });
