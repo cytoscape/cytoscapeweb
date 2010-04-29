@@ -129,7 +129,7 @@ package org.cytoscapeweb.view.layout {
             var stable:Boolean = false;
             var ticks:int = ticksPerIteration;
             var count:uint = 0;
-            const MIN_M:int = 1, MAX_D:Number = 1, MAX_L:int = 240, MIN_T:Number = 0.05, MAX_G:int = -10;
+            const MIN_M:int = 1, MAX_D:Number = 0.8, MAX_L:int = 240, MIN_T:Number = 0.05, MAX_G:int = -100;
 
             while ( !stable &&  (getTimer() - t1 < maxTime) ) {
                 for (var i:int = 0; i < 10; i++) sim.tick(ticks);
@@ -144,10 +144,11 @@ package org.cytoscapeweb.view.layout {
                     var g:Number = sim.nbodyForce.gravitation;
                     var t:Number = defaultSpringTension;
                     
-                    m = defaultParticleMass = Math.max(MIN_M, m*0.9);
-                    d = sim.dragForce.drag = Math.min(MAX_D, d*1.1);
-                    l = defaultSpringLength = Math.min(MAX_L, l*1.1);
-                    g = sim.nbodyForce.gravitation = Math.min(MAX_G, g*0.9);
+                    m = defaultParticleMass = Math.max(MIN_M, m*0.98);
+                    d = sim.dragForce.drag = Math.min(MAX_D, d*1.01);
+                    l = defaultSpringLength = Math.min(MAX_L, l*1.04);
+                    g = sim.nbodyForce.gravitation = Math.min(MAX_G, g*0.98);
+                    t = defaultSpringTension = Math.max(MIN_T, t*0.9);
 
                     $each(edges, function(i:uint, e:EdgeSprite):void {
                         var s:Spring = e.props.spring;

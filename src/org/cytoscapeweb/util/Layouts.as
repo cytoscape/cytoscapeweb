@@ -73,7 +73,7 @@ package org.cytoscapeweb.util {
                 tension:     0.1,
                 //restLength: 60
                 iterations: 400,
-                maxTime:    60000,
+                maxTime:    30000,
                 autoStabilize: true
             },
             Preset: {
