@@ -315,10 +315,10 @@ package org.cytoscapeweb.view {
             sendNotification(ApplicationFacade.APPLY_LAYOUT, layout);
         }
         
-        private function setVisualStyle(style:Object):void {
-            if (style != null) {
-                var vo:VisualStyleVO = VisualStyleVO.fromObject(style);
-                sendNotification(ApplicationFacade.SET_VISUAL_STYLE, vo);
+        private function setVisualStyle(obj:Object):void {
+            if (obj != null) {
+                var style:VisualStyleVO = VisualStyleVO.fromObject(obj);
+                sendNotification(ApplicationFacade.SET_VISUAL_STYLE, style);
             }
         }
         

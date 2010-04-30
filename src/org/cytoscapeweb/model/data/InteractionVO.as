@@ -31,15 +31,12 @@ package org.cytoscapeweb.model.data {
 	import flare.vis.data.EdgeSprite;
 	import flare.vis.data.NodeSprite;
 	
-	import org.cytoscapeweb.util.GraphUtils;
-	
 	public class InteractionVO {
 		
 		private var _key:String;
 		private var _node1:NodeSprite;
 		private var _node2:NodeSprite;
 		private var _mergedEdge:EdgeSprite;
-		private var _edgeIndexes:Array;
 		
         // =========================================================================================
 		
@@ -114,83 +111,45 @@ package org.cytoscapeweb.model.data {
 		}
 		
 		public function update():void {
-            _edgeIndexes = [];
-            
-            mergedEdge.props.$edges = edges;
-            
-            var edgesList:Array = mergedEdge.props.$getFilteredEdges();
-            var e:EdgeSprite;
-            
-            // Update the each edge index:
-            // TODO: simplify it: 
-            for each (e in edgesList) {
-                // Calculate the adjacent index that will give the edge curvature:
-                // First, how many edges does this pair of nodes have?
-                var count:int = _edgeIndexes.length;
-    
-                if (count == 0) {
-                    // We assume that the first edge has NO gap:
-                    _edgeIndexes[0] = [e, 0, e.source];
-                } else if (count%2 == 0) {
-                    // It is NOT the first edge, but so far we had the quantity of added edges are even.
-                    // This new edge will make it odd, so we just need to add it in the middle
-                    // of the previous ones, in the center:
-                    _edgeIndexes.unshift([e, 0, e.source]);
-                } else {
-                    // It is NOT the first edge and it will make it a set of even edges, after added.
-                    // So we get the edge that was in the middle (idx == 0) and put it in one side:
-                    var arr1:Array = _edgeIndexes[0];
-                    var idx1:Number = (count+1)/2;
-                    
-                    arr1[1] = idx1;
-                    
-                    // Now we put the new edge in the other side. But in order to make the EdgeRenderer
-                    // render them symmetrically, we need to know whether or not they have the same
-                    // source node...
-                    var src1:NodeSprite = arr1[2] as NodeSprite;
-                    var src2:NodeSprite = e.source;
-                    
-                    var idx2:Number = (src1 == src2 ? idx1 * -1 : idx1);
-                    
-                    _edgeIndexes.push([e, idx2, src2]);
-                }
-            }
-
             // Update merged edge cached data:
             mergedEdge.props.$selected = false;
-            mergedEdge.props.$filteredOut = true;
+            mergedEdge.props.$edges = edges;
+
+            var edgesList:Array = mergedEdge.props.$getFilteredEdges();
+            var length:int = edgesList.length;
+            var e:EdgeSprite;
+            
+            // Start curve index from left (negative):
+            var f:Number = length%2 === 0 ? (-length/2 - 0.5) : (-Math.floor(length/2) - 1);
+            var src:NodeSprite;
+            
+            // This will be the summed merged edge's weight:
             var weight:Number = 0;
-
-
-            for each (e in edgesList) {
-                // It will be important to correctly render multiple edges:
-                var idx:Number = 0;
+            
+            // Update the each edge index:
+            for (var i:int = 0; i < length; i++) {
+                // Calculate the curvature coefficient that will give the
+                // direction and distance of each curve:
+                e = edgesList[i];
+                f += 1; // adding edges curvature from left to right...
                 
-                for each (var arr:Array in _edgeIndexes) {
-                    if (arr[0] == e) {
-                        idx = arr[1];
-                        
-                        // If the number of edges is even, we have to subtract 0.5
-                        // to avoid a larger gap in the middle
-                        var corection:Number = idx > 0 ? -0.5 : 0.5;
-                        idx = (edgesList.length%2 != 0) ? idx : idx + corection;
-                        break;
-                    }
-                }
-                // It is the distance that the informed edge has from an imaginary straight line
-                // that links two nodes by their centers:
-                e.props.$adjacentIndex = idx;
+                // In order to make the EdgeRenderer draw the edges symmetrically,
+                // we need to know whether or not they have the same source node:
+                if (i === 0) src = e.source; // get the first edge as reference
+                
+                e.props.$curvatureFactor = e.source === src ? f : -f; // to correctly invert the curve
+                
+                // Merged edge selection state:
+                if (e.props.$selected) mergedEdge.props.$selected = true;
                 
                 // Summed weight:
                 var w:Number = Number(e.data.weight);
                 if (!isNaN(w)) weight += w;
-                
-                // States:
-                mergedEdge.props.$filteredOut = false;
-                if (e.props.$selected) mergedEdge.props.$selected = true;
             }
             
+            // Other cached data:
             mergedEdge.data.weight = weight;
+            mergedEdge.props.$filteredOut = edgesList.length === 0;
 		}
 		
 		public static function createKey(node1:NodeSprite, node2:NodeSprite):String {

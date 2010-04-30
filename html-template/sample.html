@@ -121,7 +121,7 @@
 
                 vis.ready(function() {
                     showElapsedTime();
-                    var layout = vis.layout();console.log(layout)
+                    var layout = vis.layout();
                     $("#layouts").val(layout.name);
                     $("input, select").attr("disabled", false);
                     $("#updateVisualStyle").attr("disabled", true);
@@ -301,7 +301,7 @@
                                 <option value="yeast20.xml">Yeast 20</option>
                                 <option value="yeast100.xml">Yeast 100</option>
                                 <option value="interactions.sif">Interactions (SIF)</option>
-                                <option value="network_2.xgmml" selected="selected">XGMML</option>
+                                <option value="network_2.xgmml">XGMML</option>
                                 <option value="1000.xml">1K nodes | 2K edges</option>
                                 <option value="2000.xml">2K nodes | 3K edges</option>
                                 <option value="30K_edges.xml">1K nodes | 30K edges</option>

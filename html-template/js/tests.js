@@ -470,42 +470,42 @@ function runGraphTests(moduleName, vis, options) {
 	// TODO: select regular edges when they are merged and vice-versa
 	// TODO: select filtered edges when they are merged and when they aren't
     
-    asyncTest("Visual Style", function() {
-        expect(15);
-        
-    	vis.addListener("visualstyle", function(evt) {
-        	start();
-        	vis.removeListener("visualstyle");
-        	var s = evt.value;
-        	same(s, vis.visualStyle());
-        	
-        	same(s.global.backgroundColor, style.global.backgroundColor);
-        	same(s.nodes.shape, style.nodes.shape);
-        	same(s.nodes.opacity, style.nodes.opacity);
-        	same(s.nodes.borderColor, style.nodes.borderColor);
-        	same(s.nodes.size.defaultValue, style.nodes.size.defaultValue);
-        	same(s.nodes.size.continuousMapper.attrName, style.nodes.size.continuousMapper.attrName);
-        	same(s.nodes.size.continuousMapper.minValue, style.nodes.size.continuousMapper.minValue);
-        	same(s.nodes.size.continuousMapper.maxValue, style.nodes.size.continuousMapper.maxValue);
-        	same(s.edges.color, style.edges.color);
-        	same(s.edges.opacity, style.edges.opacity);
-        	same(s.edges.width.defaultValue, style.edges.width.defaultValue);
-        	same(s.edges.width.continuousMapper.attrName, style.edges.width.continuousMapper.attrName);
-        	same(s.edges.width.continuousMapper.minValue, style.edges.width.continuousMapper.minValue);
-        	same(s.edges.width.continuousMapper.maxValue, style.edges.width.continuousMapper.maxValue);
-        	stop();
-        });
+    test("Visual Style", function() {
+		vis.visualStyle(style);
+    	var nodes = vis.nodes, edges = vis.edges();
+    	var s = vis.visualStyle();
     	
-    	vis.visualStyle(style);
+    	same(s.global.backgroundColor, style.global.backgroundColor);
+    	same(s.nodes.shape, style.nodes.shape);
+    	same(s.nodes.opacity, style.nodes.opacity);
+    	same(s.nodes.borderColor, style.nodes.borderColor);
+    	same(s.nodes.size.defaultValue, style.nodes.size.defaultValue);
+    	same(s.nodes.size.continuousMapper.attrName, style.nodes.size.continuousMapper.attrName);
+    	same(s.nodes.size.continuousMapper.minValue, style.nodes.size.continuousMapper.minValue);
+    	same(s.nodes.size.continuousMapper.maxValue, style.nodes.size.continuousMapper.maxValue);
+    	same(s.edges.color, style.edges.color);
+    	same(s.edges.opacity, style.edges.opacity);
+    	same(s.edges.width.defaultValue, style.edges.width.defaultValue);
+    	same(s.edges.width.continuousMapper.attrName, style.edges.width.continuousMapper.attrName);
+    	same(s.edges.width.continuousMapper.minValue, style.edges.width.continuousMapper.minValue);
+    	same(s.edges.width.continuousMapper.maxValue, style.edges.width.continuousMapper.maxValue);
+
+    	$.each(nodes, function(i, n) {
+			same(Math.round(n.opacity*100)/100, s.nodes.opacity, "Node opacity");
+			same(n.borderColor, s.nodes.borderColor, "Node borderColor");
+	    });
+		$.each(edges, function(i, e) {
+			same(Math.round(e.opacity*100)/100, s.edges.opacity, "Edge opacity");
+			same(e.color, s.edges.color, "Edge color");
+		});
+
     });
     
-    asyncTest("Set Visual Style Bypass", function() {
+    test("Set Visual Style Bypass", function() {
     	var bypass = { nodes: {}, edges: {} };
     	var id;
     	var nodes = vis.nodes();
     	var edges = vis.edges();
-    	
-    	expect(4 * (nodes.length + edges.length) + 1);
     	
     	var nodeOpacity = function(id) { return (id % 2 === 0 ? 0.9 : 0.1); };
     	var edgeOpacity = function(id) { return (id % 2 === 0 ? 0.5 : 0); };
@@ -520,64 +520,47 @@ function runGraphTests(moduleName, vis, options) {
 			var o = edgeOpacity(e.data.id);
 			bypass.edges[e.data.id] = { opacity: o, width: edgeWidth };
 		});
+
+		vis.visualStyleBypass(bypass);
+
+		var bp = vis.visualStyleBypass();
+		same (bp, bypass);
 		
-    	vis.addListener("visualstylebypass", function(evt) {
-    		start();
-    		vis.removeListener("visualstylebypass");
-    		
-    		var bp = evt.value;
-    		same (bp, vis.visualStyleBypass());
-    		
-    		nodes = vis.nodes();
-    		edges = vis.edges();
-    		
-    		$.each(nodes, function(i, n) {
-    			var expected = nodeOpacity(n.data.id);
-    			same(bp.nodes[n.data.id].opacity, expected);
-    			same(Math.round(n.opacity*100)/100, expected);
-    			
-    			same(bp.nodes[n.data.id].color, nodeColor);
-    			same(n.color, nodeColor);
-    	    });
-    		$.each(edges, function(i, e) {
-    			var expected = edgeOpacity(e.data.id);
-    			same(bp.edges[e.data.id].opacity, expected);
-    			same(Math.round(e.opacity*100)/100, expected);
-    			
-    			same(bp.edges[e.data.id].width, edgeWidth);
-    			same(e.width, edgeWidth);
-    		});
-    		stop();
-    	});
-    	
-    	vis.visualStyleBypass(bypass);
+		nodes = vis.nodes();
+		edges = vis.edges();
+		
+		$.each(nodes, function(i, n) {
+			var expected = nodeOpacity(n.data.id);
+			same(bp.nodes[n.data.id].opacity, expected);
+			same(Math.round(n.opacity*100)/100, expected);
+			
+			same(bp.nodes[n.data.id].color, nodeColor);
+			same(n.color, nodeColor);
+	    });
+		$.each(edges, function(i, e) {
+			var expected = edgeOpacity(e.data.id);
+			same(bp.edges[e.data.id].opacity, expected);
+			same(Math.round(e.opacity*100)/100, expected);
+			
+			same(bp.edges[e.data.id].width, edgeWidth);
+			same(e.width, edgeWidth);
+		});
     });
     
-    asyncTest("Remove Visual Style Bypass", function() {
-    	expect(5);
-    	
-    	vis.addListener("visualstylebypass", function(evt) {
-    		start();
-    		vis.removeListener("visualstylebypass");
-    		var bp = evt.value;
+    test("Remove Visual Style Bypass", function() {
+    	vis.visualStyleBypass(null);	
+    	var bp = vis.visualStyleBypass();
     		
-    		same(bp, vis.visualStyleBypass());
-    		
-    		ok(bp.nodes != null, "bypass.nodes is NOT null");
-    		ok(bp.edges != null, "bypass.edges is NOT null");
-    		
-    		var count = 0;
-    		for (var k in bp.nodes) { count++; }
-    		ok(count === 0, "No more nodes bypass props");
-    		
-    		var count = 0;
-    		for (var k in bp.edges) { count++; }
-    		ok(count === 0, "No more edges bypass props");
-    		
-    		stop();
-    	});
-    	
-    	vis.visualStyleBypass(null);
+		ok(bp.nodes != null, "bypass.nodes is NOT null");
+		ok(bp.edges != null, "bypass.edges is NOT null");
+		
+		var count = 0;
+		for (var k in bp.nodes) { count++; }
+		ok(count === 0, "No more nodes bypass props");
+		
+		var count = 0;
+		for (var k in bp.edges) { count++; }
+		ok(count === 0, "No more edges bypass props");
     });
     
     asyncTest("Layout", function() {

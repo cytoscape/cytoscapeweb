@@ -28,9 +28,7 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.controller {
-	import org.cytoscapeweb.ApplicationFacade;
 	import org.cytoscapeweb.model.data.VisualStyleVO;
-	import org.cytoscapeweb.util.ExternalFunctions;
 	import org.puremvc.as3.interfaces.INotification;
 	
 
@@ -48,14 +46,6 @@ package org.cytoscapeweb.controller {
 	            // Finally ask the mediators to apply the new style:
 	            appMediator.applyVisualStyle(configProxy.visualStyle);
 	            graphMediator.applyVisualStyle(configProxy.visualStyle);
-    
-                // Call external listener:
-                if (extMediator.hasListener("visualstyle")) {
-                    var body:Object = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
-                                        argument: { type: "visualstyle", value: style.toObject() } };
-                    
-                    sendNotification(ApplicationFacade.CALL_EXTERNAL_INTERFACE, body);
-                }
             }
         }
     }
