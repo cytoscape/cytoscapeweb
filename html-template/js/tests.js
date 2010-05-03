@@ -64,7 +64,7 @@ function nfilter(n) {
 }
 
 function efilter(e) {
-	return e.data.id % 2 === 0;
+	return Number(e.data.id.replace("e","")) % 2 === 0;
 }
 
 // Tests:
@@ -247,8 +247,9 @@ function runGraphTests(moduleName, vis, options) {
     test("Get Node by ID", function() {
         var expected = vis.nodes()[2];
         var n = vis.node(expected.data.id);
-        ok (n != null, "Node not null");
+        ok(n != null, "Node not null");
         same(n, expected, "Got correct node");
+        same(vis.node("_none_"), null, "Inexistent node");
     });
     
     test("Get Edge by ID", function() {
@@ -257,10 +258,11 @@ function runGraphTests(moduleName, vis, options) {
     	var e = vis.edge(expected.data.id);
     	ok (e != null, "Edge not null");
     	same(e, expected, "Got correct edge");
+    	same(vis.edge("_none_"), null, "Inexistent edge");
     	// Merged edge:
     	expected = vis.mergedEdges()[2];
     	e = vis.edge(expected.data.id);
-    	ok (e != null, "Merged edge not null");
+    	ok(e != null, "Merged edge not null");
     	same(e, expected, "Got correct merged edge");
     });
     
@@ -655,7 +657,7 @@ function runGraphTests(moduleName, vis, options) {
 	    	$.each(filtered, function(j, e) {
 	    		inEdges[e.data.id] = e;
 	    		same(e.group, "edges", "Filtered group for '"+e.data.id+"' ("+j+")");
-	    		ok(e.data.id % 2 === 0, "Edge '"+e.data.id+"' correctly filtered ("+j+")");
+	    		ok(efilter(e), "Edge '"+e.data.id+"' correctly filtered ("+j+")");
 	    		ok(e.visible, "Filtered edge '"+e.data.id+"' is visible ("+j+")");
 	    		// When updateVisualMappers == false:
 	    		same(e.width, elookup[e.data.id].width, "The edge width should not change ("+e.data.id+")");
@@ -836,19 +838,33 @@ function runGraphTests(moduleName, vis, options) {
     });
     
     test("Remove Edges", function() {
-    	var all, nodes = vis.nodes(), edges = vis.edges();
-    	var edgesCount = edges.length, nodesCount = nodes.length;
+    	var all, nodes = vis.nodes, edges = vis.edges();
+    	var original = edges;
+    	var edgesCount = edges.length;
     	
     	// 1: Remove one edge by ID:
-    	vis.remove("edges", ["4"], true);
+    	var id = edges[0].data.id;
+    	vis.remove("edges", [id], true);
 
     	edges = vis.edges();
+    	nodes = vis.nodes();
     	same(edges.length, edgesCount-1, "New edges length");
-    	$.each(edges, function(i, el) {
-    		ok(el.data.id != "4", "Edge '4' deleted");
-    	});
-    	same(nodes.length, nodesCount, "Nodes not affected");
-// TODO: other parameters...
+    	same(vis.edge(id), null, "Edge '"+id+"' deleted");
+    	same(nodes.length, vis.nodes().length, "Nodes not affected");
+
+    	// 2: Remove 2 edges - by object:
+    	vis.remove("edges", [original[2], original[3]]);
+    	edges = vis.edges();
+    	same(edges.length, edgesCount-3, "2 more edges removed - new length");
+    	
+    	// 3: Remove ALL edges:
+    	vis.remove("edges", false);
+    	edges = vis.edges();
+    	same(edges.length, 0, "All edges removed");
+    	same(nodes.length, vis.nodes().length, "Nodes not affected");
+    	
+    	// Set original edges back for the other tests:
+    	for (var i=0; i < original.length; i++) { vis.addEdge(original[i].data); }
     });
     
     test("Remove Nodes", function() {

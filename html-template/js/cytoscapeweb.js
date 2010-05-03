@@ -535,7 +535,7 @@
         /**
          * <p>Get one node by its unique ID.</p>
          * @param {String} id The node id.
-         * @return {org.cytoscapeweb.Node} The node object.
+         * @return {org.cytoscapeweb.Node} The node object or <code>null</code>, if there is no node with the informed id.
          * @see org.cytoscapeweb.Visualization#edge
          * @see org.cytoscapeweb.Visualization#nodes
          */
@@ -558,7 +558,7 @@
         /**
          * <p>Get one edge, including any merged edge, by its unique ID.</p>
          * @param {String} id The edge id.
-         * @return {org.cytoscapeweb.Edge} The edge object.
+         * @return {org.cytoscapeweb.Edge} The edge object or <code>null</code>, if there is no edge with the informed id.
          * @see org.cytoscapeweb.Visualization#node
          * @see org.cytoscapeweb.Visualization#edges
          */

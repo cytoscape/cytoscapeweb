@@ -102,7 +102,7 @@ package org.cytoscapeweb.model {
         public override function setData(data:Object):void {
             super.setData(data);
 
-            _ids = { "nodes": 1, "edges": 1 };
+            _ids = { "nodes": 0, "edges": 0, "mergedEdges": 0 };
             _nodesMap = {};
             _edgesMap = {};
             _interactions = {};
@@ -545,7 +545,7 @@ package org.cytoscapeweb.model {
         
         public function addEdge(data:Object):EdgeSprite {
             if (data == null) throw new Error("The 'data' argument is mandatory");
-            
+            trace("add edge: " + data.id);
             var src:NodeSprite = getNode(data.source);
             var tgt:NodeSprite = getNode(data.target);
             
@@ -554,6 +554,8 @@ package org.cytoscapeweb.model {
             
             if (data.id == null) data.id = nextId(Groups.EDGES);
             else if (hasId(Groups.EDGES, data.id)) throw new Error("Duplicate edge id ("+data.id+"')");
+            
+            trace("    (auto ID): " + data.id);
             
             // Set default values :
             for each (var f:DataField in _edgesSchema.fields) {
@@ -583,7 +585,6 @@ package org.cytoscapeweb.model {
         }
         
         public function remove(items:Array):void {
-            // Remove event listeners:
             for each (var ds:DataSprite in items) {
                 if (ds is NodeSprite) {
                     removeNode(NodeSprite(ds));
@@ -591,6 +592,10 @@ package org.cytoscapeweb.model {
                     removeEdge(EdgeSprite(ds));
                 }
             }
+            // Reset auto-increment ID lookup:
+            if (nodes.length === 0) _ids[Groups.NODES] = 0;
+            if (edges.length === 0) _ids[Groups.EDGES] = 0;
+            if (mergedEdges.length === 0) _ids[Groups.MERGED_EDGES] = 0;
         }
         
         public function removeNode(n:NodeSprite):void {
@@ -763,7 +768,7 @@ package org.cytoscapeweb.model {
                 _nodesMap[ds.data.id] = ds;
             } else if (ds is EdgeSprite) {
                 _edgesMap[ds.data.id] = ds;
-                
+trace("    - _edgesMap :: " + ds.data.id + " - merged? " + (ds.props.$merged));                
                 if (ds.props.$merged) {
                     graphData.group(Groups.MERGED_EDGES).add(ds);
                 } else {
@@ -800,14 +805,22 @@ package org.cytoscapeweb.model {
         }
         
         private function nextId(gr:String):String {
-    		var id:int = _ids[gr];
-    		while (hasId(gr, id)) { id++; }
-    		_ids[gr] = id;
-    		return ""+id;
+    		var id:String;
+    		var prefix:String = gr === Groups.NODES ? "n" : (gr === Groups.MERGED_EDGES ? "me" : "e");
+    		var number:int = _ids[gr];
+    		do {
+    		    number++;
+    		    id = prefix + number;
+    		} while (hasId(gr, id))
+    		_ids[gr] = number;
+    		
+    		return id;
         }
         
         private function hasId(gr:String, id:*):Boolean {
-        	return gr === Groups.EDGES ? _edgesMap[""+id] !== undefined : _nodesMap[""+id] !== undefined;
+        	return gr === Groups.EDGES || gr === Groups.MERGED_EDGES ?
+        	          _edgesMap[""+id] !== undefined :
+        	          _nodesMap[""+id] !== undefined;
         }
         
         private function createMergedEdges():void {            
@@ -829,7 +842,7 @@ package org.cytoscapeweb.model {
                 _interactions[inter.key] = inter;
                 
                 var me:EdgeSprite = inter.mergedEdge;
-                me.data.id = nextId(Groups.EDGES);
+                me.data.id = nextId(Groups.MERGED_EDGES);
                 graphData.addEdge(me);
                 createCache(me);
             }

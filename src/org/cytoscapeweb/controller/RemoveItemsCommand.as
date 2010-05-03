@@ -44,11 +44,12 @@ package org.cytoscapeweb.controller {
                 var group:String = notification.getBody().group;
                 var items:Array = notification.getBody().items;
                 var updateVisualMappers:Boolean = notification.getBody().updateVisualMappers;
-                
+
                 if (group == null) group = Groups.NONE;
                 
-                items = graphProxy.getDataSpriteList(items, group);
-                            
+                if (items != null) items = graphProxy.getDataSpriteList(items, group);
+                else items = [];
+    
                 if (items.length === 0) {
                     if (group === Groups.NODES || group === Groups.NONE) items = items.concat(graphProxy.nodes);
                     if (group === Groups.EDGES || group === Groups.NONE) items = items.concat(graphProxy.edges);
