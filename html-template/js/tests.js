@@ -244,6 +244,26 @@ function runGraphTests(moduleName, vis, options) {
         });
     });
     
+    test("Get Node by ID", function() {
+        var expected = vis.nodes()[2];
+        var n = vis.node(expected.data.id);
+        ok (n != null, "Node not null");
+        same(n, expected, "Got correct node");
+    });
+    
+    test("Get Edge by ID", function() {
+    	// Regular edge:
+    	var expected = vis.edges()[3];
+    	var e = vis.edge(expected.data.id);
+    	ok (e != null, "Edge not null");
+    	same(e, expected, "Got correct edge");
+    	// Merged edge:
+    	expected = vis.mergedEdges()[2];
+    	e = vis.edge(expected.data.id);
+    	ok (e != null, "Merged edge not null");
+    	same(e, expected, "Got correct merged edge");
+    });
+    
     asyncTest("Select Nodes by ID", function() {
     	expect(6);
     	var nodes = vis.nodes();

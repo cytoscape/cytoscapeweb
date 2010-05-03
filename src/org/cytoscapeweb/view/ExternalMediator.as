@@ -280,6 +280,16 @@ package org.cytoscapeweb.view {
             return obj;
         }
 
+        private function getNodeById(id:String):String {
+            var obj:Object = GraphUtils.toExtObject(graphProxy.getNode(id));
+            return JSON.encode(obj);
+        }
+        
+        private function getEdgeById(id:String):String {
+            var obj:Object = GraphUtils.toExtObject(graphProxy.getEdge(id));
+            return JSON.encode(obj);
+        }
+        
         private function getNodes():String {
             var arr:Array = GraphUtils.toExtObjectsArray(graphProxy.graphData.nodes);
             return JSON.encode(arr);
@@ -440,6 +450,7 @@ package org.cytoscapeweb.view {
                                         "filter", "removeFilter", 
                                         "firstNeighbors", 
                                         "getNodes", "getEdges", "getMergedEdges", 
+                                        "getNodeById", "getEdgeById",
                                         "getSelectedNodes", "getSelectedEdges", 
                                         "getLayout", "applyLayout", 
                                         "setVisualStyle", "getVisualStyle", 

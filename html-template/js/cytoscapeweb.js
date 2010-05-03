@@ -533,20 +533,46 @@
         },
 
         /**
+         * <p>Get one node by its unique ID.</p>
+         * @param {String} id The node id.
+         * @return {org.cytoscapeweb.Node} The node object.
+         * @see org.cytoscapeweb.Visualization#edge
+         * @see org.cytoscapeweb.Visualization#nodes
+         */
+        node: function (id) {
+            var str = this.swf().getNodeById(id);
+            return JSON.parse(str);
+        },
+        
+        /**
          * <p>Get all nodes from the network.</p>
          * @return {Array} List of nodes.
          * @see org.cytoscapeweb.Visualization#edges
+         * @see org.cytoscapeweb.Visualization#node
          */
         nodes: function () {
-            var str = this.swf().getNodes();
-            return JSON.parse(str);
+        	var str = this.swf().getNodes();
+        	return JSON.parse(str);
         },
 
+        /**
+         * <p>Get one edge, including any merged edge, by its unique ID.</p>
+         * @param {String} id The edge id.
+         * @return {org.cytoscapeweb.Edge} The edge object.
+         * @see org.cytoscapeweb.Visualization#node
+         * @see org.cytoscapeweb.Visualization#edges
+         */
+        edge: function (id) {
+            var str = this.swf().getEdgeById(id);
+            return JSON.parse(str);
+        },
+        
         /**
          * <p>Get all the regular edges from the network. Merged edges are not included.</p>
          * @return {Array} List of edges.
          * @see org.cytoscapeweb.Visualization#mergedEdges
          * @see org.cytoscapeweb.Visualization#nodes
+         * @see org.cytoscapeweb.Visualization#edge
          * @see org.cytoscapeweb.Edge
          */
         edges: function () {
