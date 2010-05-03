@@ -789,18 +789,18 @@ function runGraphTests(moduleName, vis, options) {
     });
     
     test("Add Node", function() {
-    	var all, nodes = vis.nodes();
+    	var nodes = vis.nodes();
     	var count = nodes.length;
     	var n;
     	
-    	// 1: NO id and NO (x,y):
+    	// 1. NO id and NO (x,y):
     	n = vis.addNode();
     	ok(n.data.id != null, "New node has auto-incremented ID");
     	same(n.data.label, n.data.id, "New node has default label");
     	same(n.size, style.nodes.size.continuousMapper.minValue + n.borderWidth, "Min node size");
     	same(vis.nodes().length, ++count, "New nodes length");
     	
-    	// 2: Id and (x,y):
+    	// 2. Id and (x,y):
     	n = vis.addNode(30, 45, { id: "NN1", label: "New Node 1", weight: 4 }, true);
     	same(n.data.id, "NN1", "New node has correct ID");
     	same(n.data.label, "New Node 1", "New node has correct label");
@@ -813,12 +813,12 @@ function runGraphTests(moduleName, vis, options) {
     });
     
     test("Add Edge", function() {
-    	var all, edges = vis.edges(), nodes = vis.nodes();
+    	var edges = vis.edges(), nodes = vis.nodes();
     	var count = edges.length;
     	var e;
     	var src = nodes[0], tgt = nodes[3];
     	
-    	// 1: NO id:
+    	// 1. NO id:
     	e = vis.addEdge({ source: src.data.id, target: tgt.data.id });
     	ok(e.data.id != null, "New edge has auto-incremented ID");
     	same(e.data.label, e.data.id, "New edge has default label");
@@ -826,7 +826,7 @@ function runGraphTests(moduleName, vis, options) {
     	same(e.data.target, tgt.data.id, "New edge target ID");
     	same(vis.edges().length, ++count, "New edges length");
     	
-    	// 2: Id:
+    	// 2. Id:
     	e = vis.addEdge({ id: "NE1", label: "New Edge 1",
     		              source: src.data.id, target: tgt.data.id,
     		              weight: 2.5 }, true);
@@ -838,11 +838,16 @@ function runGraphTests(moduleName, vis, options) {
     });
     
     test("Remove Edges", function() {
-    	var all, nodes = vis.nodes, edges = vis.edges();
+    	var nodes = vis.nodes(), edges = vis.edges();
     	var original = edges;
     	var edgesCount = edges.length;
+
+    	// 1. Inexistent:
+    	vis.remove("edges", ["_none_"], true);
+    	edges = vis.edges();
+    	same(edges.length, edgesCount, "Inexistent edge => no change");
     	
-    	// 1: Remove one edge by ID:
+    	// 2. Remove one edge by ID:
     	var id = edges[0].data.id;
     	vis.remove("edges", [id], true);
 
@@ -852,23 +857,83 @@ function runGraphTests(moduleName, vis, options) {
     	same(vis.edge(id), null, "Edge '"+id+"' deleted");
     	same(nodes.length, vis.nodes().length, "Nodes not affected");
 
-    	// 2: Remove 2 edges - by object:
+    	// 3. Remove 2 edges - by object:
     	vis.remove("edges", [original[2], original[3]]);
     	edges = vis.edges();
     	same(edges.length, edgesCount-3, "2 more edges removed - new length");
+    	same(vis.edge(original[2].data.id), null, "Edge '"+original[2].data.id+"' deleted");
+    	same(vis.edge(original[3].data.id), null, "Edge '"+original[3].data.id+"' deleted");
     	
-    	// 3: Remove ALL edges:
+    	// 4. Remove ALL edges:
     	vis.remove("edges", false);
     	edges = vis.edges();
     	same(edges.length, 0, "All edges removed");
+    	same(vis.mergedEdges().length, 0, "All merged edges removed");
     	same(nodes.length, vis.nodes().length, "Nodes not affected");
     	
     	// Set original edges back for the other tests:
-    	for (var i=0; i < original.length; i++) { vis.addEdge(original[i].data); }
+    	$.each(original, function(i, e) { vis.addEdge(e.data, true); });
     });
     
     test("Remove Nodes", function() {
-// TODO:
+    	var nodes = vis.nodes(), edges = vis.edges(), merged = vis.mergedEdges();
+    	var originalNodes = nodes, originalEdges = edges;
+    	var nodesCount = nodes.length;
+    	
+    	// 1. Inexistent:
+    	vis.remove("nodes", ["_none_"], true);
+    	nodes = vis.nodes();
+    	same(nodes.length, nodesCount, "Inexistent node => no change");
+    	
+    	// 2. Remove one node by ID:
+    	var id = originalNodes[0].data.id;
+    	vis.remove("nodes", [id]);
+
+    	edges = vis.edges();
+    	nodes = vis.nodes();
+    	same(nodes.length, nodesCount-1, "New nodes length");
+    	same(vis.node(id), null, "Node '"+id+"' deleted");
+    	// Edges that were linked to that node should have been removed, as well:
+    	$.each(originalEdges, function(i, e) {
+    		if (e.data.source === id || e.data.target === id) {
+    			same(vis.edge(e.data.id), null, "Edge '"+e.data.id+"' removed along with source/target node");
+    		}
+    	});
+    	
+    	// 3. Remove 2 nodes - by object:
+    	vis.remove("nodes", [originalNodes[1], originalNodes[3]]);
+    	nodes = vis.nodes();
+    	same(nodes.length, nodesCount-3, "2 more nodes removed - new length");
+    	same(vis.node(originalNodes[1].data.id), null, "Node '"+originalNodes[1].data.id+"' deleted");
+    	same(vis.node(originalNodes[3].data.id), null, "Node '"+originalNodes[3].data.id+"' deleted");
+    	
+    	// 4. Remove ALL:
+    	vis.remove();
+    	same(vis.nodes().length, 0, "All nodes removed");
+    	same(vis.edges().length, 0, "All edges removed");
+    	same(vis.mergedEdges().length, 0, "All merged edges removed");
+    	
+    	// Exporting data/image should not throw errors:
+    	ok(vis.pdf().indexOf("JVBERi0xLjUKMSAwIG9iago8PC9UeXBlIC9QYWd") === 0, "PDF image");
+    	ok(vis.png().indexOf("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAA") === 0, "PNG image");
+    	
+    	same(vis.sif(), "", "SIF is empty");
+    	
+    	var xml = $(vis.graphml());
+    	same(xml[0].tagName, "GRAPHML", "GraphML root tag");
+    	ok(xml.find("key").length > 0, "GraphML looks correct");
+    	same(xml.find("node").length, 0, "GraphML has no nodes");
+    	same(xml.find("edge").length, 0, "GraphML has no edges");
+    	
+    	xml = $(vis.xgmml());
+    	same(xml[0].tagName, "GRAPH", "XGMML root tag");
+    	same(xml.find("att[name='backgroundColor']").length, 1, "XGMML has backgroundColor tag");
+    	same(xml.find("node").length, 0, "XGMML has no nodes");
+    	same(xml.find("edge").length, 0, "XGMML has no edges");
+    	
+    	// Set original nodes/edges back for the other tests:
+    	$.each(originalNodes, function(i, n) { vis.addNode(n.x, n.y, n.data, true); });
+    	$.each(originalEdges, function(i, e) { vis.addEdge(e.data, true); });
     });
     
     test("Update Data Attributes", function() {

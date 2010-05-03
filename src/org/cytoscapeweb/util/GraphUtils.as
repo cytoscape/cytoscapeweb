@@ -84,72 +84,75 @@ package org.cytoscapeweb.util {
                                          ignoreEdgeLabels:Boolean):Rectangle {
 
             var bounds:Rectangle = new Rectangle();
-            var minX:Number = Number.POSITIVE_INFINITY, minY:Number = Number.POSITIVE_INFINITY;
-            var maxX:Number = Number.NEGATIVE_INFINITY, maxY:Number = Number.NEGATIVE_INFINITY;
-            var lbl:TextSprite;
-            var fld:TextField;
-
-            // First, consider the NODES bounds:
-            $each(data.nodes, function(i:uint, n:NodeSprite):void {
-                if (!isFilteredOut(n)) {
-                    // The node size (its shape must have the same height and width; e.g. a circle)
-                    var ns:Number = n.height;
-                    // Verify MIN and MAX x/y again:
-                    minX = Math.min(minX, (n.x - ns/2));
-                    minY = Math.min(minY, (n.y - ns/2));
-                    maxX = Math.max(maxX, (n.x + ns/2));
-                    maxY = Math.max(maxY, (n.y + ns/2));
-                    
-                    // Consider the LABELS bounds, too:
-                    var lbl:TextSprite = n.props.label;
-                    if (!ignoreNodeLabels && lbl != null) {
-                        // The alignment values are done by the text field, not the label...
-                        fld = lbl.textField;
-                        minX = Math.min(minX, lbl.x + fld.x);
-                        maxX = Math.max(maxX, (lbl.x + lbl.width + fld.x));
-                        minY = Math.min(minY, lbl.y + fld.y);
-                        maxY = Math.max(maxY, (lbl.y + lbl.height + fld.y));
-                    }
-                }
-            });
             
-            $each(data.edges, function(i:uint, e:EdgeSprite):void {
-                if (!isFilteredOut(e)) {
-                    // Edge LABELS first, to avoid checking edges that are already inside the bounds:
-                    lbl = e.props.label;
-                    if (!ignoreEdgeLabels && lbl != null) {
-                        fld = lbl.textField;
-                        minX = Math.min(minX, lbl.x + fld.x);
-                        maxX = Math.max(maxX, (lbl.x + lbl.width + fld.x));
-                        minY = Math.min(minY, lbl.y + fld.y);
-                        maxY = Math.max(maxY, (lbl.y + lbl.height + fld.y));
+            if (data != null && data.nodes.length > 0) {
+                var minX:Number = Number.POSITIVE_INFINITY, minY:Number = Number.POSITIVE_INFINITY;
+                var maxX:Number = Number.NEGATIVE_INFINITY, maxY:Number = Number.NEGATIVE_INFINITY;
+                var lbl:TextSprite;
+                var fld:TextField;
+    
+                // First, consider the NODES bounds:
+                $each(data.nodes, function(i:uint, n:NodeSprite):void {
+                    if (!isFilteredOut(n)) {
+                        // The node size (its shape must have the same height and width; e.g. a circle)
+                        var ns:Number = n.height;
+                        // Verify MIN and MAX x/y again:
+                        minX = Math.min(minX, (n.x - ns/2));
+                        minY = Math.min(minY, (n.y - ns/2));
+                        maxX = Math.max(maxX, (n.x + ns/2));
+                        maxY = Math.max(maxY, (n.y + ns/2));
+                        
+                        // Consider the LABELS bounds, too:
+                        var lbl:TextSprite = n.props.label;
+                        if (!ignoreNodeLabels && lbl != null) {
+                            // The alignment values are done by the text field, not the label...
+                            fld = lbl.textField;
+                            minX = Math.min(minX, lbl.x + fld.x);
+                            maxX = Math.max(maxX, (lbl.x + lbl.width + fld.x));
+                            minY = Math.min(minY, lbl.y + fld.y);
+                            maxY = Math.max(maxY, (lbl.y + lbl.height + fld.y));
+                        }
                     }
-                    
-                    if (e.props.$points != null && e.props.$points.curve != null) {
-                        var c:Point = e.props.$points.curve;
-                        if (c.x < minX || c.y < minY || c.x > maxX || c.y > maxY) {
-                            var p1:Point = e.props.$points.start;
-                            var p2:Point = e.props.$points.end;
-                            // Alwasys check a few points along the bezier curve to see
-                            // if any of them is out of the bounds:
-                            var fractions:Array = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
-                            for each (var f:Number in fractions) {
-                                var mp:Point = Utils.bezierPoint(p1, p2, c, f);
-                                minX = Math.min(minX, mp.x);
-                                maxX = Math.max(maxX, mp.x);
-                                minY = Math.min(minY, mp.y);
-                                maxY = Math.max(maxY, mp.y);
+                });
+                
+                $each(data.edges, function(i:uint, e:EdgeSprite):void {
+                    if (!isFilteredOut(e)) {
+                        // Edge LABELS first, to avoid checking edges that are already inside the bounds:
+                        lbl = e.props.label;
+                        if (!ignoreEdgeLabels && lbl != null) {
+                            fld = lbl.textField;
+                            minX = Math.min(minX, lbl.x + fld.x);
+                            maxX = Math.max(maxX, (lbl.x + lbl.width + fld.x));
+                            minY = Math.min(minY, lbl.y + fld.y);
+                            maxY = Math.max(maxY, (lbl.y + lbl.height + fld.y));
+                        }
+                        
+                        if (e.props.$points != null && e.props.$points.curve != null) {
+                            var c:Point = e.props.$points.curve;
+                            if (c.x < minX || c.y < minY || c.x > maxX || c.y > maxY) {
+                                var p1:Point = e.props.$points.start;
+                                var p2:Point = e.props.$points.end;
+                                // Alwasys check a few points along the bezier curve to see
+                                // if any of them is out of the bounds:
+                                var fractions:Array = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
+                                for each (var f:Number in fractions) {
+                                    var mp:Point = Utils.bezierPoint(p1, p2, c, f);
+                                    minX = Math.min(minX, mp.x);
+                                    maxX = Math.max(maxX, mp.x);
+                                    minY = Math.min(minY, mp.y);
+                                    maxY = Math.max(maxY, mp.y);
+                                }
                             }
                         }
                     }
-                }
-            });
-            
-            const PAD:Number = 2;
-            bounds.x = minX - PAD;
-            bounds.y = minY - PAD;
-            bounds.width = maxX - bounds.x + PAD;
-            bounds.height = maxY - bounds.y + PAD;
+                });
+                
+                const PAD:Number = 2;
+                bounds.x = minX - PAD;
+                bounds.y = minY - PAD;
+                bounds.width = maxX - bounds.x + PAD;
+                bounds.height = maxY - bounds.y + PAD;
+            }
             
             return bounds;
         }

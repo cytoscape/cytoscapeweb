@@ -47,12 +47,13 @@ package org.cytoscapeweb.controller {
 
                 if (group == null) group = Groups.NONE;
                 
-                if (items != null) items = graphProxy.getDataSpriteList(items, group);
-                else items = [];
-    
-                if (items.length === 0) {
+                if (items == null) {
+                    items = [];
                     if (group === Groups.NODES || group === Groups.NONE) items = items.concat(graphProxy.nodes);
                     if (group === Groups.EDGES || group === Groups.NONE) items = items.concat(graphProxy.edges);
+                    
+                } else {
+                    items = graphProxy.getDataSpriteList(items, group);
                 }
     
                 graphMediator.dispose(items);

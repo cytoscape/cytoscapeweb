@@ -205,6 +205,10 @@ package org.cytoscapeweb.view {
 
             if (type === "png") {
                 var bounds:Rectangle = graphView.getRealBounds();
+                // At least 1 pixel:
+                bounds.width = bounds.width > 0 ? bounds.width : 1;
+                bounds.height = bounds.height > 0 ? bounds.height : 1;
+                
                 var color:uint = configProxy.config.visualStyle.getValue(VisualProperties.BACKGROUND_COLOR);
                 
                 var source:BitmapData = new BitmapData(bounds.width, bounds.height, false, color);
