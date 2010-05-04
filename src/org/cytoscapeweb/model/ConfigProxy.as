@@ -214,15 +214,15 @@ package org.cytoscapeweb.model {
         	var nodesData:Array = [], edgesData:Array = [], mergedEdgesData:Array = [];
         	
         	if (data.nodes != null) {
-        	   for each (var n:NodeSprite in data.nodes) {
-        	       if (!GraphUtils.isFilteredOut(n)) nodesData.push(n.data);
-        	   }
+                for each (var n:NodeSprite in data.nodes) {
+                    if (!GraphUtils.isFilteredOut(n)) nodesData.push(n.data);
+                }
         	} if (data.edges != null) {
-        	   for each (var e:EdgeSprite in data.edges) {
-        	       if (!GraphUtils.isFilteredOut(e)) {
-            	       if (!e.props.$merged) edgesData.push(e.data);
-            	       else                  mergedEdgesData.push(e.data);
-            	   }
+                for each (var e:EdgeSprite in data.edges) {
+                    if (!GraphUtils.isFilteredOut(e)) {
+                        if (!e.props.$merged) edgesData.push(e.data);
+                        else                  mergedEdgesData.push(e.data);
+                    }
         	   }
         	}
 
@@ -230,7 +230,7 @@ package org.cytoscapeweb.model {
     		
     		for each (var p:VisualPropertyVO in props) {
     			if (p.vizMapper is ContinuousVizMapperVO) {
-    				if (p.isNodeProperty()) {
+                    if (p.isNodeProperty()) {
     				    ContinuousVizMapperVO(p.vizMapper).dataList = nodesData;
     				} else if (p.isEdgeProperty()) {
     				    if (p.isMergedEdgeProperty())

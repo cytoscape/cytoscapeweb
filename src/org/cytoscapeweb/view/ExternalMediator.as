@@ -391,9 +391,9 @@ package org.cytoscapeweb.view {
             return o;
         }
         
-        private function removeItems(group:String=Groups.NONE,
-                                     items:Array=null, 
-                                     updateVisualMappers:Boolean=false):void {
+        private function removeElements(group:String=Groups.NONE,
+                                        items:Array=null, 
+                                        updateVisualMappers:Boolean=false):void {
             sendNotification(ApplicationFacade.REMOVE_ITEMS,
                              { group: group, items: items, updateVisualMappers: updateVisualMappers });
         }
@@ -455,7 +455,7 @@ package org.cytoscapeweb.view {
                                         "getLayout", "applyLayout", 
                                         "setVisualStyle", "getVisualStyle", 
                                         "getVisualStyleBypass", "setVisualStyleBypass",
-                                        "addNode", "addEdge", "removeItems",
+                                        "addNode", "addEdge", "removeElements",
                                         "addDataField", "removeDataField", "updateData",
                                         "getNetworkAsText", "getNetworkAsImage", 
                                         "exportNetwork" ];

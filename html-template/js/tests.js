@@ -843,13 +843,13 @@ function runGraphTests(moduleName, vis, options) {
     	var edgesCount = edges.length;
 
     	// 1. Inexistent:
-    	vis.remove("edges", ["_none_"], true);
+    	vis.removeElements("edges", ["_none_"], true);
     	edges = vis.edges();
     	same(edges.length, edgesCount, "Inexistent edge => no change");
     	
     	// 2. Remove one edge by ID:
-    	var id = edges[0].data.id;
-    	vis.remove("edges", [id], true);
+    	var id = original[0].data.id;
+    	vis.removeElements("edges", [id], true);
 
     	edges = vis.edges();
     	nodes = vis.nodes();
@@ -857,15 +857,19 @@ function runGraphTests(moduleName, vis, options) {
     	same(vis.edge(id), null, "Edge '"+id+"' deleted");
     	same(nodes.length, vis.nodes().length, "Nodes not affected");
 
-    	// 3. Remove 2 edges - by object:
-    	vis.remove("edges", [original[2], original[3]]);
+    	// 3. Remove only one by Object:
+    	vis.removeEdge(original[1]);
+    	same(vis.edge(original[1].data.id), null, "Edge '"+original[1].data.id+"' deleted");
+    	
+    	// 4. Remove 2 edges - by object:
+    	vis.removeElements("edges", [original[2], original[3]]);
     	edges = vis.edges();
-    	same(edges.length, edgesCount-3, "2 more edges removed - new length");
+    	same(edges.length, edgesCount-4, "2 more edges removed - new length");
     	same(vis.edge(original[2].data.id), null, "Edge '"+original[2].data.id+"' deleted");
     	same(vis.edge(original[3].data.id), null, "Edge '"+original[3].data.id+"' deleted");
     	
-    	// 4. Remove ALL edges:
-    	vis.remove("edges", false);
+    	// 5. Remove ALL edges:
+    	vis.removeElements("edges", false);
     	edges = vis.edges();
     	same(edges.length, 0, "All edges removed");
     	same(vis.mergedEdges().length, 0, "All merged edges removed");
@@ -881,14 +885,14 @@ function runGraphTests(moduleName, vis, options) {
     	var nodesCount = nodes.length;
     	
     	// 1. Inexistent:
-    	vis.remove("nodes", ["_none_"], true);
+    	vis.removeElements("nodes", ["_none_"], true);
     	nodes = vis.nodes();
     	same(nodes.length, nodesCount, "Inexistent node => no change");
     	
     	// 2. Remove one node by ID:
     	var id = originalNodes[0].data.id;
-    	vis.remove("nodes", [id]);
-
+    	vis.removeElements("nodes", [id]);
+    	
     	edges = vis.edges();
     	nodes = vis.nodes();
     	same(nodes.length, nodesCount-1, "New nodes length");
@@ -900,15 +904,19 @@ function runGraphTests(moduleName, vis, options) {
     		}
     	});
     	
-    	// 3. Remove 2 nodes - by object:
-    	vis.remove("nodes", [originalNodes[1], originalNodes[3]]);
-    	nodes = vis.nodes();
-    	same(nodes.length, nodesCount-3, "2 more nodes removed - new length");
+    	// 3. Remove only one by Object:
+    	vis.removeNode(originalNodes[1]);
     	same(vis.node(originalNodes[1].data.id), null, "Node '"+originalNodes[1].data.id+"' deleted");
+    	
+    	// 4. Remove 2 nodes - by object:
+    	vis.removeElements("nodes", [originalNodes[2], originalNodes[3]]);
+    	nodes = vis.nodes();
+    	same(nodes.length, nodesCount-4, "2 more nodes removed - new length");
+    	same(vis.node(originalNodes[2].data.id), null, "Node '"+originalNodes[2].data.id+"' deleted");
     	same(vis.node(originalNodes[3].data.id), null, "Node '"+originalNodes[3].data.id+"' deleted");
     	
-    	// 4. Remove ALL:
-    	vis.remove();
+    	// 5. Remove ALL:
+    	vis.removeElements();
     	same(vis.nodes().length, 0, "All nodes removed");
     	same(vis.edges().length, 0, "All edges removed");
     	same(vis.mergedEdges().length, 0, "All merged edges removed");

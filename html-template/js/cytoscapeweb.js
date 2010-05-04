@@ -48,7 +48,7 @@
     // ===[ Visualization ]=========================================================================
     
     /**
-     * <p>Initialize Cytoscape Web. It does not draw the network yet.</p>
+     * <p>Initialise Cytoscape Web. It does not draw the network yet.</p>
      * <p>The {@link org.cytoscapeweb.Visualization#draw} method must be called when 
      * you want the network to be displayed.</p>
      * @example
@@ -79,13 +79,13 @@
      *                    <li><code>swfPath</code>: The path of the compiled Cytoscape Web SWF file, but without the
      *                                              <code>.swf</code> extension. If you use the provided <code>CytoscapeWeb.swf</code>
      *                                              file and put it in the root path of the web application, this option does not need
-     *                                              to be informed. But, for example, if you deploy the swf file at <code>/plugin/flash</code>,
+     *                                              to be specified. But, for example, if you deploy the swf file at <code>/plugin/flash</code>,
      *                                              the <code>swfPath</code> value must be "/plugin/flash/CytoscapeWeb".</li>
      *                    <li><code>flashInstallerPath</code>: The path to the compiled Flash video that should be displayed in case
      *                                                         the browser does not have the Flash Player version required by Cytoscape Web.
      *                                                         The default value is "playerProductInstall" and, if this option is not changed,
      *                                                         the <code>playerProductInstall.swf</code> file must be deployed in the
-     *                                                         web site's root path. Otherwise, just inform the new path without the
+     *                                                         web site's root path. Otherwise, just specify the new path without the
      *                                                         <code>.swf</code> extension.</li>
      *                    <li><code>flashAlternateContent</code>: The text message that should be displayed if the browser does not have
      *                                                            the Flash Player plugin. If none is provided, Cytoscape Web will show
@@ -145,7 +145,7 @@
 
         /**
          * <p>Start Cytoscape Web by drawing the network.
-         * At least the <code>network</code> option must be informed.</p>
+         * At least the <code>network</code> option must be specified.</p>
          * @example
          * var vis = new org.cytoscapeweb.Visualization("container-id");
          * vis.draw({ network: '&lt;graphml&gt;...&lt;/graphml&gt;',
@@ -264,7 +264,7 @@
          * <p>See {@link org.cytoscapeweb.Layout} for the available options.</p>
          *
          * @example
-         * // 1. Initialize Cytoscape Web with a Circle layout (default layout options):
+         * // 1. Initialise Cytoscape Web with a Circle layout (default layout options):
          * var vis = new org.cytoscapeweb.Visualization("container-id");
          * vis.draw({ network: '&lt;graphml&gt;...&lt;/graphml&gt;', layout: 'Circle' });
          *
@@ -535,7 +535,7 @@
         /**
          * <p>Get one node by its unique ID.</p>
          * @param {String} id The node id.
-         * @return {org.cytoscapeweb.Node} The node object or <code>null</code>, if there is no node with the informed id.
+         * @return {org.cytoscapeweb.Node} The node object or <code>null</code>, if there is no node with the specified id.
          * @see org.cytoscapeweb.Visualization#edge
          * @see org.cytoscapeweb.Visualization#nodes
          */
@@ -558,7 +558,7 @@
         /**
          * <p>Get one edge, including any merged edge, by its unique ID.</p>
          * @param {String} id The edge id.
-         * @return {org.cytoscapeweb.Edge} The edge object or <code>null</code>, if there is no edge with the informed id.
+         * @return {org.cytoscapeweb.Edge} The edge object or <code>null</code>, if there is no edge with the specified id.
          * @see org.cytoscapeweb.Visualization#node
          * @see org.cytoscapeweb.Visualization#edges
          */
@@ -582,7 +582,7 @@
         
         /**
          * <p>Get all merged edges from the network.</p>
-         * @return {Array} List of edges that have the <code>merged</code> property equals <code>true</code>.
+         * @return {Array} List of merged edges.
          * @see org.cytoscapeweb.Visualization#edges
          * @see org.cytoscapeweb.Edge
          */
@@ -593,16 +593,16 @@
         
 	    /**
 	     * <p>Create a new node and add it to the network view.<p>
-	     * <p>If the node <code>id</code> is not informed, Cytoscape Web creates a new one automatically.</p>
+	     * <p>If the node <code>id</code> is not specified, Cytoscape Web creates a new one automatically.</p>
 	     * @param {Object} x The horizontal coordinate of the node.
 	     * @param {Object} y The vertical coordinate of the node.
 	     * @param {Object} [data] The object that contains the node attributes.
-	     * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply all the continuous mappers
+	     * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply the visual mappers
          *                                        to the network view after adding the node.
          *                                        The default value is <code>false</code>.
 	     * @return {org.cytoscapeweb.Node} The new created node object.
 	     * @see org.cytoscapeweb.Visualization#addEdge
-	     * @see org.cytoscapeweb.Visualization#remove
+	     * @see org.cytoscapeweb.Visualization#removeElements
 	     */
 	    addNode: function (x, y/*, data, updateVisualMappers*/) {
         	var data, updateVisualMappers = false, i = 2;
@@ -615,11 +615,11 @@
 	     * <p>Create a new edge linking two nodes and add it to the network view.<p>
 	     * <p>Throw exception if missing <code>source</code> or <code>target</code>.</p>
 	     * @param {Object} data The object that contains the edge attributes.
-	     * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply all the continuous mappers
+	     * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply the visual mappers
          *                                        to the network view after adding the edge.
 	     * @return {org.cytoscapeweb.Edge} The new created edge object.
 	     * @see org.cytoscapeweb.Visualization#addNode
-	     * @see org.cytoscapeweb.Visualization#remove
+	     * @see org.cytoscapeweb.Visualization#removeElements
 	     */
 	    addEdge: function (data/*, updateVisualMappers*/) {
 	    	var updateVisualMappers = false;
@@ -631,20 +631,58 @@
 	    },
 	    
 	    /**
-	     * <p>Permanently delete nodes and edges from the network.</p>
+	     * <p>Permanently delete the specified node and its associated edges from the network.</p>
 	     * <p>If a node is deleted, all of its connected edges will be removed as well.</p>
-         * @param {org.cytoscapeweb.Group} [gr] The group of network elements.
-         * @param {Array} [items] The items to be removed from the network. The array can contain node/edge objects or only
-         *                        their <code>id</code> values. Remember that, if you inform only the id
-         *                        and do not pass the group argument, if an edge and a node have the same id value,
-         *                        both will be removed.
-	     * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to reapply all the continuous mappers
-         *                                        to the network view after removing the elements.
+         * @param {Object} node The node to be removed from the network. It can be a {@link org.cytoscapeweb.Node}
+         *                      object or just its <code>id</code> (String).
+	     * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to reapply the visual mappers
+         *                                        to the network view after removing the element.
          * @return {org.cytoscapeweb.Visualization} The Visualization instance.
+         * @see org.cytoscapeweb.Visualization#removeEdge
+         * @see org.cytoscapeweb.Visualization#removeElements
          * @see org.cytoscapeweb.Visualization#addNode
          * @see org.cytoscapeweb.Visualization#addEdge
          */
-	    remove: function(/*gr, items, updateVisualMappers*/) {
+	    removeNode: function(node, updateVisualMappers) {
+        	this.swf().removeElements("nodes", [node], updateVisualMappers);
+        	return this;
+	    },
+	    
+	    /**
+	     * <p>Permanently delete the specified edge from the network.</p>
+	     * <p>If the specified edge is a merged one, all of its "regular" edges are deleted as well.</p>
+	     * @param {Object} edge The edge to be removed from the network. It can be an {@link org.cytoscapeweb.Edge}
+	     *                      object or just its <code>id</code> (String).
+	     * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to reapply the visual mappers
+	     *                                        to the network view after removing the element.
+	     * @return {org.cytoscapeweb.Visualization} The Visualization instance.
+	     * @see org.cytoscapeweb.Visualization#removeNode
+	     * @see org.cytoscapeweb.Visualization#removeElements
+	     * @see org.cytoscapeweb.Visualization#addNode
+	     * @see org.cytoscapeweb.Visualization#addEdge
+	     */
+	    removeEdge: function(edge, updateVisualMappers) {
+	    	this.swf().removeElements("edges", [edge], updateVisualMappers);
+	    	return this;
+	    },
+	    
+	    /**
+	     * <p>Permanently delete nodes and/or edges from the network.</p>
+	     * <p>If a node is deleted, all of its connected edges will be removed as well.</p>
+         * @param {org.cytoscapeweb.Group} [gr] The group of network elements.
+         * @param {Array} [items] The items to be removed from the network. The array can contain node/edge objects or only
+         *                        their <code>id</code> values. Remember that, if you pass only the id
+         *                        and do not pass the group argument, if an edge and a node have the same id value,
+         *                        both will be removed.
+	     * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to reapply the visual mappers
+         *                                        to the network view after removing the elements.
+         * @return {org.cytoscapeweb.Visualization} The Visualization instance.
+         * @see org.cytoscapeweb.Visualization#removeNode
+         * @see org.cytoscapeweb.Visualization#removeEdge
+         * @see org.cytoscapeweb.Visualization#addNode
+         * @see org.cytoscapeweb.Visualization#addEdge
+         */
+	    removeElements: function(/*gr, items, updateVisualMappers*/) {
 	    	var gr, items, updateVisualMappers = false;
         	if (arguments.length >= 1) {
         		if (typeof arguments[0] === "string") { gr = arguments[0]; }
@@ -657,7 +695,7 @@
         	}
         	if (arguments.length > 2) { updateVisualMappers = arguments[2]; }
             gr = this._normalizeGroup(gr);
-            this.swf().removeItems(gr, items, updateVisualMappers);
+            this.swf().removeElements(gr, items, updateVisualMappers);
         	return this;
 	    },
         
@@ -786,12 +824,11 @@
          * 
          * @param {org.cytoscapeweb.Group} [gr] The group of network elements.
          * @param {Array} [items] The items to be updated. The array can contain node/edge objects or only
-         *                        their <code>id</code> values. Notice however that, if you inform only the id
+         *                        their <code>id</code> values. Notice however that, if you specify only the id
          *                        and do not pass the group argument, if an edge and a node have the same id value,
          *                        both will be updated.
          * @param {Object} [data] The data object that contains the attributes with the new values to be applied
-         *                        to all the elements of the informed group or to the ones informed at the <code>items</code>
-         *                        parameter only.
+         *                        to all the elements of the specified group or to the passed <code>items</code> only.
          * @return {org.cytoscapeweb.Visualization} The Visualization instance.
          * @see org.cytoscapeweb.Visualization#addDataField
          * @see org.cytoscapeweb.Visualization#removeDataField
@@ -824,7 +861,7 @@
         /**
          * <p>Select the indicated nodes and edges.</p>
          * <p>The same method can also be used to select all nodes/edges.
-         * To do that, just omit the <code>items</code> argument and inform the group of elements to be selected.</p>
+         * To do that, just omit the <code>items</code> argument and specify the group of elements to be selected.</p>
          * <p>If you send repeated or invalid elements, they will be ignored.</p>
          * @example
          * // a) Select nodes by id:
@@ -853,7 +890,7 @@
          *
          * @param {org.cytoscapeweb.Group} [gr] The group of network elements.
          * @param {Array} [items] The items to be selected. The array can contain node/edge objects or only
-         *                        their <code>id</code> values. Notice however that, if you inform only the id
+         *                        their <code>id</code> values. Notice however that, if you specify only the id
          *                        and do not pass the group argument, if an edge and a node have the same id value,
          *                        both will be selected.
          * @return {org.cytoscapeweb.Visualization} The Visualization instance.
@@ -889,7 +926,7 @@
         /**
          * <p>Deselect the indicated nodes and edges, if they are selected.</p>
          * <p>The same method can also be used to deselect all nodes/edges.
-         * To do that, just omit the <code>items</code> argument and inform the group of elements to be deselected.</p>
+         * To do that, just omit the <code>items</code> argument and specify the group of elements to be deselected.</p>
          * <p>If you send repeated or invalid elements, they will be ignored.</p>
          * @example
          * // a) Deselect edges by id:
@@ -917,12 +954,12 @@
          * vis.deselect();
          *
          * @param {org.cytoscapeweb.Group} [gr] The group of network elements.
-         *                                      If not informed, it will try to deselect elements from both <code>node</code>
+         *                                      If not specified, it will try to deselect elements from both <code>node</code>
          *                                      and <code>edge</code> groups.
          * @param {Array} [items] The items to be deselected. The array can contain node/edge objects or only
-         *                        their <code>id</code> values. Notice however that, if you inform only the id
+         *                        their <code>id</code> values. Notice however that, if you specify only the id
          *                        and do not pass the group argument, and if an edge and a node have the same id value,
-         *                        both can be deselected.<br>
+         *                        both will be deselected.<br>
          *                        If this argument is <code>null</code>, <code>undefined</code> 
          *                        or omitted, it will deselect all selected items that belong to the indicated group.<br>
          *                        If you send an empty array, no action will be performed.
@@ -957,7 +994,7 @@
          * @param {Function} fn The filter function. It will receive a node or edge as argument and must
          *                      return a boolean value indicating the visibility of that element.
          *                      So, if it returns false, that node or edge will be hidden.
-         * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply all the continuous mappers
+         * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply the visual mappers
          *                                        to the network view after the filtering action is done.
          *                                        Remember that continuous mappers ignore filtered out elements
          *                                        when interpolating the results.
@@ -998,7 +1035,7 @@
          * <p>Remove a nodes or edges filter.</p>
          * @param {org.cytoscapeweb.Group} [gr] The group of network elements to remove the filter from.
          *                                       If <code>null</code>, remove any existing filters from both nodes and edges.
-         * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply all the continuous mappers
+         * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply the visual mappers
          *                                        to the network view after the filtering action is done.
          *                                        Remember that continuous mappers ignore filtered out elements
          *                                        when interpolating the results.
@@ -1149,7 +1186,7 @@
          *     print &#36;data;
          * ?&gt;
          * 
-         * @param {String} format One of: <code>png</code>, <code>pdf</code>, <code>xgmml</code>, <code>graphml</code>, <code>sif</code>.
+         * @param {String} format One of: <code>"png"</code>, <code>"pdf"</code>, <code>"xgmml"</code>, <code>"graphml"</code>, <code>"sif"</code>.
          * @param {String} url The url that will receive the exported image (bytes) or xml (text).
          * @param {Object} [options] Additional options:
          *                              <ul class="options"><li><code>width</code>:</strong> The desired width of the image in pixels (only for 'pdf' format).</li>
@@ -1448,7 +1485,8 @@
         /**
          * <p>Redefine this function if you want to use another method to detect the Flash Player version
          * and embed the SWF file (e.g. SWFObject).</p>
-         * <p>This one uses Adobe's <a href="http://www.adobe.com/products/flashplayer/download/detection_kit/" target="_blank">Flash Player Detection Kit</a>.</p>
+         * <p>By default, Adobe's <a href="http://www.adobe.com/products/flashplayer/download/detection_kit/" target="_blank">Flash Player Detection Kit</a>
+         * is used.</p>
          * @requires <code>AC_OETags.js</code> and <code>playerProductInstall.swf</code>
          */
         embedSWF: function () {

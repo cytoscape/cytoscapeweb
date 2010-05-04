@@ -128,10 +128,10 @@
                     $("#mergeEdges").attr("checked", vis.edgesMerged());
                     
                     vis.addContextMenuItem("Delete node", "nodes", function(evt) {
-                        vis.remove([evt.target], true);
+                        vis.removeNode(evt.target.data.id, true);
                     })
                     .addContextMenuItem("Delete edge", "edges", function(evt) {
-                        vis.remove([evt.target], true);
+                        vis.removeEdge(evt.target.data.id, true);
                     })
                     .addContextMenuItem("Add new node", function(evt) {
                         var n = vis.addNode(evt.mouseX, evt.mouseY, { weight: Math.random() }, true);
@@ -143,17 +143,11 @@
                     })
                     .addContextMenuItem("Delete selected", function(evt) {
                         var items = vis.selected();
-                        if (items.length > 0) { vis.remove(items, true); }
+                        if (items.length > 0) { vis.removeElements(items, true); }
                     });
                 });
                 
-                vis.addListener("select", function(evt) {
-                    //showSelected();
-                })
-                .addListener("deselect", function(evt) {
-                    //showSelected();
-                })
-                .addListener("layout", function(evt) {
+                vis.addListener("layout", function(evt) {
                 	showElapsedTime();
                 });
 
