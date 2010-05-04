@@ -163,7 +163,6 @@ package org.cytoscapeweb.model {
             if (name != null) {
                 switch (name) {
                     case Layouts.CIRCLE.toLowerCase():         name = Layouts.CIRCLE; break;
-                    case Layouts.CIRCLE_TREE.toLowerCase():    name = Layouts.CIRCLE_TREE; break;
                     case Layouts.FORCE_DIRECTED.toLowerCase(): name = Layouts.FORCE_DIRECTED; break;
                     case Layouts.PRESET.toLowerCase():         name = Layouts.PRESET; break;
                     case Layouts.RADIAL.toLowerCase():         name = Layouts.RADIAL; break;

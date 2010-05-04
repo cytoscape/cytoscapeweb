@@ -266,11 +266,10 @@ package org.cytoscapeweb.util {
             // The minimum square edge when we have only one node:
             var side:Number = 40;
             var numNodes:Number = nodes.length;
+            var n:NodeSprite;
             
             if (numNodes > 1) {
-                if (layout === Layouts.CIRCLE ||
-                    layout === Layouts.CIRCLE_TREE ||
-                    layout === Layouts.RADIAL) {
+                if (layout === Layouts.CIRCLE || layout === Layouts.RADIAL) {
                     if (numNodes === 2) {
                         side *= 1.5;
                     } else {
@@ -279,7 +278,11 @@ package org.cytoscapeweb.util {
                         // 1. number of sides = number of nodes:
                         var N:Number = nodes.length;
                         // 2. Each side should have a desired size (distance between the adjacent nodes):
-                        var S:Number = 18;
+                        var S:Number = 0;
+                        for each (n in nodes) {
+                            S = Math.max(S, style.getValue(VisualProperties.NODE_SIZE, n.data));
+                        }
+                        S /= 2;
                         // 3. If we connect two adjacent vertices to the center, the angle between these two 
                         // lines is 360/N degrees, or 2*pi/N radians:
                         var theta:Number = 2 * Math.PI / N;
@@ -291,7 +294,7 @@ package org.cytoscapeweb.util {
                     }
                 } else if (layout === Layouts.FORCE_DIRECTED) {
                     var area:Number = 0;
-                    for each (var n:NodeSprite in nodes) {
+                    for each (n in nodes) {
                         var s:Number = style.getValue(VisualProperties.NODE_SIZE, n.data);
                         area += 9 * s * s;
                     }

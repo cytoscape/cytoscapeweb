@@ -41,7 +41,6 @@ package org.cytoscapeweb.util {
         // ========[ CONSTANTS ]====================================================================
         
         public static const CIRCLE:String = "Circle";
-        public static const CIRCLE_TREE:String = "CircleTree";
         public static const FORCE_DIRECTED:String = "ForceDirected";
         public static const RADIAL:String = "Radial";
         public static const TREE:String = "Tree";
@@ -49,10 +48,8 @@ package org.cytoscapeweb.util {
         
         public static const DEFAULT_OPTIONS:Object = {
             Circle:  {
-                angleWidth: 360 // in degrees
-            },
-            CircleTree:  {
-                angleWidth: 360
+                angleWidth: 360, // in degrees
+                tree: false
             },
             Radial:  {
                 angleWidth: 360,

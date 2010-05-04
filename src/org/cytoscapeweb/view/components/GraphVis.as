@@ -441,6 +441,7 @@ package org.cytoscapeweb.view.components {
         	var layout:Layout;
         	var name:String = obj.name;
         	var options:Object = obj.options;
+        	var correction:Number;
         	
         	if (layoutBounds == null)
         	   layoutBounds = new Rectangle(bounds.x, bounds.y, _initialWidth, _initialHeight);
@@ -484,24 +485,31 @@ package org.cytoscapeweb.view.components {
 
                 layout = fdl;
             } else if (name === Layouts.CIRCLE) {
-	            var cl:CircleLayout = new CircleLayout(null, null, false, d);
+	            var tree:Boolean = options.tree;
+	            
+	            var cl:CircleLayout = new CircleLayout(null, null, tree, d);
                 cl.angleWidth = options.angleWidth * Math.PI / 180;
+                
+                correction = Math.max(1, 360 / options.angleWidth);
+                layoutBounds.width *= correction;
+                layoutBounds.height *= correction;
+                
+                if (tree) {
+                    layoutBounds.height = Math.max(200, layoutBounds.height);
+                    layoutBounds.width = Math.max(200, layoutBounds.width);
+                }
+                
                 cl.padding = 0;
 
                 layout = cl;
-            } else if (name === Layouts.CIRCLE_TREE) {
-	            var ctl:CircleLayout = new CircleLayout(null, null, true, d);
-                ctl.angleWidth = options.angleWidth * Math.PI / 180;
-                ctl.padding = 0;
-                
-                layoutBounds.height = Math.max(200, layoutBounds.height);
-                layoutBounds.width = Math.max(200, layoutBounds.width);
-
-                layout = ctl;
             } else if (name === Layouts.RADIAL) {
                 var r:Number = options.radius;
-                if (isNaN(r)) r = Math.max(60, Math.sqrt(layoutBounds.width*layoutBounds.height)/8);
-                
+                if (isNaN(r)) {
+                    r = Math.max(60, Math.sqrt(layoutBounds.width*layoutBounds.height)/4);
+                    correction = Math.max(1, 360 / options.angleWidth);
+                    r *= correction;
+                }
+
                 var rtl:RadialTreeLayout = new RadialTreeLayout(r, true, false, d);
                 rtl.angleWidth = options.angleWidth * Math.PI / 180;
                 
