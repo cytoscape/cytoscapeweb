@@ -141,6 +141,10 @@
                         vis.removeListener("click", "nodes", clickNodeToAddEdge);
                         vis.addListener("click", "nodes", clickNodeToAddEdge);
                     })
+                    .addContextMenuItem("Set new weight", "nodes", function(evt) {
+                        var w = prompt('Enter new value for "weight"');
+                        vis.updateData([evt.target], { weight: w });
+                    })
                     .addContextMenuItem("Delete selected", function(evt) {
                         var items = vis.selected();
                         if (items.length > 0) { vis.removeElements(items, true); }
@@ -163,20 +167,6 @@
             	    d1 = new Date();
                     var layout = vis.layout();               
             	    vis.layout(layout);
-                    /*
-                    var pp = {
-                            "a01": {x: 0, y: 0 },    
-                            "a02": {x: 110, y: 200 },   
-                            "a03": {x: 210, y: 200 },
-                            "a04": {x: 310, y: 200 },
-
-                            "a08": {x: 310, y: 300 },
-                            "a07": {x: 210, y: 300 },
-                            "a06": {x: 110, y: 300 },
-                            "a05": {x: 0, y: 300 }
-                        };
-                    vis.layout({ name: "preset", options: { points:pp } });
-                    */
                 });
                 $("#mergeEdges").change(function(evt) {
                     vis.edgesMerged($("#mergeEdges").is(":checked"));

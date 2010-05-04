@@ -32,6 +32,7 @@ package org.cytoscapeweb.model {
 	import flare.data.DataSchema;
 	import flare.data.DataSet;
 	import flare.data.DataTable;
+	import flare.data.DataUtil;
 	import flare.vis.data.Data;
 	import flare.vis.data.DataList;
 	import flare.vis.data.DataSprite;
@@ -404,10 +405,21 @@ package org.cytoscapeweb.model {
         
         public function updateData(ds:DataSprite, data:Object):void {
             if (ds != null && data != null) {
+                var schema:DataSchema = ds is NodeSprite ? _nodesSchema : _edgesSchema;
+                
                 for (var k:String in data) {
-                    if ( ds.data[k] !== undefined && k !== "id" &&
-                        !(ds is EdgeSprite && (k === "source" || k === "target")) )
-                        ds.data[k] = data[k];
+                    if ( k !== "id" && !(ds is EdgeSprite && (k === "source" || k === "target")) ) {
+                        var f:DataField = schema.getFieldByName(k);
+                        if (f != null) {
+                            var v:* = data[k];
+                            v = DataUtil.parseValue(v, f.type);
+                            
+                            if (isNaN(v) && (f.type === DataUtil.INT || f.type === DataUtil.NUMBER))
+                                throw new Error("Attempt to convert '"+data[k]+"' to NUMBER while updating the '"+k+"' data field");
+                            
+                            ds.data[k] = v;
+                        }
+                    }
                 }
             }
         }

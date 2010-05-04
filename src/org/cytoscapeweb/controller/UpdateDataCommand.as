@@ -31,6 +31,7 @@ package org.cytoscapeweb.controller {
     import flare.vis.data.DataSprite;
     
     import org.cytoscapeweb.ApplicationFacade;
+    import org.cytoscapeweb.model.methods.error;
     import org.cytoscapeweb.util.Groups;
     import org.cytoscapeweb.util.methods.$each;
     import org.puremvc.as3.interfaces.INotification;
@@ -42,29 +43,34 @@ package org.cytoscapeweb.controller {
     public class UpdateDataCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
-            var body:Object = notification.getBody();
-            var group:String = body.group;
-            if (group == null) group = Groups.NONE;
-            var items:Array = body.items;
-            var data:Object = body.data;
-            
-            items = graphProxy.getDataSpriteList(items, group, true);
-            if (items == null) items = [];
-            
-            if (items.length === 0) {
-                if (group === Groups.NODES || group === Groups.NONE)
-                    items = items.concat(graphProxy.nodes);
-                if (group === Groups.EDGES || group === Groups.NONE)
-                    items = items.concat(graphProxy.edges);
+            try {
+                var body:Object = notification.getBody();
+                var group:String = body.group;
+                if (group == null) group = Groups.NONE;
+                var items:Array = body.items;
+                var data:Object = body.data;
+                
+                items = graphProxy.getDataSpriteList(items, group, true);
+                if (items == null) items = [];
+                
+                if (items.length === 0) {
+                    if (group === Groups.NODES || group === Groups.NONE)
+                        items = items.concat(graphProxy.nodes);
+                    if (group === Groups.EDGES || group === Groups.NONE)
+                        items = items.concat(graphProxy.edges);
+                }
+                
+                if (items != null && data != null) {
+                    $each(items, function(i:uint, ds:DataSprite):void {
+                        graphProxy.updateData(ds, data);
+                    });
+                }
+                
+                sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
+            } catch (err:Error) {
+                trace("[ERROR]: UpdateDataCommand.execute: " + err.getStackTrace());
+                error(err.message, err.errorID, err.name, err.getStackTrace());
             }
-            
-            if (items != null && data != null) {
-                $each(items, function(i:uint, ds:DataSprite):void {
-                    graphProxy.updateData(ds, data);
-                });
-            }
-            
-            sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
         }
     }
 }

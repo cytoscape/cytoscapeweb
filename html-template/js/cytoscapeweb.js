@@ -534,6 +534,9 @@
 
         /**
          * <p>Get one node by its unique ID.</p>
+         * @example
+         * var node = vis.node("n4");
+         * 
          * @param {String} id The node id.
          * @return {org.cytoscapeweb.Node} The node object or <code>null</code>, if there is no node with the specified id.
          * @see org.cytoscapeweb.Visualization#edge
@@ -557,6 +560,9 @@
 
         /**
          * <p>Get one edge, including any merged edge, by its unique ID.</p>
+         * @example
+         * var edge = vis.edge("e10");
+         * 
          * @param {String} id The edge id.
          * @return {org.cytoscapeweb.Edge} The edge object or <code>null</code>, if there is no edge with the specified id.
          * @see org.cytoscapeweb.Visualization#node
@@ -594,6 +600,13 @@
 	    /**
 	     * <p>Create a new node and add it to the network view.<p>
 	     * <p>If the node <code>id</code> is not specified, Cytoscape Web creates a new one automatically.</p>
+	     * @example
+	     * var data = { id: "n4",
+	     *              label: "MYO2 (Yeast)",
+	     *              weight: 0.54 };
+	     * 
+	     * var node = vis.addNode(240, 360, data, true);
+	     * 
 	     * @param {Object} x The horizontal coordinate of the node.
 	     * @param {Object} y The vertical coordinate of the node.
 	     * @param {Object} [data] The object that contains the node attributes.
@@ -614,6 +627,16 @@
 	    /**
 	     * <p>Create a new edge linking two nodes and add it to the network view.<p>
 	     * <p>Throw exception if missing <code>source</code> or <code>target</code>.</p>
+	     * @example
+	     * var data = { id: "e10",
+	     *              source: "n1",
+	     *              target: "n4",
+	     *              directed: false,
+	     *              label: "Co-expression",
+	     *              weight: 0.88 };
+	     * 
+	     * var edge = vis.addEdge(data, true);
+	     * 
 	     * @param {Object} data The object that contains the edge attributes.
 	     * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply the visual mappers
          *                                        to the network view after adding the edge.
@@ -633,6 +656,14 @@
 	    /**
 	     * <p>Permanently delete the specified node and its associated edges from the network.</p>
 	     * <p>If a node is deleted, all of its connected edges will be removed as well.</p>
+	     * @example
+	     * // 1. Pass the whole Node object:
+	     * var node = vis.nodes()[0];
+	     * vis.removeNode(node);
+	     * 
+	     * // 2. Or just specify the node id:
+	     * vis.removeNode("n3");
+	     * 
          * @param {Object} node The node to be removed from the network. It can be a {@link org.cytoscapeweb.Node}
          *                      object or just its <code>id</code> (String).
 	     * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to reapply the visual mappers
@@ -651,6 +682,14 @@
 	    /**
 	     * <p>Permanently delete the specified edge from the network.</p>
 	     * <p>If the specified edge is a merged one, all of its "regular" edges are deleted as well.</p>
+	     * @example
+	     * // 1. Pass the whole Edge object:
+	     * var edge = vis.edges()[0];
+	     * vis.removeEdge(edge);
+	     * 
+	     * // 2. Or just pass the edge id:
+	     * vis.removeEdge("e101");
+	     * 
 	     * @param {Object} edge The edge to be removed from the network. It can be an {@link org.cytoscapeweb.Edge}
 	     *                      object or just its <code>id</code> (String).
 	     * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to reapply the visual mappers
@@ -669,6 +708,21 @@
 	    /**
 	     * <p>Permanently delete nodes and/or edges from the network.</p>
 	     * <p>If a node is deleted, all of its connected edges will be removed as well.</p>
+	     * @example
+	     * // 1. Remove edges by ID:
+	     * vis.removeElements("edges", ["1", "2", "5"]);
+	     * 
+	     * // 2. Remove edges and nodes altogether, by passing the objects to be deleted:
+	     * var nodes = vis.nodes();
+	     * var edges = vis.edges();
+	     * vis.removeElements([nodes[0], nodes[1], edges[0]], true);
+	     * 
+	     * // 3. Remove all edges:
+	     * vis.removeElements("edges");
+	     * 
+	     * // 4. Remove everything (nodes and edges):
+	     * vis.removeElements();
+	     * 
          * @param {org.cytoscapeweb.Group} [gr] The group of network elements.
          * @param {Array} [items] The items to be removed from the network. The array can contain node/edge objects or only
          *                        their <code>id</code> values. Remember that, if you pass only the id
@@ -786,6 +840,8 @@
          * <p>If you try to change an attribute that has not been previously defined, the request will be ignored.
          * In this case, you have to add the attribute definition first, by calling {@link org.cytoscapeweb.Visualization#addDataField}.</p>
          * <p>Another important thing to remember is that you cannot directly change merged edges attributes.</p>
+         * <p>Finally, all the continuous and custom mappers - defined by the current visual style - will be automatically recomputed after
+         * updating the data.</p>
          * 
          * @example
          * // 1: Update only one node or edge:
@@ -1115,10 +1171,8 @@
          *     // Export to SIF, using the "type" attribute as edge interaction:
          *     var text = vis.sif('type');
          *     
-         *     alert(
-         *         text == '1\tco-expression\t2\n' +
-         *                 '2\tco-localization\t1\n'
-         *     ); // true
+         *     // text ==  '1\tco-expression\t2\n' +
+         *     //          '2\tco-localization\t1\n'
          * });
          * 
          * vis.draw({ network: xml });
