@@ -526,11 +526,10 @@ package org.cytoscapeweb.view.components {
             } else if (name === Layouts.PRESET) {
                 var psl:PresetLayout = new PresetLayout();
                 
-                var points:Object = options.points;
+                var points:Array = options.points;
                 if (points != null) {
-                    for (var id:String in points) {
-                        var p:Object = points[id];
-                        psl.addPoint(id, new Point(p.x, p.y));
+                    for each (var p:Object in points) {
+                        psl.addPoint(p.id, new Point(p.x, p.y));
                     }
                 }
                 

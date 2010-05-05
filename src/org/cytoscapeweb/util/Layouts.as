@@ -74,7 +74,7 @@ package org.cytoscapeweb.util {
                 autoStabilize: true
             },
             Preset: {
-                points: { /*node_id -> {x,y}*/ },
+                points: [ ],
                 fitToScreen: true
             }
         };

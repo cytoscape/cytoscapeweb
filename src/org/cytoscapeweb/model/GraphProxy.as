@@ -330,7 +330,7 @@ package org.cytoscapeweb.model {
             return inter;
         }
 
-        public function addDataField(group:String, name:String, type:int, defValue:Object=null):Boolean {
+        public function addDataField(group:String, name:String, type:int, defValue:*=null):Boolean {
             var added:Boolean = false;
             
             if (group == null || group === Groups.NONE) {
@@ -342,7 +342,15 @@ package org.cytoscapeweb.model {
                 
                 if (schema.getFieldById(name) == null) {
                     // This field is not duplicated...
-                    var field:DataField = new DataField(name, type, defValue);
+                    var v:*;
+                    
+                    if (!(defValue == null && type === DataUtil.STRING))
+                        v = DataUtil.parseValue(defValue, type);
+                    
+                    if (isNaN(v) && (type === DataUtil.INT || type === DataUtil.NUMBER))
+                        throw new Error("Attempt to convert default value '"+defValue+"' to NUMBER while creating data field");
+                    
+                    var field:DataField = new DataField(name, type, v);
                     schema.addField(field);
                     added = true;
                     

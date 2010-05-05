@@ -31,6 +31,7 @@ package org.cytoscapeweb.controller {
     import flare.data.DataUtil;
     
     import org.cytoscapeweb.ApplicationFacade;
+    import org.cytoscapeweb.model.methods.error;
     import org.cytoscapeweb.util.Groups;
     import org.puremvc.as3.interfaces.INotification;
     
@@ -41,29 +42,34 @@ package org.cytoscapeweb.controller {
     public class AddDataFieldCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
-            var body:Object = notification.getBody();
-            var group:String = body.group;
-            var df:Object = body.dataField;
-            
-            if (df == null) throw new Error("The 'dataField' object was not informed");
-            if (df.name == null) throw new Error("The 'name' attribute of the 'dataField' object is mandatory");
-            if (df.type == null) throw new Error("The 'type' attribute of the 'dataField' object is mandatory");
-            
-            if (group == null) group = Groups.NONE;
-            
-            var type:* = df.type;
-            switch (type) {
-                case "boolean": type = DataUtil.BOOLEAN; break;
-                case "int":     type = DataUtil.INT; break;
-                case "number":  type = DataUtil.NUMBER; break;
-                case "string":  type = DataUtil.STRING; break;
-                case "object":
-                default:        type = DataUtil.OBJECT;
+            try {
+                var body:Object = notification.getBody();
+                var group:String = body.group;
+                var df:Object = body.dataField;
+                
+                if (df == null) throw new Error("The 'dataField' object was not informed");
+                if (df.name == null) throw new Error("The 'name' attribute of the 'dataField' object is mandatory");
+                if (df.type == null) throw new Error("The 'type' attribute of the 'dataField' object is mandatory");
+                
+                if (group == null) group = Groups.NONE;
+                
+                var type:* = df.type;
+                switch (type) {
+                    case "boolean": type = DataUtil.BOOLEAN; break;
+                    case "int":     type = DataUtil.INT; break;
+                    case "number":  type = DataUtil.NUMBER; break;
+                    case "string":  type = DataUtil.STRING; break;
+                    case "object":
+                    default:        type = DataUtil.OBJECT;
+                }
+                
+                var added:Boolean = graphProxy.addDataField(group, df.name, type, df.defValue);
+                
+                if (added) sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
+            } catch (err:Error) {
+                trace("[ERROR]: AddDataFieldCommand.execute: " + err.getStackTrace());
+                error(err.message, err.errorID, err.name, err.getStackTrace());
             }
-            
-            var added:Boolean = graphProxy.addDataField(group, df.name, type, df.defValue);
-            
-            if (added) sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
         }
     }
 }

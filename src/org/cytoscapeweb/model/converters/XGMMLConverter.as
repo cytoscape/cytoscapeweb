@@ -190,7 +190,7 @@ package org.cytoscapeweb.model.converters {
         
         private var _noGraphicInfo:Boolean = false;
         private var _style:VisualStyleVO;
-        private var _points:Object;
+        private var _points:Array;
         private var _minX:Number = Number.POSITIVE_INFINITY;
         private var _minY:Number = Number.POSITIVE_INFINITY;
         private var _maxX:Number = Number.NEGATIVE_INFINITY
@@ -208,7 +208,7 @@ package org.cytoscapeweb.model.converters {
             return _style;
         }
         
-        public function get points():Object {
+        public function get points():Array {
             return _points;
         }
    
@@ -475,9 +475,8 @@ package org.cytoscapeweb.model.converters {
                 if (xml.localName() === NODE) {
                 	var x:Number = g.@x[0]; var y:Number = g.@y[0];
                 	if (!isNaN(x) && !isNaN(y)) {
-                	    var p:Point = new Point(x, y);
-                	    if (_points == null) _points = {};
-                	    _points[id] = { x: p.x, y: p.y };
+                	    if (_points == null) _points = [];
+                	    _points.push({ id: id, x: x, y: y });
                     }
                 }
             }

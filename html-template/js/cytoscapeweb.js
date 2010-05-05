@@ -1691,7 +1691,7 @@
          */
         _dispatch: function (functionName, jsonArg) {
             var arg = null;
-            if (jsonArg) { arg = JSON.parse(jsonArg); }
+            if (jsonArg != null) { arg = JSON.parse(jsonArg); }
             var ret = this[functionName](arg);
             return ret;
         },
@@ -2251,16 +2251,14 @@
      * <li><b>Preset:</b></li>
      *     <ul class="options">
      *         <li><code>fitToScreen</code> {Boolean}: If <code>true</code>, the network is centered, and can be zoomed out to fit the screen.</li>
-     *         <li><code>points</code> {Object}: A map where you set each node <code>id</code> and their <code>x</code>/<code>y</code>
-     *                                           coordinate points. Example:<br>
+     *         <li><code>points</code> {Array}: A list of plain objects containing the node <code>id</code> and the <code>x</code>/<code>y</code>
+     *                                          coordinates. Example:<br>
      * <pre class="example ln-"><code class="js"
      * >var options = {
      *     fitToScreen: false,
-     *     points: {
-     *         "1": { x:  10, y:  60 },
-     *         "2": { x: -54, y:  32 },
-     *         "3": { x: 120, y: -12 }
-     *     }
+     *     points: [ { id: "1", x:  10, y:  60 },
+     *               { id: "2", x: -54, y:  32 },
+     *               { id: "3", x: 120, y: -12 } ]
      * };</code></pre></li>
      *     </ul>
      * </ol>

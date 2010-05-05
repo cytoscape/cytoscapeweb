@@ -70,7 +70,7 @@ package org.cytoscapeweb.controller {
         
         private function encode(str:*):String {
             if (str is String) {
-                str = str.replace(/[\\]/g, "\\\\").replace(/[\"]/g, "'");
+                str = str.replace(/\\/g, "\\\\").replace(/\"/g, "'").replace(/\n/g, "\\n");
             }
             return str;
         }

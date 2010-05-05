@@ -585,24 +585,50 @@ function runGraphTests(moduleName, vis, options) {
 		ok(count === 0, "No more edges bypass props");
     });
     
-    asyncTest("Layout", function() {
-    	expect(6);
+    asyncTest("Preset Layout", function() {
+    	expect(4);
+    	var points = [ { id: "1", x: 10, y: -20 },
+    	               { id: "2", x: 100, y: 120 },
+    	               { id: "3", x: -33, y: 20 },
+    	               { id: "4", x: 10, y: -20 },
+    	               { id: "5", x: 0, y: 0 } ]
+    	
     	vis.addListener("layout", function(evt) {
 			start();
 			var elay = evt.value;
 			var lay = vis.layout();
 			var opt = lay.options;
 
-			same(lay.name, "Tree", "layout name");
-			same(opt.orientation, "topToBottom", "orientation");
-			ok(opt.depthSpace > 0, "depthSpace > 0");
-			ok(opt.breadthSpace > 0, "breadthSpace > 0");
-			ok(opt.subtreeSpace > 0, "subtreeSpace > 0");
-			
-			same(elay, lay, "evt layout object");
+			same(lay.name, "Preset", "layout name");
+			same(opt.points, points, "points");
+			same(opt.fitToScreen, false, "fitToScreen");
+			same(elay, lay, "evt.value and layout() are the same objects");
 			stop();
 			
 			vis.removeListener("layout");
+    	});
+    	
+    	vis.layout({ name: 'preset', options: { points: points, fitToScreen: false } });
+    });
+    
+    asyncTest("Layout", function() {
+    	expect(6);
+    	vis.addListener("layout", function(evt) {
+    		start();
+    		var elay = evt.value;
+    		var lay = vis.layout();
+    		var opt = lay.options;
+    		
+    		same(lay.name, "Tree", "layout name");
+    		same(opt.orientation, "topToBottom", "orientation");
+    		ok(opt.depthSpace > 0, "depthSpace > 0");
+    		ok(opt.breadthSpace > 0, "breadthSpace > 0");
+    		ok(opt.subtreeSpace > 0, "subtreeSpace > 0");
+    		
+    		same(elay, lay, "evt.value and layout() are the same objects");
+    		stop();
+    		
+    		vis.removeListener("layout");
     	});
     	
     	vis.layout('  TREE '); // It should trim and be case insensitive!
@@ -1053,13 +1079,15 @@ function runGraphTests(moduleName, vis, options) {
     	});
         
         // 2: Add new field to nodes only:
-        vis.addDataField("nodes", { name: "new_node_attr_1", type: "number", defValue: 0.234 })
-           .addDataField("nodes", { name: "new_node_attr_2", type: "boolean" });
+        vis.addDataField("nodes", { name: "new_node_attr_1", type: "number", defValue: " 0.234" /*Should convert string to number*/ }) 
+           .addDataField("nodes", { name: "new_node_attr_2", type: "boolean" })
+           .addDataField("nodes", { name: "new_node_attr_3", type: "int" });
 
         nodes = vis.nodes();
         $.each(nodes, function(i, el) {
     		same(el.data["new_node_attr_1"], 0.234, "New field [number] added to nodes ("+el.data.id+")");
-    		same(el.data["new_node_attr_2"], null, "New field [boolean] added to nodes ("+el.data.id+")"); // TODO: should return false by default?
+    		same(el.data["new_node_attr_2"], false, "New field [boolean] added to nodes ("+el.data.id+")");
+    		same(el.data["new_node_attr_3"], 0, "New field [int] added to nodes ("+el.data.id+")");
     	});
         edges = vis.edges();
         $.each(edges, function(i, el) {

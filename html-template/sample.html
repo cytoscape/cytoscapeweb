@@ -63,29 +63,19 @@
 
             function draw(data) {
             	$("input, select").attr("disabled", true);
-                if (data) {
-                    var xml = $(data);
-                    if (xml.length > 0 && xml[0].tagName === "GRAPHML") {
-                        options.layout = { name: $("#layouts").val(), options: {} };
-                    } else {
-                    	//options.layout = { name: "Preset", options: {} };
-                    }
-                }
-                
-                var pp = {
-                        "a01": {x: 0, y: 0 },    
-                        "a02": {x: 110, y: 200 },   
-                        "a03": {x: 210, y: 200 },
-                        "a04": {x: 310, y: 200 },
 
-                        "a08": {x: 310, y: 300 },
-                        "a07": {x: 210, y: 300 },
-                        "a06": {x: 110, y: 300 },
-                        "a05": {x: 0, y: 300 }
-                    };
-                //options.layout = { name: "preset", options: { points:pp, fitToScreen: false } };
-                
                 if (data) {
+					var ln = "ForceDirected";
+                    var xml = $(data);
+                    if (xml.length > 0) {
+						if (xml[0].tagName === "GRAPHML") {
+							if ($("#layouts").val() !== "Preset") { ln = $("#layouts").val(); }
+                    	} else {
+                    		ln = "Preset";
+                    	}
+					}
+
+					options.layout = { name: ln, options: {} };
                 	options.network = data;
                 	d1 = new Date();
                 	vis.draw(options);
@@ -121,7 +111,7 @@
 
                 vis.ready(function() {
                     showElapsedTime();
-                    var layout = vis.layout();
+                    var layout = vis.layout(); console.log(layout);
                     $("#layouts").val(layout.name);
                     $("input, select").attr("disabled", false);
                     $("#updateVisualStyle").attr("disabled", true);
@@ -153,6 +143,9 @@
                 
                 vis.addListener("layout", function(evt) {
                 	showElapsedTime();
+                })
+                .addListener("error", function(err) {
+					alert(err.value.msg);
                 });
 
                 // Register control liteners:
