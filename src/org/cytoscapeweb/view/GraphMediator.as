@@ -656,7 +656,10 @@ package org.cytoscapeweb.view {
                 }
             }
             
-            if (Utils.isLinux()) DirtySprite.renderDirty();
+            if (Utils.isLinux()) {
+                DirtySprite.renderDirty();
+                if (configProxy.edgeLabelsVisible) graphView.updateLabels(Groups.EDGES);
+            }
             
             vis.updateDragRectangle(evt.amountX, evt.amountY);
         }

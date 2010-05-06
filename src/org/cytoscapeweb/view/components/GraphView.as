@@ -53,6 +53,7 @@ package org.cytoscapeweb.view.components {
 	import org.cytoscapeweb.util.GraphUtils;
 	import org.cytoscapeweb.util.Layouts;
 	import org.cytoscapeweb.util.Nodes;
+	import org.cytoscapeweb.util.Utils;
 	import org.cytoscapeweb.util.methods.$each;
 	
 	public class GraphView extends UIComponent {
@@ -119,6 +120,8 @@ package org.cytoscapeweb.view.components {
                 	zoomToFit();
                     centerGraph();
                 }
+                
+                if (Utils.isLinux()) DirtySprite.renderDirty();
                 
                 dispatchEvent(new GraphViewEvent(GraphViewEvent.LAYOUT_COMPLETE));
             });
@@ -254,6 +257,7 @@ package org.cytoscapeweb.view.components {
                 n.alpha = Nodes.alpha(n);  
                 n.shape = Nodes.shape(n);
                 n.filters = Nodes.filters(n);
+                if (n.props.label != null) n.props.label.alpha = n.alpha;
             }
         }
         
@@ -268,6 +272,7 @@ package org.cytoscapeweb.view.components {
                 e.arrowType = Edges.targetArrowShape(e);
                 e.props.curvature = Edges.curvature(e);
                 e.filters = Edges.filters(e);
+                if (e.props.label != null) e.props.label.alpha = e.alpha;
             }
         }
         
@@ -284,23 +289,18 @@ package org.cytoscapeweb.view.components {
             nodes.setProperty("lineColor", Nodes.lineColor);
             nodes.setProperty("alpha", Nodes.alpha);
             nodes.setProperty("filters", Nodes.filters);
-
-            DirtySprite.renderDirty();
         }
         
         public function resetAllEdges():void {
             for each (var e:EdgeSprite in vis.data.edges) resetEdge(e);
-            DirtySprite.renderDirty();
         }
 
         public function bringAllToFront(nodes:*, edges:*=null):void {
             if (edges != null) {
-                for each (var e:EdgeSprite in edges)
-                    bringToFront(e);
+                for each (var e:EdgeSprite in edges) bringToFront(e);
             }
             if (nodes != null) {
-                for each (var n:NodeSprite in nodes)
-                    bringToFront(n);
+                for each (var n:NodeSprite in nodes) bringToFront(n);
             }
         }
         
@@ -333,7 +333,7 @@ package org.cytoscapeweb.view.components {
                 n.lineColor = Nodes.lineColor(n);
                 n.alpha = Nodes.selectionAlpha(n);
                 n.filters = Nodes.filters(n, true);
-                DirtySprite.renderDirty();
+                if (n.props.label != null) n.props.label.alpha = n.alpha;
             }
         }
         
@@ -345,7 +345,7 @@ package org.cytoscapeweb.view.components {
                 e.props.targetArrowColor = Edges.targetArrowColor(e);
                 e.alpha = Edges.alpha(e);
                 e.filters = Edges.filters(e);
-                DirtySprite.renderDirty();
+                if (e.props.label != null) e.props.label.alpha = e.alpha;
             }
         }
 		
