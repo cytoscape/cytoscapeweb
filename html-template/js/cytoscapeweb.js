@@ -224,6 +224,8 @@
             this.embedSWF();
             return this;
         },
+        
+        _debug: function(o) { console.log(o); },
 
         /**
          * <p>Register a function to be called after a {@link org.cytoscapeweb.Visualization#draw} method is executed and the visualization
@@ -1352,7 +1354,8 @@
             evt = this._normalizeEvent(evt);
             gr = this._normalizeGroup(gr);
 
-            var evtList = this._listeners[gr];
+            var evtList;
+            if (this._listeners) { evtList = this._listeners[gr] };
 
             if (evtList) {
                 if (!fn) {
