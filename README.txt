@@ -193,6 +193,21 @@ Ant:
    issues.
 
 ================================================================================
+LINKING BACK TO US
+================================================================================
+If you use Cytoscape Web, please link us back.
+We appreciate it, because that helps us keep Cytoscape Web development funded.
+Feel free to link to us however you choose or use one of the examples below:
+
+<a href="http://cytoscapeweb.cytoscape.org/">
+    <img src="http://cytoscapeweb.cytoscape.org/img/logos/cw_s.png" alt="Cytoscape Web"/>
+</a>
+
+<a href="http://cytoscapeweb.cytoscape.org/">
+    <img src="http://cytoscapeweb.cytoscape.org/img/logos/cw.png" alt="Cytoscape Web"/>
+</a>
+
+================================================================================
 
 Thank you for using Cytoscape Web!
 
