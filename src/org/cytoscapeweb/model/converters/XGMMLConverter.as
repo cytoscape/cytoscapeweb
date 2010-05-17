@@ -420,7 +420,7 @@ package org.cytoscapeweb.model.converters {
             
             if (name == null) return;
             
-            var type:int = toCLType(att.@[TYPE].toString());
+            var type:int = toCWType(att.@[TYPE].toString());
             
             // Add the attribute definition to the schema:
             if (schema.getFieldById(name) == null) {
@@ -437,7 +437,7 @@ package org.cytoscapeweb.model.converters {
                         innerData = {};
                         parseAtt(innerAtt, schema, innerData);
                     } else {
-                        var innerType:int = toCLType(innerAtt.@[TYPE].toString());
+                        var innerType:int = toCWType(innerAtt.@[TYPE].toString());
                         innerData = DataUtil.parseValue(innerAtt.@[VALUE], innerType);
                     }
                     arr.push(innerData);
@@ -562,7 +562,7 @@ package org.cytoscapeweb.model.converters {
         private function addAtt(xml:XML, name:String, schema:DataSchema, data:Object):void {
             var field:DataField = schema.getFieldByName(name);
             
-            var type:String = fromCLType(field.type);
+            var type:String = fromCWType(field.type);
             var value:Object = data[name];
             
             var att:XML = <{ATTRIBUTE}/>;
@@ -599,13 +599,13 @@ package org.cytoscapeweb.model.converters {
                         break;
                     case VisualProperties.EDGE_SOURCE_ARROW_SHAPE:
                     case VisualProperties.EDGE_TARGET_ARROW_SHAPE:
-                        value = fromCLArrowShape(value);
+                        value = fromCWArrowShape(value);
                         break;
                     case VisualProperties.NODE_LABEL_FONT_NAME:
                     case VisualProperties.NODE_LABEL_FONT_SIZE:
                         // e.g. "SansSerif-0-12"
                         value = style.getValue(VisualProperties.NODE_LABEL_FONT_NAME, data);
-                        value = fromCLFontName(value);
+                        value = fromCWFontName(value);
                         // TODO: BOLD-Italic?
                         value += "-0-";
                         value += style.getValue(VisualProperties.NODE_LABEL_FONT_SIZE, data);
@@ -649,13 +649,13 @@ package org.cytoscapeweb.model.converters {
                 switch (propName) {
                     case VisualProperties.EDGE_SOURCE_ARROW_SHAPE:
                     case VisualProperties.EDGE_TARGET_ARROW_SHAPE:
-                        value = toCLArrowShape(value);
+                        value = toCWArrowShape(value);
                         break;
                     case VisualProperties.NODE_LABEL_FONT_NAME:
                         // e.g. "Default-0-12"
                         value = value.replace(/(\.[bB]old)?-\d+-\d+/, "");
                         value = StringUtil.trim(value);
-                        value = toCLFontName(value);
+                        value = toCWFontName(value);
                         // TODO: BOLD-Italic
                         break;
                     case VisualProperties.NODE_LABEL_FONT_SIZE:
@@ -685,7 +685,7 @@ package org.cytoscapeweb.model.converters {
          * Converts from XGMML data types to Flare types.
          * XGMML TYPES: list | string | integer | real
          */
-        private static function toCLType(type:String):int {
+        private static function toCWType(type:String):int {
             switch (type) {
                 case INTEGER: return DataUtil.INT;
                 case REAL:    return DataUtil.NUMBER;
@@ -698,7 +698,7 @@ package org.cytoscapeweb.model.converters {
         /**
          * Converts from Flare data types to XGMML types.
          */
-        private static function fromCLType(type:int):String {        	
+        private static function fromCWType(type:int):String {        	
             switch (type) {
                 case DataUtil.INT:      return INTEGER;
                 case DataUtil.NUMBER:   return REAL;
@@ -710,10 +710,11 @@ package org.cytoscapeweb.model.converters {
             }
         }
         
-        private static function fromCLArrowShape(shape:String):String {
+        private static function fromCWArrowShape(shape:String):String {
             shape = ArrowShapes.parse(shape);
             switch (shape) {
                 case ArrowShapes.DELTA:   return "3";
+                case ArrowShapes.ARROW:   return "6";
                 case ArrowShapes.DIAMOND: return "9";
                 case ArrowShapes.CIRCLE:  return "12";
                 case ArrowShapes.T:       return "15";
@@ -721,17 +722,20 @@ package org.cytoscapeweb.model.converters {
             }
         }
         
-        private static function toCLArrowShape(shape:String):String {
+        private static function toCWArrowShape(shape:String):String {
             switch (shape) {
                 case "3":  return ArrowShapes.DELTA;
+                case "6":  return ArrowShapes.ARROW;
                 case "9":  return ArrowShapes.DIAMOND;
                 case "12": return ArrowShapes.CIRCLE;
                 case "15": return ArrowShapes.T;
+                //TODO: case "16": return ArrowShapes.HALF_ARROW_TOP;
+                //TODO: case "17": return ArrowShapes.HALF_ARROW_BOTTOM;
                 default:   return ArrowShapes.NONE;
             }
         }
     
-        private static function fromCLFontName(font:String):String {
+        private static function fromCWFontName(font:String):String {
             switch (font) {
                 case null:
                 case "":
@@ -742,7 +746,7 @@ package org.cytoscapeweb.model.converters {
             }
         }
         
-        private static function toCLFontName(font:String):String {
+        private static function toCWFontName(font:String):String {
             switch (font) {
                 case null:
                 case "":

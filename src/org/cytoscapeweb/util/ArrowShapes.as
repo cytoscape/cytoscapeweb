@@ -38,6 +38,7 @@ package org.cytoscapeweb.util {
         // ========[ CONSTANTS ]====================================================================
         
         public static const NONE:String = "NONE";
+        public static const ARROW:String = "ARROW";
         public static const DELTA:String = "DELTA";
         public static const DIAMOND:String = "DIAMOND";
         public static const T:String = "T";
@@ -60,9 +61,13 @@ package org.cytoscapeweb.util {
             style.color =  0xffffff & color;
             style.alpha = e.lineAlpha;
             style.gap = 0;
-            // DELTA:
-            style.height = Math.max(e.arrowHeight, e.arrowHeight * Math.sqrt(e.lineWidth));
+            
+            // DELTA or ARROW:
+            
             style.width = Math.max(e.arrowWidth, e.arrowWidth * Math.sqrt(e.lineWidth));
+            style.width = Math.max(style.width, 1.5 * e.lineWidth);
+            
+            style.height = 2 * style.width;
 
             switch (shape) {
                 case CIRCLE:
@@ -86,6 +91,7 @@ package org.cytoscapeweb.util {
             
             return shape == NONE ||
                    shape == DELTA ||
+                   shape == ARROW ||
                    shape == DIAMOND ||
                    shape == T ||
                    shape == CIRCLE; 
@@ -97,6 +103,7 @@ package org.cytoscapeweb.util {
             switch (shape) {
                 case "DELTA":
                 case "TRIANGLE": return DELTA;
+                case "ARROW":    return ARROW;
                 case "DIAMOND":  return DIAMOND;
                 case "T":        return T;
                 case "CIRCLE":      

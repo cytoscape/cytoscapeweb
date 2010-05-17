@@ -62,7 +62,8 @@ package org.cytoscapeweb.view.render {
             var g:Graphics = e.graphics;
             // ----------------------------------------------------
             // No need to continue if the edge is totally transparent:
-            if (e.lineWidth == 0 || e.lineAlpha == 0) {
+            if (e.lineWidth === 0 || e.lineAlpha === 0 || e.alpha === 0 ||
+                e.source === e.target) { // TODO: render loops
                 g.clear();
                 return;
             }
@@ -75,61 +76,63 @@ package org.cytoscapeweb.view.render {
             
             var x1:Number = e.x1, y1:Number = e.y1;
             var x2:Number = e.x2, y2:Number = e.y2;
+            var np1:Point = new Point(x1, y1);
+            var np2:Point = new Point(x2, y2);
+            var nd:Number = Point.distance(np1, np2);
+            var w:Number = e.lineWidth;
+            var curve:Boolean = e.shape === Shapes.BEZIER || e.shape === Shapes.BSPLINE || e.shape === Shapes.CARDINAL;
+            
             // Edge intersection points (with target and souce nodes):
             var _intT:Point = new Point(), _intS:Point = new Point();
             _intS.x = x1; _intS.y = y1;
             _intT.x = x2; _intT.y = y2;
             
-            var op1:Point, op2:Point;
-            // ----------------------------------------------------
-			if (e.shape == Shapes.BEZIER) {
-			    var h:Number = e.props.curvature;
-			    op2 = op1 = Utils.orthogonalPoint(h, new Point(x1, y1), new Point(x2, y2));
-			} else {
-			    op1 = new Point(x1, y1);
-			    op2 = new Point(x2, y2);
-			}
-            // ----------------------------------------------------
-
+            // Get arrow styles:
             var sourceShape:String = e.props.sourceArrowShape;
             var targetShape:String = e.props.targetArrowShape;
-
-            // Get arrow styles:
             var sourceArrowStyle:Object, targetArrowStyle:Object;
             
             if (targetShape != ArrowShapes.NONE)
-            	targetArrowStyle = ArrowShapes.getArrowStyle(e, targetShape, e.props.targetArrowColor);
+                targetArrowStyle = ArrowShapes.getArrowStyle(e, targetShape, e.props.targetArrowColor);
             if (sourceShape != ArrowShapes.NONE)
                 sourceArrowStyle = ArrowShapes.getArrowStyle(e, sourceShape, e.props.sourceArrowColor);
+            
+            // Curvature
+            var op1:Point, op2:Point;
+            
+			if (curve) {
+			    var h:Number = e.props.curvature;
+			    
+			    // Fix curvature height
+			    var saH:Number = sourceArrowStyle != null ? sourceArrowStyle.height : 0;
+			    var taH:Number = targetArrowStyle != null ? targetArrowStyle.height : 0;
+			    var maxH:Number = Math.max(saH, taH, e.source.width/2, e.target.width/2);
 
-            // draw the edge
-            g.clear(); // clear it out
+                if (maxH > 0) {
+                    var nbd:Number = nd - s.width/2 - t.width/2; // distance between nodes borders
+    			    h += 2 * Math.max(0, maxH - nbd/4) * (h/Math.abs(h));
+                }
+                
+			    // Find bezier control point
+			    op2 = op1 = Utils.orthogonalPoint(h, np1, np2);
+			} else {
+			    op1 = np1.clone();
+			    op2 = np2.clone();
+			}
+			
+            // ----------------------------------------------------
 
             // get arrow tip point as intersection of edge with bounding box
-            intersectNode(s, op2, new Point(x1, y1), _intS);
-            intersectNode(t, op1, new Point(x2, y2), _intT);
+            intersectNode(s, op2, np1, _intS);
+            intersectNode(t, op1, np2, _intT);
 
-            var curve:Point = (e.shape == Shapes.BEZIER ? op1 : null);
-            
+            var start:Point = _intS, end:Point = _intT;
+            var c:Point = (curve ? op1 : null);
+        
             // Using a bit mask to avoid transparent edges when fillcolor=0xffffffff.
             // See https://sourceforge.net/forum/message.php?msg_id=7393265
             var color:uint =  0xffffff & e.lineColor;
-            
-            var points:Object = draw(g, _intS, _intT, curve,
-                                     { lineWidth: e.lineWidth, color: color, alpha: e.lineAlpha },
-                                     sourceArrowStyle, targetArrowStyle);
-                 
-            // Store the draw points for future use (e.g. PDF generation):
-            e.props.$points = points;
-        }
         
-        // ========[ PRIVATE METHODS ]==============================================================
-
-        private  function draw(g:Graphics, start:Point, end:Point, curve:Point,
-                               edgeStyle:Object, sourceArrowStyle:Object,
-                               targetArrowStyle:Object):Object {            
-            if (start.equals(end)) return points;
-            
             // Start/end points of the line (without arrows):
             var sShaft:Point = start.clone(), eShaft:Point = end.clone();
 
@@ -139,15 +142,13 @@ package org.cytoscapeweb.view.render {
             var slopeVector:Number;
             // Arrow height:
             var ah:Number;
-            // Shaft width:
-            var w:Number = edgeStyle.lineWidth;
-            
+
             if (sourceArrowStyle != null) {
                 ah = sourceArrowStyle.height + sourceArrowStyle.gap;
                 // The arrow should follow the curve slope:
-                if (curve != null) {
-                    slopeVector = Point.distance(curve, start);
-                    sShaft = Point.interpolate(curve, start, ah/slopeVector);
+                if (c != null) {
+                    slopeVector = Point.distance(c, start);
+                    sShaft = Point.interpolate(c, start, ah/slopeVector);
                 } else {
                     sShaft = Point.interpolate(end, start, ah/vector);
                 }
@@ -155,16 +156,16 @@ package org.cytoscapeweb.view.render {
             if (targetArrowStyle != null) {
                 ah = targetArrowStyle.height + targetArrowStyle.gap;
                 // The arrow should follow the curve slope:
-                if (curve != null) {
-                    slopeVector = Point.distance(curve, end);
-                    eShaft = Point.interpolate(curve, end, ah/slopeVector);
+                if (c != null) {
+                    slopeVector = Point.distance(c, end);
+                    eShaft = Point.interpolate(c, end, ah/slopeVector);
                 } else {
                     eShaft = Point.interpolate(start, end, ah/vector);
                 }
             }
 
-            var ds:Point = curve == null ? end.subtract(start) : curve.subtract(start);
-            var de:Point = curve == null ? start.subtract(end) : curve.subtract(end);
+            var ds:Point = c == null ? end.subtract(start) : c.subtract(start);
+            var de:Point = c == null ? start.subtract(end) : c.subtract(end);
             var ns:Point = new Point(ds.y, -ds.x);
             ns.normalize(w/2);
             var ne:Point = new Point(-de.y, de.x);
@@ -174,33 +175,24 @@ package org.cytoscapeweb.view.render {
             var sShaft2:Point = sShaft.subtract(ns);
             var eShaft1:Point = eShaft.add(ne);
             var eShaft2:Point = eShaft.subtract(ne);
-            
-            // Curve's external and internal points:
-            var c1:Point, c2:Point;
-            
-            if (curve != null) {
-                var d:Point = end.subtract(start);
-                var n:Point = new Point(d.y, -d.x);
-                n.normalize(w/2);
-                c1 = curve.add(n);
-                c2 = curve.subtract(n);
-            }
 
-            // Draw the shaft:
+
+            // Draw the line of the edge:
             // ---------------------------
-            g.beginFill(edgeStyle.color, edgeStyle.alpha);
-            g.moveTo(sShaft1.x, sShaft1.y);
+            g.clear();
             
-            if (curve != null) {
-                g.curveTo(c1.x, c1.y, eShaft1.x, eShaft1.y);
-                g.lineTo(eShaft2.x, eShaft2.y);
-                g.curveTo(c2.x, c2.y, sShaft2.x, sShaft2.y);
-                g.lineTo(sShaft1.x, sShaft1.y);
+            g.lineStyle(w, color, 1, pixelHinting, scaleMode, caps, joints, miterLimit); 
+            g.moveTo(sShaft.x, sShaft.y);
+            
+            if (c != null) {
+                //g.curveTo(curve.x, curve.y, eShaft.x, eShaft.y);
+                // Cubic beziers avoid some rendering defects!
+                var c1:Point = new Point(), c2:Point = new Point();
+                Utils.quadraticToCubic(sShaft, c, eShaft, c1, c2);
+                
+                Shapes.drawCubic(g, sShaft.x, sShaft.y, c1.x, c1.y, c2.x, c2.y, eShaft.x, eShaft.y, false);
             } else {
-                g.lineTo(eShaft1.x, eShaft1.y);
-                g.lineTo(eShaft2.x, eShaft2.y);
-                g.lineTo(sShaft2.x, sShaft2.y);
-                g.lineTo(sShaft1.x, sShaft1.y);
+                g.lineTo(eShaft.x, eShaft.y);
             }
 
             g.endFill();
@@ -209,27 +201,34 @@ package org.cytoscapeweb.view.render {
             // ---------------------------
             var saPoints:Object;
             if (sourceArrowStyle != null)
-                saPoints = drawArrow(g, sShaft, start, sShaft2, sShaft1, edgeStyle, sourceArrowStyle);
+                saPoints = drawArrow(g, sShaft, start, sShaft2, sShaft1,
+                                     { lineWidth: e.lineWidth, color: color, alpha: 1 }, // TODO: remove this object
+                                     sourceArrowStyle);
             
             // Draw the target arrow:
             // ---------------------------
             var taPoints:Object;
             if (targetArrowStyle != null)
-                taPoints = drawArrow(g, eShaft, end, eShaft1, eShaft2, edgeStyle, targetArrowStyle);
+                taPoints = drawArrow(g, eShaft, end, eShaft1, eShaft2,
+                                     { lineWidth: e.lineWidth, color: color, alpha: 1 }, // TODO: remove this object
+                                     targetArrowStyle);
             
             // Store the draw points for future use:
             // ------------------------------------------
             var points:Object = new Object();
             points.start = sShaft.clone();
             points.end = eShaft.clone();
-            points.curve = curve != null ? curve.clone() : null;
+            points.curve = c != null ? c.clone() : null;
             points.sourceArrow = saPoints != null ? saPoints.arrow : null;
             points.targetArrow = taPoints != null ? taPoints.arrow : null;
             points.sourceArrowJoint = saPoints != null ? saPoints.joint : null;
             points.targetArrowJoint = taPoints != null ? taPoints.joint : null;
-            
-            return points;
+                
+            // Store the draw points for future use (e.g. PDF generation):
+            e.props.$points = points;
         }
+        
+        // ========[ PRIVATE METHODS ]==============================================================
         
         private function drawArrow(g:Graphics, start:Point, end:Point, eb1:Point, eb2:Point,
                                    edgeStyle:Object, arrowStyle:Object):Object {
@@ -295,6 +294,19 @@ package org.cytoscapeweb.view.render {
                     // Draw the junction between the arrow and the edge line:
                     points.joint = drawDiamondArrowJoint(g, start, end, b1, b2, eb1, eb2, edgeStyle);
                     break;
+                case ArrowShapes.ARROW:
+                    // Control points for curved sides:
+                    var h:Number = Math.max(1, arrowStyle.height/10);
+                    var c1:Point = Utils.orthogonalPoint(h, end, b1);
+                    var c2:Point = Utils.orthogonalPoint(h, b2, end);
+                    g.moveTo(end.x, end.y);
+                    g.curveTo(c1.x, c1.y, b1.x, b1.y);
+                    g.lineTo(b2.x, b2.y);
+                    g.curveTo(c2.x, c2.y, end.x, end.y);
+                    g.endFill();
+                    // Future reference points:
+                    points.arrow = [end.clone(), b1.clone(), b2.clone()];
+                    break;
                 case ArrowShapes.DELTA:
                 default:
                     g.moveTo(end.x, end.y);
@@ -305,6 +317,7 @@ package org.cytoscapeweb.view.render {
                     // Future reference points:
                     points.arrow = [end.clone(), b1.clone(), b2.clone()];
                     break;
+
             }
 
             return points;

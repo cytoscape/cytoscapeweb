@@ -628,7 +628,8 @@
 	     
 	    /**
 	     * <p>Create a new edge linking two nodes and add it to the network view.<p>
-	     * <p>Throw exception if missing <code>source</code> or <code>target</code>.</p>
+	     * <p>If the edge <code>id</code> is not specified, Cytoscape Web creates a new one automatically.</p>
+	     * <p>Throws exception if missing <code>source</code> or <code>target</code>.</p>
 	     * @example
 	     * var data = { id: "e10",
 	     *              source: "n1",

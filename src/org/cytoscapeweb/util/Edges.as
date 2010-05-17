@@ -31,6 +31,8 @@ package org.cytoscapeweb.util {
     import flare.util.Shapes;
     import flare.vis.data.EdgeSprite;
     
+    import flash.display.CapsStyle;
+    import flash.display.JointStyle;
     import flash.filters.GlowFilter;
     
     import org.cytoscapeweb.ApplicationFacade;
@@ -72,6 +74,11 @@ package org.cytoscapeweb.util {
         
         public static function get properties():Object {
             if (_properties == null) {
+                var renderer:EdgeRenderer = EdgeRenderer.instance;
+                renderer.caps = CapsStyle.NONE;
+                renderer.joints = JointStyle.ROUND;
+                renderer.miterLimit = 0;
+                
                 _properties = {
                     lineWidth: lineWidth,
                     shape: shape,
@@ -84,7 +91,7 @@ package org.cytoscapeweb.util {
                     "props.targetArrowShape": targetArrowShape,
                     "props.sourceArrowColor": sourceArrowColor,
                     "props.targetArrowColor": targetArrowColor,
-                    renderer: EdgeRenderer.instance,
+                    renderer: renderer,
                     "props.curvature": curvature,
                     filters: filters,
                     buttonMode: true,
