@@ -76,6 +76,7 @@ package org.cytoscapeweb.view.render {
                 case NodeShapes.HEXAGON:
                 case NodeShapes.OCTAGON:
                 case NodeShapes.PARALLELOGRAM:
+                case NodeShapes.V:
                     var r:Rectangle = new Rectangle(-size/2, -size/2, size, size);
                     var points:Array = NodeShapes.getDrawPoints(r, d.shape);
                     Shapes.drawPolygon(g, points);

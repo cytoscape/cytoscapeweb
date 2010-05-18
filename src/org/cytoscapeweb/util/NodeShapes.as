@@ -46,6 +46,7 @@ package org.cytoscapeweb.util {
         public static const OCTAGON:String = "OCTAGON";
         public static const PARALLELOGRAM:String = "PARALLELOGRAM";
         public static const ROUND_RECTANGLE:String = "ROUNDRECT";
+        public static const V:String = "V";
         
         // ========[ CONSTRUCTOR ]==================================================================
         
@@ -118,6 +119,12 @@ package org.cytoscapeweb.util {
                                    xR-w4, yB,
                                    xL+w4, yB ];
                         break;
+                    case NodeShapes.V:
+                        points = [ xL,    yT,
+                                   xL+w2, yT+h3,
+                                   xR,    yT,
+                                   xL+w2, yB ]
+                        break;
                     case NodeShapes.RECTANGLE:
                     default:
                         points = [ xL, yT,
@@ -133,14 +140,15 @@ package org.cytoscapeweb.util {
         public static function isValid(shape:String):Boolean {
             if (shape != null) shape = StringUtil.trim(shape.toUpperCase());
             
-            return shape == ELLIPSE ||
-                   shape == RECTANGLE ||
-                   shape == DIAMOND ||
-                   shape == TRIANGLE ||
-                   shape == HEXAGON ||
-                   shape == OCTAGON ||
-                   shape == PARALLELOGRAM ||
-                   shape == ROUND_RECTANGLE; 
+            return shape === ELLIPSE ||
+                   shape === RECTANGLE ||
+                   shape === DIAMOND ||
+                   shape === TRIANGLE ||
+                   shape === HEXAGON ||
+                   shape === OCTAGON ||
+                   shape === PARALLELOGRAM ||
+                   shape === ROUND_RECTANGLE ||
+                   shape === V;
         }
         
         public static function parse(shape:String):String {
@@ -160,6 +168,7 @@ package org.cytoscapeweb.util {
                 case "TRIANGLE":          return TRIANGLE;
                 case "RHOMBUS":
                 case "PARALLELOGRAM":     return PARALLELOGRAM;
+                case "V":                 return V;
                 default:                  return ELLIPSE;
             }
         }

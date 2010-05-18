@@ -110,7 +110,7 @@ package org.cytoscapeweb.view.render {
 
                 if (maxH > 0) {
                     var nbd:Number = nd - s.width/2 - t.width/2; // distance between nodes borders
-    			    h += 2 * Math.max(0, maxH - nbd/4) * (h/Math.abs(h));
+    			    h += 2 * Math.sqrt(Math.max(0, maxH*maxH - Math.pow(nd/4, 2))) * (h/Math.abs(h));
                 }
                 
 			    // Find bezier control point
@@ -147,7 +147,7 @@ package org.cytoscapeweb.view.render {
                 ah = sourceArrowStyle.height + sourceArrowStyle.gap;
                 // The arrow should follow the curve slope:
                 if (c != null) {
-                    slopeVector = Point.distance(c, start);
+                    slopeVector = Point.distance(c, sShaft);
                     sShaft = Point.interpolate(c, start, ah/slopeVector);
                 } else {
                     sShaft = Point.interpolate(end, start, ah/vector);
@@ -164,6 +164,31 @@ package org.cytoscapeweb.view.render {
                 }
             }
 
+            // Draw the line of the edge:
+            // ---------------------------
+            g.clear();
+            
+            g.lineStyle(w, color, 1, pixelHinting, scaleMode, caps, joints, miterLimit); 
+            g.moveTo(sShaft.x, sShaft.y);
+            
+            if (c != null) {
+                if (nd > 2*w) {
+                    // Nodes are not too close...
+                    g.curveTo(c.x, c.y, eShaft.x, eShaft.y);
+                } else {
+                    // Cubic beziers avoid some rendering defects (artifacts) when nodes are too close!
+                    var c1:Point = new Point(), c2:Point = new Point();
+                    Utils.quadraticToCubic(sShaft, c, eShaft, c1, c2);
+                    Shapes.drawCubic(g, sShaft.x, sShaft.y, c1.x, c1.y, c2.x, c2.y, eShaft.x, eShaft.y, false);
+                }
+            } else {
+                g.lineTo(eShaft.x, eShaft.y);
+            }
+
+            g.endFill();
+
+            // ARROWS:
+            // ---------------------------
             var ds:Point = c == null ? end.subtract(start) : c.subtract(start);
             var de:Point = c == null ? start.subtract(end) : c.subtract(end);
             var ns:Point = new Point(ds.y, -ds.x);
@@ -176,29 +201,7 @@ package org.cytoscapeweb.view.render {
             var eShaft1:Point = eShaft.add(ne);
             var eShaft2:Point = eShaft.subtract(ne);
 
-
-            // Draw the line of the edge:
-            // ---------------------------
-            g.clear();
-            
-            g.lineStyle(w, color, 1, pixelHinting, scaleMode, caps, joints, miterLimit); 
-            g.moveTo(sShaft.x, sShaft.y);
-            
-            if (c != null) {
-                //g.curveTo(curve.x, curve.y, eShaft.x, eShaft.y);
-                // Cubic beziers avoid some rendering defects!
-                var c1:Point = new Point(), c2:Point = new Point();
-                Utils.quadraticToCubic(sShaft, c, eShaft, c1, c2);
-                
-                Shapes.drawCubic(g, sShaft.x, sShaft.y, c1.x, c1.y, c2.x, c2.y, eShaft.x, eShaft.y, false);
-            } else {
-                g.lineTo(eShaft.x, eShaft.y);
-            }
-
-            g.endFill();
-
             // Draw the source arrow:
-            // ---------------------------
             var saPoints:Object;
             if (sourceArrowStyle != null)
                 saPoints = drawArrow(g, sShaft, start, sShaft2, sShaft1,
@@ -206,7 +209,6 @@ package org.cytoscapeweb.view.render {
                                      sourceArrowStyle);
             
             // Draw the target arrow:
-            // ---------------------------
             var taPoints:Object;
             if (targetArrowStyle != null)
                 taPoints = drawArrow(g, eShaft, end, eShaft1, eShaft2,
