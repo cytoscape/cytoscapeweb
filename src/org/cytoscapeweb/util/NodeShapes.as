@@ -46,7 +46,7 @@ package org.cytoscapeweb.util {
         public static const OCTAGON:String = "OCTAGON";
         public static const PARALLELOGRAM:String = "PARALLELOGRAM";
         public static const ROUND_RECTANGLE:String = "ROUNDRECT";
-        public static const V:String = "V";
+        public static const V:String = "VEE";
         
         // ========[ CONSTRUCTOR ]==================================================================
         
@@ -160,6 +160,7 @@ package org.cytoscapeweb.util {
                 case "OCTAGON":           return OCTAGON;
                 case "SQUARE":
                 case "BOX":
+                case "RECT":
                 case "RECTANGLE":         return RECTANGLE;
                 case "ROUNDRECT":
                 case "ROUND_RECT":
@@ -168,7 +169,8 @@ package org.cytoscapeweb.util {
                 case "TRIANGLE":          return TRIANGLE;
                 case "RHOMBUS":
                 case "PARALLELOGRAM":     return PARALLELOGRAM;
-                case "V":                 return V;
+                case "V":
+                case "VEE":               return V;
                 default:                  return ELLIPSE;
             }
         }
