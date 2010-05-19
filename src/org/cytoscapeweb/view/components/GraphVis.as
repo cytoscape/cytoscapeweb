@@ -490,7 +490,7 @@ package org.cytoscapeweb.view.components {
 	            var cl:CircleLayout = new CircleLayout(null, null, tree, d);
                 cl.angleWidth = options.angleWidth * Math.PI / 180;
                 
-                correction = Math.max(1, 360 / options.angleWidth);
+                correction = Math.max(1, Math.abs(360 / options.angleWidth));
                 layoutBounds.width *= correction;
                 layoutBounds.height *= correction;
                 
@@ -506,7 +506,7 @@ package org.cytoscapeweb.view.components {
                 var r:Number = options.radius;
                 if (isNaN(r)) {
                     r = Math.max(60, Math.sqrt(layoutBounds.width*layoutBounds.height)/4);
-                    correction = Math.max(1, 360 / options.angleWidth);
+                    correction = Math.max(1, Math.abs(360 / options.angleWidth));
                     r *= correction;
                 }
 
