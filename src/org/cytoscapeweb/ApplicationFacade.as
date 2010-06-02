@@ -171,6 +171,8 @@ package org.cytoscapeweb {
 
         public function ApplicationFacade(lock:SingletonLock) {
         	super();
+            if (lock == null)
+                throw new Error( "Invalid Singleton access. Use ApplicationFacade.instance().");
         }
         
         public static function getInstance():ApplicationFacade {

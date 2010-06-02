@@ -206,6 +206,10 @@ package org.cytoscapeweb.util {
             return name.toLowerCase().indexOf("color") != -1;
         }
         
+        public static function isAlpha(name:String):Boolean {
+            return name.toLowerCase().indexOf("opacity") != -1;
+        }
+        
         public static function isNumber(name:String):Boolean {
             if (name != null) {
                 var tokens:Array = ["width", "height", "size", "opacity", "offset", "curvature", "delay", "blur", "strength"];

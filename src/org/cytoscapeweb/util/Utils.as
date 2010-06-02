@@ -71,12 +71,20 @@ package org.cytoscapeweb.util {
         }
         
 		/**
-		 * @param the color as string - e.g. "#f5f5f5" or just "f5f5f5";
+		 * @param the color as string - e.g. "#f5f5f5", "f5f5f5" or "255,255,255";
 		 * @return the RGB color as uint - e.g. 0xf5f5f5.
 		 */
         public static function rgbColorAsUint(color:String):uint {
             if (color == null) color = "0";
+            
+            if (color.search(/\d+?,\d+?,\d+?/) === 0) { // e.g. 255,255,255
+                var rgb:Array = color.split(",");
+                var c:uint = Colors.rgba(rgb[0], rgb[1], rgb[2]);
+                color = rgbColorAsString(c);
+            }
+            
             color = StringUtil.trim(color).replace("#", "");
+            
             return uint("0x"+color);
         }
         

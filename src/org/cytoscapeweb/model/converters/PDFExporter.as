@@ -72,7 +72,7 @@ package org.cytoscapeweb.model.converters {
     /**
      * Class that generates a vectorial image PDF file from the network.
      */
-    public class PDFConverter {
+    public class PDFExporter {
         
         // ========[ CONSTANTS ]====================================================================
 
@@ -93,7 +93,7 @@ package org.cytoscapeweb.model.converters {
 
         // ========[ CONSTRUCTOR ]==================================================================
         
-        public function PDFConverter(view:GraphView) {
+        public function PDFExporter(view:GraphView) {
             this._graphView = view;         
         }
 
@@ -106,11 +106,11 @@ package org.cytoscapeweb.model.converters {
          * @param width The desired image width in pixels.
          * @param height The desired image height in pixels.
          */
-        public function convertToPDF(graphData:Data,
-                                     style:VisualStyleVO,
-                                     config:ConfigVO,
-                                     scale:Number=1, 
-                                     width:Number=0, height:Number=0):ByteArray {
+        public function export(graphData:Data,
+                               style:VisualStyleVO,
+                               config:ConfigVO,
+                               scale:Number=1, 
+                               width:Number=0, height:Number=0):ByteArray {
             _style = style;
             _scale = scale;
             var bounds:Rectangle = _graphView.getRealBounds();

@@ -669,12 +669,10 @@ package org.cytoscapeweb.model {
             }
         }
 
-        public function loadGraph(options:Object):void {
-        	var txt:String = options.network;
-            
-            if (txt != null) {
+        public function loadGraph(network:String, layout:*):void {
+            if (network != null) {
                 try {
-                    var xml:XML = new XML(txt);
+                    var xml:XML = new XML(network);
                     var ds:DataSet;
                     
                     if (xml != null && xml.name() != null) {
@@ -692,8 +690,6 @@ package org.cytoscapeweb.model {
                             
                             var points:Object = xgmmlConverter.points;
                             if (points != null) {
-                                var layout:* = options.layout;
-                                
                                 if (layout == null) layout = {};
                                 if (layout is String) layout = { name: layout };
                                 
@@ -707,7 +703,7 @@ package org.cytoscapeweb.model {
                         }
                     } else {
                         // SIF:
-                        ds = new SIFConverter().parse(txt);
+                        ds = new SIFConverter().parse(network);
                     }
                     
                     _nodesSchema = ds.nodes.schema;
@@ -787,8 +783,7 @@ package org.cytoscapeweb.model {
             if (ds is NodeSprite) {
                 _nodesMap[ds.data.id] = ds;
             } else if (ds is EdgeSprite) {
-                _edgesMap[ds.data.id] = ds;
-trace("    - _edgesMap :: " + ds.data.id + " - merged? " + (ds.props.$merged));                
+                _edgesMap[ds.data.id] = ds;               
                 if (ds.props.$merged) {
                     graphData.group(Groups.MERGED_EDGES).add(ds);
                 } else {

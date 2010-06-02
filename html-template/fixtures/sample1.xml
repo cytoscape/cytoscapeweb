@@ -4,6 +4,9 @@
   <key id="shape" for="node" attr.name="shape" attr.type="string">
       <default>DIAMOND</default>
   </key>
+  <key id="type" for="node" attr.name="type" attr.type="int">
+      <default>1</default>
+  </key>
   
   <key id="network" for="edge" attr.name="network" attr.type="string">
       <default>2</default>
@@ -18,16 +21,19 @@
       <data key="weight">0.45</data>
       <data key="label">A01</data>
       <data key="shape">ELLIPSE</data>
+      <data key="type">2</data>
     </node>
     <node id="a02">
       <data key="weight">0.22</data>
       <data key="label">A02</data>
       <data key="shape">TRIANGLE</data>
+      <data key="type">3</data>
     </node>
     <node id="a03">
       <data key="weight">0.09</data>
       <data key="label">A03</data>
       <data key="shape">OCTAGON</data>
+      <data key="type">2</data>
     </node>
     <node id="a04">
       <data key="weight">0.03</data>

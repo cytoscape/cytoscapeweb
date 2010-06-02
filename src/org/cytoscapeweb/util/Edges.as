@@ -78,6 +78,7 @@ package org.cytoscapeweb.util {
                 renderer.caps = CapsStyle.NONE;
                 renderer.joints = JointStyle.ROUND;
                 renderer.miterLimit = 0;
+                renderer.pixelHinting = false;
                 
                 _properties = {
                     lineWidth: lineWidth,

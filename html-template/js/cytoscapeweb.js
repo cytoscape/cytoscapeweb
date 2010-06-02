@@ -186,7 +186,7 @@
          *                    <li><code>visualStyle</code>: an optional {@link org.cytoscapeweb.VisualStyle} object to be applied on this network.</li>
          *                    <li><code>layout</code>: an optional {@link org.cytoscapeweb.Layout} object, or just the layout name.
          *                                             The default is "ForceDirected", unless the network data is an 
-         *                              			   <a href="http://www.cs.rpi.edu/~puninj/XGMML/" target="_blank">XGMML</a>, whose 
+         *                                             <a href="http://www.cs.rpi.edu/~puninj/XGMML/" target="_blank">XGMML</a>, whose 
          *                                             <code><a href="http://www.cs.rpi.edu/~puninj/XGMML/draft-xgmml-20010628.html#NodeE" target="_blank">node</a></code>
          *                                             elements contain
          *                                             <code><a href="http://www.cs.rpi.edu/~puninj/XGMML/draft-xgmml-20010628.html#GraphicsA" target="_blank">graphics</a></code>
@@ -307,16 +307,16 @@
          * Otherwise it just returns the current visual style object.</p>
          * @param {org.cytoscapeweb.VisualStyle} [style] An object that contains the desired visual properties and attribute mappings.
          * @example
-	     * var style = {
-	     *         global: {
-	     *             backgroundColor: "#000000"
-	     *         },
-	     *         nodes: {
-	     *             color: "#ffffff",
-	     *             size: 40
-	     *         }
-	     * };
-	     * 
+         * var style = {
+         *         global: {
+         *             backgroundColor: "#000000"
+         *         },
+         *         nodes: {
+         *             color: "#ffffff",
+         *             size: 40
+         *         }
+         * };
+         * 
          * vis.visualStyle(style);
          * 
          * @return <ul><li>The {@link org.cytoscapeweb.VisualStyle} object for <code>visualStyle()</code>.</li>
@@ -370,8 +370,8 @@
          * @see org.cytoscapeweb.Visualization#visualStyle
          */
         visualStyleBypass: function (/*bypass*/) {
-        	var swf = this.swf();
-        	if (arguments.length > 0) { swf.setVisualStyleBypass(arguments[0]); return this; }
+            var swf = this.swf();
+            if (arguments.length > 0) { swf.setVisualStyleBypass(arguments[0]); return this; }
             else { return swf.getVisualStyleBypass(); }
         },
 
@@ -471,8 +471,8 @@
          * @see org.cytoscapeweb.Visualization#panToCenter
          */
         panEnabled: function (/*enabled*/) {
-        	if (arguments.length > 0) { this.swf().enableGrabToPan(arguments[0]); return this; }
-        	else { return this.swf().isGrabToPanEnabled(); }
+            if (arguments.length > 0) { this.swf().enableGrabToPan(arguments[0]); return this; }
+            else { return this.swf().isGrabToPanEnabled(); }
         },
         
         /**
@@ -484,8 +484,8 @@
          * @see org.cytoscapeweb.Visualization#panToCenter
          */
         panBy: function (amountX, amountY) {
-        	this.swf().panBy(amountX, amountY);
-        	return this;
+            this.swf().panBy(amountX, amountY);
+            return this;
         },
 
         /**
@@ -556,8 +556,8 @@
          * @see org.cytoscapeweb.Visualization#node
          */
         nodes: function () {
-        	var str = this.swf().getNodes();
-        	return JSON.parse(str);
+            var str = this.swf().getNodes();
+            return JSON.parse(str);
         },
 
         /**
@@ -599,77 +599,77 @@
             return JSON.parse(str);
         },
         
-	    /**
-	     * <p>Create a new node and add it to the network view.<p>
-	     * <p>If the node <code>id</code> is not specified, Cytoscape Web creates a new one automatically.</p>
-	     * @example
-	     * var data = { id: "n4",
-	     *              label: "MYO2 (Yeast)",
-	     *              weight: 0.54 };
-	     * 
-	     * var node = vis.addNode(240, 360, data, true);
-	     * 
-	     * @param {Object} x The horizontal coordinate of the node.
-	     * @param {Object} y The vertical coordinate of the node.
-	     * @param {Object} [data] The object that contains the node attributes.
-	     * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply the visual mappers
+        /**
+         * <p>Create a new node and add it to the network view.<p>
+         * <p>If the node <code>id</code> is not specified, Cytoscape Web creates a new one automatically.</p>
+         * @example
+         * var data = { id: "n4",
+         *              label: "MYO2 (Yeast)",
+         *              weight: 0.54 };
+         * 
+         * var node = vis.addNode(240, 360, data, true);
+         * 
+         * @param {Object} x The horizontal coordinate of the node.
+         * @param {Object} y The vertical coordinate of the node.
+         * @param {Object} [data] The object that contains the node attributes.
+         * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply the visual mappers
          *                                        to the network view after adding the node.
          *                                        The default value is <code>false</code>.
-	     * @return {org.cytoscapeweb.Node} The new created node object.
-	     * @see org.cytoscapeweb.Visualization#addEdge
-	     * @see org.cytoscapeweb.Visualization#removeElements
-	     */
-	    addNode: function (x, y/*, data, updateVisualMappers*/) {
-        	var data, updateVisualMappers = false, i = 2;
-        	if (arguments.length > i && typeof arguments[i] === "object") { data = arguments[i++]; }
-        	if (arguments.length > i && typeof arguments[i] === "boolean") { updateVisualMappers = arguments[i]; }
-        	return this.swf().addNode(x, y, data, updateVisualMappers);
-	    },
-	     
-	    /**
-	     * <p>Create a new edge linking two nodes and add it to the network view.<p>
-	     * <p>If the edge <code>id</code> is not specified, Cytoscape Web creates a new one automatically.</p>
-	     * <p>Throws exception if missing <code>source</code> or <code>target</code>.</p>
-	     * @example
-	     * var data = { id: "e10",
-	     *              source: "n1",
-	     *              target: "n4",
-	     *              directed: false,
-	     *              label: "Co-expression",
-	     *              weight: 0.88 };
-	     * 
-	     * var edge = vis.addEdge(data, true);
-	     * 
-	     * @param {Object} data The object that contains the edge attributes.
-	     * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply the visual mappers
+         * @return {org.cytoscapeweb.Node} The new created node object.
+         * @see org.cytoscapeweb.Visualization#addEdge
+         * @see org.cytoscapeweb.Visualization#removeElements
+         */
+        addNode: function (x, y/*, data, updateVisualMappers*/) {
+            var data, updateVisualMappers = false, i = 2;
+            if (arguments.length > i && typeof arguments[i] === "object") { data = arguments[i++]; }
+            if (arguments.length > i && typeof arguments[i] === "boolean") { updateVisualMappers = arguments[i]; }
+            return this.swf().addNode(x, y, data, updateVisualMappers);
+        },
+         
+        /**
+         * <p>Create a new edge linking two nodes and add it to the network view.<p>
+         * <p>If the edge <code>id</code> is not specified, Cytoscape Web creates a new one automatically.</p>
+         * <p>Throws exception if missing <code>source</code> or <code>target</code>.</p>
+         * @example
+         * var data = { id: "e10",
+         *              source: "n1",
+         *              target: "n4",
+         *              directed: false,
+         *              label: "Co-expression",
+         *              weight: 0.88 };
+         * 
+         * var edge = vis.addEdge(data, true);
+         * 
+         * @param {Object} data The object that contains the edge attributes.
+         * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply the visual mappers
          *                                        to the network view after adding the edge.
-	     * @return {org.cytoscapeweb.Edge} The new created edge object.
-	     * @see org.cytoscapeweb.Visualization#addNode
-	     * @see org.cytoscapeweb.Visualization#removeElements
-	     */
-	    addEdge: function (data/*, updateVisualMappers*/) {
-	    	var updateVisualMappers = false;
-	    	if (data == null) { throw("The 'data' object is mandatory."); }
-        	if (data.source == null) { throw("The 'source' node ID mandatory."); }
-        	if (data.target == null) { throw("The 'target' node ID mandatory."); }
-        	if (arguments.length > 1) { updateVisualMappers = arguments[1]; }
-	    	return this.swf().addEdge(data, updateVisualMappers);
-	    },
-	    
-	    /**
-	     * <p>Permanently delete the specified node and its associated edges from the network.</p>
-	     * <p>If a node is deleted, all of its connected edges will be removed as well.</p>
-	     * @example
-	     * // 1. Pass the whole Node object:
-	     * var node = vis.nodes()[0];
-	     * vis.removeNode(node);
-	     * 
-	     * // 2. Or just specify the node id:
-	     * vis.removeNode("n3");
-	     * 
+         * @return {org.cytoscapeweb.Edge} The new created edge object.
+         * @see org.cytoscapeweb.Visualization#addNode
+         * @see org.cytoscapeweb.Visualization#removeElements
+         */
+        addEdge: function (data/*, updateVisualMappers*/) {
+            var updateVisualMappers = false;
+            if (data == null) { throw("The 'data' object is mandatory."); }
+            if (data.source == null) { throw("The 'source' node ID mandatory."); }
+            if (data.target == null) { throw("The 'target' node ID mandatory."); }
+            if (arguments.length > 1) { updateVisualMappers = arguments[1]; }
+            return this.swf().addEdge(data, updateVisualMappers);
+        },
+        
+        /**
+         * <p>Permanently delete the specified node and its associated edges from the network.</p>
+         * <p>If a node is deleted, all of its connected edges will be removed as well.</p>
+         * @example
+         * // 1. Pass the whole Node object:
+         * var node = vis.nodes()[0];
+         * vis.removeNode(node);
+         * 
+         * // 2. Or just specify the node id:
+         * vis.removeNode("n3");
+         * 
          * @param {Object} node The node to be removed from the network. It can be a {@link org.cytoscapeweb.Node}
          *                      object or just its <code>id</code> (String).
-	     * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to reapply the visual mappers
+         * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to reapply the visual mappers
          *                                        to the network view after removing the element.
          * @return {org.cytoscapeweb.Visualization} The Visualization instance.
          * @see org.cytoscapeweb.Visualization#removeEdge
@@ -677,61 +677,61 @@
          * @see org.cytoscapeweb.Visualization#addNode
          * @see org.cytoscapeweb.Visualization#addEdge
          */
-	    removeNode: function(node, updateVisualMappers) {
-        	this.swf().removeElements("nodes", [node], updateVisualMappers);
-        	return this;
-	    },
-	    
-	    /**
-	     * <p>Permanently delete the specified edge from the network.</p>
-	     * <p>If the specified edge is a merged one, all of its "regular" edges are deleted as well.</p>
-	     * @example
-	     * // 1. Pass the whole Edge object:
-	     * var edge = vis.edges()[0];
-	     * vis.removeEdge(edge);
-	     * 
-	     * // 2. Or just pass the edge id:
-	     * vis.removeEdge("e101");
-	     * 
-	     * @param {Object} edge The edge to be removed from the network. It can be an {@link org.cytoscapeweb.Edge}
-	     *                      object or just its <code>id</code> (String).
-	     * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to reapply the visual mappers
-	     *                                        to the network view after removing the element.
-	     * @return {org.cytoscapeweb.Visualization} The Visualization instance.
-	     * @see org.cytoscapeweb.Visualization#removeNode
-	     * @see org.cytoscapeweb.Visualization#removeElements
-	     * @see org.cytoscapeweb.Visualization#addNode
-	     * @see org.cytoscapeweb.Visualization#addEdge
-	     */
-	    removeEdge: function(edge, updateVisualMappers) {
-	    	this.swf().removeElements("edges", [edge], updateVisualMappers);
-	    	return this;
-	    },
-	    
-	    /**
-	     * <p>Permanently delete nodes and/or edges from the network.</p>
-	     * <p>If a node is deleted, all of its connected edges will be removed as well.</p>
-	     * @example
-	     * // 1. Remove edges by ID:
-	     * vis.removeElements("edges", ["1", "2", "5"]);
-	     * 
-	     * // 2. Remove edges and nodes altogether, by passing the objects to be deleted:
-	     * var nodes = vis.nodes();
-	     * var edges = vis.edges();
-	     * vis.removeElements([nodes[0], nodes[1], edges[0]], true);
-	     * 
-	     * // 3. Remove all edges:
-	     * vis.removeElements("edges");
-	     * 
-	     * // 4. Remove everything (nodes and edges):
-	     * vis.removeElements();
-	     * 
+        removeNode: function(node, updateVisualMappers) {
+            this.swf().removeElements("nodes", [node], updateVisualMappers);
+            return this;
+        },
+        
+        /**
+         * <p>Permanently delete the specified edge from the network.</p>
+         * <p>If the specified edge is a merged one, all of its "regular" edges are deleted as well.</p>
+         * @example
+         * // 1. Pass the whole Edge object:
+         * var edge = vis.edges()[0];
+         * vis.removeEdge(edge);
+         * 
+         * // 2. Or just pass the edge id:
+         * vis.removeEdge("e101");
+         * 
+         * @param {Object} edge The edge to be removed from the network. It can be an {@link org.cytoscapeweb.Edge}
+         *                      object or just its <code>id</code> (String).
+         * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to reapply the visual mappers
+         *                                        to the network view after removing the element.
+         * @return {org.cytoscapeweb.Visualization} The Visualization instance.
+         * @see org.cytoscapeweb.Visualization#removeNode
+         * @see org.cytoscapeweb.Visualization#removeElements
+         * @see org.cytoscapeweb.Visualization#addNode
+         * @see org.cytoscapeweb.Visualization#addEdge
+         */
+        removeEdge: function(edge, updateVisualMappers) {
+            this.swf().removeElements("edges", [edge], updateVisualMappers);
+            return this;
+        },
+        
+        /**
+         * <p>Permanently delete nodes and/or edges from the network.</p>
+         * <p>If a node is deleted, all of its connected edges will be removed as well.</p>
+         * @example
+         * // 1. Remove edges by ID:
+         * vis.removeElements("edges", ["1", "2", "5"]);
+         * 
+         * // 2. Remove edges and nodes altogether, by passing the objects to be deleted:
+         * var nodes = vis.nodes();
+         * var edges = vis.edges();
+         * vis.removeElements([nodes[0], nodes[1], edges[0]], true);
+         * 
+         * // 3. Remove all edges:
+         * vis.removeElements("edges");
+         * 
+         * // 4. Remove everything (nodes and edges):
+         * vis.removeElements();
+         * 
          * @param {org.cytoscapeweb.Group} [gr] The group of network elements.
          * @param {Array} [items] The items to be removed from the network. The array can contain node/edge objects or only
          *                        their <code>id</code> values. Remember that, if you pass only the id
          *                        and do not pass the group argument, if an edge and a node have the same id value,
          *                        both will be removed.
-	     * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to reapply the visual mappers
+         * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to reapply the visual mappers
          *                                        to the network view after removing the elements.
          * @return {org.cytoscapeweb.Visualization} The Visualization instance.
          * @see org.cytoscapeweb.Visualization#removeNode
@@ -739,22 +739,22 @@
          * @see org.cytoscapeweb.Visualization#addNode
          * @see org.cytoscapeweb.Visualization#addEdge
          */
-	    removeElements: function(/*gr, items, updateVisualMappers*/) {
-	    	var gr, items, updateVisualMappers = false;
-        	if (arguments.length >= 1) {
-        		if (typeof arguments[0] === "string") { gr = arguments[0]; }
+        removeElements: function(/*gr, items, updateVisualMappers*/) {
+            var gr, items, updateVisualMappers = false;
+            if (arguments.length >= 1) {
+                if (typeof arguments[0] === "string") { gr = arguments[0]; }
                 else if (this._typeof(arguments[0]) === "array") { items = arguments[0]; }
                 else if (typeof arguments[0] === "boolean") { updateVisualMappers = arguments[0]; }
-        	}
-        	if (arguments.length >= 2) {
-        		if (this._typeof(arguments[1]) === "array") { items = arguments[1]; }
-        		else if (typeof arguments[1] === "boolean") { updateVisualMappers = arguments[1]; }
-        	}
-        	if (arguments.length > 2) { updateVisualMappers = arguments[2]; }
+            }
+            if (arguments.length >= 2) {
+                if (this._typeof(arguments[1]) === "array") { items = arguments[1]; }
+                else if (typeof arguments[1] === "boolean") { updateVisualMappers = arguments[1]; }
+            }
+            if (arguments.length > 2) { updateVisualMappers = arguments[2]; }
             gr = this._normalizeGroup(gr);
             this.swf().removeElements(gr, items, updateVisualMappers);
-        	return this;
-	    },
+            return this;
+        },
         
         /**
          * <p>Add a custom attribute definition to the current node or edge data schema.</p>
@@ -784,15 +784,15 @@
          * @see org.cytoscapeweb.Visualization#updateData
          */
         addDataField: function (/*gr, dataField*/) {
-        	var gr, dataField, i = 0;
-        	if (arguments.length > 1) { gr = arguments[i++]; }
-        	dataField = arguments[i];
-        	if (dataField == null) { throw("The 'dataField' object is mandatory."); }
-        	if (dataField.name == null) { throw("The 'name' of the data field is mandatory."); }
-        	if (dataField.type == null)  { throw("The 'type' of the data field is mandatory."); }
-        	gr = this._normalizeGroup(gr);
+            var gr, dataField, i = 0;
+            if (arguments.length > 1) { gr = arguments[i++]; }
+            dataField = arguments[i];
+            if (dataField == null) { throw("The 'dataField' object is mandatory."); }
+            if (dataField.name == null) { throw("The 'name' of the data field is mandatory."); }
+            if (dataField.type == null)  { throw("The 'type' of the data field is mandatory."); }
+            gr = this._normalizeGroup(gr);
             this.swf().addDataField(gr, dataField);
-        	return this;
+            return this;
         },
         
         /**
@@ -811,7 +811,7 @@
          * 
          * // 2: Remove a data field from edges only:
          * vis.removeDataField("edges", "url");
-    	 *
+         *
          * @param {org.cytoscapeweb.Group} [gr] The group of network elements. If no group is passed,
          *                                      Cytoscape Web will try to remove the field from both nodes and edges data schema.
          * @param {String} name The name of the custom data field that will be removed.
@@ -820,13 +820,13 @@
          * @see org.cytoscapeweb.Visualization#updateData
          */
         removeDataField: function (/*gr, name*/) {
-        	var gr, name, i = 0;
-        	if (arguments.length > 1) { gr = arguments[i++]; }
-        	name = arguments[i];
+            var gr, name, i = 0;
+            if (arguments.length > 1) { gr = arguments[i++]; }
+            name = arguments[i];
             if (name == null) { throw("The 'name' of the data field is mandatory."); }
             gr = this._normalizeGroup(gr);
             this.swf().removeDataField(gr, name);
-        	return this;
+            return this;
         },
         
         /**
@@ -893,24 +893,24 @@
          * @see org.cytoscapeweb.Visualization#removeDataField
          */
         updateData: function (/*gr, items, data*/) {
-        	var gr, items, data;
+            var gr, items, data;
             if (arguments.length === 1) {
                 if (typeof arguments[0] === "string") { gr = arguments[0]; }
                 else if (this._typeof(arguments[0]) === "array") { items = arguments[0]; }
                 else { data = arguments[0]; }
             } else if (arguments.length === 2) {
-            	if (typeof arguments[0] === "string") {
-            		gr = arguments[0];
-            		if (this._typeof(arguments[1]) === "array") { items = arguments[1]; }
-            		else { data = arguments[1]; }
-            	} else {
-                	items = arguments[0];
-                	data = arguments[1];
+                if (typeof arguments[0] === "string") {
+                    gr = arguments[0];
+                    if (this._typeof(arguments[1]) === "array") { items = arguments[1]; }
+                    else { data = arguments[1]; }
+                } else {
+                    items = arguments[0];
+                    data = arguments[1];
                 }
             } else if (arguments.length > 2) {
-            	gr = arguments[0];
-            	items = arguments[1];
-            	data = arguments[2];
+                gr = arguments[0];
+                items = arguments[1];
+                data = arguments[2];
             }
             gr = this._normalizeGroup(gr);
             this.swf().updateData(gr, items, data);
@@ -1772,14 +1772,14 @@
         },
         
         _typeof: function(v) {
-        	if (typeof(v) == "object") {
-				if (v === null) return "null";
-				if (v.constructor == (new Array).constructor) return "array";
-				if (v.constructor == (new Date).constructor) return "date";
-				if (v.constructor == (new RegExp).constructor) return "regex";
-				return "object";
-        	}
-			return typeof(v);
+            if (typeof(v) == "object") {
+                if (v === null) return "null";
+                if (v.constructor == (new Array).constructor) return "array";
+                if (v.constructor == (new Date).constructor) return "date";
+                if (v.constructor == (new RegExp).constructor) return "regex";
+                return "object";
+            }
+            return typeof(v);
         }
     };
 
@@ -2741,14 +2741,16 @@
     /**
      * <p>This object represents node shapes. In actuality, it is just a string.</p>
      * <p>Possible values:</p>
-     * <ul class="options"><li><code>ELLIPSE</code></li>
+     * <ul class="options">
+     *    <li><code>ELLIPSE</code></li>
      *    <li><code>RECTANGLE</code></li>
      *    <li><code>TRIANGLE</code></li>
      *    <li><code>DIAMOND</code></li>
      *    <li><code>HEXAGON</code></li>
      *    <li><code>OCTAGON</code></li>
      *    <li><code>PARALLELOGRAM</code></li>
-     *    <li><code>ROUNDRECT</code></li></ul>
+     *    <li><code>ROUNDRECT</code></li>
+     *    <li><code>VEE</code></li></ul>
      * @class
      * @name NodeShape
      * @type String
@@ -2757,11 +2759,13 @@
     /**
      * <p>This object represents edge arrow shapes. In actuality, it is just a string.</p>
      * <p>Its value must be one of:</p>
-     * <ul class="options"><li><code>NONE</code></li>
-      *     <li><code>DELTA</code></li>
-      *     <li><code>DIAMOND</code></li>
-      *     <li><code>CIRCLE</code></li>
-      *     <li><code>T</code></li></ul>
+     * <ul class="options">
+     *      <li><code>NONE</code></li>
+     *      <li><code>DELTA</code></li>
+     *      <li><code>ARROW</code></li>
+     *      <li><code>DIAMOND</code></li>
+     *      <li><code>CIRCLE</code></li>
+     *      <li><code>T</code></li></ul>
      * @class
      * @name ArrowShape
      * @type String

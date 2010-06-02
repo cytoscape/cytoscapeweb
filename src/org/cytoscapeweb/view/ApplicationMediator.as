@@ -49,7 +49,7 @@ package org.cytoscapeweb.view {
 	import mx.managers.PopUpManager;
 	
 	import org.cytoscapeweb.ApplicationFacade;
-	import org.cytoscapeweb.model.converters.PDFConverter;
+	import org.cytoscapeweb.model.converters.PDFExporter;
 	import org.cytoscapeweb.model.data.VisualStyleVO;
 	import org.cytoscapeweb.model.methods.$;
 	import org.cytoscapeweb.util.ExternalFunctions;
@@ -219,8 +219,8 @@ package org.cytoscapeweb.view {
                 bytes = encoder.encode(source);
             } else {
                 // PDF:
-                var pdfConv:PDFConverter = new PDFConverter(graphView);
-                bytes = pdfConv.convertToPDF(graphProxy.graphData,
+                var pdfConv:PDFExporter = new PDFExporter(graphView);
+                bytes = pdfConv.export(graphProxy.graphData,
                                              configProxy.visualStyle,
                                              configProxy.config,
                                              scale,

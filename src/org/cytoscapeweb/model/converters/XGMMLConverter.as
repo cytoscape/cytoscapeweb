@@ -751,6 +751,7 @@ package org.cytoscapeweb.model.converters {
                 case null:
                 case "":
                 case "Default":
+                case "SanSerif":
                 case "SansSerif":  return Fonts.SANS_SERIF;
                 case "Serif":      return Fonts.SERIF;
                 case "Monospaced": return Fonts.TYPEWRITER;
