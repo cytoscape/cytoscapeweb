@@ -106,9 +106,9 @@ package org.cytoscapeweb.view.render {
 			    // Fix curvature height
 			    var saH:Number = sourceArrowStyle != null ? sourceArrowStyle.height : 0;
 			    var taH:Number = targetArrowStyle != null ? targetArrowStyle.height : 0;
-			    var maxH:Number = Math.max(saH, taH, e.source.width/2, e.target.width/2);
+			    var maxH:Number = Math.max(saH, taH, s.width/2, t.width/2);
 
-                if (maxH > 0) {
+                if (maxH >= h) {
                     var nbd:Number = nd - s.width/2 - t.width/2; // distance between nodes borders
     			    h += 2 * Math.sqrt(Math.max(0, maxH*maxH - Math.pow(nd/4, 2))) * (h/Math.abs(h));
                 }
@@ -172,11 +172,12 @@ package org.cytoscapeweb.view.render {
             g.moveTo(sShaft.x, sShaft.y);
             
             if (c != null) {
-                if (nd > 2*w) {
+                if (nd > 5*w) {
                     // Nodes are not too close...
                     g.curveTo(c.x, c.y, eShaft.x, eShaft.y);
                 } else {
-                    // Cubic beziers avoid some rendering defects (artifacts) when nodes are too close!
+                    // Flash has a knowm problem with cubic beziers, which can create artifacts.
+                    // Let's try to avoid it by using a quadratic bezier, instead:
                     var c1:Point = new Point(), c2:Point = new Point();
                     Utils.quadraticToCubic(sShaft, c, eShaft, c1, c2);
                     Shapes.drawCubic(g, sShaft.x, sShaft.y, c1.x, c1.y, c2.x, c2.y, eShaft.x, eShaft.y, false);

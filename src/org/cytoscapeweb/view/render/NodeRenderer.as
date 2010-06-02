@@ -62,7 +62,8 @@ package org.cytoscapeweb.view.render {
                 g.beginFill(0xffffff & d.fillColor, fillAlpha);
             }
             if (lineAlpha > 0 && d.lineWidth > 0) {
-                g.lineStyle(d.lineWidth, d.lineColor, lineAlpha);
+                var pixelHinting:Boolean = d.shape === NodeShapes.ROUND_RECTANGLE;
+                g.lineStyle(d.lineWidth, d.lineColor, lineAlpha, pixelHinting);
             }
 
             switch (d.shape) {
