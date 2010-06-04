@@ -1871,8 +1871,7 @@
      *     <tr><th>group</th><th>target</th><th>value</th></tr>
      *     <tr><td><code>none</code></td><td><code>undefined</code></td><td>The zoom value (float number from 0 to 1)</td></tr>
      * </Table>
-     * <p><label><strong>error:</strong></label> Fired after the network is rescaled, either by calling {@link org.cytoscapeweb.Visualization#zoom} or 
-     * when the user interacts with the visualization's pan-zoom control.</p>
+     * <p><label><strong>error:</strong></label> Fired when an exception is thrown.</p>
      * <table>
      *     <tr><th>group</th><th>target</th><th>value</th></tr>
      *     <tr><td><code>none</code></td><td><code>undefined</code></td><td>The {@link org.cytoscapeweb.Error} object</td></tr>
