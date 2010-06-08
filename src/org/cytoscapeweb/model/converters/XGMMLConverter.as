@@ -109,10 +109,10 @@ package org.cytoscapeweb.model.converters {
         private static const VIZMAP_ATTR_PREFIX:String = "vizmap:";
         
         private static const NODE_ATTR:Object = {
-            id: 1, label: "", weight: 1
+            id: 1, label: "", weight: 1, name: ""
         }
         private static const EDGE_ATTR:Object = {
-            id: 1, source: 1, target: 1, label: "", weight: 1, directed: false
+            id: 1, source: 1, target: 1, label: "", name: "", weight: 1, directed: false
         };
         private static const NODE_GRAPHICS_ATTR:Object = {
             type: [VisualProperties.NODE_SHAPE],
@@ -121,6 +121,7 @@ package org.cytoscapeweb.model.converters {
             fill: [VisualProperties.NODE_COLOR],
             width: [VisualProperties.NODE_LINE_WIDTH],
             outline: [VisualProperties.NODE_LINE_COLOR],
+            labelanchor: [VisualProperties.NODE_LABEL_HANCHOR, VisualProperties.NODE_LABEL_VANCHOR],
             'cy:nodeTransparency': [VisualProperties.NODE_ALPHA],
             'cy:nodeLabelFont': [VisualProperties.NODE_LABEL_FONT_NAME, VisualProperties.NODE_LABEL_FONT_SIZE]
         };
@@ -259,6 +260,7 @@ package org.cytoscapeweb.model.converters {
             nodeSchema.addField(new DataField(ID, DataUtil.STRING));
             nodeSchema.addField(new DataField(LABEL, DataUtil.STRING));
             nodeSchema.addField(new DataField(WEIGHT, DataUtil.NUMBER));
+            nodeSchema.addField(new DataField(NAME, DataUtil.STRING));
             
             edgeSchema.addField(new DataField(ID, DataUtil.STRING));
             edgeSchema.addField(new DataField(SOURCE, DataUtil.STRING));
@@ -401,7 +403,8 @@ package org.cytoscapeweb.model.converters {
             for each (var attribute:XML in tag.@*) {
                 name = attribute.name().toString();
                 field = schema.getFieldByName(name);
-                data[name] = DataUtil.parseValue(attribute[0].toString(), field.type);
+                if (field != null)
+                    data[name] = DataUtil.parseValue(attribute[0].toString(), field.type);
             }
             
             // get "att" tags:
@@ -420,7 +423,7 @@ package org.cytoscapeweb.model.converters {
             
             if (name == null) return;
             
-            var type:int = toCWType(att.@[TYPE].toString());
+            var type:int = toCW_Type(att.@[TYPE].toString());
             
             // Add the attribute definition to the schema:
             if (schema.getFieldById(name) == null) {
@@ -437,7 +440,7 @@ package org.cytoscapeweb.model.converters {
                         innerData = {};
                         parseAtt(innerAtt, schema, innerData);
                     } else {
-                        var innerType:int = toCWType(innerAtt.@[TYPE].toString());
+                        var innerType:int = toCW_Type(innerAtt.@[TYPE].toString());
                         innerData = DataUtil.parseValue(innerAtt.@[VALUE], innerType);
                     }
                     arr.push(innerData);
@@ -562,7 +565,7 @@ package org.cytoscapeweb.model.converters {
         private function addAtt(xml:XML, name:String, schema:DataSchema, data:Object):void {
             var field:DataField = schema.getFieldByName(name);
             
-            var type:String = fromCWType(field.type);
+            var type:String = fromCW_Type(field.type);
             var value:Object = data[name];
             
             var att:XML = <{ATTRIBUTE}/>;
@@ -599,16 +602,21 @@ package org.cytoscapeweb.model.converters {
                         break;
                     case VisualProperties.EDGE_SOURCE_ARROW_SHAPE:
                     case VisualProperties.EDGE_TARGET_ARROW_SHAPE:
-                        value = fromCWArrowShape(value);
+                        value = fromCW_ArrowShape(value);
                         break;
                     case VisualProperties.NODE_LABEL_FONT_NAME:
                     case VisualProperties.NODE_LABEL_FONT_SIZE:
                         // e.g. "SansSerif-0-12"
                         value = style.getValue(VisualProperties.NODE_LABEL_FONT_NAME, data);
-                        value = fromCWFontName(value);
+                        value = fromCW_FontName(value);
                         // TODO: BOLD-Italic?
                         value += "-0-";
                         value += style.getValue(VisualProperties.NODE_LABEL_FONT_SIZE, data);
+                        break;
+                    case VisualProperties.NODE_LABEL_HANCHOR:
+                    case VisualProperties.NODE_LABEL_VANCHOR:
+                        value = fromCW_LabelAnchor(style.getValue(VisualProperties.NODE_LABEL_VANCHOR, data),
+                                                   style.getValue(VisualProperties.NODE_LABEL_HANCHOR, data));
                         break;
                     default:
                         break;
@@ -649,24 +657,30 @@ package org.cytoscapeweb.model.converters {
                 switch (propName) {
                     case VisualProperties.EDGE_SOURCE_ARROW_SHAPE:
                     case VisualProperties.EDGE_TARGET_ARROW_SHAPE:
-                        value = toCWArrowShape(value);
+                        value = toCW_ArrowShape(value);
                         break;
                     case VisualProperties.NODE_LABEL_FONT_NAME:
                         // e.g. "Default-0-12"
-                        value = value.replace(/(\.[bB]old)?-\d+-\d+/, "");
+                        value = value.replace(/(\.[bB]old)?-[^\-]+-[^\-]+/, "");
                         value = StringUtil.trim(value);
-                        value = toCWFontName(value);
+                        value = toCW_FontName(value);
                         // TODO: BOLD-Italic
                         break;
                     case VisualProperties.NODE_LABEL_FONT_SIZE:
                         // e.g. "SanSerif-0-16"
-                        var v:* = value.replace(/.+-\d+-/, "");
+                        var v:* = value.replace(/.+-[^\-]+-/, "");
                         v = Number(v);
                         if (isNaN(v)) {
                             trace("[ERROR]: XGMMLConverter.parseValue: invalid label font: " + value);
                             v = 12;
                         }
                         value = v;
+                        break;
+                    case VisualProperties.NODE_LABEL_HANCHOR:
+                        value = toCW_HAnchor(value);
+                        break;
+                    case VisualProperties.NODE_LABEL_VANCHOR:
+                        value = toCW_VAnchor(value);
                         break;
                     default:
                         value = VisualProperties.parseValue(propName, value);
@@ -685,7 +699,7 @@ package org.cytoscapeweb.model.converters {
          * Converts from XGMML data types to Flare types.
          * XGMML TYPES: list | string | integer | real
          */
-        private static function toCWType(type:String):int {
+        private static function toCW_Type(type:String):int {
             switch (type) {
                 case INTEGER: return DataUtil.INT;
                 case REAL:    return DataUtil.NUMBER;
@@ -698,7 +712,7 @@ package org.cytoscapeweb.model.converters {
         /**
          * Converts from Flare data types to XGMML types.
          */
-        private static function fromCWType(type:int):String {        	
+        private static function fromCW_Type(type:int):String {        	
             switch (type) {
                 case DataUtil.INT:      return INTEGER;
                 case DataUtil.NUMBER:   return REAL;
@@ -710,7 +724,7 @@ package org.cytoscapeweb.model.converters {
             }
         }
         
-        private static function fromCWArrowShape(shape:String):String {
+        private static function fromCW_ArrowShape(shape:String):String {
             shape = ArrowShapes.parse(shape);
             switch (shape) {
                 case ArrowShapes.DELTA:   return "3";
@@ -722,7 +736,7 @@ package org.cytoscapeweb.model.converters {
             }
         }
         
-        private static function toCWArrowShape(shape:String):String {
+        private static function toCW_ArrowShape(shape:String):String {
             switch (shape) {
                 case "3":  return ArrowShapes.DELTA;
                 case "6":  return ArrowShapes.ARROW;
@@ -735,7 +749,7 @@ package org.cytoscapeweb.model.converters {
             }
         }
     
-        private static function fromCWFontName(font:String):String {
+        private static function fromCW_FontName(font:String):String {
             switch (font) {
                 case null:
                 case "":
@@ -746,7 +760,7 @@ package org.cytoscapeweb.model.converters {
             }
         }
         
-        private static function toCWFontName(font:String):String {
+        private static function toCW_FontName(font:String):String {
             switch (font) {
                 case null:
                 case "":
@@ -756,6 +770,59 @@ package org.cytoscapeweb.model.converters {
                 case "Serif":      return Fonts.SERIF;
                 case "Monospaced": return Fonts.TYPEWRITER;
                 default:           return font;
+            }
+        }
+        
+        private static function fromCW_LabelAnchor(va:String, ha:String):String {
+            switch (va) {
+                case "bottom":
+                    if (ha === "left") return "ne";
+                    if (ha === "right") return "nw";
+                    return "n";
+                case "top":
+                    if (ha === "left") return "se";
+                    if (ha === "right") return "sw";
+                    return "s";
+                default:
+                    if (ha === "left") return "e";
+                    if (ha === "right") return "w";
+                    return "c";
+            }
+        }
+        
+        /**
+         * @param hanchor the XGMML value for "labelanchor"
+         *                (see http://www.cs.rpi.edu/~puninj/XGMML/draft-xgmml.html#GlobalA and 
+         *                 http://www.inf.uni-konstanz.de/algo/lehre/ws04/pp/api/y/io/doc-files/gml-comments.html)
+         */
+        private static function toCW_HAnchor(labelanchor:String):String {
+            if (labelanchor != null) labelanchor = labelanchor.toLowerCase();
+            switch (labelanchor) {
+                case "ne":
+                case "se":
+                case "e": return "left";
+                case "nw":
+                case "sw":
+                case "w": return "right";
+                default:  return "center";
+            }
+        }
+        
+        /**
+         * @param vanchor the XGMML value for "labelanchor"
+         *                (see http://www.cs.rpi.edu/~puninj/XGMML/draft-xgmml.html#GlobalA and 
+         *                 http://www.inf.uni-konstanz.de/algo/lehre/ws04/pp/api/y/io/doc-files/gml-comments.html)
+         */
+        private static function toCW_VAnchor(labelanchor:String):String {
+            if (labelanchor != null) labelanchor = labelanchor.toLowerCase();
+            switch (labelanchor) {
+                case "ne":
+                case "nw":
+                case "n": return "bottom";
+                case "se":
+                case "sw":
+                case "s": return "top";
+                default:  return "middle";
             }
         }
         
