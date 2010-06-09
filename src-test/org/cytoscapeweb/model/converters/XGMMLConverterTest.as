@@ -98,7 +98,7 @@ package org.cytoscapeweb.model.converters {
             const F5:String = "Monospaced-000-024";
             // OS fonts:
             const F6:String = "ArialNarrow-Bold-0-012";
-            const F7:String = "ACaslonPro-Regular-0-8";
+            const F7:String = "ACaslonPro-Regular-0-8.55";
             const F8:String = "LucidaBright-Italic-10-24";
             // Unrecognizable fonts:
             const F9:String = "-0-012";
@@ -126,7 +126,7 @@ package org.cytoscapeweb.model.converters {
                 { prop: VisualProperties.NODE_LABEL_FONT_SIZE, value: F4, res: 102 },
                 { prop: VisualProperties.NODE_LABEL_FONT_SIZE, value: F5, res: 24 },
                 { prop: VisualProperties.NODE_LABEL_FONT_SIZE, value: F6, res: 12 },
-                { prop: VisualProperties.NODE_LABEL_FONT_SIZE, value: F7, res: 8 },
+                { prop: VisualProperties.NODE_LABEL_FONT_SIZE, value: F7, res: 8.55 },
                 { prop: VisualProperties.NODE_LABEL_FONT_SIZE, value: F8, res: 24 },
                 { prop: VisualProperties.NODE_LABEL_FONT_SIZE, value: F9, res: 12 },
                 { prop: VisualProperties.NODE_LABEL_FONT_SIZE, value: F10, res: 8 },

@@ -661,7 +661,7 @@ package org.cytoscapeweb.model.converters {
                         break;
                     case VisualProperties.NODE_LABEL_FONT_NAME:
                         // e.g. "Default-0-12"
-                        value = value.replace(/(\.[bB]old)?-[^\-]+-[^\-]+/, "");
+                        value = value.replace(/(\.[bB]old)?-\d+(\.\d+)?-\d+(\.\d+)?/, "");
                         value = StringUtil.trim(value);
                         value = toCW_FontName(value);
                         // TODO: BOLD-Italic

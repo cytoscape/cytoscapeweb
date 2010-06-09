@@ -222,8 +222,8 @@ package org.cytoscapeweb.model.converters {
                             pdf.beginFill(gc);
                             drawEdgeArrowJoint(pdf, sJointPoints, saStyle.shape);
                             drawEdgeArrowJoint(pdf, tJointPoints, taStyle.shape);
-                            drawEdgeArrow(pdf, sArrowPoints, saStyle.height*_scale);
-                            drawEdgeArrow(pdf, tArrowPoints, taStyle.height*_scale);
+                            drawEdgeArrow(pdf, saStyle.shape, sArrowPoints, saStyle.height*_scale);
+                            drawEdgeArrow(pdf, taStyle.shape, tArrowPoints, taStyle.height*_scale);
                             pdf.endFill();
                         }
                     }
@@ -251,13 +251,13 @@ package org.cytoscapeweb.model.converters {
                     var saColor:RGBColor = new RGBColor(saStyle.color);
                     pdf.lineStyle(saColor, 0, 0, e.alpha);
                     pdf.beginFill(saColor);
-                    drawEdgeArrow(pdf, sArrowPoints, saStyle.height*_scale);
+                    drawEdgeArrow(pdf, saStyle.shape, sArrowPoints, saStyle.height*_scale);
                     pdf.endFill();
                     
                     var taColor:RGBColor = new RGBColor(taStyle.color);
                     pdf.lineStyle(taColor, 0, 0, e.alpha);
                     pdf.beginFill(taColor);
-                    drawEdgeArrow(pdf, tArrowPoints, taStyle.height*_scale);
+                    drawEdgeArrow(pdf, taStyle.shape, tArrowPoints, taStyle.height*_scale);
                     pdf.endFill();
                 }
             }
@@ -422,12 +422,25 @@ package org.cytoscapeweb.model.converters {
             pdf.end();
         }
         
-        private function drawEdgeArrow(pdf:PDF, points:Array, diameter:Number=0):void {
+        private function drawEdgeArrow(pdf:PDF, shape:String, points:Array, diameter:Number=0):void {
             if (points != null && points.length > 0) {
-                if (diameter > 0 && points.length === 1) {
-                    // Draw a circle:
+                if (shape === ArrowShapes.CIRCLE) {
                     var center:Point = points[0];
                     pdf.drawCircle(center.x, center.y, diameter/2);
+                } else if (shape === ArrowShapes.ARROW) {
+                    var p1:Point = points[0];
+                    var c1:Point = points[1];
+                    var p2:Point = points[2];
+                    var p3:Point = points[3];
+                    var c2:Point = points[4];
+                    var ctrl1:Point = new Point(), ctrl2:Point = new Point();
+                    pdf.moveTo(p1.x, p1.y);
+                    Utils.quadraticToCubic(p1, c1, p2, ctrl1, ctrl2);
+                    pdf.curveTo(ctrl1.x, ctrl1.y, ctrl2.x, ctrl2.y, p2.x, p2.y);
+                    pdf.lineTo(p3.x, p3.y);
+                    Utils.quadraticToCubic(p3, c2, p1, ctrl1, ctrl2);
+                    pdf.curveTo(ctrl1.x, ctrl1.y, ctrl2.x, ctrl2.y, p1.x, p1.y);
+                    pdf.end();
                 } else {
                     // Draw a polygon:
                     var coordinates:Array = [];
@@ -435,7 +448,6 @@ package org.cytoscapeweb.model.converters {
                         coordinates.push(p.x);
                         coordinates.push(p.y);
                     }
-
                     pdf.drawPolygone(coordinates);
                 }
             }

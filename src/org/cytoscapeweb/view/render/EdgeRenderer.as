@@ -308,7 +308,7 @@ package org.cytoscapeweb.view.render {
                     g.curveTo(c2.x, c2.y, end.x, end.y);
                     g.endFill();
                     // Future reference points:
-                    points.arrow = [end.clone(), b1.clone(), b2.clone()];
+                    points.arrow = [end.clone(), c1.clone(), b1.clone(), b2.clone(), c2.clone()];
                     break;
                 case ArrowShapes.DELTA:
                 default:

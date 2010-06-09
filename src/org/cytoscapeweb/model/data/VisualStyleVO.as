@@ -60,7 +60,7 @@ package org.cytoscapeweb.model.data {
                     borderColor: "#666666",
                     borderWidth: 1,
                     label: { passthroughMapper: { attrName: "label" } },
-                    labelHorizontalAnchor: "left",
+                    labelHorizontalAnchor: "center",
                     labelVerticalAnchor: "middle",
                     labelXOffset: 0,
                     labelYOffset: 0,
