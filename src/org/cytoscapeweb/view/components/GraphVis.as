@@ -529,7 +529,7 @@ package org.cytoscapeweb.view.components {
                 var points:Array = options.points;
                 if (points != null) {
                     for each (var p:Object in points) {
-                        psl.addPoint(p.id, new Point(p.x, p.y));
+                        psl.addPoint(p.id, new Point(p.x * scaleX, p.y * scaleY));
                     }
                 }
                 
