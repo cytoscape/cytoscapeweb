@@ -28,25 +28,27 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.view.render {
-	import flare.animate.Transitioner;
-	import flare.display.TextSprite;
-	import flare.util.Filter;
-	import flare.vis.data.Data;
-	import flare.vis.data.DataList;
-	import flare.vis.data.DataSprite;
-	import flare.vis.data.EdgeSprite;
-	import flare.vis.operator.label.Labeler;
-	
-	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.geom.Point;
-	import flash.text.TextFormat;
-	
-	import org.cytoscapeweb.util.Utils;
-	import org.cytoscapeweb.util.methods.$each;
-	
-	
-	public class Labeler extends flare.vis.operator.label.Labeler {
+    import flare.animate.Transitioner;
+    import flare.display.TextSprite;
+    import flare.util.Filter;
+    import flare.util.Geometry;
+    import flare.util.Shapes;
+    import flare.vis.data.Data;
+    import flare.vis.data.DataList;
+    import flare.vis.data.DataSprite;
+    import flare.vis.data.EdgeSprite;
+    import flare.vis.operator.label.Labeler;
+    
+    import flash.display.Sprite;
+    import flash.events.Event;
+    import flash.geom.Point;
+    import flash.text.TextFormat;
+    
+    import org.cytoscapeweb.util.Utils;
+    import org.cytoscapeweb.util.methods.$each;
+    
+    
+    public class Labeler extends flare.vis.operator.label.Labeler {
 
         // ========[ CONSTANTS ]====================================================================
         
@@ -67,14 +69,14 @@ package org.cytoscapeweb.view.render {
 
         // ========[ CONSTRUCTOR ]==================================================================
 
-	    public function Labeler(source:*=null, group:String=Data.NODES, 
-	                            format:TextFormat=null, filter:*=null) {
-	        super(source, group, format, filter, group === Data.NODES ? LAYER : CHILD);
-	    }
-	    
-	    // ========[ PROTECTED METHODS ]============================================================
-		
-		/** @inheritDoc */
+        public function Labeler(source:*=null, group:String=Data.NODES, 
+                                format:TextFormat=null, filter:*=null) {
+            super(source, group, format, filter, group === Data.NODES ? LAYER : CHILD);
+        }
+        
+        // ========[ PROTECTED METHODS ]============================================================
+        
+        /** @inheritDoc */
         public override function setup():void {
             _labels = visualization.labels;
             if (_labels == null) {
@@ -94,8 +96,8 @@ package org.cytoscapeweb.view.render {
                 });
             }
         }
-		
-		public override function operate(t:Transitioner=null):void {
+        
+        public override function operate(t:Transitioner=null):void {
             if (visualization != null) {
                 _t = (t ? t : Transitioner.DEFAULT);
                 
@@ -109,24 +111,21 @@ package org.cytoscapeweb.view.render {
                 }
             }
         }
-		
-		/** @inheritDoc */
-		protected override function process(d:DataSprite):void {
-		    var label:TextSprite = getLabel(d, true);
-		    label.filters = filters(d);
+        
+        /** @inheritDoc */
+        protected override function process(d:DataSprite):void {
+            var label:TextSprite = getLabel(d, true);
+            label.filters = filters(d);
+            label.alpha = d.alpha;
             
             if (_policy == LAYER) {
-                var o:Object = _t.$(d);
-                var a:Number = o.alpha;
                 // TODO: create merged edge labels property?
-                var v:Boolean = o.visible && !(d is EdgeSprite && d.props.$merged);
-                o = _t.$(label);
-                o.alpha = a;
-                o.visible = v;
+                var v:Boolean = d.visible && !(d is EdgeSprite && d.props.$merged);
+                label.visible = v;
             }
 
             updateLabelPosition(label, d);
-		}
+        }
 
         /** @inheritDoc */
         protected override function getLabel(d:DataSprite, create:Boolean=false, visible:Boolean=true):TextSprite {
@@ -158,8 +157,7 @@ package org.cytoscapeweb.view.render {
                     label.y = yOffset;
                 }
             } else if (label && !cacheText) {
-                var o:Object = _t.$(label);
-                o.text = getLabelText(d);
+                label.text = getLabelText(d);
                 
                 updateTextFormat(d);
                 label.applyFormat(textFormat);
@@ -189,17 +187,30 @@ package org.cytoscapeweb.view.render {
             if (d is EdgeSprite) {
                 var e:EdgeSprite = EdgeSprite(d);
                 var pp:Object = e.props.$points;
-                if (e.props.$points && e.props.$points.curve) {
-                    // Label for a curved edge?
-                    var p1:Point = e.props.$points.start;
-                    var p2:Point = e.props.$points.end;
-                    var c:Point = e.props.$points.curve;
-                    var mp:Point = Utils.bezierPoint(p1, p2, c, 0.5);
-                    x = mp.x;
-                    y = mp.y;
-                } else {
+
+                if (e.shape === Shapes.LINE) {
                     x = (e.source.x + e.target.x) / 2;
                     y = (e.source.y + e.target.y) / 2;
+                } else if (e.props.$points != null) {
+                    var p1:Point = e.props.$points.start;
+                    var p2:Point = e.props.$points.end;
+                    var mp:Point = new Point(); // Middle point for curved edges.
+                    
+                    if (e.source === e.target) {
+                        // Loop...
+                        var cc1:Point = new Point();
+                        var cc2:Point = new Point();
+                        var cc3:Point = new Point();
+                        Geometry.cubicCoeff(p1, e.props.$points.c1, e.props.$points.c2, p2, cc1, cc2, cc3);
+                        mp = Geometry.cubic(0.5, p1, cc1, cc2, cc3, mp);
+                        x = mp.x;
+                        y = mp.y;
+                    } else {
+                        // Label for a curved edge?
+                        mp = Utils.bezierPoint(p1, p2, e.props.$points.c1, 0.5);
+                        x = mp.x;
+                        y = mp.y;
+                    }
                 }
             } else {
                 // The offset should be based on each node's size (not just from the node's center):

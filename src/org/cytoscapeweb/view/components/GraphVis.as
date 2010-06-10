@@ -382,7 +382,7 @@ package org.cytoscapeweb.view.components {
 
             // Then render edges and operate their labels:
             $each(d.edges, function(i:uint, e:EdgeSprite):void {
-                 if (e.shape != Shapes.LINE) e.render();
+                 e.render();
             });
             if (_config.edgeLabelsVisible) edgeLabeler.operate();
 

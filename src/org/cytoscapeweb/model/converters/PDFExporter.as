@@ -176,20 +176,20 @@ package org.cytoscapeweb.model.converters {
                 if (!e.visible || e.lineAlpha === 0 || e.lineWidth === 0) continue;
                 
                 // Edge points:
-                var start:Point, end:Point, curve:Point;
+                var start:Point, end:Point, c1:Point, c2:Point;
                 if (e.props.$points != null) {
                     start = e.props.$points.start;
                     end = e.props.$points.end;
-                    curve = e.props.$points.curve;
+                    c1 = e.props.$points.c1;
+                    c2 = e.props.$points.c2;
                 }
                 
                 if (start != null && end != null) {
                     start = toImagePoint(start, e);
                     end = toImagePoint(end, e);
                     
-                    if (curve != null) {
-                        curve = toImagePoint(curve, e);
-                    }
+                    if (c1 != null) c1 = toImagePoint(c1, e);
+                    if (c2 != null) c2 = toImagePoint(c2, e);
                     
                     // Arrows points:
                     var sArrowPoints:Array = toImagePointsArray(e.props.$points.sourceArrow, e);
@@ -201,6 +201,7 @@ package org.cytoscapeweb.model.converters {
                     var taStyle:Object = ArrowShapes.getArrowStyle(e, e.props.targetArrowShape, e.props.targetArrowColor);
                     
                     var w:Number = e.lineWidth * _scale;
+                    var loop:Boolean = e.source === e.target;
                     
                     // First let's draw any glow (e.g. for selected edges):
                     // -----------------------------------------------------
@@ -215,7 +216,7 @@ package org.cytoscapeweb.model.converters {
                             // The current version of AlivePDF does not support glows, gradients, etc.
                             // So we just draw a bigger shape behind the node:
                             pdf.lineStyle(gc, gw, 0, ga);
-                            drawEdgeShaft(pdf, start, end, curve);
+                            drawEdgeShaft(pdf, start, end, c1, c2, loop);
                             
                             // Arrow glow:
                             pdf.lineStyle(gc, GLOW_WIDTH*_scale, 0, ga);
@@ -233,7 +234,7 @@ package org.cytoscapeweb.model.converters {
                     var edgeColor:RGBColor = new RGBColor(e.lineColor);
                     pdf.lineStyle(edgeColor, w, 0, e.alpha, WindingRule.NON_ZERO, Blend.NORMAL, null, Caps.NONE, Joint.MITER);
                                   
-                    drawEdgeShaft(pdf, start, end, curve);
+                    drawEdgeShaft(pdf, start, end, c1, c2, loop);
                     
                     // Draw arrow joints:
                     // -----------------------------------------------------
@@ -400,18 +401,28 @@ package org.cytoscapeweb.model.converters {
                 }
         }
         
-        private function drawEdgeShaft(pdf:PDF, start:Point, end:Point, curve:Point):void {
+        private function drawEdgeShaft(pdf:PDF, start:Point, end:Point, c1:Point, c2:Point, loop:Boolean):void {
             // Draw the edge's line:
             pdf.moveTo(start.x, start.y);
             
-            if (curve == null) {
-                pdf.lineTo(end.x, end.y);
-            } else {
-                // Convert the quadratic to a cubic bezier:
+            if (c1 != null) {
                 var ctrl1:Point = new Point();
                 var ctrl2:Point = new Point();
-                Utils.quadraticToCubic(start, curve, end, ctrl1, ctrl2);
+                
+                if (loop) {
+                    // It's already a cubic bezier:
+                    ctrl1 = c2;
+                    ctrl2 = c1;
+                } else {
+                    // It's a quadratic bezier - convert to cubic first:
+                    Utils.quadraticToCubic(start, c1, end, ctrl1, ctrl2);
+                }
+                
+                // Always draw a cubic bezier:
                 pdf.curveTo(ctrl1.x, ctrl1.y, ctrl2.x, ctrl2.y, end.x, end.y);
+   
+            } else {
+                pdf.lineTo(end.x, end.y);
             }
 
             // Workaround to be able to leave the curve unclosed and change lineStyle

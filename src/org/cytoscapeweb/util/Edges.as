@@ -116,10 +116,10 @@ package org.cytoscapeweb.util {
         }
         
         public static function shape(e:EdgeSprite):String {
-            var shape:String = Shapes.BEZIER;
+            var shape:String = Shapes.LINE;
             
-            if (e.props.$merged || e.props.$curvatureFactor == 0)
-                shape = Shapes.LINE;
+            if ((!e.props.$merged && e.props.$curvatureFactor !== 0) || e.target === e.source)
+                shape = Shapes.BEZIER;
 
             return shape;
         }

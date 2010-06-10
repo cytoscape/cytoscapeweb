@@ -29,6 +29,7 @@
 */
 package org.cytoscapeweb.util {
 	import flare.display.TextSprite;
+	import flare.util.Geometry;
 	import flare.vis.data.Data;
 	import flare.vis.data.DataList;
 	import flare.vis.data.DataSprite;
@@ -127,20 +128,46 @@ package org.cytoscapeweb.util {
                             maxY = Math.max(maxY, (lbl.y + lbl.height + fld.y));
                         }
                         
-                        if (e.props.$points != null && e.props.$points.curve != null) {
-                            var c:Point = e.props.$points.curve;
-                            if (c.x < minX || c.y < minY || c.x > maxX || c.y > maxY) {
+                        if (e.props.$points != null && e.props.$points.c1 != null) {
+                            var c1:Point = e.props.$points.c1;
+                            var c2:Point = e.props.$points.c2 != null ? e.props.$points.c2 : c1;
+                            
+                            if (c1.x < minX || c1.y < minY || c1.x > maxX || c1.y > maxY ||
+                                c2.x < minX || c2.y < minY || c2.x > maxX || c2.y > maxY) {
                                 var p1:Point = e.props.$points.start;
                                 var p2:Point = e.props.$points.end;
                                 // Alwasys check a few points along the bezier curve to see
                                 // if any of them is out of the bounds:
-                                var fractions:Array = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
-                                for each (var f:Number in fractions) {
-                                    var mp:Point = Utils.bezierPoint(p1, p2, c, f);
-                                    minX = Math.min(minX, mp.x);
-                                    maxX = Math.max(maxX, mp.x);
-                                    minY = Math.min(minY, mp.y);
-                                    maxY = Math.max(maxY, mp.y);
+                                var fractions:Array, mp:Point, f:Number;
+                                
+                                if (e.source === e.target) {
+                                    // Loop...
+                                    var cc1:Point = new Point();
+                                    var cc2:Point = new Point();
+                                    var cc3:Point = new Point();
+                                    mp = new Point();
+                                    var w:Number = e.lineWidth/2;
+                                    
+                                    fractions = [0.1, 0.2, 0.4, 0.6, 0.8, 0.9];
+                                    
+                                    for each (f in fractions) {
+                                        Geometry.cubicCoeff(p1, c2, c1, p2, cc1, cc2, cc3);
+                                        mp = Geometry.cubic(f, p1, cc1, cc2, cc3, mp);
+                                        minX = Math.min(minX, mp.x - w);
+                                        maxX = Math.max(maxX, mp.x + w);
+                                        minY = Math.min(minY, mp.y - w);
+                                        maxY = Math.max(maxY, mp.y + w);
+                                    }
+                                } else {
+                                    fractions = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
+                                    
+                                    for each (f in fractions) {
+                                        mp = Utils.bezierPoint(p1, p2, c1, f);
+                                        minX = Math.min(minX, mp.x);
+                                        maxX = Math.max(maxX, mp.x);
+                                        minY = Math.min(minY, mp.y);
+                                        maxY = Math.max(maxY, mp.y);
+                                    }
                                 }
                             }
                         }

@@ -97,13 +97,17 @@ package org.cytoscapeweb.model.data {
             node1.visitEdges(function(e:EdgeSprite):Boolean {
                 if (!e.props.$merged && hasNodes(e.source, e.target)) edges.push(e);
                 return false;
-            }, NodeSprite.GRAPH_LINKS);
+            }, loop ? NodeSprite.IN_LINKS : NodeSprite.GRAPH_LINKS);
 		    
 			return edges;
 		}
 		
 		public function get mergedEdge():EdgeSprite {          
             return _mergedEdge;
+		}
+		
+		public function get loop():Boolean {          
+            return mergedEdge.source === mergedEdge.target;
 		}
 		
 		public function hasNodes(node1:NodeSprite, node2:NodeSprite):Boolean {
@@ -120,24 +124,33 @@ package org.cytoscapeweb.model.data {
             var e:EdgeSprite;
             
             // Start curve index from left (negative):
-            var f:Number = length%2 === 0 ? (-length/2 - 0.5) : (-Math.floor(length/2) - 1);
-            var src:NodeSprite;
+            var f:Number = 0;
+            if (loop) {
+                // When it's a loop, merged edges have curvature, too:
+                mergedEdge.props.$curvatureFactor = 1;
+            } else {
+                f = length%2 === 0 ? (-length/2 - 0.5) : (-Math.floor(length/2) - 1);
+            }
             
+            var src:NodeSprite;
             // This will be the summed merged edge's weight:
             var weight:Number = 0;
-            
+
             // Update the each edge index:
             for (var i:int = 0; i < length; i++) {
                 // Calculate the curvature coefficient that will give the
                 // direction and distance of each curve:
                 e = edgesList[i];
                 f += 1; // adding edges curvature from left to right...
-                
-                // In order to make the EdgeRenderer draw the edges symmetrically,
-                // we need to know whether or not they have the same source node:
-                if (i === 0) src = e.source; // get the first edge as reference
-                
-                e.props.$curvatureFactor = e.source === src ? f : -f; // to correctly invert the curve
+
+                if (!loop) {
+                    // In order to make the EdgeRenderer draw the edges symmetrically,
+                    // we need to know whether or not they have the same source node:
+                    if (i === 0) src = e.source; // get the first edge as reference
+                    e.props.$curvatureFactor = e.source === src ? f : -f; // to correctly invert the curve
+                } else {
+                	e.props.$curvatureFactor = f;
+				}
                 
                 // Merged edge selection state:
                 if (e.props.$selected) mergedEdge.props.$selected = true;
@@ -146,7 +159,7 @@ package org.cytoscapeweb.model.data {
                 var w:Number = Number(e.data.weight);
                 if (!isNaN(w)) weight += w;
             }
-            
+
             // Other cached data:
             mergedEdge.data.weight = weight;
             mergedEdge.props.$filteredOut = edgesList.length === 0;
