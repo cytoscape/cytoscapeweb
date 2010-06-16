@@ -8,7 +8,7 @@
         <script type="text/javascript" src="js/json2.js"></script>
         <script type="text/javascript" src="js/cytoscapeweb.js"></script>
         <script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
-        <script type="text/javascript"><!--
+        <script type="text/javascript">
             var d1, d2;
             var div_id = "cytoscapeweb";
             var vis;
@@ -16,7 +16,7 @@
             var layouts = [ { name: "Circle" }, 
                             { name: "Radial" }, 
                             { name: "Tree" }, 
-                            { name: "ForceDirected", options: { maxTime: 300000, autoStabilize: false/*, mass: 1, restLength: 30, tension: 0.3 , gravitation: -500, drag: 0.1, amaxDistance: 100, minDistance: 2*/ } }
+                            { name: "ForceDirected", options: { maxTime: 300000, autoStabilize: false } }
                           ];
             
             var tests = [ { file: 'pt1.graphml', nodes: 50,  edges: 100 }, 
@@ -27,45 +27,16 @@
                         ] 
             
             // options used for Cytoscape Web
-            var options = {
-                nodeTooltipsEnabled: true,
-                edgeTooltipsEnabled: true,
-                nodeLabelsVisible: false,
-                edgeLabelsVisible: false,
-                edgesMerged: false,
-                visualStyle: {
-                    global: {
-                        backgroundColor: "#fefefe",
-                        tooltipDelay: 1000
-                    },
-                    nodes: {
-                        shape: "ELLIPSE",
-                        color: { defaultValue: "#cccccc", continuousMapper: { attrName: "weight",  minValue: "#ffffff", maxValue: "#0b94b1" } },
-                        opacity: 0.9,
-                        size: { defaultValue: 20, continuousMapper: { attrName: "weight",  minValue: 20, maxValue: 40 } },
-                        borderWidth: 2,
-                        borderColor: "#707070",
-                        labelFontSize: { defaultValue: 12, continuousMapper: { attrName: "weight",  minValue: 10, maxValue: 24 } },
-                    },
-                    edges: {
-                        color: "#0b94b1",
-                        width: { defaultValue: 2, continuousMapper: { attrName: "weight",  minValue: 2, maxValue: 8 } },
-                        mergeWidth: 3,
-                        mergeColor: "#0b94b1",
-                        opacity: 0.7,
-                        labelFontSize: 10,
-                        labelFontWeight: "bold"
-                     }
-                }   
-            };
+            var options = {};
 
             $(document).ready(function() {
-
+                $("#user-agent").html(navigator.userAgent);
+                
                 var res = $('#results');
                 res.append('<tr><th>Layout</th></tr>');
 
                 $.each(tests, function(i, t) {
-                	res.find('tr').append('<th>Network '+(i+1)+' ('+(t.nodes+t.edges)+')</th>');
+                	res.find('tr').append('<th>'+(t.nodes+t.edges)+' elements</th>');
                 });
                 
                 $.each(layouts, function(i, l) {
@@ -128,10 +99,9 @@
                 $($("#row_"+layout.name+" td")[i+1]).html(elapsed);
             }
             
-        --></script>
+        </script>
 
         <style>
-            /* The Cytoscape Web container must have its dimensions set. */
             html, body { padding: 0; margin: 0; text-align: center; font-family: sans-serif; }
             h1, h2 { margin-top: 8px; }
             label { color: #0b94b1; font-size: 14px; }
@@ -147,14 +117,13 @@
             <h2>Cytoscape Web - Performance Tests</h2>
         </div>
         <div id="cytoscapeweb"></div>
+        <p id="user-agent"></p>
         <hr/>
         <table id="results" width="100%" cellspacing="0"></table>
         <hr/>
         <p>
-            <a href="http://www.cytoscape.org" rel="external" target="_blank">Cytoscape</a> |
-            <a href="http://tdccbr.med.utoronto.ca" rel="external" target="_blank">Donnelly CCBR</a>
-
-            , &copy; 2009
+            <a href="http://cytoscapeweb.cytoscape.org/">Cytoscape Web</a>
+            , &copy; 2010
         </p>
     </body>
     
