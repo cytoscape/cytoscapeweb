@@ -573,7 +573,7 @@ package org.cytoscapeweb.model {
             if (tgt == null) throw new Error("Cannot find target node with id '"+data.target+"'");
             
             if (data.id == null) data.id = nextId(Groups.EDGES);
-            else if (hasId(Groups.EDGES, data.id)) throw new Error("Duplicate edge id ("+data.id+"')");
+            else if (hasId(Groups.EDGES, data.id)) throw new Error("Duplicate edge id ('"+data.id+"')");
             
             trace("    (auto ID): " + data.id);
             

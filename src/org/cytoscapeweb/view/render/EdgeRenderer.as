@@ -111,11 +111,13 @@ package org.cytoscapeweb.view.render {
 			        op2 = new Point(s.x - s.width/2 - h, s.y);
 			    } else {
     			    // Fix curvature height
-    			    var maxH:Number = Math.max(saH, taH, s.width/2, t.width/2);
-    
-                    if (maxH >= h) {
-                        var nbd:Number = nd - s.width/2 - t.width/2; // distance between nodes borders
-        			    h += 2 * Math.sqrt(Math.max(0, maxH*maxH - Math.pow(nd/4, 2))) * (h/Math.abs(h));
+    			    if (sourceShape != ArrowShapes.NONE || targetShape != ArrowShapes.NONE) {
+        			    var maxH:Number = Math.max(saH, taH, s.width/2, t.width/2);
+        
+                        if (maxH >= h) {
+                            var nbd:Number = nd - s.width/2 - t.width/2; // distance between nodes borders
+            			    h += 2 * Math.sqrt(Math.max(0, maxH*maxH - Math.pow(nd/4, 2))) * (h/Math.abs(h));
+                        }
                     }
                     
     			    // Find bezier control point

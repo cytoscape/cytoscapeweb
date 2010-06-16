@@ -68,6 +68,8 @@ package org.cytoscapeweb.model.converters {
         // ========[ PRIVATE PROPERTIES ]===========================================================
         
         private var _styleName:String;
+        private var _defProps:Object; // Default properties
+        private var _mapProps:Object; // Mapper properties
      
         private static const CYTOSCAPE_PROPS:Object = {
             backgroundcolor: [VisualProperties.BACKGROUND_COLOR],
@@ -109,6 +111,17 @@ package org.cytoscapeweb.model.converters {
         // ========[ CONSTRUCTOR ]==================================================================
         
         public function VizMapperConverter() {
+            _defProps = {};
+            _defProps[VisualProperties.BACKGROUND_COLOR] = "globalAppearanceCalculator.${STYLE_NAME}.defaultBackgroundColor";
+            _defProps[VisualProperties.NODE_LABEL_FONT_NAME] = "nodeAppearanceCalculator.${STYLE_NAME}.defaultNodeFont";
+            _defProps[VisualProperties.NODE_LABEL_FONT_SIZE] = "nodeAppearanceCalculator.${STYLE_NAME}.defaultNodeFontSize";
+            _defProps[VisualProperties.NODE_LABEL_FONT_STYLE] = "nodeAppearanceCalculator.${STYLE_NAME}.defaultNodeFont";
+            _defProps[VisualProperties.NODE_LABEL_FONT_WEIGHT] = "nodeAppearanceCalculator.${STYLE_NAME}.defaultNodeFont";
+            _defProps[VisualProperties.NODE_LABEL_FONT_COLOR] = "nodeAppearanceCalculator.${STYLE_NAME}.defaultNodeFont";
+            _defProps[VisualProperties.EDGE_COLOR] = "edgeAppearanceCalculator.${STYLE_NAME}.defaultEdgeColor";
+            
+            _mapProps = {};
+            _mapProps[VisualProperties.EDGE_COLOR] = "edgeAppearanceCalculator.${STYLE_NAME}.edgeColorCalculator";
         }
         
         // ========[ PUBLIC METHODS ]===============================================================
@@ -253,8 +266,8 @@ package org.cytoscapeweb.model.converters {
                 var mapper:VizMapperVO = vp.vizMapper;
 
                 // Add default or global values:
-                v = propsValue(style, n, v);
-                var key:String = fromCWProperty(n);
+                v = writeValue(style, n, v);
+                var key:String = fromCW_Property(n);
                 txt += (key + "=" + v);
                 
                 // Add mapper values:
@@ -268,10 +281,41 @@ package org.cytoscapeweb.model.converters {
         
         // ========[ PRIVATE METHODS ]==============================================================
         
+//        private function addVisualProperty(style:VisualStyleVO, pname:String, pvalue:*, mapper:VizMapperVO):void {
+//            if (style.hasVisualProperty(pname)) {
+//                var vp:VisualPropertyVO = style.getVisualProperty(pname);
+//                if (pvalue != undefined) vp.defaultValue = pvalue;
+//                if (mapper != null) vp.vizMapper = mapper;
+//            } else {
+//                style.addVisualProperty(new VisualPropertyVO(pname, pvalue, mapper));
+//            }
+//        }
+        
         // -- static helpers --------------------------------------------------
         
-        private function propsValue(style:VisualStyleVO, propName:String, value:*):* { 
-            // TODO...
+        private function writeValue(style:VisualStyleVO, propName:String, value:*):* { 
+            if (VisualProperties.isColor(propName)) {
+                value = Utils.rgbColorAsString(value);
+            } else {
+                switch (propName) {
+                    case VisualProperties.NODE_SHAPE:
+                        if (value != null) value = value.toUpperCase();
+                        if (!NodeShapes.isValid(value)) value = NodeShapes.ELLIPSE;
+                        break;
+                    case VisualProperties.NODE_LABEL_FONT_NAME:
+                    case VisualProperties.NODE_LABEL_FONT_SIZE:
+                        // e.g. "SansSerif-0-12"
+//                        value = style.getValue(VisualProperties.NODE_LABEL_FONT_NAME, data);
+//                        value = fromCWFontName(value);
+                        // TODO: BOLD-Italic?
+                        value += "-0-";
+                        value += style.getValue(VisualProperties.NODE_LABEL_FONT_SIZE);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            
             return value;
         }
 
@@ -350,9 +394,8 @@ package org.cytoscapeweb.model.converters {
 //            return o != null ? o.toString() : ""; // TODO: formatting control?
 //        }
         
-        private function fromCWProperty(p:String):String {
-            // TODO:
-            return null;
+        private function fromCW_Property(p:String):String {
+            return _mapProps[p];
         }
     
         private function fromCW_FontName(font:String):String {

@@ -37,9 +37,7 @@ package org.cytoscapeweb.view.components {
     import flare.display.DirtySprite;
     import flare.display.TextSprite;
     import flare.util.Property;
-    import flare.util.Shapes;
     import flare.vis.Visualization;
-    import flare.vis.controls.TooltipControl;
     import flare.vis.data.Data;
     import flare.vis.data.DataList;
     import flare.vis.data.DataSprite;
@@ -66,6 +64,7 @@ package org.cytoscapeweb.view.components {
     import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.VisualProperties;
     import org.cytoscapeweb.util.methods.$each;
+    import org.cytoscapeweb.view.controls.TooltipControl;
     import org.cytoscapeweb.view.layout.CircleLayout;
     import org.cytoscapeweb.view.layout.ForceDirectedLayout;
     import org.cytoscapeweb.view.layout.NodeLinkTreeLayout;
@@ -570,6 +569,8 @@ package org.cytoscapeweb.view.components {
             } else {
                 formatNodeTooltip(NodeSprite(target), tooltip);
             }
+            // Hide it, if no text:
+            tooltip.alpha = (tooltip.text == null || tooltip.text == "") ? 0 : 1;
         }
         
         private function formatEdgeTooltip(edge:EdgeSprite, tooltip:TextSprite):void {
@@ -605,52 +606,15 @@ package org.cytoscapeweb.view.components {
         }
         
         private function formatTooltipContent(data:Object, template:String, font:String, color:uint, size:Number):String {
-            var text:String = '<font face="'+font+'" size="'+size+'" color="'+Utils.rgbColorAsString(color)+'">';
+            var text:String
 
             if (template != null) {
+                text = '<font face="'+font+'" size="'+size+'" color="'+Utils.rgbColorAsString(color)+'">';
                 // Format the VizMapper text:
                 text += Utils.format(template, data);
-            } else {
-                for (var attrName:String in data) {
-                    var attrValue:* = data[attrName];
-                    text += formatTooltipAttribute(attrName, attrValue);
-                }
+                text += '</font>';
             }
 
-            text += '</font>';
-
-            return text;
-        }
-        
-        private function formatTooltipAttribute(attrName:String, attrValue:*, level:uint=0):String {
-            var text:String = '';
-            if (attrName === "") attrName = null;
-
-            if (attrValue == null   || attrValue is String || 
-                attrValue is Number || attrValue is int    || attrValue is uint   ||
-                attrValue is Date   || attrValue is Boolean) {
-                
-                text += '<textformat blockindent="'+(level*10)+'">';
-                text += "- ";
-                if (attrName != null)  text += attrName + ": ";
-                if (attrValue != null) text += attrValue;
-                text += "</textformat>";
-                text += "<br>";
-            } else {
-                if (attrName != null) {
-                    text += '<textformat blockindent="'+(level*10)+'">';
-                    text += "- " + attrName + ":<br>";
-                    text += "</textformat>";
-                }
-                if (attrValue is Array) {
-                    for each (var v:* in attrValue)
-                        text += formatTooltipAttribute(null, v, level+1);
-                } else {
-                    for (var k:String in attrValue)
-                        text += formatTooltipAttribute(k, attrValue[k], level);
-                }
-            }
-            
             return text;
         }
     }
