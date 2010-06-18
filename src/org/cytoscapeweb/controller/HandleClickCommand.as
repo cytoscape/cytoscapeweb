@@ -44,7 +44,15 @@ package org.cytoscapeweb.controller {
     public class HandleClickCommand extends BaseSimpleCommand {
         
         override public function execute(notification:INotification):void {
-            var ds:DataSprite = notification.getBody() as DataSprite;
+            var body:Object = notification.getBody();
+            var ds:DataSprite, mouseX:Number, mouseY:Number;
+            
+            if (body != null) {
+            	ds = body.target as DataSprite;
+            	mouseX = body.mouseX;
+            	mouseY = body.mouseY;
+            }
+            
             var action:String = notification.getName();
             var group:String = Groups.groupOf(ds); 
             
@@ -54,8 +62,12 @@ package org.cytoscapeweb.controller {
             if (extMediator.hasListener(type, group)) {
                 var target:Object = GraphUtils.toExtObject(ds);
                 
-                var body:Object = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
-                                    argument: { type: type, group: group, target: target } };
+                body = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
+                         argument: { type: type,
+                                     group: group, 
+                                     target: target,
+                                     mouseX: mouseX,
+                                     mouseY: mouseY } };
                 
                 sendNotification(ApplicationFacade.CALL_EXTERNAL_INTERFACE, body);
             }

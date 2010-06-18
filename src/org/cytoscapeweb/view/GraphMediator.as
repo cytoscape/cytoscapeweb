@@ -483,14 +483,16 @@ package org.cytoscapeweb.view {
         }
         
         private function onClickView(evt:MouseEvent):void { trace("* Click [View]");
-            sendNotification(ApplicationFacade.CLICK_EVENT);
+            sendNotification(ApplicationFacade.CLICK_EVENT,
+                             { mouseX: evt.stageX, mouseY: evt.stageY });
         }
         
         private function onDoubleClickView(evt:MouseEvent):void { trace("* 2-CLICK [View]");
             if (!_shiftDown && configProxy.grabToPanEnabled)
                 sendNotification(ApplicationFacade.DESELECT_ALL);
                 
-            sendNotification(ApplicationFacade.DOUBLE_CLICK_EVENT);
+            sendNotification(ApplicationFacade.DOUBLE_CLICK_EVENT,
+                             { mouseX: evt.stageX, mouseY: evt.stageY });
         }
         
         private function onDragSelectionStart(evt:MouseEvent):void { trace("* Drag Selection START [View]");
@@ -581,7 +583,8 @@ package org.cytoscapeweb.view {
             
             if (!_draggingGraph && !evt.ctrlKey) {
                 var n:NodeSprite = evt.target as NodeSprite;
-                sendNotification(ApplicationFacade.CLICK_EVENT, n);
+                sendNotification(ApplicationFacade.CLICK_EVENT,
+                                 { target: n, mouseX: evt.stageX, mouseY: evt.stageY });
     
                 if (_shiftDown) {
                     // If SHIFT key is pressed, the clicked node is added to the selection group or
@@ -601,7 +604,8 @@ package org.cytoscapeweb.view {
         private function onDoubleClickNode(evt:MouseEvent):void { trace("** 2-CLICK [node]");
             if (!_ctrlDown) {
                 var n:NodeSprite = evt.target as NodeSprite;
-                sendNotification(ApplicationFacade.DOUBLE_CLICK_EVENT, n);
+                sendNotification(ApplicationFacade.DOUBLE_CLICK_EVENT,
+                                 { target: n, mouseX: evt.stageX, mouseY: evt.stageY });
             }
             evt.stopImmediatePropagation();
         }
@@ -706,7 +710,8 @@ package org.cytoscapeweb.view {
                 var edge:EdgeSprite = evt.target as EdgeSprite;
                 if (edge == null) return;
                 
-                sendNotification(ApplicationFacade.CLICK_EVENT, edge);
+                sendNotification(ApplicationFacade.CLICK_EVENT,
+                                 { target: edge, mouseX: evt.stageX, mouseY: evt.stageY });
                 var edgesList:Array = [edge];
     
                 if (_shiftDown) {
@@ -730,7 +735,8 @@ package org.cytoscapeweb.view {
         private function onDoubleClickEdge(evt:MouseEvent):void { trace("** 2-CLICK [edge] : " + evt.target);
             if (!_ctrlDown) {
                 var e:EdgeSprite = evt.target as EdgeSprite;
-                sendNotification(ApplicationFacade.DOUBLE_CLICK_EVENT, e);
+                sendNotification(ApplicationFacade.DOUBLE_CLICK_EVENT,
+                                 { target: e, mouseX: evt.stageX, mouseY: evt.stageY });
             }
             graphView.removeEventListener(MouseEvent.MOUSE_MOVE, onDragSelectionStart);
             evt.stopImmediatePropagation();

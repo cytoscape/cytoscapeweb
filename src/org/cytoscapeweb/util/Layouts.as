@@ -71,6 +71,7 @@ package org.cytoscapeweb.util {
                 restLength: "auto",
                 iterations: 400,
                 maxTime:    30000, // milliseconds
+                reset:      true,
                 autoStabilize: true
             },
             Preset: {
