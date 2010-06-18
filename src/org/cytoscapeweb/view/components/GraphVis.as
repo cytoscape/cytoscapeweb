@@ -232,51 +232,39 @@ package org.cytoscapeweb.view.components {
         }
 
         public function applyLayout(layoutObj:Object):Transition {
-        	var layout:Layout, fdl:ForceDirectedLayout;    	
             continuousUpdates = false;
-            _layoutName = layoutObj.name;
-            var reset:Boolean = _layoutName !== Layouts.FORCE_DIRECTED || layoutObj.options.reset;
 
             // Remove previous layouts:
             if (_appliedLayouts.length > 0) {
-            	var arr:Array = [];
-            	
-                for each (layout in _appliedLayouts) {
-                    if (_layoutName === Layouts.FORCE_DIRECTED &&
-                        layout is ForceDirectedLayout &&
-                        !reset) {
-                    	arr.push(layout);
-                    } else {
-                        operators.remove(layout);
-                    }
+                for (var k:String in _appliedLayouts) {
+                    operators.remove(_appliedLayouts[k]);
                 }
-                
-                _appliedLayouts = arr;
+                _appliedLayouts = [];
             }
 
+            _layoutName = layoutObj.name;
             
+            var layout:Layout, fdl:ForceDirectedLayout;
             
             if (_layoutName === Layouts.PRESET) {
                 layout = createLayout(layoutObj, data);
                 _appliedLayouts.push(layout);
             } else {
                 if (_layoutName === Layouts.FORCE_DIRECTED) {
-                    if (reset) {
-	                    // If the previous layout is ForceDirected, we need to set the nodes' particles and
-	                    // the edges' springs to null, otherwise the layout may not render very well
-	                    // when it is applied again.
-	                    data.nodes.visit(function(n:NodeSprite):void {
-	                        n.props.particle = null;
-	                        // It is also important to set random positions to nodes:
-	                        n.x = Math.random() * _initialWidth;
-	                        n.y = Math.random() * _initialHeight;
-	                    });
-	                    data.edges.visit(function(e:EdgeSprite):void {
-	                       e.props.spring = null;
-	                    });
-	                    fdl = ForceDirectedLayout(createLayout(layoutObj, data));
-	                    _appliedLayouts.push(fdl);
-                    }
+                    // If the previous layout is ForceDirected, we need to set the nodes' particles and
+                    // the edges' springs to null, otherwise the layout may not render very well
+                    // when it is applied again.
+                    data.nodes.visit(function(n:NodeSprite):void {
+                        n.props.particle = null;
+                        // It is also important to set random positions to nodes:
+                        n.x = Math.random() * _initialWidth;
+                        n.y = Math.random() * _initialHeight;
+                    });
+                    data.edges.visit(function(e:EdgeSprite):void {
+                       e.props.spring = null;
+                    });
+                    fdl = ForceDirectedLayout(createLayout(layoutObj, data));
+                    _appliedLayouts.push(fdl);
                 } else {
                     // Create one layout for each disconnected component:
                     for (var i:uint = 0; i < _dataList.length; i++) {
@@ -285,10 +273,8 @@ package org.cytoscapeweb.view.components {
                             var rect:Rectangle = GraphUtils.calculateGraphDimension(d.nodes, _layoutName, _style); 
                             var root:NodeSprite = d.nodes[0];
                             
-                            if (! (layout is ForceDirectedLayout && !reset) ) {
-	                            layout = createLayout(layoutObj, d, rect, root);
-	                            _appliedLayouts.push(layout);
-                            }
+                            layout = createLayout(layoutObj, d, rect, root);
+                            _appliedLayouts.push(layout);
                         }
                     }
                 }    
@@ -297,9 +283,7 @@ package org.cytoscapeweb.view.components {
             // The layouts must be enabled in order to allow a layout change:
             for each (layout in _appliedLayouts) {
                 layout.enabled = false;
-                if (! (layout is ForceDirectedLayout && !reset) ) {
-                    operators.add(layout);
-                }
+                operators.add(layout);
             }
 
             var seq:Sequence = new Sequence();

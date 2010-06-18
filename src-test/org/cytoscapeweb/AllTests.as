@@ -50,8 +50,7 @@ package org.cytoscapeweb {
 		
 		public function AllTests() {
 		    setupEnvironment();
-		    
-		    
+
 			addTestSuite(UtilsTest);
 			addTestSuite(GraphUtilsTest);
 			addTestSuite(VisualPropertiesTest);

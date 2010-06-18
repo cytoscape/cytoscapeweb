@@ -29,7 +29,6 @@
 */
 package org.cytoscapeweb.controller {
     
-    import org.cytoscapeweb.model.converters.VizMapperConverter;
     import org.cytoscapeweb.model.data.VisualStyleVO;
     import org.cytoscapeweb.model.methods.error;
     import org.cytoscapeweb.view.GraphMediator;
@@ -43,6 +42,8 @@ package org.cytoscapeweb.controller {
             try {
                 var options:Object = notification.getBody();
     
+                if (options.visualStyle != null)
+                    configProxy.visualStyle = VisualStyleVO.fromObject(options.visualStyle);
                 if (options.layout != null)
                     configProxy.currentLayout = options.layout;
                 if (options.edgesMerged != null)
@@ -58,29 +59,6 @@ package org.cytoscapeweb.controller {
                 if (options.panZoomControlVisible != null)
                     configProxy.panZoomControlVisible = options.panZoomControlVisible;
                 
-                var style:* = options.visualStyle;
-                
-                if (style != null) {
-                    var props:String, name:String;
-                    if (style is String) {
-                        props = style as String;
-                    } else if (style.hasOwnProperty("props")) {
-                        props = style.props;
-                        name = style.name;
-                    }
-                    
-                    if (props != null) {
-                        // Cytoscape's VisMapper format:
-                        var converter:VizMapperConverter = new VizMapperConverter();
-                        style = converter.read(props, name);
-                    } else {
-                        // Cytoscape Web format:
-                        style = VisualStyleVO.fromObject(style);
-                    }
-                    
-                    if (style != null) configProxy.visualStyle = style;
-                }
-
                 graphProxy.loadGraph(options.network, configProxy.currentLayout);
                 
                 appMediator.applyVisualStyle(configProxy.visualStyle);
