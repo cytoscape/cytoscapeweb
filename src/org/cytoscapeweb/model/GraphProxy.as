@@ -550,6 +550,8 @@ package org.cytoscapeweb.model {
             if (data.id == null) data.id = nextId(Groups.NODES);
             else if (hasId(Groups.NODES, data.id)) throw new Error("Duplicate node id ('"+data.id+"')");
             
+            addMissingDataFields(Groups.NODES, data);
+            
             // Set default values :
             for each (var f:DataField in _nodesSchema.fields) {
                 if (data[f.name] == null) data[f.name] = f.defaultValue;
@@ -575,7 +577,7 @@ package org.cytoscapeweb.model {
             if (data.id == null) data.id = nextId(Groups.EDGES);
             else if (hasId(Groups.EDGES, data.id)) throw new Error("Duplicate edge id ('"+data.id+"')");
             
-            trace("    (auto ID): " + data.id);
+            addMissingDataFields(Groups.EDGES, data);
             
             // Set default values :
             for each (var f:DataField in _edgesSchema.fields) {
@@ -863,6 +865,23 @@ package org.cytoscapeweb.model {
             }
             
             return inter;
+        }
+        
+        private function addMissingDataFields(group:String, data:Object):void {
+            for (var k:String in data) {
+                var f:DataField = nodesSchema.getFieldById(k);
+                
+                if (f == null) {
+                    var v:* = data[k];
+                    var type:int = DataUtil.OBJECT;
+                    
+                    if (v is Boolean)      type = DataUtil.BOOLEAN;
+                    else if (v is Number)  type = DataUtil.NUMBER;
+                    else if (v is String)  type = DataUtil.STRING;
+
+                    addDataField(group, k, type);
+                }
+            }
         }
     }
 }

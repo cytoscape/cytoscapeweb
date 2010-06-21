@@ -516,7 +516,7 @@ package org.cytoscapeweb.model.converters {
                         x.@[name] = toString(data[name], field.type);
                     } else {
                         if (data[name] != null) {
-                            addAtt(x, name, schema, data);
+                            addAtt(x, name, schema, data[name]);
                         }
                     }
                 }
@@ -562,28 +562,33 @@ package org.cytoscapeweb.model.converters {
             });
         }
         
-        private function addAtt(xml:XML, name:String, schema:DataSchema, data:Object):void {
+        private function addAtt(xml:XML, name:String, schema:DataSchema, value:*):void {
             var field:DataField = schema.getFieldByName(name);
-            
-            var type:String = fromCW_Type(field.type);
-            var value:Object = data[name];
+            var dataType:int = field != null ? field.type : Utils.dataType(value);
+            var type:String = fromCW_Type(dataType); // XGMML type
             
             var att:XML = <{ATTRIBUTE}/>;
             att.@[TYPE] = type;
-            att.@[NAME] = name;
-            
+            if (name != null) att.@[NAME] = name;
+
             // Add <att> tags data:
-            if (value is Array) {
-                // If it is an array, the att value is a list of other att tags:
-                var arr:Array = value as Array;
-                for each (var innerData:Object in arr) {
-                    for (var innerName:String in innerData) {
-                        addAtt(att, innerName, schema, innerData);
+            if (typeof value === "object") {
+                // If it is an object or array, the att value is a list of other att tags:
+                for (var k:String in value) {
+                    var entryValue:* = value[k];
+                    var entryName:String = value is Array ? null : k;
+
+                    if (entryName == null && typeof entryValue === "object") {
+                        for (var kk:String in entryValue) {
+                            addAtt(att, kk, schema, entryValue[kk]);
+                        }
+                    } else {
+                        addAtt(att, entryName, schema, entryValue); 
                     }
                 }
             } else {
                 // Otherwise, just add the att value:
-                att.@[VALUE] = toString(value, field.type);
+                att.@[VALUE] = toString(value, dataType);
             }
       
             xml.appendChild(att);

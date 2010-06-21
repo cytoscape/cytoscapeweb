@@ -28,6 +28,7 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.util {
+	import flare.data.DataUtil;
 	import flare.util.Colors;
 	
 	import flash.geom.Point;
@@ -255,6 +256,16 @@ package org.cytoscapeweb.util {
         
         public static function bezierPos(a:Number, b:Number, c:Number, t:Number):Number {
             return a*(1-t)*(1-t) + 2*c*(1-t)*t + b*t*t;
+        }
+
+        public static function dataType(value:*):int {
+            var type:int = DataUtil.OBJECT;
+            if (value is Boolean)      type = DataUtil.BOOLEAN;
+            else if (value is int)     type = DataUtil.INT;
+            else if (value is Number)  type = DataUtil.NUMBER;
+            else if (value is String)  type = DataUtil.STRING;
+            
+            return type;
         }
 
         public static function isLinux():Boolean {
