@@ -602,6 +602,9 @@
         /**
          * <p>Create a new node and add it to the network view.<p>
          * <p>If the node <code>id</code> is not specified, Cytoscape Web creates a new one automatically.</p>
+         * <p>If you try to add data attributes that have not been previously defined,
+         * Cytoscape Web will automatically add the necessary field definitions, although it might be safer to always add the
+         * fields to the schema first, by calling {@link org.cytoscapeweb.Visualization#addDataField}.</p>
          * @example
          * var data = { id: "n4",
          *              label: "MYO2 (Yeast)",
@@ -630,6 +633,9 @@
          * <p>Create a new edge linking two nodes and add it to the network view.<p>
          * <p>If the edge <code>id</code> is not specified, Cytoscape Web creates a new one automatically.</p>
          * <p>Throws exception if missing <code>source</code> or <code>target</code>.</p>
+         * <p>If you try to add data attributes that have not been previously defined,
+         * Cytoscape Web will automatically add the necessary field definitions, although it might be safer to always add the
+         * fields to the schema first, by calling {@link org.cytoscapeweb.Visualization#addDataField}.</p>
          * @example
          * var data = { id: "e10",
          *              source: "n1",
@@ -1919,12 +1925,12 @@
         this.value = options.value;
         /**
          * The local x coordinate of the mouse position, in pixels.
-         * Available only when the event was triggered by the mouse.
+         * Available only when the event type is 'click', 'dblclick', 'mouseover', 'mouseout' or 'contextmenu'.
          */
         this.mouseX = options.mouseX;
         /**
          * The local y coordinate of the mouse position, in pixels.
-         * Available only when the event was triggered by the mouse.
+         * Available only when the event type is 'click', 'dblclick', 'mouseover', 'mouseout' or 'contextmenu'.
          */
         this.mouseY = options.mouseY;
     };
