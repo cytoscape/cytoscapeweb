@@ -39,6 +39,7 @@ package org.cytoscapeweb.model.converters {
 	import flash.utils.IDataInput;
 	import flash.utils.IDataOutput;
 	
+	import org.cytoscapeweb.util.Utils;
 	import org.cytoscapeweb.util.methods.$each;
 
 	/**
@@ -282,16 +283,21 @@ package org.cytoscapeweb.model.converters {
 				var x:XML = new XML("<"+tag+"/>");
 				
 				for (var name:String in tuple) {
+				    var value:* = tuple[name];
 					var field:DataField = schema.getFieldByName(name);
-					if (tuple[name] == field.defaultValue) continue;
+					if (field != null && value == field.defaultValue) continue;
+
+                    var dataType:int = field != null ? field.type : Utils.dataType(value);
+                    var type:String = fromType(dataType); // GraphML type
+
 					if (attrs.hasOwnProperty(name)) {
 						// add as attribute
-						x.@[name] = toString(tuple[name], field.type);
+						x.@[name] = toString(value, dataType);
 					} else {
 						// add as data child tag
 						var data:XML = new XML(<data/>);
-						data.@[KEY] = field.id;
-						data.appendChild(toString(tuple[name], field.type));
+						data.@[KEY] = name;
+						data.appendChild(toString(value, dataType));
 						x.appendChild(data);
 					}
 				}

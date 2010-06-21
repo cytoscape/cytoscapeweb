@@ -869,7 +869,8 @@ package org.cytoscapeweb.model {
         
         private function addMissingDataFields(group:String, data:Object):void {
             for (var k:String in data) {
-                var f:DataField = nodesSchema.getFieldById(k);
+                var schema:DataSchema = group === Groups.NODES ? nodesSchema : edgesSchema;
+                var f:DataField = schema.getFieldById(k);
                 
                 if (f == null) {
                     var v:* = data[k];
