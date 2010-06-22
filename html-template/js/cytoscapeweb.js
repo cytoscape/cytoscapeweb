@@ -806,7 +806,6 @@
          * <p>Remember that only custom metadata can be removed. Any attempt to remove the following data fields will be ignored:</p>
          * <ul>
          *     <li><code>id</code> (nodes and edges)</li>
-         *     <li><code>label</code> (nodes and edges)</li>
          *     <li><code>source</code> (edges)</li>
          *     <li><code>target</code> (edges)</li>
          *     <li><code>directed</code> (edges)</li>

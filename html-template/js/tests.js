@@ -822,7 +822,6 @@ function runGraphTests(moduleName, vis, options) {
     	// 1. NO id and NO (x,y):
     	n = vis.addNode();
     	ok(n.data.id != null, "New node has auto-incremented ID");
-    	same(n.data.label, n.data.id, "New node has default label");
     	same(n.size, style.nodes.size.continuousMapper.minValue + n.borderWidth, "Min node size");
     	same(vis.nodes().length, ++count, "New nodes length");
     	
@@ -847,7 +846,6 @@ function runGraphTests(moduleName, vis, options) {
     	// 1. NO id:
     	e = vis.addEdge({ source: src.data.id, target: tgt.data.id });
     	ok(e.data.id != null, "New edge has auto-incremented ID");
-    	same(e.data.label, e.data.id, "New edge has default label");
     	same(e.data.source, src.data.id, "New edge source ID");
     	same(e.data.target, tgt.data.id, "New edge target ID");
     	same(vis.edges().length, ++count, "New edges length");
@@ -1153,7 +1151,8 @@ function runGraphTests(moduleName, vis, options) {
     	
     	all = vis.nodes().concat(vis.edges());
     	$.each(all, function(i, el) {
-    		ok(el.data["id"] != null && el.data["label"] != null, "Did NOT remove mandatory fields 'id' and 'label' ("+el.data.id+")");
+    		ok(el.data["id"] != null, "Did NOT remove mandatory field 'id' ("+el.data.id+")");
+    		ok(el.data["label"] == null, "Removed 'label' field ("+el.data.id+")");
     	});
     	edges = vis.edges();
     	$.each(edges, function(i, el) {

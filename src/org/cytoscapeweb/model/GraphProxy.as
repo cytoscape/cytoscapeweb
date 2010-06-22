@@ -373,7 +373,7 @@ package org.cytoscapeweb.model {
                 removed = removeDataField(Groups.EDGES, name) || removed;
             } else {
                 name = StringUtil.trim(name);
-                if ( name != "id" && name != "label" &&
+                if ( name != "id" &&
                     !(group === Groups.EDGES && (name === "source" || 
                                                  name === "target" || 
                                                  name === "directed")) ) {
@@ -556,8 +556,6 @@ package org.cytoscapeweb.model {
             for each (var f:DataField in _nodesSchema.fields) {
                 if (data[f.name] == null) data[f.name] = f.defaultValue;
             }
-            
-            if (data.label == null) data.label = data.id;
 
             var n:NodeSprite = graphData.addNode(data);
             createCache(n);
@@ -583,9 +581,6 @@ package org.cytoscapeweb.model {
             for each (var f:DataField in _edgesSchema.fields) {
                 if (data[f.name] == null) data[f.name] = f.defaultValue;
             }
-            
-            // TODO: create Cytoscape format label:
-            if (data.label == null) data.label = data.id;
 
             // Create edge:
             var e:EdgeSprite = graphData.addEdgeFor(src, tgt, data.directed, data);
