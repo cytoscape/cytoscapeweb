@@ -418,9 +418,6 @@ package org.cytoscapeweb.view {
 
         private function onRollOverView(evt:MouseEvent):void { trace("<<<< Roll OVER [View]");
             _isMouseOverView = true;
-            // Workaround to avoid the system cursor to disappear when drag-selecting and the mouse
-            // roll out the Flash player area and then over again.
-            // That happens when the plus cursor is being displayed.
             updateCursor();
         }
         
@@ -648,25 +645,30 @@ package org.cytoscapeweb.view {
             
             updateCursor();
             
+            var amountX:Number = evt.amountX;
+            var amountY:Number = evt.amountY;
+            
             for each (var n:NodeSprite in nodes) {
                 if (n != target) {
-                    n.x += evt.amountX;
-                    n.y += evt.amountY;
+                    n.x += amountX;
+                    n.y += amountY;
                 }
                 // Move node labels as well, bacause they have "LAYER" policy:
                 // It is faster than labeler.operate() or vis.update()!
                 if (configProxy.nodeLabelsVisible && n.props.label) {
-                    n.props.label.x += evt.amountX;
-                    n.props.label.y += evt.amountY;
+                    n.props.label.x += amountX;
+                    n.props.label.y += amountY;
                 }
             }
+
+            // Necessary for Flash 10.1:
+            DirtySprite.renderDirty();
             
             if (Utils.isLinux()) {
-                DirtySprite.renderDirty();
                 if (configProxy.edgeLabelsVisible) graphView.updateLabels(Groups.EDGES);
             }
             
-            vis.updateDragRectangle(evt.amountX, evt.amountY);
+            vis.updateDragRectangle(amountX, amountY);
         }
         
         private function onSelect(evt:SelectionEvent):void {
