@@ -400,8 +400,7 @@ package org.cytoscapeweb.view {
                     vis.showDragRectangle(graphProxy.rolledOverNode);
             } else if (evt.keyCode === Keyboard.SHIFT) {
                 _shiftDown = true;
-                if (!_ctrlDown && dirty)
-                    updateCursor();
+                if (!_ctrlDown && dirty) updateCursor();
             }
         }
         
@@ -413,6 +412,13 @@ package org.cytoscapeweb.view {
             } else if (evt.keyCode === Keyboard.SHIFT) {
                 _shiftDown = false;
                 if (_isMouseOverView) updateCursor();
+            } else if (evt.keyCode === 65) {
+                // happens when using Ctrl+Tab to switch applications...
+                if (_ctrlDown) {
+                    _ctrlDown = false;
+                    updateCursor();
+                    vis.hideDragRectangle();
+                }
             }
         }
 
