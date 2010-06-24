@@ -331,15 +331,10 @@ package org.cytoscapeweb.model.converters {
 
                     // Get the Global label point (relative to the stage):
                     var p:Point = toImagePoint(new Point(lbl.x, lbl.y), lbl);
-
-                    var xOffset:Number = 0;
-                    var yOffset:Number = 0;
                     var hAnchor:String = Anchors.CENTER;
                     var vAnchor:String = Anchors.MIDDLE;
                     
                     if (d is NodeSprite) {
-                        xOffset = _style.getValue(VisualProperties.NODE_LABEL_XOFFSET, d.data) * _scale;
-                        yOffset = _style.getValue(VisualProperties.NODE_LABEL_YOFFSET, d.data) * _scale;
                         hAnchor = _style.getValue(VisualProperties.NODE_LABEL_HANCHOR, d.data);
                         vAnchor = _style.getValue(VisualProperties.NODE_LABEL_VANCHOR, d.data);
                     }
@@ -362,10 +357,6 @@ package org.cytoscapeweb.model.converters {
                     // Flare's label cordinates is relative to the label's upper-left corner (x,y)=(0,0),
                     // but AlivePDF uses the bottom-left corner instead (x,y)=(0,fonSize):
                     p.y += textHeight*_scale;
-                    
-                    // Finally, add the offsets:
-                    p.x += xOffset;
-                    p.y += yOffset;
 
                     var style:String = lbl.bold ?
                                        (lbl.italic ? Style.BOLD_ITALIC : Style.BOLD) :
