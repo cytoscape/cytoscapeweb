@@ -204,7 +204,7 @@ package org.cytoscapeweb.view {
             var scale:Number = graphProxy.zoom;
 
             if (type === "png") {
-                var bounds:Rectangle = graphView.getRealBounds();
+                var bounds:Rectangle = graphView.vis.getRealBounds();
                 // At least 1 pixel:
                 bounds.width = bounds.width > 0 ? bounds.width : 1;
                 bounds.height = bounds.height > 0 ? bounds.height : 1;
@@ -213,7 +213,7 @@ package org.cytoscapeweb.view {
                 
                 var source:BitmapData = new BitmapData(bounds.width, bounds.height, false, color);
                 var matrix:Matrix = new Matrix(1, 0, 0, 1, -bounds.x, -bounds.y);
-                source.draw(graphView, matrix);
+                source.draw(graphView.vis, matrix);
 
                 var encoder:PNGEncoder = new PNGEncoder();
                 bytes = encoder.encode(source);
