@@ -277,25 +277,30 @@ package org.cytoscapeweb.model.converters {
                 bc = VisualProperties.parseValue(VisualProperties.BACKGROUND_COLOR, bc[0].toString());
                 style.addVisualProperty(new VisualPropertyVO(VisualProperties.BACKGROUND_COLOR, bc));
             }
-            
+              
             // Parse nodes
             // ------------------------------------------------------
-            for each (var node:XML in xgmml.node) {
-                id = node.@[ID].toString();
+            var nodesList:XMLList = xgmml.node;
+            var node:XML;
+         
+            for each (node in nodesList) {
+                id = StringUtil.trim("" + node.@[ID]);
+                if (id === "") throw new Error("The 'id' attribute is mandatory for 'node' tags");
                 lookup[id] = (n = parseData(node, nodeSchema));
                 nodes.push(n);
                 parseGraphics(id, node, NODE_GRAPHICS_ATTR);
             }
-            
+           
             // Parse edges
             // ------------------------------------------------------
             // Parse IDs first:
-            var edgesIds:Array = [];
-            
+            var edgesIds:Object = {};
+            var edgesList:XMLList = xgmml.edge;
             var edge:XML;
-            for each (edge in xgmml.edge) {
-                id = edge.@[ID].toString();
-                if (StringUtil.trim(id) !== "") edgesIds.push(id);
+            
+            for each (edge in edgesList) {
+                id = StringUtil.trim("" + edge.@[ID]);
+                if (id !== "") edgesIds[id] = true;
             }
             
             var count:int = 1;
@@ -307,9 +312,9 @@ package org.cytoscapeweb.model.converters {
                 tid = edge.@[TARGET].toString();
 
 				if (StringUtil.trim(id) === "") {
-	                while (edgesIds.indexOf(count.toString()) != -1) ++count;
+	                while (edgesIds[count.toString()] === true) ++count;
 	                id = count.toString();
-	                edgesIds.push(id);
+	                edgesIds[id] = true;
 	                edge.@[ID] = id;
 	                count++;
 				}
