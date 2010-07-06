@@ -83,7 +83,7 @@ SOURCE CODE
   svn checkout http://chianti.ucsd.edu/svn/cytoscapeweb/trunk/cytoscapeweb cytoscapeweb-read-only
 
 - After you download the project from Subversion, you can use Flex Builder or
-  Jakarta Ant to build it.
+  Apache Ant to build it.
 
 ================================================================================
 PROJECT SETUP ON FLEX BUILDER
@@ -156,10 +156,10 @@ The Cytoscape Web development team uses Eclipse with the Flex Builder plugin.
 ================================================================================
 BUILDING WITH ANT
 ================================================================================
-If you do not have Flex Builder, you still can build the project with Jakarta
+If you do not have Flex Builder, you still can build the project with Apache
 Ant:
 
-1. Download and install Jakarta Ant. Installation instructions are available at:
+1. Download and install Apache Ant. Installation instructions are available at:
    
    http://ant.apache.org/manual/install.html.
 
