@@ -203,6 +203,9 @@ package org.cytoscapeweb.view {
             var bytes:ByteArray;
             var scale:Number = graphProxy.zoom;
 
+            // Otherwise, it may draw the shapes incorrectly, or labels might have wrong alignment:
+            if (scale !== 1) graphView.zoomTo(1);
+
             if (type === "png") {
                 var bounds:Rectangle = graphView.vis.getRealBounds();
                 // At least 1 pixel:
@@ -221,12 +224,15 @@ package org.cytoscapeweb.view {
                 // PDF:
                 var pdfConv:PDFExporter = new PDFExporter(graphView);
                 bytes = pdfConv.export(graphProxy.graphData,
-                                             configProxy.visualStyle,
-                                             configProxy.config,
-                                             scale,
-                                             width,
-                                             height);
+                                       configProxy.visualStyle,
+                                       configProxy.config,
+                                       graphProxy.zoom,
+                                       width,
+                                       height);
             }
+            
+            // Set previous scale:
+            if (scale != graphProxy.zoom) graphView.zoomTo(scale);
             
             return bytes;
         }
