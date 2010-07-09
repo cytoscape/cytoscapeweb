@@ -138,7 +138,7 @@ package org.cytoscapeweb.model.converters {
             var orientation:String = Orientation.PORTRAIT;
             
             // Create the PFD document with 1 page:
-            var pdf:PDF = new PDF(orientation, Unit.POINT, size);
+            var pdf:PDF = new PDF(orientation, Unit.POINT, true, size);
             pdf.setDisplayMode(Display.FULL_PAGE, Layout.SINGLE_PAGE);
             var page:Page = new Page(orientation, Unit.POINT, size);
             pdf.addPage(page);
@@ -348,10 +348,11 @@ package org.cytoscapeweb.model.converters {
                     // Vertical anchor:
                     // The label height is different from the real text height, because
                     // there is a margin between the text and the text field border:
+                    var vpad:Number = 2;
                     switch (vAnchor) {
                         case Anchors.TOP:    p.y += (field.height - textHeight)/2 * _scale; break;
                         case Anchors.MIDDLE: p.y -= textHeight/2 * _scale; break;
-                        case Anchors.BOTTOM: p.y -= d.height/2 * _scale; break;
+                        case Anchors.BOTTOM: p.y -= (vpad + textHeight) * _scale; break;
                     }
                     
                     // Flare's label cordinates is relative to the label's upper-left corner (x,y)=(0,0),
