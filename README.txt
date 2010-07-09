@@ -88,7 +88,7 @@ SOURCE CODE
 ================================================================================
 PROJECT SETUP ON FLEX BUILDER
 ================================================================================
-This option requires Adobe's Flex Builder (or the Flex Builder plugin for
+This option requires Adobe's Flex Builder 3 (or the Flex Builder plugin for
 Eclipse).
 It is not free, but you can download a 60-day trial from:
 
