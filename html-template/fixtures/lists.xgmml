@@ -1,0 +1,17 @@
+<graph label="Cytoscape Web" directed="0" Graphic="1" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:cy="http://www.cytoscape.org" xmlns="http://www.cs.rpi.edu/XGMML">
+  <att name="documentVersion" value="0.1"/>
+  <att type="string" name="backgroundColor" value="#fefefe"/>
+  <att type="real" name="GRAPH_VIEW_ZOOM" value="1"/>
+  <att type="real" name="GRAPH_VIEW_CENTER_X" value="34.67500000000001"/>
+  <att type="real" name="GRAPH_VIEW_CENTER_Y" value="163.35"/>
+
+  <node id="n1" label="n1">
+
+    <att type="list" name="new_list">
+      <att name="myAtt1" type="string" value="A"/>
+      <att name="myAtt2" type="string" value="b"/>
+    </att>
+    <graphics x="494.5" y="135.65" outline="#707070" h="20" type="ELLIPSE" labelanchor="c" cy:nodeTransparency="0.9" cy:nodeLabelFont="Arial-0-10" fill="#ffffff" width="2" w="20"/>
+  </node>
+
+</graph>

@@ -1,0 +1,2394 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<graph label="p53 | rad51 [All Organis..." xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:cy="http://www.cytoscape.org" xmlns="http://www.cs.rpi.edu/XGMML"  directed="1">
+  <att name="documentVersion" value="1.1"/>
+  <att name="networkMetadata">
+    <rdf:RDF>
+      <rdf:Description rdf:about="http://www.cytoscape.org/">
+        <dc:type>Protein-Protein Interaction</dc:type>
+        <dc:description>N/A</dc:description>
+        <dc:identifier>N/A</dc:identifier>
+        <dc:date>2010-06-11 15:30:46</dc:date>
+        <dc:title>p53 | rad51 [All Organis...</dc:title>
+        <dc:source>http://www.cytoscape.org/</dc:source>
+        <dc:format>Cytoscape-XGMML</dc:format>
+      </rdf:Description>
+    </rdf:RDF>
+  </att>
+  <att type="string" name="backgroundColor" value="#ccccff"/>
+  <att type="real" name="GRAPH_VIEW_ZOOM" value="0.6872635561160151"/>
+  <att type="real" name="GRAPH_VIEW_CENTER_X" value="199.39999389648438"/>
+  <att type="real" name="GRAPH_VIEW_CENTER_Y" value="376.5"/>
+  <att type="string" name="__layoutAlgorithm" value="grid" cy:hidden="true"/>
+  <node label="ym74_yeast" id="-29">
+    <att type="string" name="FULL_NAME" value="Hypothetical 26.5 kDa protein in FUS2-RNH1 intergenic region"/>
+    <att type="string" name="LOCAL_ID" value="99236"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="yeast"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="4932"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Saccharomyces cerevisiae"/>
+    <att type="string" name="SEQUENCE_DATA" value="MADINKYIPMVDAILSVSNPDEISPKRVRKALQILYSVNLDSQRKLINELILERFGDIQENPRVLIPKNDLISRDQELSLRLQKEEERPLRSTRKRKGKSESKSKRKKKKNDSPDSNSISVRKVLLSAPLQKFLGSEELPRTQVVKMIWQYIKEHDLQNPKDRREILCDEKMEPIFGKKMTMFSMNKLLTKHLFNPDEIVKHEEEQKQTPEKEIKLENESLPNLSG"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="Q05024"/>
+      <att type="string" name="XREF_DB_ID" value="S000004846"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005737"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005730"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005515"/>
+      <att type="string" name="XREF_DB_ID" value="IPR003121"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-27496"/>
+      <att type="string" name="XREF_DB_ID" value="Z49939"/>
+      <att type="string" name="XREF_DB_ID" value="AY557975"/>
+      <att type="string" name="XREF_DB_ID" value="YMR233W"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005634"/>
+      <att type="string" name="XREF_DB_ID" value="MINT-386791"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="SGD"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="ENSEMBL"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="MINT"/>
+    </att>
+    <att type="string" name="canonicalName" value="ym74_yeast"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="0.8846530914306641" y="487.5099792480469" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="ima1_yeast" id="-28">
+    <att type="string" name="FULL_NAME" value="Importin alpha subunit"/>
+    <att type="string" name="LOCAL_ID" value="11984"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="yeast"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="4932"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Saccharomyces cerevisiae"/>
+    <att type="string" name="SEQUENCE_DATA" value="MDNGTDSSTSKFVPEYRRTNFKNKGRFSADELRRRRDTQQVELRKAKRDEALAKRRNFIPPTDGADSDEEDESSVSADQQFYSQLQQELPQMTQQLNSDDMQEQLSATVKFRQILSREHRPPIDVVIQAGVVPRLVEFMRENQPEMLQLEAAWALTNIASGTSAQTKVVVDADAVPLFIQLLYTGSVEVKEQAIWALGNVAGDSTDYRDYVLQCNAMEPILGLFNSNKPSLIRTATWTLSNLCRGKKPQPDWSVVSQALPTLAKLIYSMDTETLVDACWAISYLSDGPQEAIQAVIDVRIPKRLVELLSHESTLVQTPALRAVGNIVTGNDLQTQVVINAGVLPALRLLLSSPKENIKKEACWTISNITAGNTEQIQAVIDANLIPPLVKLLEVAEYKTKKEACWAISNASSGGLQRPDIIRYLVSQGCIKPLCDLLEIADNRIIEVTLDALENILKMGEADKEARGLNINENADFIEKAGGMEKIFNCQQNENDKIYEKAYKIIETYFGEEEDAVDETMAPQNAGNTFGFGSNVNQQFNFN"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="Q02821"/>
+      <att type="string" name="XREF_DB_ID" value="S000005133"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005737"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005634"/>
+      <att type="string" name="XREF_DB_ID" value="IPR011989"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0008320"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006913"/>
+      <att type="string" name="XREF_DB_ID" value="IPR000225"/>
+      <att type="string" name="XREF_DB_ID" value="IPR002652"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-1797"/>
+      <att type="string" name="XREF_DB_ID" value="M75849"/>
+      <att type="string" name="XREF_DB_ID" value="Z71465"/>
+      <att type="string" name="XREF_DB_ID" value="YNL189W"/>
+      <att type="string" name="XREF_DB_ID" value="1BK5"/>
+      <att type="string" name="XREF_DB_ID" value="1BK6"/>
+      <att type="string" name="XREF_DB_ID" value="1EE4"/>
+      <att type="string" name="XREF_DB_ID" value="1EE5"/>
+      <att type="string" name="XREF_DB_ID" value="1UN0"/>
+      <att type="string" name="XREF_DB_ID" value="1WA5"/>
+      <att type="string" name="XREF_DB_ID" value="2C1T"/>
+      <att type="string" name="XREF_DB_ID" value="MINT-386354"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="SGD"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="ENSEMBL"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="MINT"/>
+    </att>
+    <att type="string" name="canonicalName" value="ima1_yeast"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="234.0" y="488.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="rad55_yeast" id="-27">
+    <att type="string" name="FULL_NAME" value="DNA repair protein RAD55"/>
+    <att type="string" name="LOCAL_ID" value="103628"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="yeast"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="4932"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Saccharomyces cerevisiae"/>
+    <att type="string" name="SEQUENCE_DATA" value="MSLGIPLSQLIVESPKPLSSGITGLDEILNLGFQARSIYEIFGPPGIGKTNFGIQLVCNSLEGIQQSEINDDKILWIETFQEMPINILRERFQKFKIVEENVKRVRITKFGQLLYFFQNLFKLSQSVRYKLVIIDGFSQLVCDHLCTLSKRGGGMIDKTIHELKCRHLILIFTVMTKYTHSTGSTIIVLNDCMNTAFQSNEFESLEEYYEILDDGSNFFVNSNNERRKNNVHILKSALVANIAMGSKDSTWEVFLRDRIGLFRDWNEQVDETVFVKSKRVKASSSQSNEGCTTIKEMRINKRNFENLRIAIVFNLHGEDRKREGRNLKRSRSSDDRNYIVKFDFDKATGQLRDIIDLKPDTANIASFPTLSTSSSSCSQVFNNIDSNDNPLPNAEGKEEIIYDSEG"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="P38953"/>
+      <att type="string" name="XREF_DB_ID" value="S000002483"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005634"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005515"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000707"/>
+      <att type="string" name="XREF_DB_ID" value="IPR001553"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-14737"/>
+      <att type="string" name="XREF_DB_ID" value="Z46796"/>
+      <att type="string" name="XREF_DB_ID" value="D10481"/>
+      <att type="string" name="XREF_DB_ID" value="U01144"/>
+      <att type="string" name="XREF_DB_ID" value="X82086"/>
+      <att type="string" name="XREF_DB_ID" value="Z74372"/>
+      <att type="string" name="XREF_DB_ID" value="AY723773"/>
+      <att type="string" name="XREF_DB_ID" value="YDR076W"/>
+      <att type="string" name="XREF_DB_ID" value="MINT-386077"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="SGD"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="ENSEMBL"/>
+      <att type="string" name="XREF_DB_NAME" value="MINT"/>
+    </att>
+    <att type="string" name="canonicalName" value="rad55_yeast"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="30.0" y="376.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="q9ert0_mouse" id="-26">
+    <att type="string" name="FULL_NAME" value="Transcription cofactor p300"/>
+    <att type="string" name="LOCAL_ID" value="89080"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="mouse"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="10090"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Mus musculus"/>
+    <att type="string" name="SEQUENCE_DATA" value="KYANSNPQPIPGQPGMPQGQPGLQPPTMPGQQGVHSNPAMQNMNPMQAGVQRAGLPQQQPQQQLQPPMGGMSPQAQQMNMNHNTMPSQFRDILRRQQMMQQQQQQGAGPGIGPGMANHNQFQQP"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="Q9ERT0"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005515"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-493494"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+    </att>
+    <att type="string" name="canonicalName" value="q9ert0_mouse"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="391.79998779296875" y="376.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="q64451_mouse" id="-25">
+    <att type="string" name="FULL_NAME" value="P53 cellular tumor antigen"/>
+    <att type="string" name="LOCAL_ID" value="87410"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="mouse"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="10090"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Mus musculus"/>
+    <att type="string" name="SEQUENCE_DATA" value="ARISSLNKLFCQLAKTCPVQLWVSATPPAGSRVRAMAIYKKSQHMTEVVRRCPHHERCSDGDGLAPPQHLIRVEGNLYPEYLEDRQTFRHSVVVPYEPPEAGSEYTTIHYKYMCNSSCMGGMNRRPILTIITLDP"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="Q64451"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005634"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0003700"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006915"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005829"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005657"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006355"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005515"/>
+      <att type="string" name="XREF_DB_ID" value="IPR002117"/>
+      <att type="string" name="XREF_DB_ID" value="IPR011615"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0042771"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0043066"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0008156"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0048147"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0045941"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000060"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0042127"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006974"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0009411"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0010165"/>
+      <att type="string" name="XREF_DB_ID" value="IPR012346"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-493476"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+    </att>
+    <att type="string" name="canonicalName" value="q64451_mouse"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="309.5" y="376.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="q84w87_arath" id="-24">
+    <att type="string" name="FULL_NAME" value="Hypothetical protein At5g01630"/>
+    <att type="string" name="LOCAL_ID" value="1991"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="arath"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="3702"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Arabidopsis thaliana"/>
+    <att type="string" name="SEQUENCE_DATA" value="RILSGDAPASSMMVLCISAINPRTDNGSQEAHCSDNCSNVKVELTDGWYSMNAALDVVLTKQLNAGKLFVGQKLRILGAGLSGWATPTSPLEAVISSTICLLLNINGTYRAHWADRLGFCKEIGVPLAFNCIKCNGGPVPKTLAGITRIYPILYKERLGEKKSIVRSERIESRIIQLHNQRRSALVEGIMCEYQRGINGVHSQNDTDSEEGAKVFKLLETAAEPELLMAEMSLEQLTSFTTYKAKFEAAKQMQMEKSVAKALEDAGLGERNVTPFMRIRLVGLTSLSNEGEHNPKEGIVTIWDPTERQRTELTEGKIYIMKGLVPMNSDSETLYLHARGSSSRWQPLSPKDSENFQPFFNPRKPISLSNLGEIPLSSEFDIAAYVVYVGDAYTDVLQKKQWVFVTDGSTQHSGEISNSLLAISFSTPFMDDSSVSHISHNLVGSVVGFCNLIKRAKDATNEMWVAETTENSVYFINAEAAYSSHLKTRSAHIQTWAKLYSSKSVIHELRQRVLFIIGACKSPSC"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="Q84W87"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-307707"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+    </att>
+    <att type="string" name="canonicalName" value="q84w87_arath"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="161.1009521484375" y="171.78799438476562" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="rad52_yeast" id="-23">
+    <att type="string" name="FULL_NAME" value="DNA repair and recombination protein RAD52"/>
+    <att type="string" name="LOCAL_ID" value="99309"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="yeast"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="4932"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Saccharomyces cerevisiae"/>
+    <att type="string" name="SEQUENCE_DATA" value="MNEIMDMDEKKPVFGNHSEDIQTKLDKKLGPEYISKRVGFGTSRIAYIEGWRVINLANQIFGYNGWSTEVKSVVIDFLDERQGKFSIGCTAIVRVTLTSGTYREDIGYGTVENERRKPAAFERAKKSAVTDALKRSLRGFGNALGNCLYDKDFLAKIDKVKFDPPDFDENNLFRPTDEISESSRTNTLHENQEQQQYPNKRRQLTKVTNTNPDSTKNLVKIENTVSRGTPMMAAPAEANSKNSSNKDTDLKSLDASKQDQDDLLDDSLMFSDDFQDDDLINMGNTNSNVLTTEKDPVVAKQSPTASSNPEAEQITFVTAKAATSVQNERYIGEESIFDPKYQAQSIRHTVDQTTSKHIPASVLKDKTMTTARDSVYEKFAPKGKQLSMKNNDKELGPHMLEGAGNQVPRETTPIKTNATAFPPAAAPRFAPPSKVVHPNGNGAVPAVPQQRSTRREVGRPKINPLHARKPT"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="P06778"/>
+      <att type="string" name="XREF_DB_ID" value="S000004494"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000739"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000150"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0045002"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000722"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000228"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000727"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000707"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005515"/>
+      <att type="string" name="XREF_DB_ID" value="IPR004585"/>
+      <att type="string" name="XREF_DB_ID" value="IPR007232"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-14719"/>
+      <att type="string" name="XREF_DB_ID" value="M10249"/>
+      <att type="string" name="XREF_DB_ID" value="Z46659"/>
+      <att type="string" name="XREF_DB_ID" value="AY693144"/>
+      <att type="string" name="XREF_DB_ID" value="YML032C"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005634"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006301"/>
+      <att type="string" name="XREF_DB_ID" value="MINT-444092"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="SGD"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="ENSEMBL"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="MINT"/>
+    </att>
+    <att type="string" name="canonicalName" value="rad52_yeast"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="62.586830139160156" y="561.728271484375" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="ra51d_mouse" id="-22">
+    <att type="string" name="FULL_NAME" value="DNA repair protein RAD51 homolog 4"/>
+    <att type="string" name="LOCAL_ID" value="122211"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="mouse"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="10090"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Mus musculus"/>
+    <att type="string" name="SEQUENCE_DATA" value="MGMLRAGLCPGLTEETVQLLRGRKIKTVADLAAADLEEVAQKCGLSYKALVALRRVLLAQFSAFPLNGADLYEELKTSTAILSTGIGSLDKLLDAGLYTGEVTEIVGGPGSGKTQVCLCVAANVAHSLQQNVLYVDSNGGMTASRLLQLLQARTQDEEKQASALQRIQVVRSFDIFRMLDMLQDLRGTIAQQEATSSGAVKVVIVDSVTAVVAPLLGGQQREGLALMMQLARELKILARDLGVAVVVTNHLTRDWDGRRFKPALGRSWSFVPSTRILLDVTEGAGTLGSSQRTVCLTKSPRQPTGLQEMIDIGTLGTEEQSPELPGKQT"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="O55230"/>
+      <att type="string" name="XREF_DB_ID" value="IPR003265"/>
+      <att type="string" name="XREF_DB_ID" value="IPR001553"/>
+      <att type="string" name="XREF_DB_ID" value="AB007040"/>
+      <att type="string" name="XREF_DB_ID" value="AF034955"/>
+      <att type="string" name="XREF_DB_ID" value="Y15570"/>
+      <att type="string" name="XREF_DB_ID" value="AK017835"/>
+      <att type="string" name="XREF_DB_ID" value="BC049136"/>
+      <att type="string" name="XREF_DB_ID" value="ENSMUSG00000018841"/>
+      <att type="string" name="XREF_DB_ID" value="IPR003593"/>
+      <att type="string" name="XREF_DB_ID" value="IPR010995"/>
+      <att type="string" name="XREF_DB_ID" value="MINT-415416"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="ENSEMBL"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="MINT"/>
+    </att>
+    <att type="string" name="canonicalName" value="ra51d_mouse"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.000003814697266" x="82.80000114440918" y="678.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="xrcc2_human" id="-21">
+    <att type="string" name="FULL_NAME" value="DNA-repair protein XRCC2"/>
+    <att type="string" name="LOCAL_ID" value="122210"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="human"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="9606"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Homo sapiens"/>
+    <att type="string" name="SEQUENCE_DATA" value="MCSAFHRAESGTELLARLEGRSSLKEIEPNLFADEDSPVHGDILEFHGPEGTGKTEMLYHLTARCILPKSEGGLEVEVLFIDTDYHFDMLRLVTILEHRLSQSSEEIIKYCLGRFFLVYCSSSTHLLLTLYSLESMFCSHPSLCLLILDSLSAFYWIDRVNGGESVNLQESTLRKCSQCLEKLVNDYRLVLFATTQTIMQKASSSSEEPSHASRRLCDVDIDYRPYLCKAWQQLVKHRMFFSKQDDSQSSNQFSLVSRCLKSNSLKKHFFIIGESGVEFC"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="O43543"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006281"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0007126"/>
+      <att type="string" name="XREF_DB_ID" value="IPR001553"/>
+      <att type="string" name="XREF_DB_ID" value="600375"/>
+      <att type="string" name="XREF_DB_ID" value="AF035587"/>
+      <att type="string" name="XREF_DB_ID" value="AC003109"/>
+      <att type="string" name="XREF_DB_ID" value="Y08837"/>
+      <att type="string" name="XREF_DB_ID" value="Y17033"/>
+      <att type="string" name="XREF_DB_ID" value="AF520762"/>
+      <att type="string" name="XREF_DB_ID" value="BC042137"/>
+      <att type="string" name="XREF_DB_ID" value="ENSG00000196584"/>
+      <att type="string" name="XREF_DB_ID" value="MINT-137755"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="OMIM"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="ENSEMBL"/>
+      <att type="string" name="XREF_DB_NAME" value="MINT"/>
+    </att>
+    <att type="string" name="canonicalName" value="xrcc2_human"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="0.5" y="678.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="ra51d_human" id="-20">
+    <att type="string" name="FULL_NAME" value="DNA repair protein RAD51 homolog 4"/>
+    <att type="string" name="LOCAL_ID" value="54248"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="human"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="9606"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Homo sapiens"/>
+    <att type="string" name="SEQUENCE_DATA" value="MGVLRVGLCPGLTEEMIQLLRSHRIKTVVDLVSADLEEVAQKCGLSYKALVALRRVLLAQFSAFPVNGADLYEELKTSTAILSTGIGSLDKLLDAGLYTGEVTEIVGGPGSGKTQVCLCMAANVAHGLQQNVLYVDSNGGLTASRLLQLLQAKTQDEEEQAEALRRIQVVHAFDIFQMLDVLQELRGTVAQQVTGSSGTVKVVVVDSVTAVVSPLLGGQQREGLALMMQLARELKTLARDLGMAVVVTNHITRDRDSGRLKPALGRSWSFVPSTRILLDTIEGAGASGGRRMACLAKSSRQPTGFQEMVDIGTWGTSEQSATLQGDQT"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="O75771"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005634"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0003677"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006281"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0007131"/>
+      <att type="string" name="XREF_DB_ID" value="IPR003593"/>
+      <att type="string" name="XREF_DB_ID" value="IPR003265"/>
+      <att type="string" name="XREF_DB_ID" value="IPR001553"/>
+      <att type="string" name="XREF_DB_ID" value="O43537"/>
+      <att type="string" name="XREF_DB_ID" value="O60355"/>
+      <att type="string" name="XREF_DB_ID" value="O75196"/>
+      <att type="string" name="XREF_DB_ID" value="O75847"/>
+      <att type="string" name="XREF_DB_ID" value="O75848"/>
+      <att type="string" name="XREF_DB_ID" value="O76073"/>
+      <att type="string" name="XREF_DB_ID" value="O76085"/>
+      <att type="string" name="XREF_DB_ID" value="O94908"/>
+      <att type="string" name="XREF_DB_ID" value="Q9UFU5"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-1055693"/>
+      <att type="string" name="XREF_DB_ID" value="602954"/>
+      <att type="string" name="XREF_DB_ID" value="Y15572"/>
+      <att type="string" name="XREF_DB_ID" value="AF034956"/>
+      <att type="string" name="XREF_DB_ID" value="AB013341"/>
+      <att type="string" name="XREF_DB_ID" value="AB016223"/>
+      <att type="string" name="XREF_DB_ID" value="AB016224"/>
+      <att type="string" name="XREF_DB_ID" value="AB016225"/>
+      <att type="string" name="XREF_DB_ID" value="AB018360"/>
+      <att type="string" name="XREF_DB_ID" value="AB018361"/>
+      <att type="string" name="XREF_DB_ID" value="AB018362"/>
+      <att type="string" name="XREF_DB_ID" value="AB018363"/>
+      <att type="string" name="XREF_DB_ID" value="AB020412"/>
+      <att type="string" name="XREF_DB_ID" value="AY623116"/>
+      <att type="string" name="XREF_DB_ID" value="BC014422"/>
+      <att type="string" name="XREF_DB_ID" value="AL117459"/>
+      <att type="string" name="XREF_DB_ID" value="ENSG00000185379"/>
+      <att type="string" name="XREF_DB_ID" value="MINT-127795"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+      <att type="string" name="XREF_DB_NAME" value="OMIM"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="ENSEMBL"/>
+      <att type="string" name="XREF_DB_NAME" value="MINT"/>
+    </att>
+    <att type="string" name="canonicalName" value="ra51d_human"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="25.0" y="603.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="q99401_yeast" id="-19">
+    <att type="string" name="FULL_NAME" value="ORF YPL238c"/>
+    <att type="string" name="LOCAL_ID" value="100311"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="yeast"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="4932"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Saccharomyces cerevisiae"/>
+    <att type="string" name="SEQUENCE_DATA" value="MLELALGVPSLLSASTLSRPALASSFSNASTLLSFVFFFFFFKDSSPKASAMSSVGSFSASASAETLLDFFFFFFNPANKSSPEPFSLPFTAASKSSGITFLVFFFFFSAGSNPNSAAKSEDISCVLII"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="Q99401"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-35211"/>
+      <att type="string" name="XREF_DB_ID" value="Z73594"/>
+      <att type="string" name="XREF_DB_ID" value="Z67751"/>
+      <att type="string" name="XREF_DB_ID" value="YPL238C"/>
+      <att type="string" name="XREF_DB_ID" value="MINT-398704"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="ENSEMBL"/>
+      <att type="string" name="XREF_DB_NAME" value="MINT"/>
+    </att>
+    <att type="string" name="canonicalName" value="q99401_yeast"/>
+    <graphics type="ELLIPSE" h="40.0" w="39.999996185302734" x="52.11818885803223" y="405.71368408203125" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="sap1_yeast" id="-18">
+    <att type="string" name="FULL_NAME" value="SAP1 protein"/>
+    <att type="string" name="LOCAL_ID" value="99882"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="yeast"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="4932"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Saccharomyces cerevisiae"/>
+    <att type="string" name="SEQUENCE_DATA" value="MDSQRSHHILTRLTKIRRRPQQPLTDFTELYSRIANETIYYLNLEEKKRYKEALQGWKALTTDVLFKQTLIEHNYPNTQSYTKDEVSLQNGIRELYHKSVMHLKRVKKLVREEPAPRNDMPSSKTYTNHSSSFTRSTEPPPVFQMVPGRMMKTLRNRNACGYKTAYSNPSLSSYGNSTSIKRGEDAENIRVNFVPSKPLSNNASRQHKNPIEHNDPPLKKETELYSDKYISEPILIDLTNDEDDHDVGILKGHNVFDEEESDGFEFDVSDYYDNFSEVDVEEEEEEKEERRRIKTLEAIQQQMSDLSVTSSTSSNKSVSSSENVPGSCIQSLPTTAPALPSLPPPPLLNVDRASSTGALKPHSLETSTTMDSSKIRNPQISKLMKNNHVPYLKGTKSTPTLITKSTPTFITRSKSNTKPIIKSNASSPTSSLTVPNSVIQKPKTAAMAAKRVLNSKKVASNPALNTTKKSHPILKSKTAKVPNSSSKKTSSHPSRPVSNSKPYSHGASQNKKPSKNQTTSMSKTNRKIPAQKKIGSPKIEDVGTEDATEHATSLNEQREEPEIDKKVLREILEDEIIDSLQGVDRQAAKQIFAEIVVHGDEVHWDDIAGLESAKYSLKEAVVYPFLRPDLFRGLREPVRGMLLFGPPGTGKTMLARAVATESHSTFFSISASSLTSKYLGESEKLVRALFAIAKKLSPSIIFVDEIDSIMGSRNNENENESSRRIKNEFLVQWSSLSSAAAGSNKSNTNNSDTNGDEDDTRVLVLAATNLPWSIDEAARRRFVRRQYIPLPEDQTRHVQFKKLLSHQKHTLTESDFDELVKITEGYSGSDITSLAKDAAMGPLRDLGDKLLETEREMIRPIGLVDFKNSLVYIKPSVSQDGLVKYEKWASQFGSSGS"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="P39955"/>
+      <att type="string" name="XREF_DB_ID" value="S000000849"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005737"/>
+      <att type="string" name="XREF_DB_ID" value="IPR003593"/>
+      <att type="string" name="XREF_DB_ID" value="IPR003959"/>
+      <att type="string" name="XREF_DB_ID" value="IPR003960"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-16463"/>
+      <att type="string" name="XREF_DB_ID" value="U18796"/>
+      <att type="string" name="XREF_DB_ID" value="YER047C"/>
+      <att type="string" name="XREF_DB_ID" value="MINT-407680"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="SGD"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="ENSEMBL"/>
+      <att type="string" name="XREF_DB_NAME" value="MINT"/>
+    </att>
+    <att type="string" name="canonicalName" value="sap1_yeast"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.00000762939453" x="145.82441329956055" y="428.8362731933594" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="q06032_yeast" id="-17">
+    <att type="string" name="FULL_NAME" value="Ylr394wp"/>
+    <att type="string" name="LOCAL_ID" value="98799"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="yeast"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="4932"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Saccharomyces cerevisiae"/>
+    <att type="string" name="SEQUENCE_DATA" value="MGGYLAIVFIPQTNTKSMREKKQKCLKQVRRLSLISPKKYIMPDSIFEQPFVYCGVCHRRTSHGDPLRLTSCAHILCSQHSPLTSKVCPICRSSDISIINLVESKQLPTDIRIFFEPLPPLLESLYNVSQFQLNGLSKQCQYYQNHCLKLREKCARQQQLLYQAKIELDSMAILKKRIQELESVLNHNNVSSMSVGVLPTRNSHQNHYQPPPTVDLTVDDNSLEEFEAKSFIKKLKKNSSLRNSSKNNNGTVTPSTSGRVNKNQPLFMETLNNPNRNSIPPPGMNPNANSNLPNISTIAESTNLNRFSFSPVRVAKGFDGKLPNLDILTNNGSVSSKNISRLSSASLQPSSPLSSSSNRLILPNSNLKELHHSNTPLTSTSTQFPSALEKLKITRKRNNTISGSNRITHNLSSHVRSSGLAFSSSSNSLQQSKLPKSNILKRSNSTQQLTNTHLKSDNHLPPRSSNTVLGSSKKNNKFRRIR"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="Q06032"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000228"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0007130"/>
+      <att type="string" name="XREF_DB_ID" value="S000004386"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000067"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-30044"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="SGD"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+    </att>
+    <att type="string" name="canonicalName" value="q06032_yeast"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="153.12632751464844" y="525.0765380859375" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="rad51_yeast" id="-16">
+    <att type="string" name="FULL_NAME" value="DNA repair protein RAD51"/>
+    <att type="string" name="LOCAL_ID" value="103629"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="yeast"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="4932"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Saccharomyces cerevisiae"/>
+    <att type="string" name="SEQUENCE_DATA" value="MSQVQEQHISESQLQYGNGSLMSTVPADLSQSVVDGNGNGSSEDIEATNGSGDGGGLQEQAEAQGEMEDEAYDEAALGSFVPIEKLQVNGITMADVKKLRESGLHTAEAVAYAPRKDLLEIKGISEAKADKLLNEAARLVPMGFVTAADFHMRRSELICLTTGSKNLDTLLGGGVETGSITELFGEFRTGKSQLCHTLAVTCQIPLDIGGGEGKCLYIDTEGTFRPVRLVSIAQRFGLDPDDALNNVAYARAYNADHQLRLLDAAAQMMSESRFSLIVVDSVMALYRTDFSGRGELSARQMHLAKFMRALQRLADQFGVAVVVTNQVVAQVDGGMAFNPDPKKPIGGNIMAHSSTTRLGFKKGKGCQRLCKVVDSPCLPEAECVFAIYEDGVGDPREEDE"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="P25454"/>
+      <att type="string" name="XREF_DB_ID" value="S000000897"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000150"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0030491"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000709"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000722"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000794"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0042148"/>
+      <att type="string" name="XREF_DB_ID" value="IPR011941"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0042802"/>
+      <att type="string" name="XREF_DB_ID" value="IPR003593"/>
+      <att type="string" name="XREF_DB_ID" value="IPR000445"/>
+      <att type="string" name="XREF_DB_ID" value="IPR003583"/>
+      <att type="string" name="XREF_DB_ID" value="IPR001553"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-14709"/>
+      <att type="string" name="XREF_DB_ID" value="X64270"/>
+      <att type="string" name="XREF_DB_ID" value="M88470"/>
+      <att type="string" name="XREF_DB_ID" value="D10023"/>
+      <att type="string" name="XREF_DB_ID" value="U18839"/>
+      <att type="string" name="XREF_DB_ID" value="YER095W"/>
+      <att type="string" name="XREF_DB_ID" value="IPR013632"/>
+      <att type="string" name="XREF_DB_ID" value="IPR010995"/>
+      <att type="string" name="XREF_DB_ID" value="1SZP"/>
+      <att type="string" name="XREF_DB_ID" value="MINT-386096"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="SGD"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="ENSEMBL"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="MINT"/>
+    </att>
+    <att type="string" name="canonicalName" value="rad51_yeast"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="83.0" y="482.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="rad51_schpo" id="-15">
+    <att type="string" name="FULL_NAME" value="DNA repair protein rhp51"/>
+    <att type="string" name="LOCAL_ID" value="71544"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="schpo"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="4896"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Schizosaccharomyces pombe"/>
+    <att type="string" name="SEQUENCE_DATA" value="MADTEVEMQVSAADTNNNENGQAQSNYEYDVNVQDEEDEAAAGPMPLQMLEGNGITASDIKKIHEAGYYTVESIAYTPKRQLLLIKGISEAKADKLLGEASKLVPMGFTTATEYHIRRSELITITTGSKQLDTLLQGGVETGSITELFGEFRTGKSQICHTLAVTCQLPIDMGGGEGKCLYIDTEGTFRPVRLLAVADRYGLNGEEVLDNVAYARAYNADHQLELLQQAANMMSESRFSLLVVDSCTALYRTDFSGRGELSARQMHLARFMRTLQRLADEFGIAVVITNQVVAQVDGISFNPDPKKPIGGNILAHSSTTRLSLRKGRGEQRICKIYDSPCLPESEAIFAINSDGVGDPKEIIAPV"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="P36601"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0003691"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005515"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0043047"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0007533"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000711"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006312"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000732"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000723"/>
+      <att type="string" name="XREF_DB_ID" value="IPR003593"/>
+      <att type="string" name="XREF_DB_ID" value="IPR000445"/>
+      <att type="string" name="XREF_DB_ID" value="IPR010995"/>
+      <att type="string" name="XREF_DB_ID" value="IPR001553"/>
+      <att type="string" name="XREF_DB_ID" value="IPR011941"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-926960"/>
+      <att type="string" name="XREF_DB_ID" value="Z22691"/>
+      <att type="string" name="XREF_DB_ID" value="D13805"/>
+      <att type="string" name="XREF_DB_ID" value="Z24756"/>
+      <att type="string" name="XREF_DB_ID" value="AL355012"/>
+      <att type="string" name="XREF_DB_ID" value="IPR013632"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0042138"/>
+      <att type="string" name="XREF_DB_ID" value="MINT-239321"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="MINT"/>
+    </att>
+    <att type="string" name="canonicalName" value="rad51_schpo"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="158.0" y="753.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="ra51c_human" id="-14">
+    <att type="string" name="FULL_NAME" value="DNA repair protein RAD51 homolog 3"/>
+    <att type="string" name="LOCAL_ID" value="129829"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="human"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="9606"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Homo sapiens"/>
+    <att type="string" name="SEQUENCE_DATA" value="MRGKTFRFEMQRDLVSFPLSPAVRVKLVSAGFQTAEELLEVKPSELSKEVGISKAEALETLQIIRRECLTNKPRYAGTSESHKKCTALELLEQEHTQGFIITFCSALDDILGGGVPLMKTTEICGAPGVGKTQLCMQLAVDVQIPECFGGVAGEAVFIDTEGSFMVDRVVDLATACIQHLQLIAEKHKGEEHRKALEDFTLDNILSHIYYFRCRDYTELLAQVYLLPDFLSEHSKVRLVIVDGIAFPFRHDLDDLSLRTRLLNGLAQQMISLANNHRLAVILTNQMTTKIDRNQALLVPALGESWGHAATIRLIFHWDRKQRLATLYKSPSQKECTVLFQIKPQGFRDTVVTSACSLQTEGSLSTRKRSRDPEEEL"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="O43502"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005634"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0003677"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006310"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006281"/>
+      <att type="string" name="XREF_DB_ID" value="IPR001553"/>
+      <att type="string" name="XREF_DB_ID" value="602774"/>
+      <att type="string" name="XREF_DB_ID" value="AF029669"/>
+      <att type="string" name="XREF_DB_ID" value="AY623112"/>
+      <att type="string" name="XREF_DB_ID" value="ENSG00000108384"/>
+      <att type="string" name="XREF_DB_ID" value="IPR010995"/>
+      <att type="string" name="XREF_DB_ID" value="IPR013632"/>
+      <att type="string" name="XREF_DB_ID" value="MINT-204767"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="OMIM"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="ENSEMBL"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="MINT"/>
+    </att>
+    <att type="string" name="canonicalName" value="ra51c_human"/>
+    <graphics type="ELLIPSE" h="40.0" w="39.99998474121094" x="240.79999542236328" y="678.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="ra51b_human" id="-13">
+    <att type="string" name="FULL_NAME" value="DNA repair protein RAD51 homolog 2"/>
+    <att type="string" name="LOCAL_ID" value="131610"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="human"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="9606"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Homo sapiens"/>
+    <att type="string" name="SEQUENCE_DATA" value="MGSKKLKRVGLSQELCDRLSRHQILTCQDFLCLSPLELMKVTGLSYRGVHELLCMVSRACAPKMQTAYGIKAQRSADFSPAFLSTTLSALDEALHGGVACGSLTEITGPPGCGKTQFCIMMSILATLPTNMGGLEGAVVYIDTESAFSAERLVEIAESRFPRYFNTEEKLLLTSSKVHLYRELTCDEVLQRIESLEEEIISKGIKLVILDSVASVVRKEFDAQLQGNLKERNKFLAREASSLKYLAEEFSIPVILTNQITTHLSGALASQADLVSPADDLSLSEGTSGSSCVIAALGNTWSHSVNTRLILQYLDSERRQILIAKSPLAPFTSFVYTIKEEGLVLQETTFCSVTQAELNWAPEILPPQPPEQLGLQMCHHTQLIF"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="O15315"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005634"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0003677"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006281"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0007131"/>
+      <att type="string" name="XREF_DB_ID" value="IPR001553"/>
+      <att type="string" name="XREF_DB_ID" value="602948"/>
+      <att type="string" name="XREF_DB_ID" value="U92074"/>
+      <att type="string" name="XREF_DB_ID" value="U84138"/>
+      <att type="string" name="XREF_DB_ID" value="Y15571"/>
+      <att type="string" name="XREF_DB_ID" value="BX161515"/>
+      <att type="string" name="XREF_DB_ID" value="BX248061"/>
+      <att type="string" name="XREF_DB_ID" value="BX248766"/>
+      <att type="string" name="XREF_DB_ID" value="DQ160197"/>
+      <att type="string" name="XREF_DB_ID" value="AC004518"/>
+      <att type="string" name="XREF_DB_ID" value="BC030219"/>
+      <att type="string" name="XREF_DB_ID" value="AY138857"/>
+      <att type="string" name="XREF_DB_ID" value="AY138858"/>
+      <att type="string" name="XREF_DB_ID" value="AY138859"/>
+      <att type="string" name="XREF_DB_ID" value="ENSG00000182185"/>
+      <att type="string" name="XREF_DB_ID" value="IPR013632"/>
+      <att type="string" name="XREF_DB_ID" value="IPR003593"/>
+      <att type="string" name="XREF_DB_ID" value="IPR010993"/>
+      <att type="string" name="XREF_DB_ID" value="O60914"/>
+      <att type="string" name="XREF_DB_ID" value="O75210"/>
+      <att type="string" name="XREF_DB_ID" value="Q3Y4F8"/>
+      <att type="string" name="XREF_DB_ID" value="Q86SY3"/>
+      <att type="string" name="XREF_DB_ID" value="Q86SY4"/>
+      <att type="string" name="XREF_DB_ID" value="Q86TR0"/>
+      <att type="string" name="XREF_DB_ID" value="Q86U92"/>
+      <att type="string" name="XREF_DB_ID" value="Q86U93"/>
+      <att type="string" name="XREF_DB_ID" value="Q86U94"/>
+      <att type="string" name="XREF_DB_ID" value="Q8N6H4"/>
+      <att type="string" name="XREF_DB_ID" value="Q9UPL5"/>
+      <att type="string" name="XREF_DB_ID" value="MINT-224850"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="OMIM"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="ENSEMBL"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="MINT"/>
+    </att>
+    <att type="string" name="canonicalName" value="ra51b_human"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="158.5" y="678.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="ra51b_mouse" id="-12">
+    <att type="string" name="FULL_NAME" value="DNA repair protein RAD51 homolog 2"/>
+    <att type="string" name="LOCAL_ID" value="129870"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="mouse"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="10090"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Mus musculus"/>
+    <att type="string" name="SEQUENCE_DATA" value="MSSKKLRRVGLSPELCDRLSRYQIVNCQHFLSLSPLELMKVTGLSYRGVHELLHTVSKACAPQMQTAYELKTRRSAHLSPAFLSTTLCALDEALHGGVPCGSLTEITGPPGCGKTQFCIMMSVLATLPTSLGGLEGAVVYIDTESAFTAERLVEIAESRFPQYFNTEEKLLLTSSRVHLCRELTCEGLLQRLESLEEEIISKGVKLVIVDSIASVVRKEFDPKLQGNIKERNKFLGKGASLLKYLAGEFSIPVILTNQITTHLSGALPSQADLVSPADDLSLSEGTSGSSCLVAALGNTWGHCVNTRLILQYLDSERRQILIAKSPLAAFTSFVYTIKGEGLVLQGHERP"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="O35719"/>
+      <att type="string" name="XREF_DB_ID" value="IPR001553"/>
+      <att type="string" name="XREF_DB_ID" value="U92068"/>
+      <att type="string" name="XREF_DB_ID" value="AK015771"/>
+      <att type="string" name="XREF_DB_ID" value="AK032913"/>
+      <att type="string" name="XREF_DB_ID" value="ENSMUSG00000059060"/>
+      <att type="string" name="XREF_DB_ID" value="IPR003593"/>
+      <att type="string" name="XREF_DB_ID" value="IPR010995"/>
+      <att type="string" name="XREF_DB_ID" value="IPR013632"/>
+      <att type="string" name="XREF_DB_ID" value="Q8BSH6"/>
+      <att type="string" name="XREF_DB_ID" value="Q9D555"/>
+      <att type="string" name="XREF_DB_ID" value="MINT-205633"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="ENSEMBL"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="MINT"/>
+    </att>
+    <att type="string" name="canonicalName" value="ra51b_mouse"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="398.79998779296875" y="678.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="brca2_mouse" id="-11">
+    <att type="string" name="FULL_NAME" value="Breast cancer type 2 susceptibility protein homolog"/>
+    <att type="string" name="LOCAL_ID" value="67932"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="mouse"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="10090"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Mus musculus"/>
+    <att type="string" name="SEQUENCE_DATA" value="MPVEYKRRPTFWEIFKARCSTADLGPISLNWFEELSSEAPPYNSEPPEESEYKPHGYEPQLFKTPQRNPPYHQFASTPIMFKERSQTLPLDQSPFRELGKVVASSKHKTHSKKKTKVDPVVDVASPPLKSCLSESPLTLRCTQAVLQREKPVVSGSLFYTPKLKEGQTPKPISESLGVEVDPDMSWTSSLATPPTLSSTVLIARDEEARSSVTPADSPATLKSCFSNHNESPQKNDRSVPSVIDSENKNQQEAFSQGLGKMLGDSSGKRNSFKDCLRKPIPNILEDGETAVDTSEEDSFSLCFPKRRTRNLQKMRMGKTRKKIFSETRTDELSEEARRQTDDKNSFVFEMELRESDPLDPGVTSQKPFYSQNEEICNEAVQCSDSRWSQSNLSGLNETQTGKITLPHISSHSQNISEDFIDMKKEGTGSITSEKSLPHISSLPEPEKMFSEETVVDKEHEGQHFESLEDSIAGKQMVSRTSQAACLSPSIRKSIFKMREPLDETLGTVFSDSMTNSTFTEEHEASACGLGILTACSQREDSICPSSVDTGSWPTTLTDTSATVKNAGLISTLKNKKRKFIYSVSDDASLQGKKLQTHRQLELTNLSAQLEASAFEVPLTFTNVNSGIPDSSDKKRCLPNDPEEPSLTNSFGTATSKEISYIHALISQDLNDKEAIVIEEKPQPYTAREADFLLCLPERTCENDQKSPKVSNGKEKVLVSACLPSAVQLSSISFESQENPLGDHNGTSTLKLTPSSKLPLSKADMVSREKMCKMPEKLQCESCKVNIELSKNILEVNEICILSENSKTPGLLPPGENIIEVASSMKSQFNQNAKIVIQKDQKGSPFISEVAVNMNSEELFPDSGNNFAFQVTNKCNKPDLGSSVELQEEDLSHTQGPSLKNSPMAVDEDVDDAHAAQVLITKDSDSLAVVHDYTEKSRNNIEQHQKGTEDKDFKSNSSLNMKSDGNSDCSDKWSEFLDPVLNHNFGGSFRTASNKEIKLSEHNVKKSKMFFKDIEEQYPTRLACIDIVNTLPLANQKKISEPHIFDLKSVTTVSTQSHNQSSVSHEDTDTAPQMLSSKQDFHSNNLTTSQKAEITELSTILEESGSQFEFTQFRKPSHIAQNTSEVPGNQMVVLSTASKEWKDTDLHLPVDPSVGQTDHSKQFEGSAGVKQSFPHLLEDTCNKNTSCFLPNINEMEFGGFCSALGTKLSVSNEALRKAMKLFSDIENSEEPSAKVGPRGFSSSAHHDSVASVFKIKKQNTEKSFDEKSSKCQVTLQNNIEMTTCIFVGRNPEKYIKNTKHEDSYTSSQRNNLENSDGSMSSTSGPVYIHKGDSDLPADQGSKCPESCTQYAREENTQIKENISDLTCLEIMKAEETCMKSSDKKQLPSDKMEQNIKEFNISFQTASGKNTRVSKESLNKSVNIFNRETDELTVISDSLNSKILHGINKDKMHTSCHKKAISIKKVFEDHFPIVTVSQLPAQQHPEYEIESTKEPTLLSFHTASGKKVKIMQESLDKVKNLFDETQYVRKTASFSQGSKPLKDSKKELTLAYEKIEVTASKCEEMQNFVSKETEMLPQQNYHMYRQTENLKTSNGTSSKVQENIENNVEKNPRICCICQSSYPVTEDSALAYYTEDSRKTCVRESSLSKGRKWLREQGDKLGTRNTIKIECVKEHTEDFAGNASYEHSLVIIRTEIDTNHVSENQVSTLLSDPNVCHSYLSQSSFCHCDDMHNDSGYFLKNKIDSDVPPDMKNAEGNTISPRVSATKERNLHPQTINEYCVQKLETNTSPHANKDVAIDPSLLDSRNCKVGSLVFITAHSQETERTKEIVTDNCYKIVEQNRQSKPDTCQTSCHKVLDDSKDFICPSSSGDVCINSRKDSFCPHNEQILQHNQSMSGLKKAATPPVGLETWDTSKSIREPPQAAHPSRTYGIFSTASGKAIQVSDASLEKARQVFSEMDGDAKQLSSMVSLEGNEKPHHSVKRENSVVHSTQGVLSLPKPLPGNVNSSVFSGFSTAGGKLVTVSESALHKVKGMLEEFDLIRTEHTLQHSPIPEDVSKILPQPCAEIRTPEYPVNSKLQKTYNDKSSLPSNYKESGSSGNTQSIEVSLQLSQMERNQDTQLVLGTKVSHSKANLLGKEQTLPQNIKVKTDEMKTFSDVPVKTNVGEYYSKESENYFETEAVESAKAFMEDDELTDSEQTHAKCSLFTCPQNETLFNSRTRKRGGVTVDAVGQPPIKRSLLNEFDRIIESKGKSLTPSKSTPDGTVKDRSLFTHHMSLEPVTCGPFCSSKERQGAQRPHLTSPAQELLSKGHPWRHSALEKSPSSPIVSILPAHDVSATRTERTRHSGKSTKVFVPPFKMKSQFHGDEHFNSKNVNLEGKNQKSTDGDREDGNDSHVRQFNKDLMSSLQSARDLQDMRIKNKERRHLRLQPGSLYLTKSSTLPRISLQAAVGDRAPSACSPKQLYIYGVSKECINVNSKNAEYFQFDIQDHFGKEDLCAGKGFQLADGGWLIPSNDGKAGKEEFYRALCDTPGVDPKLISSIWVANHYRWIVWKLAAMEFAFPKEFANRCLNPERVLLQLKYRYDVEIDNSRRSALKKILERDDTAAKTLVLCISDIISPSTKVSETSGGKTSGEDANKVDTIELTDGWYAVRAQLDPPLMALVKSGKLTVGQKIITQGAELVGSPDACAPLEAPDSLRLKISANSTRPARWHSRLGFFRDPRPFPLPLSSLFSDGGNVGCVDIIVQRVYPLQWVEKTVSGLYIFRSEREEEKEALRFAEAQQKKLEALFTKVHTEFKDHEEDTTQRCVLSRTLTRQQVHALQDGAELYAAVQYASDPDHLEACFSEEQLRALNNYRQMLNDKKQARIQSEFRKALESAEKEEGLSRDVTTVWKLRVTSYKKKEKSALLSIWRPSSDLSSLLTEGKRYRIYHLAVSKSKSKFERPSIQLTATKRTQYQQLPVSSETLLQVYQPRESLHFSRLSDPAFQPPCSEVDVVGVVVSVVKPIGLAPLVYLSDECLNLLVVKFGIDLNEDIKPRVLIAASNLQCQPESTSGVPTLFAGHFSIFSASPKEAYFQEKVNNLKHAIENIDTFYKEAEKKLIHVLEGDSPKWSTPNKDPTREPHAASTCCASDLLGSGGQFLRISPTGQQSYQSPLSHCTLKGKSMPLAHSAQMAAKSWSGENEIDDPKTCRKRRALDFLSRLPLPSPVSPICTFVSPAAQKAFQPPRSCGTKYATPIKKEPSSPRRRTPFQKTSGVSLPDCDSVADEELALLSTQALTPDSVGGNEQAFPGDSTRNPQPAQRPDQQVGPRSRKESLRDCRGDSSEKLAVES"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="P97929"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005737"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005634"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005515"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0003697"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006338"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000724"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006325"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0007093"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0007090"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0045449"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006974"/>
+      <att type="string" name="XREF_DB_ID" value="IPR011370"/>
+      <att type="string" name="XREF_DB_ID" value="IPR002093"/>
+      <att type="string" name="XREF_DB_ID" value="IPR008994"/>
+      <att type="string" name="XREF_DB_ID" value="O35922"/>
+      <att type="string" name="XREF_DB_ID" value="P97383"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-1034100"/>
+      <att type="string" name="XREF_DB_ID" value="U82270"/>
+      <att type="string" name="XREF_DB_ID" value="U72947"/>
+      <att type="string" name="XREF_DB_ID" value="U65594"/>
+      <att type="string" name="XREF_DB_ID" value="U89652"/>
+      <att type="string" name="XREF_DB_ID" value="U89503"/>
+      <att type="string" name="XREF_DB_ID" value="ENSMUSG00000041147"/>
+      <att type="string" name="XREF_DB_ID" value="1MIU"/>
+      <att type="string" name="XREF_DB_ID" value="MINT-205603"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="ENSEMBL"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="MINT"/>
+    </att>
+    <att type="string" name="canonicalName" value="brca2_mouse"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="316.5" y="678.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="rad51_human" id="-10">
+    <att type="string" name="FULL_NAME" value="DNA repair protein RAD51 homolog 1"/>
+    <att type="string" name="LOCAL_ID" value="3253"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="human"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="9606"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Homo sapiens"/>
+    <att type="string" name="SEQUENCE_DATA" value="MAMQMQLEANADTSVEEESFGPQPISRLEQCGINANDVKKLEEAGFHTVEAVAYAPKKELINIKGISEAKADKILAEAAKLVPMGFTTATEFHQRRSEIIQITTGSKELDKLLQGGIETGSITEMFGEFRTGKTQICHTLAVTCQLPIDRGGGEGKAMYIDTEGTFRPERLLAVAERYGLSGSDVLDNVAYARAFNTDHQTQLLYQASAMMVESRYALLIVDSATALYRTDYSGRGELSARQMHLARFLRMLLRLADEFGVAVVITNQVVAQVDGAAMFAADPKKPIGGNIIAHASTTRLYLRKGRGETRICKIYDSPCLPEAEAMFAINADGVGDAKD"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="Q06609"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005634"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000795"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006281"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0007131"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006312"/>
+      <att type="string" name="XREF_DB_ID" value="IPR000445"/>
+      <att type="string" name="XREF_DB_ID" value="IPR001553"/>
+      <att type="string" name="XREF_DB_ID" value="Q9BV60"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005515"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0003690"/>
+      <att type="string" name="XREF_DB_ID" value="IPR010214"/>
+      <att type="string" name="XREF_DB_ID" value="Q06609"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0003697"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0043142"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006268"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000724"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0007126"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0051106"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0051260"/>
+      <att type="string" name="XREF_DB_ID" value="IPR011941"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-297202"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0042802"/>
+      <att type="string" name="XREF_DB_ID" value="114480"/>
+      <att type="string" name="XREF_DB_ID" value="179617"/>
+      <att type="string" name="XREF_DB_ID" value="D14134"/>
+      <att type="string" name="XREF_DB_ID" value="D13804"/>
+      <att type="string" name="XREF_DB_ID" value="AF165094"/>
+      <att type="string" name="XREF_DB_ID" value="AF165088"/>
+      <att type="string" name="XREF_DB_ID" value="AF165089"/>
+      <att type="string" name="XREF_DB_ID" value="AF165090"/>
+      <att type="string" name="XREF_DB_ID" value="AF165091"/>
+      <att type="string" name="XREF_DB_ID" value="AF165092"/>
+      <att type="string" name="XREF_DB_ID" value="AF165093"/>
+      <att type="string" name="XREF_DB_ID" value="AF233744"/>
+      <att type="string" name="XREF_DB_ID" value="AF233740"/>
+      <att type="string" name="XREF_DB_ID" value="AF233741"/>
+      <att type="string" name="XREF_DB_ID" value="AF233742"/>
+      <att type="string" name="XREF_DB_ID" value="AF236021"/>
+      <att type="string" name="XREF_DB_ID" value="AF233743"/>
+      <att type="string" name="XREF_DB_ID" value="AY196785"/>
+      <att type="string" name="XREF_DB_ID" value="BC001459"/>
+      <att type="string" name="XREF_DB_ID" value="ENSG00000051180"/>
+      <att type="string" name="XREF_DB_ID" value="IPR003593"/>
+      <att type="string" name="XREF_DB_ID" value="IPR013632"/>
+      <att type="string" name="XREF_DB_ID" value="IPR010995"/>
+      <att type="string" name="XREF_DB_ID" value="1B22"/>
+      <att type="string" name="XREF_DB_ID" value="1N0W"/>
+      <att type="string" name="XREF_DB_ID" value="MINT-1374477"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="OMIM"/>
+      <att type="string" name="XREF_DB_NAME" value="OMIM"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="ENSEMBL"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="MINT"/>
+    </att>
+    <att type="string" name="canonicalName" value="rad51_human"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="155.0" y="84.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="p53_human" id="-9">
+    <att type="string" name="FULL_NAME" value="Cellular tumor antigen p53"/>
+    <att type="string" name="LOCAL_ID" value="46898"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="human"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="9606"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Homo sapiens"/>
+    <att type="string" name="SEQUENCE_DATA" value="MEEPQSDPSVEPPLSQETFSDLWKLLPENNVLSPLPSQAMDDLMLSPDDIEQWFTEDPGPDEAPRMPEAAPPVAPAPAAPTPAAPAPAPSWPLSSSVPSQKTYQGSYGFRLGFLHSGTAKSVTCTYSPALNKMFCQLAKTCPVQLWVDSTPPPGTRVRAMAIYKQSQHMTEVVRRCPHHERCSDSDGLAPPQHLIRVEGNLRVEYLDDRNTFRHSVVVPYEPPEVGSDCTTIHYNYMCNSSCMGGMNRRPILTIITLEDSSGNLLGRNSFEVRVCACPGRDRRTEEENLRKKGEPHHELPPGSTKRALPNNTSSSPQPKKKPLDGEYFTLQIRGRERFEMFRELNEALELKDAQAGKEPGGSRAHSSHLKSKKGQSTSRHKKLMFKTEGPDSD"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="P04637"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005739"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0004518"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0003700"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000075"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0008630"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006310"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005730"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0008628"/>
+      <att type="string" name="XREF_DB_ID" value="IPR002117"/>
+      <att type="string" name="XREF_DB_ID" value="IPR011615"/>
+      <att type="string" name="XREF_DB_ID" value="Q15086"/>
+      <att type="string" name="XREF_DB_ID" value="Q15087"/>
+      <att type="string" name="XREF_DB_ID" value="Q15088"/>
+      <att type="string" name="XREF_DB_ID" value="Q16535"/>
+      <att type="string" name="XREF_DB_ID" value="Q16807"/>
+      <att type="string" name="XREF_DB_ID" value="Q16808"/>
+      <att type="string" name="XREF_DB_ID" value="Q16809"/>
+      <att type="string" name="XREF_DB_ID" value="Q16810"/>
+      <att type="string" name="XREF_DB_ID" value="Q16811"/>
+      <att type="string" name="XREF_DB_ID" value="Q16848"/>
+      <att type="string" name="XREF_DB_ID" value="Q86UG1"/>
+      <att type="string" name="XREF_DB_ID" value="Q8J016"/>
+      <att type="string" name="XREF_DB_ID" value="Q99659"/>
+      <att type="string" name="XREF_DB_ID" value="Q9BTM4"/>
+      <att type="string" name="XREF_DB_ID" value="Q9HAQ8"/>
+      <att type="string" name="XREF_DB_ID" value="Q9NP68"/>
+      <att type="string" name="XREF_DB_ID" value="Q9NPJ2"/>
+      <att type="string" name="XREF_DB_ID" value="Q9NZD0"/>
+      <att type="string" name="XREF_DB_ID" value="Q9UBI2"/>
+      <att type="string" name="XREF_DB_ID" value="Q9UQ61"/>
+      <att type="string" name="XREF_DB_ID" value="IPR010991"/>
+      <att type="string" name="XREF_DB_ID" value="P04637"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005524"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005507"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000739"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005515"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0008270"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006915"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006284"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0008635"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0007569"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0007050"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0030154"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0008283"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0030308"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0051097"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006289"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0051262"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0046902"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006355"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0046982"/>
+      <att type="string" name="XREF_DB_ID" value="IPR012346"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-366083"/>
+      <att type="string" name="XREF_DB_ID" value="133239"/>
+      <att type="string" name="XREF_DB_ID" value="151623"/>
+      <att type="string" name="XREF_DB_ID" value="191170"/>
+      <att type="string" name="XREF_DB_ID" value="211980"/>
+      <att type="string" name="XREF_DB_ID" value="260500"/>
+      <att type="string" name="XREF_DB_ID" value="275355"/>
+      <att type="string" name="XREF_DB_ID" value="X02469"/>
+      <att type="string" name="XREF_DB_ID" value="M13121"/>
+      <att type="string" name="XREF_DB_ID" value="M13112"/>
+      <att type="string" name="XREF_DB_ID" value="M13113"/>
+      <att type="string" name="XREF_DB_ID" value="M13114"/>
+      <att type="string" name="XREF_DB_ID" value="M13115"/>
+      <att type="string" name="XREF_DB_ID" value="M13116"/>
+      <att type="string" name="XREF_DB_ID" value="M13117"/>
+      <att type="string" name="XREF_DB_ID" value="M13118"/>
+      <att type="string" name="XREF_DB_ID" value="M13119"/>
+      <att type="string" name="XREF_DB_ID" value="M13120"/>
+      <att type="string" name="XREF_DB_ID" value="K03199"/>
+      <att type="string" name="XREF_DB_ID" value="M14694"/>
+      <att type="string" name="XREF_DB_ID" value="M14695"/>
+      <att type="string" name="XREF_DB_ID" value="M22898"/>
+      <att type="string" name="XREF_DB_ID" value="M22882"/>
+      <att type="string" name="XREF_DB_ID" value="M22883"/>
+      <att type="string" name="XREF_DB_ID" value="M22884"/>
+      <att type="string" name="XREF_DB_ID" value="M22887"/>
+      <att type="string" name="XREF_DB_ID" value="M22888"/>
+      <att type="string" name="XREF_DB_ID" value="M22894"/>
+      <att type="string" name="XREF_DB_ID" value="M22895"/>
+      <att type="string" name="XREF_DB_ID" value="M22896"/>
+      <att type="string" name="XREF_DB_ID" value="M22897"/>
+      <att type="string" name="XREF_DB_ID" value="X01405"/>
+      <att type="string" name="XREF_DB_ID" value="X60011"/>
+      <att type="string" name="XREF_DB_ID" value="X60012"/>
+      <att type="string" name="XREF_DB_ID" value="X60013"/>
+      <att type="string" name="XREF_DB_ID" value="X60014"/>
+      <att type="string" name="XREF_DB_ID" value="X60015"/>
+      <att type="string" name="XREF_DB_ID" value="X60016"/>
+      <att type="string" name="XREF_DB_ID" value="X60017"/>
+      <att type="string" name="XREF_DB_ID" value="X60018"/>
+      <att type="string" name="XREF_DB_ID" value="X60019"/>
+      <att type="string" name="XREF_DB_ID" value="X60020"/>
+      <att type="string" name="XREF_DB_ID" value="AF135121"/>
+      <att type="string" name="XREF_DB_ID" value="AF135120"/>
+      <att type="string" name="XREF_DB_ID" value="AF307851"/>
+      <att type="string" name="XREF_DB_ID" value="X54156"/>
+      <att type="string" name="XREF_DB_ID" value="U94788"/>
+      <att type="string" name="XREF_DB_ID" value="AF136271"/>
+      <att type="string" name="XREF_DB_ID" value="AF136270"/>
+      <att type="string" name="XREF_DB_ID" value="AB082923"/>
+      <att type="string" name="XREF_DB_ID" value="AY838896"/>
+      <att type="string" name="XREF_DB_ID" value="BC003596"/>
+      <att type="string" name="XREF_DB_ID" value="AY429684"/>
+      <att type="string" name="XREF_DB_ID" value="AY390341"/>
+      <att type="string" name="XREF_DB_ID" value="AY359814"/>
+      <att type="string" name="XREF_DB_ID" value="U63714"/>
+      <att type="string" name="XREF_DB_ID" value="AF209136"/>
+      <att type="string" name="XREF_DB_ID" value="AF209128"/>
+      <att type="string" name="XREF_DB_ID" value="AF209129"/>
+      <att type="string" name="XREF_DB_ID" value="AF209130"/>
+      <att type="string" name="XREF_DB_ID" value="AF209131"/>
+      <att type="string" name="XREF_DB_ID" value="AF209132"/>
+      <att type="string" name="XREF_DB_ID" value="AF209133"/>
+      <att type="string" name="XREF_DB_ID" value="AF209134"/>
+      <att type="string" name="XREF_DB_ID" value="AF209135"/>
+      <att type="string" name="XREF_DB_ID" value="AF209148"/>
+      <att type="string" name="XREF_DB_ID" value="AF209149"/>
+      <att type="string" name="XREF_DB_ID" value="AF209150"/>
+      <att type="string" name="XREF_DB_ID" value="AF209151"/>
+      <att type="string" name="XREF_DB_ID" value="AF209152"/>
+      <att type="string" name="XREF_DB_ID" value="AF209153"/>
+      <att type="string" name="XREF_DB_ID" value="AF209154"/>
+      <att type="string" name="XREF_DB_ID" value="AF209155"/>
+      <att type="string" name="XREF_DB_ID" value="AF209156"/>
+      <att type="string" name="XREF_DB_ID" value="AF210309"/>
+      <att type="string" name="XREF_DB_ID" value="AF210308"/>
+      <att type="string" name="XREF_DB_ID" value="AF210310"/>
+      <att type="string" name="XREF_DB_ID" value="AF240684"/>
+      <att type="string" name="XREF_DB_ID" value="AF240685"/>
+      <att type="string" name="XREF_DB_ID" value="AY270155"/>
+      <att type="string" name="XREF_DB_ID" value="ENSG00000141510"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005626"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0016363"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005654"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005634"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0019899"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0047485"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0042771"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006461"/>
+      <att type="string" name="XREF_DB_ID" value="IPR008967"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005737"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000074"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006974"/>
+      <att type="string" name="XREF_DB_ID" value="1A1U"/>
+      <att type="string" name="XREF_DB_ID" value="1AIE"/>
+      <att type="string" name="XREF_DB_ID" value="1C26"/>
+      <att type="string" name="XREF_DB_ID" value="1DT7"/>
+      <att type="string" name="XREF_DB_ID" value="1GZH"/>
+      <att type="string" name="XREF_DB_ID" value="1H26"/>
+      <att type="string" name="XREF_DB_ID" value="1HS5"/>
+      <att type="string" name="XREF_DB_ID" value="1JSP"/>
+      <att type="string" name="XREF_DB_ID" value="1KZY"/>
+      <att type="string" name="XREF_DB_ID" value="1OLG"/>
+      <att type="string" name="XREF_DB_ID" value="1OLH"/>
+      <att type="string" name="XREF_DB_ID" value="1PES"/>
+      <att type="string" name="XREF_DB_ID" value="1PET"/>
+      <att type="string" name="XREF_DB_ID" value="1SAE"/>
+      <att type="string" name="XREF_DB_ID" value="1SAF"/>
+      <att type="string" name="XREF_DB_ID" value="1SAG"/>
+      <att type="string" name="XREF_DB_ID" value="1SAH"/>
+      <att type="string" name="XREF_DB_ID" value="1SAI"/>
+      <att type="string" name="XREF_DB_ID" value="1SAJ"/>
+      <att type="string" name="XREF_DB_ID" value="1SAK"/>
+      <att type="string" name="XREF_DB_ID" value="1SAL"/>
+      <att type="string" name="XREF_DB_ID" value="1TSR"/>
+      <att type="string" name="XREF_DB_ID" value="1TUP"/>
+      <att type="string" name="XREF_DB_ID" value="1UOL"/>
+      <att type="string" name="XREF_DB_ID" value="1YCQ"/>
+      <att type="string" name="XREF_DB_ID" value="1YCR"/>
+      <att type="string" name="XREF_DB_ID" value="1YCS"/>
+      <att type="string" name="XREF_DB_ID" value="2B3G"/>
+      <att type="string" name="XREF_DB_ID" value="2BIM"/>
+      <att type="string" name="XREF_DB_ID" value="2BIN"/>
+      <att type="string" name="XREF_DB_ID" value="2BIO"/>
+      <att type="string" name="XREF_DB_ID" value="2BIP"/>
+      <att type="string" name="XREF_DB_ID" value="2BIQ"/>
+      <att type="string" name="XREF_DB_ID" value="2F1X"/>
+      <att type="string" name="XREF_DB_ID" value="2FEJ"/>
+      <att type="string" name="XREF_DB_ID" value="3SAK"/>
+      <att type="string" name="XREF_DB_ID" value="MINT-91013"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+      <att type="string" name="XREF_DB_NAME" value="OMIM"/>
+      <att type="string" name="XREF_DB_NAME" value="OMIM"/>
+      <att type="string" name="XREF_DB_NAME" value="OMIM"/>
+      <att type="string" name="XREF_DB_NAME" value="OMIM"/>
+      <att type="string" name="XREF_DB_NAME" value="OMIM"/>
+      <att type="string" name="XREF_DB_NAME" value="OMIM"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="ENSEMBL"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="PDB"/>
+      <att type="string" name="XREF_DB_NAME" value="MINT"/>
+    </att>
+    <att type="string" name="canonicalName" value="p53_human"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="227.0" y="0.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="rad51_drome" id="-8">
+    <att type="string" name="FULL_NAME" value="DNA repair protein Rad51 homolog"/>
+    <att type="string" name="LOCAL_ID" value="22212"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="drome"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="7227"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Drosophila melanogaster"/>
+    <att type="string" name="SEQUENCE_DATA" value="MEKLTNVQAQQEEEEEEGPLSVTKLIGGSITAKDIKLLQQASLHTVESVANATKKQLMAIPGLGGGKVEQIITEANKLVPLGFLSARTFYQMRADVVQLSTGSKELDKLLGGGIETGSITEIFGEFRCGKTQLCHTLAVTCQLPISQKGGEGKCMYIDTENTFRPERLAAIAQRYKLNESEVLDNVAFTRAHNSDQQTKLIQMAAGMLFESRYALLIVDSAMALYRSDYIGRGELAARQNHLGLFLRMLQRLADEFGVAVVITNQVTASLDGAPGMFDAKKPIGGHIMAHSSTTRLYLRKGKGETRICKIYDSPCLPESEAMFAILPDGIGDARES"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="Q27297"/>
+      <att type="string" name="XREF_DB_ID" value="IPR003593"/>
+      <att type="string" name="XREF_DB_ID" value="IPR000445"/>
+      <att type="string" name="XREF_DB_ID" value="IPR003583"/>
+      <att type="string" name="XREF_DB_ID" value="IPR001553"/>
+      <att type="string" name="XREF_DB_ID" value="FBgn0003479"/>
+      <att type="string" name="XREF_DB_ID" value="Q8IGG8"/>
+      <att type="string" name="XREF_DB_ID" value="IPR011941"/>
+      <att type="string" name="XREF_DB_ID" value="Q8IMJ5"/>
+      <att type="string" name="XREF_DB_ID" value="Q9VAA8"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000075"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0045003"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0007143"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0008298"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0030717"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0009994"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0007294"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0009949"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0009951"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-194597"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005524"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0003684"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0008094"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000166"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006310"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006281"/>
+      <att type="string" name="XREF_DB_ID" value="IPR010995"/>
+      <att type="string" name="XREF_DB_ID" value="FBgn0011700"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-458769"/>
+      <att type="string" name="XREF_DB_ID" value="D37788"/>
+      <att type="string" name="XREF_DB_ID" value="D17726"/>
+      <att type="string" name="XREF_DB_ID" value="L41342"/>
+      <att type="string" name="XREF_DB_ID" value="AE003772"/>
+      <att type="string" name="XREF_DB_ID" value="BT001791"/>
+      <att type="string" name="XREF_DB_ID" value="CG7948"/>
+      <att type="string" name="XREF_DB_ID" value="IPR013632"/>
+      <att type="string" name="XREF_DB_ID" value="MINT-337614"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="FLYBASE"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="FLYBASE"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="ENSEMBL"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="MINT"/>
+    </att>
+    <att type="string" name="canonicalName" value="rad51_drome"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.000003814697266" x="82.80000114440918" y="753.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="q9n6d8_drome" id="-7">
+    <att type="string" name="FULL_NAME" value="Transcription factor p53"/>
+    <att type="string" name="LOCAL_ID" value="16333"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="drome"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="7227"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Drosophila melanogaster"/>
+    <att type="string" name="SEQUENCE_DATA" value="MYISQPMSWHKESTDSEDDSTEVDIKEDIPKTVEVSGSELTTEPMAFLQGLNSGNLMQFSQQSVLREMMLQDIQIQANTLPKLENHNIGGYCFSMVLDEPPKSLWMYSIPLNKLYIRMNKAFNVDVQFKSKMPIQPLNLRVFLCFSNDVSAPVVRCQNHLSVEPLTANNAKMRESLLRSENPNSVYCGNAQGKGISERFSVVVPLNMSRSVTRSGLTRQTLAFKFVCQNSCIGRKETSLVFCLEKACGDIVGQHVIHVKICTCPKRDRIQDERQLNSKKRKSVPEAAEEDEPSKVRRCIAIKTEDTESNDSRDCDDSAAEWNVSRTPDGDYRLAITCPNKEWLLQSIEGMIKEAAAEVLRNPNQENLRRHANKLLSLKKRAYELP"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="Q9N6D8"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0008219"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0009314"/>
+      <att type="string" name="XREF_DB_ID" value="IPR002117"/>
+      <att type="string" name="XREF_DB_ID" value="IPR011615"/>
+      <att type="string" name="XREF_DB_ID" value="FBgn0039044"/>
+      <att type="string" name="XREF_DB_ID" value="Q9VCR8"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0042771"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005634"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0003702"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006915"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006357"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005515"/>
+      <att type="string" name="XREF_DB_ID" value="IPR012346"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-122286"/>
+      <att type="string" name="XREF_DB_ID" value="IPR008967"/>
+      <att type="string" name="XREF_DB_ID" value="AF263722"/>
+      <att type="string" name="XREF_DB_ID" value="AF224713"/>
+      <att type="string" name="XREF_DB_ID" value="AF224714"/>
+      <att type="string" name="XREF_DB_ID" value="AF244918"/>
+      <att type="string" name="XREF_DB_ID" value="AF250918"/>
+      <att type="string" name="XREF_DB_ID" value="AE003741"/>
+      <att type="string" name="XREF_DB_ID" value="AY069096"/>
+      <att type="string" name="XREF_DB_ID" value="AF192555"/>
+      <att type="string" name="XREF_DB_ID" value="MINT-1014674"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="FLYBASE"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="DDBJ/EMBL/GENBANK"/>
+      <att type="string" name="XREF_DB_NAME" value="MINT"/>
+    </att>
+    <att type="string" name="canonicalName" value="q9n6d8_drome"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="0.5" y="753.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="dmc1_human" id="-6">
+    <att type="string" name="FULL_NAME" value="Meiotic recombination protein DMC1/LIM15 homolog"/>
+    <att type="string" name="LOCAL_ID" value="3254"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="human"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="9606"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Homo sapiens"/>
+    <att type="string" name="SEQUENCE_DATA" value="MKEDQVVAEEPGFQDEEESLFQDIDLLQKHGINVADIKKLKSVGICTIKGIQMTTRRALCNVKGLSEAKVDKIKEAANKLIEPGFLTAFEYSEKRKMVFHITTGSQEFDKLLGGGIESMAITEAFGEFRTGKTQLSHTLCVTAQLPGAGGYPGGKIIFIDTENTFRPDRLRDIADRFNVDHDAVLDNVLYARAYTSEHQMELLDYVAAKFHEEAGIFKLLIIDSIMALFRVDFSGRGELAERQQKLAQMLSRLQKISEEYNVAVFVTNQMTADPGATMTFQADPKKPIGGHILAHASTTRISLRKGRGELRIAKIYDSPEMPENEATFAITAGGIGDAKE"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="Q14565"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0000794"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0005524"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0003677"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0007292"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0007126"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0007131"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0007283"/>
+      <att type="string" name="XREF_DB_ID" value="IPR003593"/>
+      <att type="string" name="XREF_DB_ID" value="IPR011940"/>
+      <att type="string" name="XREF_DB_ID" value="IPR000445"/>
+      <att type="string" name="XREF_DB_ID" value="IPR010995"/>
+      <att type="string" name="XREF_DB_ID" value="IPR001553"/>
+      <att type="string" name="XREF_DB_ID" value="Q99498"/>
+      <att type="string" name="XREF_DB_ID" value="Q9UH11"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-930865"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+    </att>
+    <att type="string" name="canonicalName" value="dmc1_human"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.000001668930054" x="18.51639473438263" y="182.99310302734375" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="sem11_arath" id="-5">
+    <att type="string" name="FULL_NAME" value="Probable 26 proteasome complex subunit sem1-1"/>
+    <att type="string" name="LOCAL_ID" value="1434"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="arath"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="3702"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Arabidopsis thaliana"/>
+    <att type="string" name="SEQUENCE_DATA" value="MAAEPKAATAEVVKMDLFEDDDEFEEFEINEDWLEKEEVKEVSQQWEDDWDDDDVNDDFSRQLRKELENGTDKK"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="Q9XIR8"/>
+      <att type="string" name="XREF_DB_ID" value="IPR007834"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-931045"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+    </att>
+    <att type="string" name="canonicalName" value="sem11_arath"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="0.0" y="177.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="q7y1c4_arath" id="-4">
+    <att type="string" name="FULL_NAME" value="Breast cancer susceptibility protein 2b"/>
+    <att type="string" name="LOCAL_ID" value="1433"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="arath"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="3702"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Arabidopsis thaliana"/>
+    <att type="string" name="SEQUENCE_DATA" value="MSTWHLFSDSSGDGFRWEVAGRILQSVSDSTPTKALESTAPLPSMADLLLQGCSKLIEREESMPGEIPMFRTGLGKSVVLKESSIAKAKSILAENVAYSDLQNTNCSIPQTRQVDTAETMPMFRTALGKTVPLKESSIAKPLSILGSDMIIDSDNVLPRESGFGVPNSLFQTASNKKVNVSSAGLARAKALLGLEEDDLNGFNHVNQSSSSLQQHGWSGLKTHEEFDATVVKHHSGTPGQYENYVSGKRSEILNPSLKVPPTKFQTAGGKSLSVSAEALKRARNLLGDPELGSFFDDVAGGDQFFTPQKDERLSDIAINNGSVNTGYIAHEEKTSNKHTSNSFVSPLHSSSKQFRSVNLENLASGGNLIKKFDTAVDETNCALNISKPATHGLSNNRPLASDMAVNNSKGNGFIPRARQLGRPADQPLVDITNRRDTAYANNKQDSTQKKRLGKTVSVSPFKRPRISSFKTPLKKNAQQASSGLSVVSCDTLTSKKVLSTRYPEKSPRVYIKEFFGMHPTATTRMDYVPDHVRRIKSSNADKYVFCDESSSNKVGAETFLQMLAESGASLQHASRKWVTNHYRWIVWKLACYDIYYPAKCRGNFLTITNVLEELKYRYEREVNHGHCSAIKRILSGDAPASSMMVLCISAINPRTDNGSQEAHCSDNCSNVKVELTDGWYSMNAALDVVLTKQLNAGKLFVGQKLRILGAGLSGWATPTSPLEAVISSTICLLLNINGTYRAHWADRLGFCKEIGVPLAFNCIKCNGGPVPKTLAGITRIYPILYKERLGEKKSIVRSERIESRIIQLHNQRRSALVEGIMCEYQRGINGVHSQNDTDSEEGAKVFKLLETAAEPELLMAEMSLEQLTSFTTYKAKFEAAKQMQMEKSVAKALEDAGLGERNVTPFMRIRLVGLTSLSNEGEHNPKEGIVTIWDPTERQRTELTEGKIYIMKGLVPMNSDSETLYLHARGSSSRWQPLSPKDSENFQPFFNPRKPISLSNLGEIPLSSEFDIAAYVVYVGDAYTDVLQKKQWVFVTDGSTQHSGEISNSLLAISFSTPFMDDSSVSHISHNLVGSVVGFCNLIKRAKDATNEMWVAETTENSVYFINAEAAYSSHLKTRSAHIQTWAKLYSSKSVIHELRQRVLFIIGACKSPSC"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="Q7Y1C4"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0003676"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006281"/>
+      <att type="string" name="XREF_DB_ID" value="IPR011370"/>
+      <att type="string" name="XREF_DB_ID" value="IPR002093"/>
+      <att type="string" name="XREF_DB_ID" value="IPR008994"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-930753"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="GENE ONTOLOGY"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+    </att>
+    <att type="string" name="canonicalName" value="q7y1c4_arath"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="216.0" y="165.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="dmc1_arath" id="-3">
+    <att type="string" name="FULL_NAME" value="Meiotic recombination protein DMC1 homolog"/>
+    <att type="string" name="LOCAL_ID" value="1432"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="arath"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="3702"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Arabidopsis thaliana"/>
+    <att type="string" name="SEQUENCE_DATA" value="MMASLKAEETSQMQLVEREENDEDEDLFEMIDKLIAQGINAGDVKKLQEAGIHTCNGLMMHTKKNLTGIKGLSEAKVDKICEAAEKIVNFGYMTGSDALIKRKSVVKITTGCQALDDLLGGGIETSAITEAFGEFRSGKTQLAHTLCVTTQLPTNMKGGNGKVAYIDTEGTFRPDRIVPIAERFGMDPGAVLDNIIYARAYTYEHQYNLLLGLAAKMSEEPFRILIVDSIIALFRVDFTGRGELADRQQKLAQMLSRLIKIAEEFNVAVYMTNQVIADPGGGMFISDPKKPAGGHVLAHAATIRLLFRKGKGDTRVCKVYDAPNLAEAEASFQITQGGIADAKD"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="Q39009"/>
+      <att type="string" name="XREF_DB_ID" value="IPR003593"/>
+      <att type="string" name="XREF_DB_ID" value="IPR001553"/>
+      <att type="string" name="XREF_DB_ID" value="P93001"/>
+      <att type="string" name="XREF_DB_ID" value="Q9LIL0"/>
+      <att type="string" name="XREF_DB_ID" value="IPR011940"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-307715"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+    </att>
+    <att type="string" name="canonicalName" value="dmc1_arath"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="99.4477310180664" y="300.0470275878906" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="rad51_arath" id="-2">
+    <att type="string" name="FULL_NAME" value="DNA repair protein RAD51 homolog 1"/>
+    <att type="string" name="LOCAL_ID" value="1431"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="arath"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="3702"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Arabidopsis thaliana"/>
+    <att type="string" name="SEQUENCE_DATA" value="MTTMEQRRNQNAVQQQDDEETQHGPFPVEQLQAAGIASVDVKKLRDAGLCTVEGVAYTPRKDLLQIKGISDAKVDKIVEAASKLVPLGFTSASQLHAQRQEIIQITSGSRELDKVLEGGIETGSITELYGEFRSGKTQLCHTLCVTCQLPMDQGGGEGKAMYIDAEGTFRPQRLLQIADRFGLNGADVLENVAYARAYNTDHQSRLLLEAASMMIETRFALLIVDSATALYRTDFSGRGELSARQMHLAKFLRSLQKLADEFGVAVVITNQVVAQVDGSALFAGPQFKPIGGNIMAHATTTRLALRKGRAEERICKVISSPCLPEAEARFQISTEGVTDCKD"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="P94102"/>
+      <att type="string" name="XREF_DB_ID" value="IPR003593"/>
+      <att type="string" name="XREF_DB_ID" value="IPR011941"/>
+      <att type="string" name="XREF_DB_ID" value="IPR003583"/>
+      <att type="string" name="XREF_DB_ID" value="IPR001553"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-307687"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+    </att>
+    <att type="string" name="canonicalName" value="rad51_arath"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="93.0" y="218.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <node label="o81303_arath" id="-1">
+    <att type="string" name="FULL_NAME" value="F6N15.14 protein"/>
+    <att type="string" name="LOCAL_ID" value="1430"/>
+    <att type="string" name="ORGANISM_COMMON_NAME" value="arath"/>
+    <att type="string" name="ORGANISM_NCBI_TAXON_ID" value="3702"/>
+    <att type="string" name="ORGANISM_SPECIES" value="Arabidopsis thaliana"/>
+    <att type="string" name="SEQUENCE_DATA" value="MSTWQLFPDSSGDGFRWEVAGRILQSVSDSTPTKALESTAPLPSMADLLLQGCSKLIAREEAMPGEIPMFRTGLGKSVVLKESSIAKAKSILAEKVTYSDLRNTNCSIPQMRQVDTAETLPMFRTASGKSVPLKESSIAKAMSILGSDKIIDSDNVLPRESGFGVSNSLFQTASNKKVNVSSAGLARAKALLGLEEDDLNGFNHVNQSSSSSQQHGWSGLKTHEEFDATVVKHHSGTPGQYEDYVSGKRSEVLNPSLKVPPTKFQTAGGKSLSVSAEALKRARNLLGDPELGSFFDDVAGGDQFFTPEKDERLSDIAINNGSANRGYIAHEEKTSNKHTPNSFVSPLWSSSKQFSSVNLENLASGGNLIKKFDAAVDETDCALNATHGLSNNRSLASDMAVNNSKVNGFIPRGRQPGRPADQPLVDITNRRDTAYAYNKQDSTQKKRLGKTVSVSPFKRPRISSFKTPSKKHALQASSGLSVVSCDTLTSKKVLSTRYPEKSPRVYIKDFFGMHPTATTRTMSEESNQVMQINMYSVMSLLQTRLELKLFFKCWLSLVLPYNMHPEKKVCDRSFEACMWIVWKLACYDIYYPAKCRGNFLTITNVLEELKYRYEREVNHGHCSAIKRILSGDAPASSMMVLCISAINPKTDNDSQEAHCSDSCSNVKVELTDGWYSMNAALDVVLTKQLNAGKLFVGQKLRHAYVLISYLKILGAGLSGWATPTSPLESFIQPNFQAVISSTICLLLNINGTYRAHWADRLGFCK"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="O81303"/>
+      <att type="string" name="XREF_DB_ID" value="IPR002093"/>
+      <att type="string" name="XREF_DB_ID" value="EBI-307680"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="UNIPROT"/>
+      <att type="string" name="XREF_DB_NAME" value="INTERPRO"/>
+      <att type="string" name="XREF_DB_NAME" value="INTACT"/>
+    </att>
+    <att type="string" name="canonicalName" value="o81303_arath"/>
+    <graphics type="ELLIPSE" h="40.0" w="40.0" x="41.0" y="72.0" fill="#ff9999" width="1" outline="#666666" cy:nodeTransparency="1.0" cy:nodeLabelFont="SansSerif.bold-0-12" cy:borderLineType="solid"/>
+  </node>
+  <edge label="ima1_yeast (2h fragment pooling:srp1-rad51:11283351) rad51_yeast" source="-28" target="-16">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="2h fragment pooling"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0399"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="srp1-rad51"/>
+    <att type="string" name="PUB_MED_ID" value="11283351"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-386883"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad55_yeast (two hybrid:rad55-rad51-1:10688190) rad51_yeast" source="-27" target="-16">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="rad55-rad51-1"/>
+    <att type="string" name="PUB_MED_ID" value="10688190"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-391104"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad55_yeast (2h fragment pooling:rad55-rad51:11283351) rad51_yeast" source="-27" target="-16">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="2h fragment pooling"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0399"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="rad55-rad51"/>
+    <att type="string" name="PUB_MED_ID" value="11283351"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-377466"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="q64451_mouse (anti bait coip:p53-q9ert0-1:9194565) q9ert0_mouse" source="-25" target="-26">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="anti bait coip"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0006"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="co-IP: bait=mouse p53, prey= mouse p300"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="p53-q9ert0-1"/>
+    <att type="string" name="PUB_MED_ID" value="9194565"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-493497"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="xrcc2_human (two hybrid:xrcc2-ra51d:10749867) ra51d_mouse" source="-21" target="-22">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="xrcc2-ra51d"/>
+    <att type="string" name="PUB_MED_ID" value="10749867"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="MINT-19111"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="mint"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="ra51d_human (two hybrid:ra51d-rad51:10749867) rad51_yeast" source="-20" target="-16">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="ra51d-rad51"/>
+    <att type="string" name="PUB_MED_ID" value="10749867"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="MINT-18430"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="mint"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_yeast (two hybrid:rad51-ypl238c:10688190) q99401_yeast" source="-16" target="-19">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="rad51-ypl238c"/>
+    <att type="string" name="PUB_MED_ID" value="10688190"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-391098"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_yeast (two hybrid:rad51-ymr233w:10688190) ym74_yeast" source="-16" target="-29">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="rad51-ymr233w"/>
+    <att type="string" name="PUB_MED_ID" value="10688190"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-391095"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_yeast (two hybrid:rad51-sap1:10688190) sap1_yeast" source="-16" target="-18">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="rad51-sap1"/>
+    <att type="string" name="PUB_MED_ID" value="10688190"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-391089"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_yeast (two hybrid:rad51-rad52:11154282) rad52_yeast" source="-16" target="-23">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="rad51-rad52"/>
+    <att type="string" name="PUB_MED_ID" value="11154282"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="MINT-15328"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="mint"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_yeast (two hybrid:rad51-rad52:8370524) rad52_yeast" source="-16" target="-23">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="rad51-rad52"/>
+    <att type="string" name="PUB_MED_ID" value="8370524"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="MINT-18433"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="mint"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_yeast (two hybrid pooling:rad51-rad51:11283351) rad51_yeast" source="-16" target="-16">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid pooling"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0398"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="rad51-rad51"/>
+    <att type="string" name="PUB_MED_ID" value="11283351"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="MINT-1306"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="mint"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_yeast (two hybrid array:rad51-q99401:10688190) q99401_yeast" source="-16" target="-19">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid array"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0397"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="rad51-q99401"/>
+    <att type="string" name="PUB_MED_ID" value="10688190"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="MINT-5709"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="mint"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_yeast (two hybrid array:rad51-sap1:10688190) sap1_yeast" source="-16" target="-18">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid array"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0397"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="rad51-sap1"/>
+    <att type="string" name="PUB_MED_ID" value="10688190"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="MINT-5706"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="mint"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_yeast (two hybrid:zip3-rad51:10943844) q06032_yeast" source="-16" target="-17">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="zip3-rad51"/>
+    <att type="string" name="PUB_MED_ID" value="10943844"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-978895"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0007129"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+      <att type="string" name="XREF_DB_NAME" value="go"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_yeast (2h fragment pooling:rad51-rad51:11283351) rad51_yeast" source="-16" target="-16">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="2h fragment pooling"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0399"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="rad51-rad51"/>
+    <att type="string" name="PUB_MED_ID" value="11283351"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-378948"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="ra51b_human (coip:ra51b-ra51c:11744692) ra51c_human" source="-13" target="-14">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="coip"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0019"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="ra51b-ra51c"/>
+    <att type="string" name="PUB_MED_ID" value="11744692"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="MINT-16995"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="mint"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="ra51b_human (experimental interac:ra51b-ra51c:11744692) ra51c_human" source="-13" target="-14">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="experimental interac"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0045"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="ra51b-ra51c"/>
+    <att type="string" name="PUB_MED_ID" value="11744692"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="MINT-16994"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="mint"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="brca2_mouse (coip:brca2-ra51b:11477095) ra51b_mouse" source="-11" target="-12">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="coip"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0019"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="brca2-ra51b"/>
+    <att type="string" name="PUB_MED_ID" value="11477095"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="MINT-18760"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="mint"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_human (two hybrid:rad51-rad51-6:9396801) rad51_human" source="-10" target="-10">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="rad51-rad51-6"/>
+    <att type="string" name="PUB_MED_ID" value="9396801"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-1178794"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_human (coloc fluoresc probe:rad51-rad51-2:12442171) rad51_human" source="-10" target="-10">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="coloc fluoresc probe"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0021"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Interaction detected by Fluroscence."/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="rad51-rad51-2"/>
+    <att type="string" name="PUB_MED_ID" value="12442171"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-297250"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="p53_human (coip:rad51-tp53-2:9380510) rad51_human" source="-9" target="-10">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="coip"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0019"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Interaction of p53 with the human Rad51 protein\n            detected by CO-IP"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="rad51-tp53-2"/>
+    <att type="string" name="PUB_MED_ID" value="9380510"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-367053"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006282"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+      <att type="string" name="XREF_DB_NAME" value="go"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="p53_human (coip:rad51-tp53-1:9380510) rad51_human" source="-9" target="-10">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="coip"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0019"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Interaction of p53 and the human Rad51 protein\n            detected by Co-IP."/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="rad51-tp53-1"/>
+    <att type="string" name="PUB_MED_ID" value="9380510"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-367003"/>
+      <att type="string" name="XREF_DB_ID" value="GO:0006282"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+      <att type="string" name="XREF_DB_NAME" value="go"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="q9n6d8_drome (two hybrid:p53-rad51:15575970) rad51_drome" source="-7" target="-8">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="p53-rad51"/>
+    <att type="string" name="PUB_MED_ID" value="15575970"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-470381"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="q7y1c4_arath (two hybrid:brca2b-rad51-4:16415210) rad51_human" source="-4" target="-10">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Yeast 2 hybrid analysis reveals  interaction between\n            arabidopsis BRCA2b protein and human RAD51 protein"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="brca2b-rad51-4"/>
+    <att type="string" name="PUB_MED_ID" value="16415210"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-944276"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="q7y1c4_arath (anti tag coip:brca2b-rad51-1:16415210) rad51_arath" source="-4" target="-2">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="anti tag coip"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0007"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Coimmunoprecipitation reveals  interaction between the\n            BRCA2b protein and RAD51 protein"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="brca2b-rad51-1"/>
+    <att type="string" name="PUB_MED_ID" value="16415210"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-930805"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_arath (two hybrid:lim15-rad51-1:15014444) dmc1_arath" source="-2" target="-3">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Interaction detected by Y2H"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="lim15-rad51-1"/>
+    <att type="string" name="PUB_MED_ID" value="15014444"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-307739"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_arath (two hybrid:rad51-dmc1-1:15014444) dmc1_arath" source="-2" target="-3">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Interaction detected by Y2H"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="rad51-dmc1-1"/>
+    <att type="string" name="PUB_MED_ID" value="15014444"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-307734"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_arath (two hybrid:rad51-rad51-3:15014444) rad51_arath" source="-2" target="-2">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Interaction detected by Y2H"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="rad51-rad51-3"/>
+    <att type="string" name="PUB_MED_ID" value="15014444"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-307732"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_arath (two hybrid:at5g01630-rad51-1:15014444) q84w87_arath" source="-2" target="-24">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Interaction detected by Y2H"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="at5g01630-rad51-1"/>
+    <att type="string" name="PUB_MED_ID" value="15014444"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-307712"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_arath (two hybrid:brca2b-rad51-3:16415210) q7y1c4_arath" source="-2" target="-4">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Y2H reveals  interaction between the BRCA2b protein\n            and RAD51 protein"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="brca2b-rad51-3"/>
+    <att type="string" name="PUB_MED_ID" value="16415210"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-944259"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_arath (two hybrid:f6n15_14-rad51-3:16415210) o81303_arath" source="-2" target="-1">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Yeast 2 hybrid analysis reveals  interaction between\n            F6n15.14 protein and  RAD51 protein"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="f6n15_14-rad51-3"/>
+    <att type="string" name="PUB_MED_ID" value="16415210"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-930908"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_arath (two hybrid:rad51-dmc1:16415210) dmc1_human" source="-2" target="-6">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Yeast 2 hybrid analysis reveals  interaction between\n            arabidopsis RAD51 protein and human DMC1 protein"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="rad51-dmc1"/>
+    <att type="string" name="PUB_MED_ID" value="16415210"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-930885"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_arath (two hybrid:rad51-rad51-5:16415210) rad51_human" source="-2" target="-10">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Yeast 2 hybrid analysis reveals  interaction between\n            arabidopsis RAD51 protein and human RAD51 protein"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="rad51-rad51-5"/>
+    <att type="string" name="PUB_MED_ID" value="16415210"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-930862"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_arath (anti tag coip:rad51-dmc1-2:16415210) dmc1_arath" source="-2" target="-3">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="anti tag coip"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0007"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Coimmunoprecipitation analysis reveals  interaction\n            between the  RAD51 protein and DMC1 protein"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="rad51-dmc1-2"/>
+    <att type="string" name="PUB_MED_ID" value="16415210"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-930827"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_arath (two hybrid:brca2b-rad51-3:16415210) q7y1c4_arath" source="-2" target="-4">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Y2H reveals  interaction between the BRCA2b protein\n            and RAD51 protein"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="brca2b-rad51-3"/>
+    <att type="string" name="PUB_MED_ID" value="16415210"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-944259"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_arath (two hybrid:f6n15_14-rad51-3:16415210) o81303_arath" source="-2" target="-1">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Yeast 2 hybrid analysis reveals  interaction between\n            F6n15.14 protein and  RAD51 protein"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="f6n15_14-rad51-3"/>
+    <att type="string" name="PUB_MED_ID" value="16415210"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-930908"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_arath (two hybrid:rad51-dmc1:16415210) dmc1_human" source="-2" target="-6">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Yeast 2 hybrid analysis reveals  interaction between\n            arabidopsis RAD51 protein and human DMC1 protein"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="rad51-dmc1"/>
+    <att type="string" name="PUB_MED_ID" value="16415210"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-930885"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_arath (two hybrid:f6n15_14-rad51-1:15014444) o81303_arath" source="-2" target="-1">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Interaction detected by Y2H"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="f6n15_14-rad51-1"/>
+    <att type="string" name="PUB_MED_ID" value="15014444"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-307704"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_arath (anti tag coip:brca2b-rad51-2:16415210) sem11_arath" source="-2" target="-5">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="anti tag coip"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0007"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Coimmunoprecipitation reveals  interaction between the\n            BRCA2b protein,  Dss1 (At1g64750)and RAD51 protein"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="brca2b-rad51-2"/>
+    <att type="string" name="PUB_MED_ID" value="16415210"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-931091"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_arath (anti tag coip:brca2b-rad51-2:16415210) q7y1c4_arath" source="-2" target="-4">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="anti tag coip"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0007"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Coimmunoprecipitation reveals  interaction between the\n            BRCA2b protein,  Dss1 (At1g64750)and RAD51 protein"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="brca2b-rad51-2"/>
+    <att type="string" name="PUB_MED_ID" value="16415210"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-931091"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="rad51_arath (anti tag coip:dmc1-rad51:16415210) dmc1_arath" source="-2" target="-3">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="anti tag coip"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0007"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Coimmunoprecipitation analysis reveals  interaction\n            between the   DMC1 protein and RAD51 protein"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="dmc1-rad51"/>
+    <att type="string" name="PUB_MED_ID" value="16415210"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-930839"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="o81303_arath (two hybrid:f6n15_14-dss1:16415210) sem11_arath" source="-1" target="-5">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Yeast 2 hybrid analysis reveals  interaction between\n            F6n15.14 protein and  Dss1 (At1g64750) protein"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="f6n15_14-dss1"/>
+    <att type="string" name="PUB_MED_ID" value="16415210"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-931025"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="o81303_arath (two hybrid:f6n15_14-rad51:16415210) rad51_human" source="-1" target="-10">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Yeast 2 hybrid analysis reveals  interaction between\n            arabidopsis F6n15.14 protein and human RAD51 protein"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="f6n15_14-rad51"/>
+    <att type="string" name="PUB_MED_ID" value="16415210"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-930894"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="o81303_arath (two hybrid:f6n15_14-rad15:15014444) rad51_arath" source="-1" target="-2">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="two hybrid"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0018"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Yeast 2 hybrid analysis reveals  interaction between\n            the  F6N15.14 protein and RAD15 protein"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="f6n15_14-rad15"/>
+    <att type="string" name="PUB_MED_ID" value="15014444"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-930742"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+  <edge label="o81303_arath (anti tag coip:f6n15_14-rad51-2:16415210) rad51_arath" source="-1" target="-2">
+    <att type="string" name="EXPERIMENTAL_SYSTEM_NAME" value="anti tag coip"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_DB" value="psi-mi"/>
+    <att type="string" name="EXPERIMENTAL_SYSTEM_XREF_ID" value="MI:0007"/>
+    <att type="string" name="INTERACTION_FULL_NAME" value="Coimmunoprecipitation analysis reveals  interaction\n            between the  F6N15.14 protein and RAD51 protein"/>
+    <att type="string" name="INTERACTION_SHORT_NAME" value="f6n15_14-rad51-2"/>
+    <att type="string" name="PUB_MED_ID" value="16415210"/>
+    <att type="list" name="XREF_DB_ID">
+      <att type="string" name="XREF_DB_ID" value="EBI-930792"/>
+    </att>
+    <att type="list" name="XREF_DB_NAME">
+      <att type="string" name="XREF_DB_NAME" value="intact"/>
+    </att>
+    <graphics width="1" fill="#0000ff" cy:sourceArrow="0" cy:targetArrow="0" cy:sourceArrowColor="#000000" cy:targetArrowColor="#000000" cy:edgeLabelFont="Default-0-10" cy:edgeLineType="SOLID" cy:curved="STRAIGHT_LINES"/>
+  </edge>
+</graph>

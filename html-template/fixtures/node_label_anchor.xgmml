@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<graph label="Cytoscape Web" directed="1" Graphic="1" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:cy="http://www.cytoscape.org" xmlns="http://www.cs.rpi.edu/XGMML">
+  <att name="documentVersion" value="0.1"/>
+  <att type="string" name="backgroundColor" value="#ffffff"/>
+  <att type="real" name="GRAPH_VIEW_ZOOM" value="1"/>
+  <att type="real" name="GRAPH_VIEW_CENTER_X" value="78.82499999999993"/>
+  <att type="real" name="GRAPH_VIEW_CENTER_Y" value="77.52500000000003"/>
+  <node id="1" label="nw" name="">
+    <graphics x="414.3" y="260.9" labelanchor="nw" cy:nodeTransparency="1" cy:nodeLabelFont="SansSerif-0-12" fill="#ffffff" h="35" w="35" outline="#000000" width="1" type="RECTANGLE"/>
+  </node>
+  <node id="2" label="n" name="">
+    <graphics x="475.35" y="261.45" labelanchor="n" cy:nodeTransparency="1" cy:nodeLabelFont="SansSerif-0-12" fill="#0099ff" h="35" w="35" outline="#000000" width="1" type="RECTANGLE"/>
+  </node>
+  <node id="3" label="ne" name="">
+    <graphics x="535.2" y="260.5" labelanchor="ne" cy:nodeTransparency="1" cy:nodeLabelFont="SansSerif-0-12" fill="#0099ff" h="35" w="35" outline="#000000" width="1" type="RECTANGLE"/>
+  </node>
+  <node id="4" label="e" name="">
+    <graphics x="535.45" y="322.15" labelanchor="e" cy:nodeTransparency="1" cy:nodeLabelFont="SansSerif-0-12" fill="#e6e600" h="35" w="35" outline="#000000" width="1" type="RECTANGLE"/>
+  </node>
+  <node id="5" label="se" name="">
+    <graphics x="535.8" y="379.2" labelanchor="se" cy:nodeTransparency="1" cy:nodeLabelFont="SansSerif-0-12" fill="#00cc00" h="35" w="35" outline="#000000" width="1" type="RECTANGLE"/>
+  </node>
+  <node id="6" label="s" name="">
+    <graphics x="477.1" y="379.05" labelanchor="s" cy:nodeTransparency="1" cy:nodeLabelFont="SansSerif-0-12" fill="#ffffff" h="35" w="35" outline="#000000" width="1" type="RECTANGLE"/>
+  </node>
+  <node id="7" label="sw" name="">
+    <graphics x="416.15" y="379.55" labelanchor="sw" cy:nodeTransparency="1" cy:nodeLabelFont="SansSerif-0-12" fill="#ffffff" h="35" w="35" outline="#000000" width="1" type="RECTANGLE"/>
+  </node>
+  <node id="8" label="w" name="">
+    <graphics x="414.15" y="320.9" labelanchor="w" cy:nodeTransparency="1" cy:nodeLabelFont="SansSerif-0-12" fill="#ffffff" h="35" w="35" outline="#000000" width="1" type="RECTANGLE"/>
+  </node>
+  <node id="9" label="c" name="">
+    <graphics x="476.2" y="321.3" labelanchor="c" cy:nodeTransparency="1" cy:nodeLabelFont="SansSerif-0-12" fill="#e6e600" h="35" w="35" outline="#000000" width="1" type="RECTANGLE"/>
+  </node>
+</graph>

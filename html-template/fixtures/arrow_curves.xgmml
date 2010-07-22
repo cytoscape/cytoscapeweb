@@ -1,0 +1,56 @@
+<graph label="Cytoscape Web" directed="0" Graphic="1" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:cy="http://www.cytoscape.org" xmlns="http://www.cs.rpi.edu/XGMML">
+  <att name="documentVersion" value="0.1"/>
+  <att type="string" name="backgroundColor" value="#fefefe"/>
+  <att type="real" name="GRAPH_VIEW_ZOOM" value="1"/>
+  <att type="real" name="GRAPH_VIEW_CENTER_X" value="70.625"/>
+  <att type="real" name="GRAPH_VIEW_CENTER_Y" value="21"/>
+  <node id="a01" label="A01">
+    <att type="real" name="weight" value="0.45"/>
+    <att type="string" name="shape" value="RECTANGLE"/>
+    <graphics x="397.45" y="270.55" outline="#707070" h="40" type="V" cy:nodeTransparency="0.9" cy:nodeLabelFont="Arial-0-24" fill="#0b94b1" width="2" w="40"/>
+  </node>
+  <node id="a02" label="A02">
+    <att type="real" name="weight" value="0.22"/>
+    <att type="string" name="shape" value="TRIANGLE"/>
+    <graphics x="506.7" y="273.9" outline="#707070" h="20" type="RECTANGLE" cy:nodeTransparency="0.9" cy:nodeLabelFont="Arial-0-10" fill="#ffffff" width="2" w="20"/>
+  </node>
+  <edge id="e1" target="a01" label="a01 (aa) a02" source="a02" directed="true">
+    <att type="real" name="weight" value="0.4"/>
+    <att type="string" name="network" value="#ffff00"/>
+    <att type="string" name="sourceArrowShape" value="diamond"/>
+    <att type="string" name="targetArrowShape" value="diamond"/>
+    <graphics cy:targetArrow="3" cy:sourceArrow="0" fill="#0b94b1" cy:targetArrowColor="#000000" cy:sourceArrowColor="#000000" width="7.650084232207751"/>
+  </edge>
+  <edge id="e2" target="a02" label="a01 (gg) a02" source="a01" directed="true">
+    <att type="real" name="weight" value="0.6"/>
+    <att type="string" name="network" value="#ff0000"/>
+    <att type="string" name="sourceArrowShape" value="delta"/>
+    <att type="string" name="targetArrowShape" value="T"/>
+    <graphics cy:targetArrow="3" cy:sourceArrow="0" fill="#0b94b1" cy:targetArrowColor="#000000" cy:sourceArrowColor="#000000" width="12"/>
+  </edge>
+  <edge id="e13" target="a01" label="a01 (pg) a02" source="a02" directed="false">
+    <att type="real" name="weight" value="0.5295528289861977"/>
+    <att type="string" name="network" value="2"/>
+    <graphics cy:targetArrow="0" cy:sourceArrow="0" fill="#0b94b1" cy:targetArrowColor="#000000" cy:sourceArrowColor="#000000" width="10.467803700053523"/>
+  </edge>
+  <edge id="e14" target="a01" label="a01 (pp) a02" source="a02" directed="false">
+    <att type="real" name="weight" value="0.14022098202258348"/>
+    <att type="string" name="network" value="2"/>
+    <graphics cy:targetArrow="0" cy:sourceArrow="0" fill="#0b94b1" cy:targetArrowColor="#000000" cy:sourceArrowColor="#000000" width="2"/>
+  </edge>
+  <edge id="e16" target="a01" label="a02 (gg) a01" source="a02" directed="false">
+    <att type="real" name="weight" value="0.17377490550279617"/>
+    <att type="string" name="network" value="2"/>
+    <graphics cy:targetArrow="0" cy:sourceArrow="0" fill="#0b94b1" cy:targetArrowColor="#000000" cy:sourceArrowColor="#000000" width="2.7297837040893587"/>
+  </edge>
+  <edge id="e17" target="a01" label="a02 (pp) a01" source="a02" directed="false">
+    <att type="real" name="weight" value="0.2766755644697696"/>
+    <att type="string" name="network" value="2"/>
+    <graphics cy:targetArrow="0" cy:sourceArrow="0" fill="#0b94b1" cy:targetArrowColor="#000000" cy:sourceArrowColor="#000000" width="4.967829698872611"/>
+  </edge>
+  <edge id="e18" target="a01" label="a02 (pg) a01" source="a02" directed="false">
+    <att type="real" name="weight" value="0.24438396864570677"/>
+    <att type="string" name="network" value="2"/>
+    <graphics cy:targetArrow="3" cy:sourceArrow="0" fill="#0b94b1" cy:targetArrowColor="#000000" cy:sourceArrowColor="#000000" width="4.265501089661285"/>
+  </edge>
+</graph>
