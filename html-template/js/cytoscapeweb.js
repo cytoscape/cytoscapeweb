@@ -2453,8 +2453,6 @@
      *                                                                (or <code>mergeColor</code>, when edges are merged).</li>
      *     <li><code>selectionOpacity</code> {Number}: The opacity of selected edges (0 to 1).
      *                                                                  The default value is the same one set to <code>opacity</code>.</li>
-     *     <li><code>selectionLineWidth</code> {Number}: The border width of selected edges (0 to 1).
-     *                                                                    The default value is the same one set to <code>width</code>.</li>
      *     <li><code>selectionGlowColor</code> {String}: The glow color of selected edges.The default value is "#ffff33".</li>
      *     <li><code>selectionGlowOpacity</code> {Number}: The glow transparency of selected edges. Valid values are 0 to 1.
      *                                                                      The default value is 0.6 (60% opaque).</li>
