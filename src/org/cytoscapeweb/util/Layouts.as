@@ -29,8 +29,8 @@
 */
 package org.cytoscapeweb.util {
     import flare.util.Orientation;
-    import flare.vis.operator.layout.Layout;
-    import flare.vis.operator.layout.NodeLinkTreeLayout;
+    
+    import org.cytoscapeweb.view.layout.ForceDirectedLayout;
     
     
     /**
@@ -69,6 +69,8 @@ package org.cytoscapeweb.util {
                 mass:        3,
                 tension:     0.1,
                 restLength: "auto",
+                weightAttr: null,
+                weightType: ForceDirectedLayout.NORMALIZED_WEIGHT,
                 iterations: 400,
                 maxTime:    30000, // milliseconds
                 autoStabilize: true

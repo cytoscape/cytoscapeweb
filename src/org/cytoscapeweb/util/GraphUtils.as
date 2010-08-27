@@ -295,6 +295,10 @@ package org.cytoscapeweb.util {
             var numNodes:Number = nodes.length;
             var n:NodeSprite;
             
+            for each (n in nodes) {
+                if (GraphUtils.isFilteredOut(n)) numNodes--;
+            }
+            
             if (numNodes > 1) {
                 if (layout === Layouts.CIRCLE || layout === Layouts.RADIAL) {
                     if (numNodes === 2) {
@@ -307,7 +311,8 @@ package org.cytoscapeweb.util {
                         // 2. Each side should have a desired size (distance between the adjacent nodes):
                         var S:Number = 0;
                         for each (n in nodes) {
-                            S = Math.max(S, style.getValue(VisualProperties.NODE_SIZE, n.data));
+                            if (!GraphUtils.isFilteredOut(n))
+                                S = Math.max(S, style.getValue(VisualProperties.NODE_SIZE, n.data));
                         }
                         S /= 2;
                         // 3. If we connect two adjacent vertices to the center, the angle between these two 
@@ -322,8 +327,10 @@ package org.cytoscapeweb.util {
                 } else if (layout === Layouts.FORCE_DIRECTED) {
                     var area:Number = 0;
                     for each (n in nodes) {
-                        var s:Number = style.getValue(VisualProperties.NODE_SIZE, n.data);
-                        area += 9 * s * s;
+                        if (!GraphUtils.isFilteredOut(n)) {
+                            var s:Number = style.getValue(VisualProperties.NODE_SIZE, n.data);
+                            area += 9 * s * s;
+                        }
                     }
                     side = Math.sqrt(area);
                 }

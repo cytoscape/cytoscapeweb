@@ -449,8 +449,10 @@ package org.cytoscapeweb.view.components {
                 var iter:uint = Math.max(1, options.iterations);
                 var maxTime:uint = options.maxTime;
                 var autoStab:Boolean = options.autoStabilize;
+                var weightAttr:String = options.weightAttr;
+                var sim:Simulation = new Simulation();
                 
-        		var fdl:ForceDirectedLayout = new ForceDirectedLayout(true, iter, maxTime, autoStab, new Simulation());
+        		var fdl:ForceDirectedLayout = new ForceDirectedLayout(true, iter, maxTime, autoStab, sim, weightAttr);
                 //fdl.ticksPerIteration = 1,
                 fdl.simulation.dragForce.drag = options.drag;
                 fdl.simulation.nbodyForce.gravitation = options.gravitation;
@@ -467,14 +469,6 @@ package org.cytoscapeweb.view.components {
                     length = Math.min(200, length);
                 }
                 fdl.defaultSpringLength = length;
-
-                var tension:Function = fdl.tension;
-                fdl.tension = function(e:EdgeSprite):Number {
-                    var t:Number = 0;
-                    if (!GraphUtils.isFilteredOut(e))
-                        t = Math.max(0.01, tension(e));
-                    return t;
-                };
 
                 trace("[FORCE_DIRECTED] Grav="+fdl.simulation.nbodyForce.gravitation+
                                       " Tens="+fdl.defaultSpringTension+

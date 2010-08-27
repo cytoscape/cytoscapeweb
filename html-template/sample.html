@@ -18,8 +18,7 @@
             var options = {
                 nodeTooltipsEnabled: true,
                 edgeTooltipsEnabled: true,
-                nodeLabelsVisible: true,
-                edgeLabelsVisible: false,
+                nodeTooltipsEnabled: true,
                 edgesMerged: false,
                 visualStyle: {
                     global: {
@@ -34,26 +33,25 @@
                         borderWidth: 2,
                         borderColor: "#707070",
                         labelFontSize: { defaultValue: 12, continuousMapper: { attrName: "weight",  minValue: 10, maxValue: 24 } },
+                        tooltipText: { customMapper: { functionName: "onNodeTooltip" } },
+                        selectionGlowOpacity: 0,
+                        selectionBorderColor: "ff0000",
+                        hoverBorderWidth: 4
                     },
                     edges: {
                     	color: "#0b94b1",
                         width: { defaultValue: 2, continuousMapper: { attrName: "weight",  minValue: 2, maxValue: 8 } },
-                        mergeWidth: 3,
+                        mergeWidth: { defaultValue: 2, continuousMapper: { attrName: "weight",  minValue: 2, maxValue: 8 } },
                         mergeColor: "#0b94b1",
-                        opacity: 0.8,
+                        opacity: 0.7,
                         labelFontSize: 10,
-                        labelFontWeight: "bold"
+                        labelFontWeight: "bold",
+                        selectionGlowOpacity: 0,
+                        selectionColor: "ff0000",
+                        tooltipText: "${weight}"
                      }
                 }   
             };
-            
-            function showSelected() {
-                $("#data").html('');
-                var arr = vis.selected();
-                $.each(arr, function(i, d) {
-                    $("#data").append('<li>'+d.group+': '+d.data.label+'</li>');
-                });
-            }
             
             function showElapsedTime() {
                 d2 = new Date();
@@ -65,18 +63,21 @@
             	$("input, select").attr("disabled", true);
 
                 if (data) {
-					var ln = "ForceDirected";
-                    var xml = $(data);
-                    if (xml.length > 0) {
-						if (xml[0].tagName === "GRAPHML") {
-							if ($("#layouts").val() !== "Preset") { ln = $("#layouts").val(); }
-                    	} else {
-                    		ln = "Preset";
-                    	}
+					var layout = { name: "ForceDirected" };
+
+                    if (data.indexOf("</graphml>") === -1 && data.indexOf("</graph>") > -1) { // XGMML...
+                    	layout = { name: "Preset", options: { fitToScreen: true } };
+                    } else { // GraphML or SIF
+                    	if ($("#layouts").val() !== "Preset") {
+                            layout = { name: $("#layouts").val(), options: { weightAttr: "weight", restLength: 50, autoStabilize: false } };
+                        }
 					}
 
-					options.layout = { name: ln, options: {} };
+					options.layout = layout;
                 	options.network = data;
+                    options.nodeLabelsVisible = $("#showNodeLabels").is(":checked");
+                    options.edgeLabelsVisible = $("#showEdgeLabels").is(":checked");
+
                 	d1 = new Date();
                 	vis.draw(options);
                 } else {
@@ -108,7 +109,7 @@
 
                 // init and draw
                 vis = new org.cytoscapeweb.Visualization(div_id, options);
-
+                
                 vis.ready(function() {
                     showElapsedTime();
                     var layout = vis.layout();
@@ -116,6 +117,8 @@
                     $("input, select").attr("disabled", false);
                     $("#updateVisualStyle").attr("disabled", true);
                     $("#mergeEdges").attr("checked", vis.edgesMerged());
+                    $("#showNodeLabels").attr("checked", vis.nodeLabelsVisible());
+                    $("#showEdgeLabels").attr("checked", vis.edgeLabelsVisible());
                     
                     vis.addContextMenuItem("Delete node", "nodes", function(evt) {
                         vis.removeNode(evt.target.data.id, true);
@@ -144,6 +147,9 @@
                 vis.addListener("layout", function(evt) {
                 	showElapsedTime();
                 })
+                .addListener("dblclick", function(evt) {
+                	vis.addNode(evt.mouseX, evt.mouseY, { weight: Math.random() }, true);
+                })
                 .addListener("error", function(err) {
 					alert(err.value.msg);
                 });
@@ -157,12 +163,18 @@
                     draw();
                 });
                 $("#reapplyLayout").click(function(evt) {
-            	    d1 = new Date();
-                    var layout = vis.layout();               
-            	    vis.layout(layout);
+                    d1 = new Date();
+                    var layout = vis.layout();
+                    vis.layout(layout);
                 });
                 $("#mergeEdges").change(function(evt) {
                     vis.edgesMerged($("#mergeEdges").is(":checked"));
+                });
+                $("#showNodeLabels").change(function(evt) {
+                    vis.nodeLabelsVisible($("#showNodeLabels").is(":checked"));
+                });
+                $("#showEdgeLabels").change(function(evt) {
+                    vis.edgeLabelsVisible($("#showEdgeLabels").is(":checked"));
                 });
                 $("#createGraph").click(function(evt) {
                     var data = createData($("#nodesNumber").val(), $("#edgesNumber").val());
@@ -264,6 +276,13 @@
                             <label>Networks:</label>
                             <select id="graphs" size="1">
                                 <option value="sample1.xml" selected="selected">Sample 1</option>
+                                <option value="weighted1.graphml" selected="selected">Weighted 1</option>
+                                <option value="galFiltered.xgmml">Gal Filtered</option>
+                                <option value="cpath_cytoscape.xgmml">CPath</option>
+                                <option value="node_label_anchor.xgmml">Nodes Label Anchor (XGMML)</option>
+                                <option value="arrow_curves.xgmml">CURVES</option>
+                                <option value="arrows.xgmml">Arrows</option>
+                                <option value="sample.cys">CYS</option>
                                 <option value="sample2.xml">Sample 2</option>
                                 <option value="sample3.xml">Sample 3</option>
                                 <option value="sample4.xml">Sample 4</option>
@@ -309,6 +328,12 @@
                         </div>
                         <hr/>
                         <div>
+                            <label>Labels:</label><br/>
+                            <input type="checkbox" id="showNodeLabels" checked="checked"/> <label for="showNodeLabels">Nodes</label>
+                            <input type="checkbox" id="showEdgeLabels"/> <label for="showNEdgeLabels">Edges</label>
+                        </div>
+                        <hr/>
+                        <div>
                             <label>Filters</label><br/> <br/>
                             <label>Min edge weight:</label> <input id="minEdgeWeight" type="text"/><br/>
                             <label>Min node weight:</label> <input id="minNodeWeight" type="text"/><br/>
@@ -330,10 +355,8 @@
 
         <ol id="data"></ol>
         <p>
-            <a href="http://www.cytoscape.org" rel="external" target="_blank">Cytoscape</a> |
-            <a href="http://tdccbr.med.utoronto.ca" rel="external" target="_blank">Donnelly CCBR</a>
-
-            , &copy; 2009
+            <a href="http://cytoscapeweb.cytoscape.org/">Cytoscape Web</a>
+            , &copy; 2010
         </p>
     </body>
     

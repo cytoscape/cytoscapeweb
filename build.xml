@@ -47,7 +47,7 @@
         </mxmlc>
     </target>
     
-    <target name="js minify">
+    <target name="js minify" depends="copy resources to bin">
         <apply executable="java" parallel="false" failonerror="true">
             <fileset dir="${js.src.dir}" includes="cytoscapeweb.js AC_OETags.js json2.js"/>
             <arg line="-jar"/>

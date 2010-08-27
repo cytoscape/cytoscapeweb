@@ -31,6 +31,7 @@ package org.cytoscapeweb.view.layout {
     import flare.physics.Particle;
     import flare.physics.Simulation;
     import flare.physics.Spring;
+    import flare.util.Maths;
     import flare.vis.data.DataList;
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
@@ -39,6 +40,9 @@ package org.cytoscapeweb.view.layout {
     import flash.geom.Point;
     import flash.utils.getTimer;
     
+    import mx.utils.StringUtil;
+    
+    import org.cytoscapeweb.util.GraphUtils;
     import org.cytoscapeweb.util.Groups;
     import org.cytoscapeweb.util.methods.$each;
     
@@ -52,17 +56,26 @@ package org.cytoscapeweb.view.layout {
      */
     public class ForceDirectedLayout extends flare.vis.operator.layout.ForceDirectedLayout {
 
+        // ========[ CONSTANTS ]====================================================================
+        
+        public static const NORMALIZED_WEIGHT:String = "normalized";
+        public static const INV_NORMALIZED_WEIGHT:String = "invnormalized";
+        public static const LOG_WEIGHT:String = "log";
+        
+        protected static const MIN_SPRING_WEIGHT:Number = 0.1;
+        protected static const MAX_SPRING_WEIGHT:Number = 1.1;
+        
         // ========[ PRIVATE PROPERTIES ]===========================================================
 
         private var _gen:uint = 0;
         private var _damping:Number = 0.1;
         private var _maxTime:uint;
         
+        private var _weightAttr:String;
+        private var _weightType:String;
+        private var _weighted:Boolean;
+        
         private var _eLengths:/*edge_id->length*/Object;
-
-        public function get edges():DataList {
-            return visualization.data.group(Groups.MERGED_EDGES);
-        }
 
         // ========[ PUBLIC PROPERTIES ]===========================================================
 
@@ -70,6 +83,13 @@ package org.cytoscapeweb.view.layout {
 
         public function get maxTime():uint { return _maxTime; }
         public function set maxTime(v:uint):void { _maxTime = Math.max(500, v); }
+        
+        /** The name of the edge attribute that contains the weights. */
+        public function get weightAttr():String { return _weightAttr; }
+        public function get weightType():String { return _weightType; }
+        public function get weighted():Boolean { return _weighted }
+        
+        public function get edges():DataList { return visualization.data.group(Groups.MERGED_EDGES); }
 
         // ========[ CONSTRUCTOR ]==================================================================
 
@@ -82,15 +102,48 @@ package org.cytoscapeweb.view.layout {
          * @param sim the physics simulation to use for the layout. If null
          *            (the default), default simulation settings will be used
          */
-        public function ForceDirectedLayout(enforceBounds:Boolean=false, 
+        public function ForceDirectedLayout(enforceBounds:Boolean=false,
                                             iterations:uint=1,
                                             maxTime:uint=60000,
                                             autoStabilize:Boolean=true,
-                                            sim:Simulation=null) {
+                                            sim:Simulation=null,
+                                            edgeWeightAttr:String=null,
+                                            edgeWeightType:String=null) {
             super(enforceBounds, iterations, sim);
             this.maxTime = maxTime;
             this.autoStabilize = autoStabilize;
+            _weightAttr = StringUtil.trim(edgeWeightAttr);
+            _weightType = StringUtil.trim(edgeWeightType).toLocaleLowerCase();
+            _weighted = _weightAttr != "";
             _eLengths = null;
+            
+            this.restLength = function(e:EdgeSprite):Number {
+                var rl:Number = defaultSpringLength;
+                if (weighted && !isNaN(e.props.springWeight)) {
+                    switch (weightType) {
+                        case INV_NORMALIZED_WEIGHT:
+                            rl /= (MIN_SPRING_WEIGHT + MAX_SPRING_WEIGHT - e.props.springWeight); break;
+                        case LOG_WEIGHT:
+                            // TODO...
+                        default: // normalized...
+                            rl /= e.props.springWeight;
+                    }
+                }
+                return Math.max(1, rl);
+            }
+            
+            this.tension = function(e:EdgeSprite):Number {
+                var t:Number = 0;
+                
+                if (!GraphUtils.isFilteredOut(e)) {
+                    var s:Spring = Spring(e.props.spring);
+                    var n:Number = Math.max(s.p1.degree, s.p2.degree);
+                    t = defaultSpringTension / Math.sqrt(n);
+                    t = Math.max(0.01, t);
+                }
+                
+                return t;
+            };
         }
         
         // ========[ PROTECTED PROPERTIES ]=========================================================
@@ -228,7 +281,12 @@ package org.cytoscapeweb.view.layout {
                 }
                 p.tag = _gen;
             });
-
+            
+            // Minimum and maximum weight values for the current edges set:
+            var minW:Number = Number.POSITIVE_INFINITY;
+            var maxW:Number = Number.NEGATIVE_INFINITY;
+            var ew:Number;
+            
             $each(edges, function(i:uint, e:EdgeSprite):void {
                 s = e.props.spring;
                 if (s == null) {
@@ -240,6 +298,14 @@ package org.cytoscapeweb.view.layout {
                 }
 
                 s.tag = _gen;
+                
+                
+                if (weighted && !GraphUtils.isFilteredOut(e)) {
+                    // Get min and max weights - filtered-in edges only!
+                    ew = e.data[weightAttr];
+                    minW = Math.min(ew, minW);
+                    maxW = Math.max(ew, maxW);
+                }
             });
             
             // set up simulation parameters
@@ -254,6 +320,13 @@ package org.cytoscapeweb.view.layout {
 
             $each(edges, function(i:uint, e:EdgeSprite):void {
                 s = e.props.spring;
+              
+                if (weighted) {
+                    // Normalize min and max weights for better visual results (always between 0 and 1):
+                    var f:Number = Maths.invLinearInterp(e.data[weightAttr], minW, maxW);
+                    e.props.springWeight  = Maths.linearInterp(f, MIN_SPRING_WEIGHT, MAX_SPRING_WEIGHT);
+                }
+                
                 if (restLength != null)
                     s.restLength = restLength(e);
                 if (tension != null)

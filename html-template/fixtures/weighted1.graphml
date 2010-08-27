@@ -1,0 +1,130 @@
+<graphml xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd" xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <key id="weight" for="node" attr.name="weight" attr.type="double"/>
+  <key id="label" for="node" attr.name="label" attr.type="string"/>
+  <key id="shape" for="node" attr.name="shape" attr.type="string">
+    <default>DIAMOND</default>
+  </key>
+  <key id="type" for="node" attr.name="type" attr.type="int">
+    <default>1</default>
+  </key>
+  <key id="network" for="edge" attr.name="network" attr.type="string">
+    <default>2</default>
+  </key>
+  <key id="weight" for="edge" attr.name="weight" attr.type="double"/>
+  <key id="label" for="edge" attr.name="label" attr.type="string"/>
+  <key id="sourceArrowShape" for="edge" attr.name="sourceArrowShape" attr.type="string"/>
+  <key id="targetArrowShape" for="edge" attr.name="targetArrowShape" attr.type="string"/>
+  <graph edgedefault="undirected">
+    <node id="a01">
+      <data key="type">2</data>
+      <data key="weight">0.45</data>
+      <data key="shape">ELLIPSE</data>
+      <data key="label">A01</data>
+    </node>
+    <node id="a02">
+      <data key="type">3</data>
+      <data key="weight">0.22</data>
+      <data key="shape">TRIANGLE</data>
+      <data key="label">A02</data>
+    </node>
+    <node id="a03">
+      <data key="type">2</data>
+      <data key="weight">0.09</data>
+      <data key="shape">OCTAGON</data>
+      <data key="label">A03</data>
+    </node>
+    <node id="a04">
+      <data key="weight">0.03</data>
+      <data key="label">A04</data>
+    </node>
+    <node id="a05">
+      <data key="weight">0.1</data>
+      <data key="shape">PARALLELOGRAM</data>
+      <data key="label">A05</data>
+    </node>
+    <node id="a06">
+      <data key="weight">0.12</data>
+      <data key="shape">ROUNDRECT</data>
+      <data key="label">A06</data>
+    </node>
+    <node id="a07">
+      <data key="weight">0.07</data>
+      <data key="shape">RECTANGLE</data>
+      <data key="label">A07</data>
+    </node>
+    <node id="a08">
+      <data key="weight">0.16</data>
+      <data key="shape">HEXAGON</data>
+      <data key="label">A08</data>
+    </node>
+    <node id="n1">
+      <data key="weight">0.6234616006258875</data>
+    </node>
+    
+    <edge id="e3" source="a01" directed="true" target="a02">
+      <data key="weight">6000</data>
+      <data key="sourceArrowShape">delta</data>
+      <data key="network">#ff0000</data>
+      <data key="label">a02 (14) a01</data>
+      <data key="targetArrowShape">T</data>
+    </edge>
+    <edge id="e4" source="a01" directed="true" target="a04">
+      <data key="weight">2000</data>
+      <data key="sourceArrowShape">circle</data>
+      <data key="network">#ff0000</data>
+      <data key="label">a01 (25) a04</data>
+      <data key="targetArrowShape">circle</data>
+    </edge>
+    <edge id="e5" source="a03" directed="true" target="a02">
+      <data key="weight">8000</data>
+      <data key="sourceArrowShape">diamond</data>
+      <data key="network">#ffff00</data>
+      <data key="label">a02 (15) a03</data>
+      <data key="targetArrowShape">circle</data>
+    </edge>
+    <edge id="e7" source="a02" target="a06">
+      <data key="weight">2000</data>
+      <data key="sourceArrowShape">none</data>
+      <data key="network">#ffff00</data>
+      <data key="label">a06 (2) a02</data>
+      <data key="targetArrowShape">none</data>
+    </edge>
+    <edge id="e8" source="a04" directed="true" target="a03">
+      <data key="weight">1000</data>
+      <data key="sourceArrowShape">diamond</data>
+      <data key="network">#ff00ff</data>
+      <data key="label">a03 (24) a04</data>
+      <data key="targetArrowShape">T</data>
+    </edge>
+    <edge id="e11" source="a01" target="a05">
+      <data key="weight">4000</data>
+      <data key="sourceArrowShape">none</data>
+      <data key="network">#ff00ff</data>
+      <data key="label">a05 (14) a01</data>
+      <data key="targetArrowShape">none</data>
+    </edge>
+    <edge id="e12" source="a07" target="a03">
+      <data key="weight">3000</data>
+      <data key="sourceArrowShape">T</data>
+      <data key="network">#ff00ff</data>
+      <data key="label">a03 (2) a07</data>
+      <data key="targetArrowShape">delta</data>
+    </edge>
+    <edge id="e13" source="a08" target="a04">
+      <data key="weight">2000</data>
+      <data key="sourceArrowShape">T</data>
+      <data key="network">#ff00ff</data>
+      <data key="label">a04 (2) a08</data>
+      <data key="targetArrowShape">T</data>
+    </edge>
+    <edge id="e14" source="a05" target="a06">
+      <data key="weight">6000</data>
+    </edge>
+    <edge id="e15" source="a07" target="a04">
+      <data key="weight">5000</data>
+    </edge>
+    <edge id="e16" source="a07" target="n1">
+      <data key="weight">7000</data>
+    </edge>
+  </graph>
+</graphml>

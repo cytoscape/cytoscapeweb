@@ -284,6 +284,7 @@
          *      maxDistance:   400,
          *      mass:          2,
          *      tension:       0.2,
+         *      weightAttr:    "weight",
          *      restLength:    100,
          *      iterations:    200,
          *      maxTime:       10000,
