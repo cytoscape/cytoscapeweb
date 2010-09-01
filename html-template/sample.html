@@ -69,7 +69,7 @@
                     	layout = { name: "Preset", options: { fitToScreen: true } };
                     } else { // GraphML or SIF
                     	if ($("#layouts").val() !== "Preset") {
-                            layout = { name: $("#layouts").val(), options: { weightAttr: "weight", weightNorm: "inverselinear", restLength: 50, autoStabilize: false } };
+                            layout = { name: $("#layouts").val(), options: { weightAttr: "weight", weightNorm: "linear", restLength: 50, autoStabilize: false } };
                         }
 					}
 
