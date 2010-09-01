@@ -1064,6 +1064,23 @@ function runGraphTests(moduleName, vis, options) {
     	});
     });
     
+    test("Get Data Schema", function() {
+    	var schema = vis.dataSchema();
+    	ok(schema.nodes.length > 0, "Empty 'nodes' schema");
+    	ok(schema.edges.length > 0, "Empty 'edges' schema");
+    	
+    	$.each(schema.nodes, function(i, df) {
+    		ok(df.name != null, "name (nodes schema)");
+    		ok(df.type != null, "type (nodes schema)");
+    		ok(df.defValue !== undefined, "defValue (nodes schema)");
+    	});
+    	$.each(schema.edges, function(i, df) {
+    		ok(df.name != null, "name (edges schema)");
+    		ok(df.type != null, "type (edges schema)");
+    		ok(df.defValue !== undefined, "defValue (edges schema)");
+    	});
+    });
+    
     test("Add Data Field", function() {
     	var all, nodes, edges, field;
     	

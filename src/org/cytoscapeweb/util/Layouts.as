@@ -70,7 +70,7 @@ package org.cytoscapeweb.util {
                 tension:     0.1,
                 restLength: "auto",
                 weightAttr: null,
-                weightType: ForceDirectedLayout.NORMALIZED_WEIGHT,
+                weightNorm: ForceDirectedLayout.NORMALIZED_WEIGHT,
                 iterations: 400,
                 maxTime:    30000, // milliseconds
                 autoStabilize: true

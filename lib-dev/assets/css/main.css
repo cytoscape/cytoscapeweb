@@ -1,0 +1,151 @@
+/*
+  This file is part of Cytoscape Web.
+  Copyright (c) 2009, The Cytoscape Consortium (www.cytoscape.org)
+
+  The Cytoscape Consortium is:
+    - Agilent Technologies
+    - Institut Pasteur
+    - Institute for Systems Biology
+    - Memorial Sloan-Kettering Cancer Center
+    - National Center for Integrative Biomedical Informatics
+    - Unilever
+    - University of California San Diego
+    - University of California San Francisco
+    - University of Toronto
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+*/
+
+.infoLabel {
+	font-family: "_sans";
+	font-size: 14;
+	color: #333333;
+}
+Application, .rawBox, .simpleBox, .panZoomBox {
+    padding-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    vertical-align: middle;
+    horizontal-align: center;
+    border-style: solid;
+    border-thickness: 0;
+}
+Application, .rawBox {
+    vertical-gap: 0;
+    horizontal-gap: 0;
+}
+Application {
+	font-family: "_sans";
+	font-size: 12;
+    background-color: #ffffff;
+    background-alpha: 1;
+    background-gradient-alphas: 1, 1;
+    font-anti-alias-type: advanced;
+    font-sharpness: -100;
+    font-thickness: 400;
+    font-grid-fit-type: pixel;
+}
+Alert {
+	color: #000000;
+    background-color: #ffffff;
+    border-color: #ffffff;
+}
+.panZoomBox, .panZoomBoxRollOver {
+    border-color: #505050;
+    border-style: solid;
+    border-thickness: 2;
+    vertical-align: middle;
+    horizontal-align: center;
+    background-alpha: 0.6;
+    background-color: #ffffff;
+    padding-left: 4;
+    padding-right: 6;
+    padding-top: 2;
+    padding-bottom: 2;
+    vertical-gap: 0;
+    horizontal-gap: 0;
+    drop-shadow-enabled: false;
+    corner-radius: 16;
+}
+.panZoomBoxRollOver {
+    background-alpha: 0.9;
+    drop-shadow-enabled: true;
+    shadow-direction: right;
+    drop-shadow-color: #666666;
+    border-color: #333333;
+}
+.panBox {
+    vertical-gap: 0;
+    horizontal-gap: 0;
+}
+.zoomBox {
+    vertical-gap: 4;
+    horizontal-gap: 4;
+}
+.panButton {
+	up-skin:   Embed(source='/assets/images/icons/pan_666666.png');
+	over-skin: Embed(source='/assets/images/icons/pan_glow.png');
+	down-skin: Embed(source='/assets/images/icons/pan_73d6ff.png');
+	selected-up-skin:   Embed(source='/assets/images/icons/pan_73d6ff.png');
+	selected-over-skin: Embed(source='/assets/images/icons/pan_73d6ff.png');
+	selected-down-skin: Embed(source='/assets/images/icons/pan_73d6ff.png');
+}
+.panUpButton {
+	up-skin: Embed(source='/assets/images/icons/arrow_u_666666.png');
+	over-skin: Embed(source='/assets/images/icons/arrow_u_glow.png');
+	down-skin: Embed(source='/assets/images/icons/arrow_u_73d6ff.png');
+}
+.panDownButton {
+	up-skin: Embed(source='/assets/images/icons/arrow_d_666666.png');
+	over-skin: Embed(source='/assets/images/icons/arrow_d_glow.png');
+	down-skin: Embed(source='/assets/images/icons/arrow_d_73d6ff.png');
+}
+.panLeftButton {
+	up-skin: Embed(source='/assets/images/icons/arrow_l_666666.png');
+	over-skin: Embed(source='/assets/images/icons/arrow_l_glow.png');
+	down-skin: Embed(source='/assets/images/icons/arrow_l_73d6ff.png');
+}
+.panRightButton {
+	up-skin: Embed(source='/assets/images/icons/arrow_r_666666.png');
+	over-skin: Embed(source='/assets/images/icons/arrow_r_glow.png');
+	down-skin: Embed(source='/assets/images/icons/arrow_r_73d6ff.png');
+}
+.zoomInButton {
+    up-skin: Embed(source='/assets/images/icons/zoom_in_666666.png');
+    over-skin: Embed(source='/assets/images/icons/zoom_in_glow.png');
+    down-skin: Embed(source='/assets/images/icons/zoom_in_73d6ff.png');
+}
+.zoomOutButton {
+    up-skin: Embed(source='/assets/images/icons/zoom_out_666666.png');
+    over-skin: Embed(source='/assets/images/icons/zoom_out_glow.png');
+    down-skin: Embed(source='/assets/images/icons/zoom_out_73d6ff.png');
+}
+.zoomFitButton {
+    up-skin: Embed(source='/assets/images/icons/zoom_fit_666666.png');
+    over-skin: Embed(source='/assets/images/icons/zoom_fit_glow.png');
+    down-skin: Embed(source='/assets/images/icons/zoom_fit_73d6ff.png');
+}
+HSlider {
+    padding-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    border-color: #505050;
+    border-thickness: 2;
+    fill-alphas: 1, 1, 1, 1;
+    fill-colors: #505050, #505050, #000000, #000000;
+    theme-color: #73d6ff;
+}

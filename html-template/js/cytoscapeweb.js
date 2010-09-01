@@ -764,6 +764,22 @@
         },
         
         /**
+         * <p>Get the network data schema, which contains all the nodes and edges data fields.</p>
+         * @example
+         * var schema = vis.dataSchema();
+         * var nodeFields = schema.nodes;
+         * var edgeFields = schema.edges;
+         * 
+         * @return {org.cytoscapeweb.DataSchema} The data schema object.
+         * @see org.cytoscapeweb.Visualization#addDataField
+         * @see org.cytoscapeweb.Visualization#removeDataField
+         * @see org.cytoscapeweb.Visualization#updateData
+         */
+        dataSchema: function () {
+            return this.swf().getDataSchema();
+        },
+        
+        /**
          * <p>Add a custom attribute definition to the current node or edge data schema.</p>
          * <p>If an attribute with the same name is already defined for the same group,
          * the attribute will not be added again or replace the previous definitions.</p>
@@ -778,28 +794,22 @@
          * 
          * @param {org.cytoscapeweb.Group} [gr] The group of network elements. If no group is passed,
          *                                      Cytoscape Web will try to add the new field to both nodes and edges data schema.
-         * @param {Object} dataField An object that contains the attribute definitions:
-         *                           <ul class="options">
-         *                               <li><code>name</code>: The name of the new data attribute.</li>
-         *                               <li><code>type</code>: The data type of the attribute. One of:
-         *                                                      <code>"string"</code>, <code>"boolean"</code>, 
-         *                                                      <code>"number"</code>, <code>"int"</code>, <code>"object"</code>.</li>
-         *                               <li><code>defValue</code>: An optional default value.</li>
-         *                           </ul>
+         * @param {org.cytoscapeweb.DataField} dataField An object that contains the attribute definitions.
          * @return {org.cytoscapeweb.Visualization} The Visualization instance.
          * @see org.cytoscapeweb.Visualization#removeDataField
          * @see org.cytoscapeweb.Visualization#updateData
+         * @see org.cytoscapeweb.Visualization#dataSchema
          */
         addDataField: function (/*gr, dataField*/) {
-            var gr, dataField, i = 0;
-            if (arguments.length > 1) { gr = arguments[i++]; }
-            dataField = arguments[i];
-            if (dataField == null) { throw("The 'dataField' object is mandatory."); }
-            if (dataField.name == null) { throw("The 'name' of the data field is mandatory."); }
-            if (dataField.type == null)  { throw("The 'type' of the data field is mandatory."); }
-            gr = this._normalizeGroup(gr);
-            this.swf().addDataField(gr, dataField);
-            return this;
+        	var gr, dataField, i = 0;
+        	if (arguments.length > 1) { gr = arguments[i++]; }
+        	dataField = arguments[i];
+        	if (dataField == null) { throw("The 'dataField' object is mandatory."); }
+        	if (dataField.name == null) { throw("The 'name' of the data field is mandatory."); }
+        	if (dataField.type == null)  { throw("The 'type' of the data field is mandatory."); }
+        	gr = this._normalizeGroup(gr);
+        	this.swf().addDataField(gr, dataField);
+        	return this;
         },
         
         /**
@@ -824,6 +834,7 @@
          * @return {org.cytoscapeweb.Visualization} The Visualization instance.
          * @see org.cytoscapeweb.Visualization#addDataField
          * @see org.cytoscapeweb.Visualization#updateData
+         * @see org.cytoscapeweb.Visualization#dataSchema
          */
         removeDataField: function (/*gr, name*/) {
             var gr, name, i = 0;
@@ -897,6 +908,7 @@
          * @return {org.cytoscapeweb.Visualization} The Visualization instance.
          * @see org.cytoscapeweb.Visualization#addDataField
          * @see org.cytoscapeweb.Visualization#removeDataField
+         * @see org.cytoscapeweb.Visualization#dataSchema
          */
         updateData: function (/*gr, items, data*/) {
             var gr, items, data;
@@ -1934,7 +1946,7 @@
          */
         this.mouseY = options.mouseY;
     };
-
+    
     // ===[ Node ]==================================================================================
      
     /**
@@ -2235,6 +2247,12 @@
      *                                                   of <code>iterations</code>, until each edge length seems constant or until the 
      *                                                   <code>maxTime</code> is reached. Set <code>false</code> if you think the results
      *                                                   look worse than expected, or if the layout is taking too long to execute.</li>
+     *         <li><code>weightAttr</code> {String}: The name of the edge attribute that contains the weights.
+     *                                               The default value is <code>null</code>, which means that the layout is unweighted.
+     *                                               If you want to generate an edge-weighted layout, you just need to specify the attribute name.
+     *         <li><code>weightNorm</code> {String}: The normalization method that is applied to the weight values when using a weighted layout.
+     *                                               Possible values are: <code>"linear"</code>, <code>"inverselinear"</code> and <code>"log"</code>.
+     *                                               The default value is <code>"linear"</code>.
      *     </ul>
      * <li><b>Circle:</b></li>
      *     <ul class="options">
@@ -2699,6 +2717,58 @@
      * @name stackTrace
      * @type String
      * @memberOf org.cytoscapeweb.Error#
+     */
+
+    // ===[ Data Schema ]==================================================================================
+    
+    /**
+     * <p>This is an untyped object that represents a Data Schema type.</p>
+     * <p>A data schema is automatically created when a network is loaded into Cytoscape Web,
+     *    and cannot be created programatically through the API.
+     *    However you can use the {@link org.cytoscapeweb.Visualization#addDataField} and
+     *    {@link org.cytoscapeweb.Visualization#removeDataField} methods to change the current schema.</p>
+     * <p>A data schema has two attributes:</p>
+     * <ul class="options">
+     *     <li><code>nodes</code> {Array}</li>
+     *     <li><code>edges</code> {Array}</li></ul>
+     * <p>Those are arrays of {@link org.cytoscapeweb.DataField} objects:</p>
+     * 
+     * @example
+     * var schema = {
+     *     nodes: [
+     *         { name: "id",    type: "string" },
+     *         { name: "label", type: "string" }
+     *     ],
+     *     edges: [
+     *         { name: "id",     type: "string" },
+     *         { name: "weight", type: "number", defValue: 0.5 }
+     *     ]
+     * };
+     * @class
+     * @name DataSchema
+     * @type Object
+     * @memberOf org.cytoscapeweb
+     * @see org.cytoscapeweb.Visualization#dataSchema
+     * @see org.cytoscapeweb.DataField
+     */
+    
+    /**
+     * <p>This untyped object represents a Data Field, which is a node or edge attribute definition.</p>
+     * <p>A data field object contains the following properties:</p>
+     * <ul class="options">
+	 * 	   <li><code>name</code>: The name of the data attribute.</li>
+	 *     <li><code>type</code>: The data type of the attribute. One of:
+	 *         <code>"string"</code>, <code>"boolean"</code>, <code>"number"</code>, <code>"int"</code>, <code>"object"</code>.</li>
+	 *     <li><code>defValue</code>: An optional default value.</li>
+	 * </ul>
+     * @class
+     * @name DataField
+     * @type Object
+     * @memberOf org.cytoscapeweb
+     * @see org.cytoscapeweb.Visualization#addDataField
+     * @see org.cytoscapeweb.Visualization#removeDataField
+     * @see org.cytoscapeweb.Visualization#dataSchema
+     * @see org.cytoscapeweb.DataSchema
      */
     
     // ===[ Fake Enum Types ]=======================================================================

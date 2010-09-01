@@ -29,6 +29,7 @@
 */
 package org.cytoscapeweb.view {
 	import flash.display.BitmapData;
+	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
@@ -249,6 +250,8 @@ package org.cytoscapeweb.view {
 		
 		private function onApplicationComplete(evt:FlexEvent):void {
 		    // KEY BINDINGS:
+		    application.stage.addEventListener(Event.DEACTIVATE, onDeactivate);
+            application.stage.addEventListener(Event.ACTIVATE, onActivate);
             application.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, false, 0, true);
 		    
             // Listeners to drag the PAN ZOOM control:
@@ -258,7 +261,7 @@ package org.cytoscapeweb.view {
             panZoomBox.addEventListener(MouseEvent.ROLL_OUT, onRollOutPanZoom, false, 0, true);
             panZoomBox.addEventListener(DragEvent.DRAG_COMPLETE, onDragCompletePanZoom, false, 0, true);
 
-            application.stage.focus = panZoomBox;
+            application.stage.focus = graphView;
             
             // Tell the client application that Cytoscape Web is ready:
             sendNotification(ApplicationFacade.CALL_EXTERNAL_INTERFACE, { functionName: ExternalFunctions.COMPLETE });
@@ -278,6 +281,14 @@ package org.cytoscapeweb.view {
     		    graphView.visible = true;
     		}
 		}
+        
+        private function onActivate(evt:Event):void {
+            sendNotification(ApplicationFacade.ACTIVATE_EVENT);
+        }
+        
+        private function onDeactivate(evt:Event):void {
+            sendNotification(ApplicationFacade.DEACTIVATE_EVENT);
+        }
         
         private function onKeyDown(evt:KeyboardEvent):void {
             var panX:Number = 0; var panY:Number = 0;

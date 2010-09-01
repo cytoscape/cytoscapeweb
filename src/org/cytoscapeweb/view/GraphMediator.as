@@ -141,7 +141,9 @@ package org.cytoscapeweb.view {
         
         /** @inheritDoc */
         override public function listNotificationInterests():Array {
-            return [ApplicationFacade.PAN_GRAPH,
+            return [ApplicationFacade.ACTIVATE_EVENT,
+                    ApplicationFacade.DEACTIVATE_EVENT,
+                    ApplicationFacade.PAN_GRAPH,
                     ApplicationFacade.ENABLE_GRAB_TO_PAN,
                     ApplicationFacade.CENTER_GRAPH];
         }
@@ -149,6 +151,10 @@ package org.cytoscapeweb.view {
         /** @inheritDoc */
         override public function handleNotification(note:INotification):void {
             switch (note.getName()) {
+                case ApplicationFacade.DEACTIVATE_EVENT:
+                    if (_ctrlDown)
+                        graphView.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_UP, true, false, 0, Keyboard.CONTROL));
+                    break;
                 case ApplicationFacade.ENABLE_GRAB_TO_PAN:
                     updateCursor();
                     break;
@@ -389,11 +395,12 @@ package org.cytoscapeweb.view {
         
         // VIEW listener functions:
         // -----------------------------------------------------------------------------------------
-        private function onKeyDown(evt:KeyboardEvent):void { trace("* Key DOWN :: " + evt.keyCode);
+        private function onKeyDown(evt:KeyboardEvent):void { trace("* Key DOWN :: " + evt.keyCode + "/" + evt.charCode);
             var dirty:Boolean = _isMouseOverView || _selecting || _draggingGraph;
             
             if (evt.keyCode === Keyboard.CONTROL) {
                 _ctrlDown = true;
+                
                 if (dirty)
                     updateCursor();
                 if (graphProxy.rolledOverNode != null)
@@ -404,7 +411,7 @@ package org.cytoscapeweb.view {
             }
         }
         
-        private function onKeyUp(evt:KeyboardEvent):void { trace("* Key UP :: " + evt.keyCode);
+        private function onKeyUp(evt:KeyboardEvent):void { trace("* Key UP :: " + evt.keyCode + "/" + evt.charCode);
             if (evt.keyCode === Keyboard.CONTROL) {
                 _ctrlDown = false;
                 if (_isMouseOverView) updateCursor();

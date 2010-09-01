@@ -58,8 +58,8 @@ package org.cytoscapeweb.view.layout {
 
         // ========[ CONSTANTS ]====================================================================
         
-        public static const NORMALIZED_WEIGHT:String = "normalized";
-        public static const INV_NORMALIZED_WEIGHT:String = "invnormalized";
+        public static const NORMALIZED_WEIGHT:String = "linear";
+        public static const INV_NORMALIZED_WEIGHT:String = "inverselinear";
         public static const LOG_WEIGHT:String = "log";
         
         protected static const MIN_SPRING_WEIGHT:Number = 0.1;
@@ -72,7 +72,7 @@ package org.cytoscapeweb.view.layout {
         private var _maxTime:uint;
         
         private var _weightAttr:String;
-        private var _weightType:String;
+        private var _weightNormalization:String;
         private var _weighted:Boolean;
         
         private var _eLengths:/*edge_id->length*/Object;
@@ -86,7 +86,7 @@ package org.cytoscapeweb.view.layout {
         
         /** The name of the edge attribute that contains the weights. */
         public function get weightAttr():String { return _weightAttr; }
-        public function get weightType():String { return _weightType; }
+        public function get weightNormalization():String { return _weightNormalization; }
         public function get weighted():Boolean { return _weighted }
         
         public function get edges():DataList { return visualization.data.group(Groups.MERGED_EDGES); }
@@ -108,19 +108,19 @@ package org.cytoscapeweb.view.layout {
                                             autoStabilize:Boolean=true,
                                             sim:Simulation=null,
                                             edgeWeightAttr:String=null,
-                                            edgeWeightType:String=null) {
+                                            edgeWeightNormalization:String=null) {
             super(enforceBounds, iterations, sim);
             this.maxTime = maxTime;
             this.autoStabilize = autoStabilize;
             _weightAttr = StringUtil.trim(edgeWeightAttr);
-            _weightType = StringUtil.trim(edgeWeightType).toLocaleLowerCase();
+            _weightNormalization = StringUtil.trim(edgeWeightNormalization).toLocaleLowerCase();
             _weighted = _weightAttr != "";
             _eLengths = null;
             
             this.restLength = function(e:EdgeSprite):Number {
                 var rl:Number = defaultSpringLength;
                 if (weighted && !isNaN(e.props.springWeight)) {
-                    switch (weightType) {
+                    switch (edgeWeightNormalization) {
                         case INV_NORMALIZED_WEIGHT:
                             rl /= (MIN_SPRING_WEIGHT + MAX_SPRING_WEIGHT - e.props.springWeight); break;
                         case LOG_WEIGHT:

@@ -104,6 +104,8 @@ package org.cytoscapeweb {
         public static const DOUBLE_CLICK_EVENT:String = "double_click_event";
         public static const ROLLOVER_EVENT:String = "rollover_event";
         public static const ROLLOUT_EVENT:String = "rollout_event";
+        public static const ACTIVATE_EVENT:String = "activate_event";
+        public static const DEACTIVATE_EVENT:String = "deactivate_event";
         
         public static const GRAPH_DRAWN:String = "graph_drawn";
         public static const GRAPH_DATA_CHANGED:String = "graph_data_changed";

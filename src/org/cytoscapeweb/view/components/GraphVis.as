@@ -450,9 +450,10 @@ package org.cytoscapeweb.view.components {
                 var maxTime:uint = options.maxTime;
                 var autoStab:Boolean = options.autoStabilize;
                 var weightAttr:String = options.weightAttr;
+                var weightNorm:String = options.weightNorm;
                 var sim:Simulation = new Simulation();
                 
-        		var fdl:ForceDirectedLayout = new ForceDirectedLayout(true, iter, maxTime, autoStab, sim, weightAttr);
+        		var fdl:ForceDirectedLayout = new ForceDirectedLayout(true, iter, maxTime, autoStab, sim, weightAttr, weightNorm);
                 //fdl.ticksPerIteration = 1,
                 fdl.simulation.dragForce.drag = options.drag;
                 fdl.simulation.nbodyForce.gravitation = options.gravitation;

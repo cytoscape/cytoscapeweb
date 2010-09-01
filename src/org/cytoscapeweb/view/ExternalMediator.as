@@ -30,6 +30,8 @@
 package org.cytoscapeweb.view {
     import com.adobe.serialization.json.JSON;
     
+    import flare.data.DataField;
+    import flare.data.DataUtil;
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
     
@@ -398,6 +400,31 @@ package org.cytoscapeweb.view {
                              { group: group, items: items, updateVisualMappers: updateVisualMappers });
         }
         
+        private function getDataSchema():Object {
+            var obj:Object = { nodes: [], edges: [] };
+            
+            var convert:Function = function(input:Array, output:Array):void {
+                for each (var df:DataField in input) {
+                    var type:* = df.type;
+                    switch (type) {
+                        case DataUtil.BOOLEAN: type = "boolean"; break;
+                        case DataUtil.INT:     type = "int";     break;
+                        case DataUtil.NUMBER:  type = "number";  break;
+                        case DataUtil.STRING:  type = "string";  break;
+                        case DataUtil.OBJECT:
+                        default:               type = "object";
+                    }
+                    
+                    output.push({ name: df.name, type: type, defValue: df.defaultValue });
+                }
+            };
+            
+            convert(graphProxy.nodesSchema.fields, obj.nodes);
+            convert(graphProxy.edgesSchema.fields, obj.edges);
+            
+            return obj;
+        }
+        
         private function addDataField(group:String, dataField:Object):void {
             sendNotification(ApplicationFacade.ADD_DATA_FIELD, { group: group, dataField: dataField });
         }
@@ -456,7 +483,7 @@ package org.cytoscapeweb.view {
                                         "setVisualStyle", "getVisualStyle", 
                                         "getVisualStyleBypass", "setVisualStyleBypass",
                                         "addNode", "addEdge", "removeElements",
-                                        "addDataField", "removeDataField", "updateData",
+                                        "getDataSchema", "addDataField", "removeDataField", "updateData",
                                         "getNetworkAsText", "getNetworkAsImage", 
                                         "exportNetwork" ];
 
