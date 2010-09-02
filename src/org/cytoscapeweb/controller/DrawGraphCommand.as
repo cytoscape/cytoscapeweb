@@ -58,6 +58,8 @@ package org.cytoscapeweb.controller {
                     configProxy.edgeLabelsVisible = options.edgeLabelsVisible;
                 if (options.panZoomControlVisible != null)
                     configProxy.panZoomControlVisible = options.panZoomControlVisible;
+                if (options.mouseDownToDragDelay != null)
+                    configProxy.mouseDownToDragDelay = options.mouseDownToDragDelay;
                 
                 graphProxy.loadGraph(options.network, configProxy.currentLayout);
                 

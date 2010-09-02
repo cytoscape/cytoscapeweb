@@ -58,6 +58,7 @@ package org.cytoscapeweb.view.controls {
         
         private var _r:Rectangle = new Rectangle();
         private var _drag:Boolean = false;
+        private var _enabled:Boolean = true;
         private var _shape:Shape = new Shape();
         private var _hit:InteractiveObject;
         private var _stage:Stage;
@@ -87,6 +88,14 @@ package org.cytoscapeweb.view.controls {
          * selections are causing any performance issues. 
          */
         public var fireImmediately:Boolean = true;
+        
+        public function get enabled():Boolean {
+            return _enabled;
+        }
+        public function set enabled(val:Boolean):void {
+            _enabled = val;
+            if (!_enabled) stopSelection();
+        }
         
         /** Line color of the selection region border. */
         public var lineColor:uint = 0x8888FF;
@@ -168,8 +177,9 @@ package org.cytoscapeweb.view.controls {
         }
         
         private function onRemove(evt:Event=null):void {
-            if (_hit)
+            if (_hit) {
                 _hit.removeEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
+            }
         }
                 
         private function mouseDown(evt:MouseEvent):void {
@@ -185,18 +195,21 @@ package org.cytoscapeweb.view.controls {
             
             DisplayObjectContainer(_object).addChild(_shape);
             renderShape(_shape.graphics);
-            if (fireImmediately) {
-                selectionTest(evt);
-            } else if (!evt.shiftKey) {
-                // ALTERED: if SHIFT key is not pressed, it should reset everything first:
-                _rem = _add = null;
-                _rem0 = _add0 = null;
-                _sel = new Dictionary();
+            
+            if (_enabled) {
+                if (fireImmediately) {
+                    selectionTest(evt);
+                } else if (!evt.shiftKey) {
+                    // ALTERED: if SHIFT key is not pressed, it should reset everything first:
+                    _rem = _add = null;
+                    _rem0 = _add0 = null;
+                    _sel = new Dictionary();
+                }
             }
         }
         
         private function mouseMove(evt:MouseEvent):void {
-            if (!_drag) return;
+            if (!enabled || !_drag || _object == null) return;
             _r.width = _object.mouseX - _r.x;
             _r.height = _object.mouseY - _r.y;
             
@@ -207,20 +220,31 @@ package org.cytoscapeweb.view.controls {
         }
         
         private function mouseUp(evt:MouseEvent):void {
+            if (!enabled) return;
             if (!fireImmediately)
                 selectionTest(evt);
+            stopSelection();
+        }
+        
+        private function stopSelection():void {
+            if (_drag) {
+                DisplayObjectContainer(_object).removeChild(_shape);
+            }
+            if (_stage != null) {
+                _stage.removeEventListener(MouseEvent.MOUSE_UP, mouseUp);
+                _stage.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMove);
+            }
             _drag = false;
-            DisplayObjectContainer(_object).removeChild(_shape);
-            _stage.removeEventListener(MouseEvent.MOUSE_UP, mouseUp);
-            _stage.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMove);
         }
         
         private function renderShape(g:Graphics):void {
             g.clear();
-            g.beginFill(fillColor, fillAlpha);
-            g.lineStyle(lineWidth, lineColor, lineAlpha, true, "none");
-            g.drawRect(_r.x, _r.y, _r.width, _r.height);
-            g.endFill();
+            if (_enabled) {
+                g.beginFill(fillColor, fillAlpha);
+                g.lineStyle(lineWidth, lineColor, lineAlpha, true, "none");
+                g.drawRect(_r.x, _r.y, _r.width, _r.height);
+                g.endFill();
+            }
         }
         
         private function selectionTest(evt:MouseEvent):void {           

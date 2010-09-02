@@ -68,11 +68,13 @@ package org.cytoscapeweb.util {
                 maxDistance: 10000,
                 mass:        3,
                 tension:     0.1,
-                restLength: "auto",
-                weightAttr: null,
-                weightNorm: ForceDirectedLayout.NORMALIZED_WEIGHT,
-                iterations: 400,
-                maxTime:    30000, // milliseconds
+                restLength:  "auto",
+                weightAttr:  null,
+                weightNorm:  ForceDirectedLayout.NORMALIZED_WEIGHT,
+                minWeight:   undefined,
+                maxWeight:   undefined,
+                iterations:  400,
+                maxTime:     30000, // milliseconds
                 autoStabilize: true
             },
             Preset: {

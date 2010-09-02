@@ -138,30 +138,13 @@ package org.cytoscapeweb.view {
         // ========[ PRIVATE METHODS ]==============================================================
 
         private function onComplete(evt:Event):void {
-            panZoomBox.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, false, 0, true);
-            panZoomBox.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false, 0, true);
-        }
-
-        private function onKeyDown(evt:KeyboardEvent):void {
-            if (evt.keyCode === Keyboard.CONTROL)
-                panZoomBox.panButton.selected = true;
-        }
-        
-        private function onKeyUp(evt:KeyboardEvent):void {
-            if (!configProxy.grabToPanEnabled && evt.keyCode === Keyboard.CONTROL)
-                panZoomBox.panButton.selected = false;
+            // Initialization stuff here...
         }
 
 	    private function onPanToggleClick(e:MouseEvent):void {
             e.stopImmediatePropagation();
             var bt:Button = e.target as Button;
-            
-	    	if (!e.ctrlKey) {
-                sendNotification(ApplicationFacade.ENABLE_GRAB_TO_PAN, bt.selected);
-            } else {
-                // Just keep the correct button state...
-                bt.selected = configProxy.grabToPanEnabled || !bt.selected;
-            }
+            sendNotification(ApplicationFacade.ENABLE_GRAB_TO_PAN, bt.selected);
 	    }
 	    
 	    private function onPanMouseDown(e:Event):void {

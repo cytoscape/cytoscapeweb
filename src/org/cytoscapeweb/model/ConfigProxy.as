@@ -192,6 +192,14 @@ package org.cytoscapeweb.model {
         public function set maxZoom(value:Number):void {
             config.maxZoom = value;
         }
+        
+        public function get mouseDownToDragDelay():Number {
+            return config.mouseDownToDragDelay;
+        }
+        
+        public function set mouseDownToDragDelay(value:Number):void {
+            config.mouseDownToDragDelay = value;
+        }
 
         // ========[ CONSTRUCTOR ]==================================================================
 

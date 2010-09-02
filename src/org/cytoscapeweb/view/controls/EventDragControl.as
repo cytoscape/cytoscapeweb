@@ -122,7 +122,6 @@ package org.cytoscapeweb.view.controls {
 	            event.stopPropagation();
 	            
 	        }
-	        
 	    }
 	    
 	    private function _onDrag(event:Event) : void {

@@ -53,6 +53,7 @@ package org.cytoscapeweb.model.data {
         public var currentLayout:Object;
         public var minZoom:Number = 0.002;
         public var maxZoom:Number = 3;
+        public var mouseDownToDragDelay:Number = 400;
         
         // ========[ CONSTRUCTOR ]==================================================================
         

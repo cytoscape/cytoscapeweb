@@ -112,6 +112,15 @@
      *                                              by a number, so if the application has two instances of the Visualization in the same page,
      *                                              their id's will be "cytoscapeWeb1" and "cytoscapeWeb2".
      *                                              This token does not usually need to be changed.</li>
+     *                    <li><code>mouseDownToDragDelay</code>: If the user clicks (mouse-down) the background and hold if for a while,
+     *                                                           Cytoscape Web temporarily changes to grab-to-pan mode, so the user can drag the whole network.
+     *                                                           If the user do the same over a node, the grab-to-pan mode can be activated as well,
+     *                                                           but dragging the node will drag the node's disconnected component only,
+     *                                                           not necessarily the whole network--if there are other disconnected parts, they will not be dragged.
+     *                                                           This parameter lets you set the time (in milliseconds) Cytoscape Web should wait before changing modes.
+     *                                                           The default value is <code>400</code>.
+     *                                                           If this parameter is set to <code>-1</code>, Cytoscape Web will never activate the grab-to-pan mode
+     *                                                           automatically, but users can still use the grab-to-pan option from the pan-zoom control.</li>
      *                </ul>
      * @return {org.cytoscapeweb.Visualization} The Visualization instance.
      * @see org.cytoscapeweb.Visualization#draw
@@ -2249,10 +2258,16 @@
      *                                                   look worse than expected, or if the layout is taking too long to execute.</li>
      *         <li><code>weightAttr</code> {String}: The name of the edge attribute that contains the weights.
      *                                               The default value is <code>null</code>, which means that the layout is unweighted.
-     *                                               If you want to generate an edge-weighted layout, you just need to specify the attribute name.
+     *                                               If you want to generate an edge-weighted layout, you just need to provide the name of the data attribute that should be used as weight.</li>
      *         <li><code>weightNorm</code> {String}: The normalization method that is applied to the weight values when using a weighted layout.
      *                                               Possible values are: <code>"linear"</code>, <code>"inverselinear"</code> and <code>"log"</code>.
-     *                                               The default value is <code>"linear"</code>.
+     *                                               The default value is <code>"linear"</code>.</li>
+     *         <li><code>minWeight</code> {Number}: The minimum edge weight to consider, if the layout is set to be weighted.
+     *                                              Do not specify any value if you want the layout to get the minimum weight from the rendered edges data (filtered-out edges are ignored).
+     *                                              Any edge with a weight bellow the minimum will be considered to have the minimum weight.</li>
+     *         <li><code>maxWeight</code> {Number}: The maximum edge weight to consider, if the layout is set to be weighted.
+     *                                              Do not specify any value if you want the layout to get the maximum weight from the rendered edges data (filtered-out edges are ignored).
+     *                                              Any edge with a weight above the maximum will be considered to have the maximum weight.</li>
      *     </ul>
      * <li><b>Circle:</b></li>
      *     <ul class="options">

@@ -372,7 +372,7 @@ package org.cytoscapeweb.view {
             // roll out the Flash player area and then over again.
             // That happens when the plus cursor is being displayed.
             if (!_isCustomCursor) Mouse.show();
-            // The user might have pressed or released a SHIFT or CTRL key while the mouse
+            // The user might have pressed or released the SHIFT key while the mouse
             // was out of the application area:
             updateCursor(_cursorOptions);
             sendNotification(ApplicationFacade.ROLLOVER_EVENT);
@@ -469,16 +469,15 @@ package org.cytoscapeweb.view {
             if (options == null) options = {};
             if (!_overApp || options.selecting) return;
             
-            if (options.draggingGraph) {
+            if (options.draggingGraph || options.draggingComponent) {
                 showClosedHandCursor();
                 _isCustomCursor = true;
             } else {
                 hideClosedHandCursor();
 
                 if ( !_overPanZoom &&
-                     (options.ctrlDown || (configProxy.grabToPanEnabled && 
-                                           graphProxy.rolledOverNode == null && 
-                                           graphProxy.rolledOverEdge == null)) ) {
+                     configProxy.grabToPanEnabled && 
+                     graphProxy.rolledOverNode == null && graphProxy.rolledOverEdge == null ) {
                     showOpenedHandCursor();
                     _isCustomCursor = true;
                 } else {

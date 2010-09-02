@@ -41,7 +41,9 @@ package org.cytoscapeweb.view {
     import flash.display.DisplayObject;
     import flash.events.KeyboardEvent;
     import flash.events.MouseEvent;
+    import flash.events.TimerEvent;
     import flash.ui.Keyboard;
+    import flash.utils.Timer;
     
     import org.cytoscapeweb.ApplicationFacade;
     import org.cytoscapeweb.events.DragEvent;
@@ -73,9 +75,10 @@ package org.cytoscapeweb.view {
         private var _isMouseOverView:Boolean;
         private var _draggingNode:Boolean;
         private var _draggingGraph:Boolean;
+        private var _draggingComponent:Boolean;
         private var _selecting:Boolean;
-        private var _ctrlDown:Boolean;
         private var _shiftDown:Boolean;
+        private var _dragAllTimer:Timer;
         
         private var _dragControl:EventDragControl;
         
@@ -102,7 +105,8 @@ package org.cytoscapeweb.view {
                 setStyleToSelectionControl(configProxy.visualStyle);
                 // It is important to attach it here, or the first attempt to use the
                 // drag-selection will not work:
-                selectionControl.attach(graphView);
+                _selectionControl.attach(graphView);
+                _selectionControl.enabled = false;
             }
             
             return _selectionControl;
@@ -110,6 +114,10 @@ package org.cytoscapeweb.view {
         
         private function get _graphScale():Number {
             return vis.scaleX;
+        }
+        
+        private function get dragging():Boolean {
+            return _draggingGraph || _draggingComponent || _draggingNode;
         }
    
         // ========[ PUBLIC PROPERTIES ]============================================================
@@ -141,9 +149,7 @@ package org.cytoscapeweb.view {
         
         /** @inheritDoc */
         override public function listNotificationInterests():Array {
-            return [ApplicationFacade.ACTIVATE_EVENT,
-                    ApplicationFacade.DEACTIVATE_EVENT,
-                    ApplicationFacade.PAN_GRAPH,
+            return [ApplicationFacade.PAN_GRAPH,
                     ApplicationFacade.ENABLE_GRAB_TO_PAN,
                     ApplicationFacade.CENTER_GRAPH];
         }
@@ -151,10 +157,6 @@ package org.cytoscapeweb.view {
         /** @inheritDoc */
         override public function handleNotification(note:INotification):void {
             switch (note.getName()) {
-                case ApplicationFacade.DEACTIVATE_EVENT:
-                    if (_ctrlDown)
-                        graphView.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_UP, true, false, 0, Keyboard.CONTROL));
-                    break;
                 case ApplicationFacade.ENABLE_GRAB_TO_PAN:
                     updateCursor();
                     break;
@@ -341,7 +343,7 @@ package org.cytoscapeweb.view {
             graphView.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, false, 0, true);
             graphView.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false, 0, true);
             // 2. DRAG the whole graph:
-            graphView.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDownView, false, 0, true);
+            graphView.stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDownView, false, 0, true);
             // 3. 2-Click:
             graphView.addEventListener(MouseEvent.DOUBLE_CLICK, onDoubleClickView, false, 0, true);
             
@@ -396,27 +398,15 @@ package org.cytoscapeweb.view {
         // VIEW listener functions:
         // -----------------------------------------------------------------------------------------
         private function onKeyDown(evt:KeyboardEvent):void { trace("* Key DOWN :: " + evt.keyCode + "/" + evt.charCode);
-            var dirty:Boolean = _isMouseOverView || _selecting || _draggingGraph;
-            
-            if (evt.keyCode === Keyboard.CONTROL) {
-                _ctrlDown = true;
-                
-                if (dirty)
-                    updateCursor();
-                if (graphProxy.rolledOverNode != null)
-                    vis.showDragRectangle(graphProxy.rolledOverNode);
-            } else if (evt.keyCode === Keyboard.SHIFT) {
+            if (evt.keyCode === Keyboard.SHIFT) {
                 _shiftDown = true;
-                if (!_ctrlDown && dirty) updateCursor();
+                var dirty:Boolean = _isMouseOverView || _selecting || dragging;
+                if (dirty) updateCursor();
             }
         }
         
         private function onKeyUp(evt:KeyboardEvent):void { trace("* Key UP :: " + evt.keyCode + "/" + evt.charCode);
-            if (evt.keyCode === Keyboard.CONTROL) {
-                _ctrlDown = false;
-                if (_isMouseOverView) updateCursor();
-                vis.hideDragRectangle();
-            } else if (evt.keyCode === Keyboard.SHIFT) {
+            if (evt.keyCode === Keyboard.SHIFT) {
                 _shiftDown = false;
                 if (_isMouseOverView) updateCursor();
             }
@@ -429,27 +419,32 @@ package org.cytoscapeweb.view {
         
         private function onRollOutView(evt:MouseEvent):void { trace(">>>> Roll OUT [View]");
             _isMouseOverView = false;
-            if (!_selecting && !_draggingNode && !_draggingGraph)
+            if (!_selecting && !dragging)
                 sendNotification(ApplicationFacade.UPDATE_CURSOR);
         }
         
         private function onMouseDownView(evt:MouseEvent):void { trace("* Mouse DOWN [View]");
-            if (_ctrlDown || (configProxy.grabToPanEnabled && graphProxy.rolledOverEdge == null)) {
-                // PANNING the whole graph...
-                _draggingGraph = true;
-                updateCursor();
-
-                // Remove other actions that should not occur when panning:
-                selectionControl.detach();
-                
-                vis.startDrag();
-                graphView.addEventListener(MouseEvent.MOUSE_UP, onMouseUpToStopPanning, false, 0, true);
+            if (configProxy.grabToPanEnabled && graphProxy.rolledOverEdge == null) {
+                // DRAGGING the whole graph...
+                startDragGraph();
             } else if (!configProxy.grabToPanEnabled) {
+                if (configProxy.mouseDownToDragDelay >= 0) {
+                    _dragAllTimer = new Timer(configProxy.mouseDownToDragDelay, 1);
+                    _dragAllTimer.addEventListener(TimerEvent.TIMER, function(te:TimerEvent):void {
+                       if (!_selecting) { trace("* Hold Mouse DOWN - will drag...");
+                           graphView.stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUpToDeselect);
+                           graphView.stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUpToClick);
+                           graphView.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onDragSelectionStart);
+                           startDragGraph();
+                       }
+                    });
+                    _dragAllTimer.start();
+                }
+                
                 // DRAG-SELECTION...
                 updateCursor();
             	// Add the SELECTION CONTROL again:
-                selectionControl.detach();
-                selectionControl.attach(vis);
+                selectionControl.enabled = !dragging;
 	
             	if (_shiftDown) {
             		// If SHIFT is pressed, add selected nodes to the selection group, thus
@@ -459,31 +454,32 @@ package org.cytoscapeweb.view {
             		    // TODO: filter edges OR nodes based on config param
             			return d is DataSprite && !DataSprite(d).props.$selected;
             		}
-            	} else if (graphProxy.rolledOverEdge == null) {
+            	} else if (!dragging && graphProxy.rolledOverEdge == null) {
             		// TODO: edges OR nodes based on config param
             		selectionControl.filter = DataSprite;
-            		graphView.addEventListener(MouseEvent.MOUSE_UP, onMouseUpToDeselect, false, 0, true);
+            		graphView.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUpToDeselect, false, 0, true);
             	}
 
-                graphView.addEventListener(MouseEvent.MOUSE_UP, onMouseUpToClick, false, 0, true);
-                graphView.addEventListener(MouseEvent.MOUSE_MOVE, onDragSelectionStart, false, 0, true);
+                graphView.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUpToClick, false, 0, true);
+                graphView.stage.addEventListener(MouseEvent.MOUSE_MOVE, onDragSelectionStart, false, 0, true);
             }
         }
         
         private function onMouseUpToClick(evt:MouseEvent):void { trace("* Mouse UP / CLICK [View]");
             evt.currentTarget.removeEventListener(evt.type, arguments.callee);
+            if (_dragAllTimer != null && _dragAllTimer.running) _dragAllTimer.stop();
+            graphView.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onDragSelectionStart);
             sendNotification(ApplicationFacade.CLICK_EVENT, { mouseX: evt.stageX, mouseY: evt.stageY });
         }
         
         private function onMouseUpToDeselect(evt:MouseEvent):void { trace("* Mouse UP / Deselect all [View]");
             evt.currentTarget.removeEventListener(evt.type, arguments.callee);
-            graphView.removeEventListener(MouseEvent.MOUSE_MOVE, onDragSelectionStart);
             sendNotification(ApplicationFacade.DESELECT_ALL, Groups.NONE);
         }
         
         private function onMouseUpToStopPanning(evt:MouseEvent):void { trace("* Mouse UP / STOP PANNING [View]");
             evt.currentTarget.removeEventListener(evt.type, arguments.callee);
-            graphView.removeEventListener(MouseEvent.MOUSE_MOVE, onDragSelectionStart);
+            graphView.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onDragSelectionStart);
             vis.stopDrag();
             _draggingGraph = false;
             if (_isMouseOverView) updateCursor();
@@ -500,9 +496,10 @@ package org.cytoscapeweb.view {
         
         private function onDragSelectionStart(evt:MouseEvent):void { trace("* Drag Selection START [View]");
             evt.currentTarget.removeEventListener(evt.type, arguments.callee);
-            graphView.addEventListener(MouseEvent.MOUSE_UP, onDragSelectionEnd, false, 0, true);
-            graphView.removeEventListener(MouseEvent.MOUSE_UP, onMouseUpToDeselect);
-            graphView.removeEventListener(MouseEvent.MOUSE_UP, onMouseUpToClick);
+            if (_dragAllTimer != null && _dragAllTimer.running) _dragAllTimer.stop();
+            graphView.stage.addEventListener(MouseEvent.MOUSE_UP, onDragSelectionEnd, false, 0, true);
+            graphView.stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUpToDeselect);
+            graphView.stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUpToClick);
 
             // If SHIFT key is pressed, keep the previously selected elements.
             // Otherwise, deselect everything first:
@@ -520,7 +517,7 @@ package org.cytoscapeweb.view {
         // NODE listener functions:
         // -----------------------------------------------------------------------------------------
         private function onRollOverNode(evt:MouseEvent):void {
-            if (_draggingNode || _draggingGraph || _selecting) return;
+            if (_draggingNode || dragging || _selecting) return;
 
             var n:NodeSprite = evt.target as NodeSprite;
             n.addEventListener(MouseEvent.ROLL_OUT, onRollOutNode, false, 0, true);
@@ -530,12 +527,10 @@ package org.cytoscapeweb.view {
             
             // When zoom < 100%, increase the label size to make it readable:
             if (_graphScale < 1) rescaleNodeLabel(n);
-            
-            if (_ctrlDown) vis.showDragRectangle(n);
         }
         
         private function onRollOutNode(evt:MouseEvent):void {
-            if (_draggingNode || _draggingGraph || _selecting) return;
+            if (dragging || _selecting) return;
 
             var n:NodeSprite = evt.target as NodeSprite;
             sendNotification(ApplicationFacade.ROLLOUT_EVENT, n);
@@ -545,26 +540,31 @@ package org.cytoscapeweb.view {
             evt.stopImmediatePropagation();
 
             rescaleNodeLabel(n, true);
-            vis.hideDragRectangle();
         }
         
         private function onMouseDownNode(evt:MouseEvent):void { trace("** Mouse DOWN [node]");
             var n:NodeSprite = evt.target as NodeSprite;
+            
+            if (configProxy.mouseDownToDragDelay >= 0) {
+                _dragAllTimer = new Timer(configProxy.mouseDownToDragDelay, 1);
+                _dragAllTimer.addEventListener(TimerEvent.TIMER, function(te:TimerEvent):void {
+                   trace("* Hold Mouse DOWN - will drag part...");
+                    _draggingComponent = true;
+                    updateCursor();
+                    vis.showDragRectangle(n);
+                    var data:Data = vis.getDisconnectedData(n);
+                    graphView.bringAllToFront(data.nodes);
+                    graphView.bringToFront(n);
+                });
+                _dragAllTimer.start();
+            }
+            
             n.addEventListener(MouseEvent.MOUSE_UP, onMouseUpNode, false, 0, true);
             n.addEventListener(MouseEvent.CLICK, onClickNode, false, 0, true);
             // Remove the SELECTION CONTROL:
-            selectionControl.detach();
+            selectionControl.enabled = false;
             // To avoid clicking the background:
-            graphView.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDownView);
-  
-            // Dragging a disconnected component?
-            if (_ctrlDown) {
-                _draggingGraph = true;
-                updateCursor();
-                vis.showDragRectangle(n);
-                var data:Data = vis.getDisconnectedData(n);
-                graphView.bringAllToFront(data.nodes);
-            }
+            graphView.stage.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDownView);
             // Bring the target and the node to front:
             graphView.bringToFront(n);
         }
@@ -572,20 +572,19 @@ package org.cytoscapeweb.view {
         private function onMouseUpNode(evt:MouseEvent):void { trace("** Mouse UP [node]");
             evt.currentTarget.removeEventListener(evt.type, arguments.callee);
             var n:NodeSprite = evt.target as NodeSprite;
-            
             _draggingGraph = false;
             updateCursor();
-            if (_ctrlDown) vis.showDragRectangle(n);
-            
             // Return the MOUSE DOWN to the View, so panning is possible again:
-            graphView.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDownView, false, 0, true);
+            graphView.stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDownView, false, 0, true);
         }
         
         private function onClickNode(evt:MouseEvent):void { trace("** CLICK [node]");
             evt.currentTarget.removeEventListener(evt.type, arguments.callee);
             evt.stopImmediatePropagation();
             
-            if (!_draggingGraph && !evt.ctrlKey) {
+            if (!dragging) {
+                if (_dragAllTimer != null && _dragAllTimer.running) _dragAllTimer.stop();
+                
                 var n:NodeSprite = evt.target as NodeSprite;
                 sendNotification(ApplicationFacade.CLICK_EVENT,
                                  { target: n, mouseX: evt.stageX, mouseY: evt.stageY });
@@ -606,25 +605,25 @@ package org.cytoscapeweb.view {
         }
         
         private function onDoubleClickNode(evt:MouseEvent):void { trace("** 2-CLICK [node]");
-            if (!_ctrlDown) {
-                var n:NodeSprite = evt.target as NodeSprite;
-                sendNotification(ApplicationFacade.DOUBLE_CLICK_EVENT,
-                                 { target: n, mouseX: evt.stageX, mouseY: evt.stageY });
-            }
+            var n:NodeSprite = evt.target as NodeSprite;
+            sendNotification(ApplicationFacade.DOUBLE_CLICK_EVENT,
+                             { target: n, mouseX: evt.stageX, mouseY: evt.stageY });
             evt.stopImmediatePropagation();
         }
         
         private function onDragNodeStart(evt:DragEvent):void { trace("== START Drag Node");
-            _draggingNode = true;
-            updateCursor();
+            if (!_draggingComponent) {
+                if (_dragAllTimer != null && _dragAllTimer.running) _dragAllTimer.stop();
+                _draggingNode = true;
+                updateCursor();
+            }
             evt.node.removeEventListener(MouseEvent.CLICK, onClickNode);
         }
         
         private function onDragNodeEnd(evt:DragEvent):void { trace("== END Drag Node");
+            if (_draggingComponent) vis.hideDragRectangle();
             _draggingNode = false;
-            _draggingGraph = false;
-            if (!_ctrlDown || graphProxy.rolledOverNode == null)
-                vis.hideDragRectangle();
+            _draggingComponent = false;
             updateCursor();
             
             // Fix a bug on Safari when mouse-up occurs out of the Flash area, which ends the
@@ -638,8 +637,7 @@ package org.cytoscapeweb.view {
             var target:NodeSprite = evt.node;
             var nodes:*;
 
-            if (_ctrlDown) {
-                _draggingGraph = true;
+            if (_draggingComponent) {
                 var data:Data = vis.getDisconnectedData(target);
                 nodes = data.nodes;
             } else if (target.props.$selected) {
@@ -674,7 +672,7 @@ package org.cytoscapeweb.view {
                 if (configProxy.edgeLabelsVisible) graphView.updateLabels(Groups.EDGES);
             }
             
-            vis.updateDragRectangle(amountX, amountY);
+            if (_draggingComponent) vis.updateDragRectangle(amountX, amountY);
         }
         
         private function onSelect(evt:SelectionEvent):void {
@@ -704,18 +702,18 @@ package org.cytoscapeweb.view {
         }
         
         private function onMouseDownEdge(evt:MouseEvent):void { trace("** Mouse DOWN [edge]");
-            if (!_draggingGraph && !_ctrlDown) {
+            if (!_draggingGraph) {
                 var e:EdgeSprite = evt.target as EdgeSprite;
                 e.addEventListener(MouseEvent.CLICK, onClickEdge, false, 0, true);
                 // Remove the SELECTION CONTROL:
-                selectionControl.detach();
+                selectionControl.enabled = false;
             }
         }
         
         private function onClickEdge(evt:MouseEvent):void { trace("** Click [edge]");
             evt.currentTarget.removeEventListener(evt.type, arguments.callee);
             
-            if (!_draggingGraph && !_ctrlDown) {
+            if (!_draggingGraph) {
                 var edge:EdgeSprite = evt.target as EdgeSprite;
                 if (edge == null) return;
                 
@@ -737,22 +735,28 @@ package org.cytoscapeweb.view {
                 }
             }
             
-            graphView.removeEventListener(MouseEvent.MOUSE_MOVE, onDragSelectionStart);
+            graphView.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onDragSelectionStart);
             evt.stopImmediatePropagation();
         }
         
         private function onDoubleClickEdge(evt:MouseEvent):void { trace("** 2-CLICK [edge] : " + evt.target);
-            if (!_ctrlDown) {
-                var e:EdgeSprite = evt.target as EdgeSprite;
-                sendNotification(ApplicationFacade.DOUBLE_CLICK_EVENT,
-                                 { target: e, mouseX: evt.stageX, mouseY: evt.stageY });
-            }
-            graphView.removeEventListener(MouseEvent.MOUSE_MOVE, onDragSelectionStart);
+            var e:EdgeSprite = evt.target as EdgeSprite;
+            sendNotification(ApplicationFacade.DOUBLE_CLICK_EVENT,
+                             { target: e, mouseX: evt.stageX, mouseY: evt.stageY });
+            graphView.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onDragSelectionStart);
             evt.stopImmediatePropagation();
         }
         
         // OTHER functions:
         // -----------------------------------------------------------------------------------------
+        
+        private function startDragGraph():void {
+            _draggingGraph = true;
+            updateCursor();
+            selectionControl.enabled = false;
+            vis.startDrag();
+            graphView.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUpToStopPanning, false, 0, true);
+        }
         
         private function rescaleNodeLabel(n:NodeSprite, reset:Boolean=false):void {
             if (n != null && configProxy.config.nodeLabelsVisible) {
@@ -827,8 +831,8 @@ package org.cytoscapeweb.view {
             sendNotification(ApplicationFacade.UPDATE_CURSOR, { selecting: _selecting,
                                                                 draggingNode: _draggingNode,
                                                                 draggingGraph: _draggingGraph,
-                                                                shiftDown: _shiftDown,
-                                                                ctrlDown: _ctrlDown });
+                                                                draggingComponent: _draggingComponent,
+                                                                shiftDown: _shiftDown });
         }
     }
 }

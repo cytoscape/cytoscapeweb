@@ -390,7 +390,7 @@ package org.cytoscapeweb.view.components {
             return bounds;
         }
         
-        public function updateDragRectangle(...delta):void {
+		public function updateDragRectangle(...delta):void {
             if (_dragRect != null) {
                 var b:Rectangle = _dragRect;
                 if (delta.length > 1) {
@@ -426,7 +426,7 @@ package org.cytoscapeweb.view.components {
                 graphics.clear();
             }
         }
-        
+
         // ========[ PRIVATE METHODS ]==============================================================
         
         /**
@@ -461,6 +461,8 @@ package org.cytoscapeweb.view.components {
                 fdl.simulation.nbodyForce.maxDistance = options.maxDistance;
                 fdl.defaultParticleMass = options.mass;
                 fdl.defaultSpringTension = options.tension;
+                fdl.minWeight = options.minWeight;
+                fdl.maxWeight = options.maxWeight;
 
                 var length:Number = options.restLength;
                 var el:uint = data.edges.length;

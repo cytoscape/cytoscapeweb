@@ -63,7 +63,7 @@ package org.cytoscapeweb.view.layout {
         public static const LOG_WEIGHT:String = "log";
         
         protected static const MIN_SPRING_WEIGHT:Number = 0.1;
-        protected static const MAX_SPRING_WEIGHT:Number = 1.1;
+        protected static const MAX_SPRING_WEIGHT:Number = 0.9;
         
         // ========[ PRIVATE PROPERTIES ]===========================================================
 
@@ -74,6 +74,8 @@ package org.cytoscapeweb.view.layout {
         private var _weightAttr:String;
         private var _weightNormalization:String;
         private var _weighted:Boolean;
+        private var _minWeight:Number;
+        private var _maxWeight:Number;
         
         private var _eLengths:/*edge_id->length*/Object;
 
@@ -87,7 +89,15 @@ package org.cytoscapeweb.view.layout {
         /** The name of the edge attribute that contains the weights. */
         public function get weightAttr():String { return _weightAttr; }
         public function get weightNormalization():String { return _weightNormalization; }
-        public function get weighted():Boolean { return _weighted }
+        public function get weighted():Boolean { return _weighted; }
+        
+        /** The minimum edge weight to consider, if the layout is set to be weighted. */
+        public function get minWeight():Number { return _minWeight; }
+        public function set minWeight(min:Number):void { _minWeight = min; }
+        
+        /** The maximum edge weight to consider, if the layout is set to be weighted */
+        public function get maxWeight():Number { return _maxWeight; }
+        public function set maxWeight(max:Number):void { _maxWeight = max; }
         
         public function get edges():DataList { return visualization.data.group(Groups.MERGED_EDGES); }
 
@@ -119,14 +129,16 @@ package org.cytoscapeweb.view.layout {
             
             this.restLength = function(e:EdgeSprite):Number {
                 var rl:Number = defaultSpringLength;
-                if (weighted && !isNaN(e.props.springWeight)) {
+                var sw:Number = e.props.springWeight;
+                
+                if (weighted && !isNaN(sw)) {
                     switch (edgeWeightNormalization) {
                         case INV_NORMALIZED_WEIGHT:
-                            rl /= (MIN_SPRING_WEIGHT + MAX_SPRING_WEIGHT - e.props.springWeight); break;
+                            rl /= (MIN_SPRING_WEIGHT + MAX_SPRING_WEIGHT - sw); break;
                         case LOG_WEIGHT:
                             // TODO...
                         default: // normalized...
-                            rl /= e.props.springWeight;
+                            if (sw !== 0) rl /= sw;
                     }
                 }
                 return Math.max(1, rl);
@@ -283,8 +295,11 @@ package org.cytoscapeweb.view.layout {
             });
             
             // Minimum and maximum weight values for the current edges set:
-            var minW:Number = Number.POSITIVE_INFINITY;
-            var maxW:Number = Number.NEGATIVE_INFINITY;
+            var computeMin:Boolean = isNaN(minWeight); // User didn't set the min weight
+            var computeMax:Boolean = isNaN(maxWeight);
+            
+            if (computeMin) minWeight = Number.POSITIVE_INFINITY;
+            if (computeMax) maxWeight = Number.NEGATIVE_INFINITY;
             var ew:Number;
             
             $each(edges, function(i:uint, e:EdgeSprite):void {
@@ -299,12 +314,11 @@ package org.cytoscapeweb.view.layout {
 
                 s.tag = _gen;
                 
-                
                 if (weighted && !GraphUtils.isFilteredOut(e)) {
                     // Get min and max weights - filtered-in edges only!
                     ew = e.data[weightAttr];
-                    minW = Math.min(ew, minW);
-                    maxW = Math.max(ew, maxW);
+                    if (computeMin) minWeight = Math.min(ew, minWeight);
+                    if (computeMax) maxWeight = Math.max(ew, maxWeight);
                 }
             });
             
@@ -318,14 +332,29 @@ package org.cytoscapeweb.view.layout {
                 });
             }
 
+            var mediumSpringWeight:Number = (MAX_SPRING_WEIGHT - MIN_SPRING_WEIGHT) / 2;
+
             $each(edges, function(i:uint, e:EdgeSprite):void {
                 s = e.props.spring;
-              
+                var sw:Number;
+                
                 if (weighted) {
+                    ew = e.data[weightAttr];
+
                     // Normalize min and max weights for better visual results (always between 0 and 1):
-                    var f:Number = Maths.invLinearInterp(e.data[weightAttr], minW, maxW);
-                    e.props.springWeight  = Maths.linearInterp(f, MIN_SPRING_WEIGHT, MAX_SPRING_WEIGHT);
+                    if (minWeight === maxWeight) {
+                        sw = mediumSpringWeight;
+                    } else if (ew < minWeight) {
+                        sw = MIN_SPRING_WEIGHT;
+                    } else if (ew > maxWeight) {
+                        sw = MAX_SPRING_WEIGHT;
+                    } else {
+                        var f:Number = Maths.invLinearInterp(ew, minWeight, maxWeight);
+                        sw = Maths.linearInterp(f, MIN_SPRING_WEIGHT, MAX_SPRING_WEIGHT);
+                    }
                 }
+                
+                e.props.springWeight = sw;
                 
                 if (restLength != null)
                     s.restLength = restLength(e);
