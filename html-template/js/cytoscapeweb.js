@@ -2260,7 +2260,7 @@
      *                                               The default value is <code>null</code>, which means that the layout is unweighted.
      *                                               If you want to generate an edge-weighted layout, you just need to provide the name of the data attribute that should be used as weight.</li>
      *         <li><code>weightNorm</code> {String}: The normalization method that is applied to the weight values when using a weighted layout.
-     *                                               Possible values are: <code>"linear"</code>, <code>"inverselinear"</code> and <code>"log"</code>.
+     *                                               Possible values are: <code>"linear"</code>, <code>"invlinear"</code> and <code>"log"</code>.
      *                                               The default value is <code>"linear"</code>.</li>
      *         <li><code>minWeight</code> {Number}: The minimum edge weight to consider, if the layout is set to be weighted.
      *                                              Do not specify any value if you want the layout to get the minimum weight from the rendered edges data (filtered-out edges are ignored).
@@ -2588,8 +2588,16 @@
      *     <li>The mapping algorithm uses a linear interpolation to calculate the values.</li>
      *     <li>Continuous mappers ignore filtered out elements.</li>
      * </ul>
+     * 
      * @example
+     * // A mapper that could be used to set the sizes of the nodes, for example:
      * var sizeMapper = { attrName: "weight",  minValue: 12, maxValue: 36 };
+     * 
+     * // This one could be used to create a color gradient:
+     * var colorMapper = { attrName: "score",  minValue: "#ffff00", maxValue: "#00ff00" };
+     * 
+     * // In this example we want to specify the minimum and maximum data values for the scale:
+     * var widthMapper = { attrName: "weight",  minValue: 1, maxValue: 4, minAttrValue: 0.1, maxAttrValue: 1.0 };
      * @class
      * @name ContinuousMapper
      * @type Object
@@ -2599,6 +2607,46 @@
      * @see org.cytoscapeweb.CustomMapper
      * @see org.cytoscapeweb.VisualStyle
      */
+    /**
+     * The name of the data attribute that will be mapped to a visual style's property.
+     * @property
+     * @name attrName
+     * @type String
+     * @memberOf org.cytoscapeweb.ContinuousMapper#
+     */
+    /**
+     * The minimum value of the visual style's property. It is usually a number (e.g. edge width),
+     * but accepts strings if the visual property is a color.
+     * @property
+     * @name minValue
+     * @memberOf org.cytoscapeweb.ContinuousMapper#
+     */
+    /**
+     * The maximum value of the visual style's property. It is usually a number (e.g. edge width),
+     * but accepts strings if the visual property is a color.
+     * @property
+     * @name maxValue
+     * @memberOf org.cytoscapeweb.ContinuousMapper#
+     */
+    /**
+     * An optional minimum value for the linear scale. If you don't specify it,
+     * Cytoscape Web gets the lowest attribute value from the rendered nodes or edges (filtered-out elements are ignored).
+     * And if an element's data value is lower than the specified minimum, that element's visual property is simply scaled up to the minimum value.
+     * @property
+     * @name minAttrValue
+     * @type Number
+     * @memberOf org.cytoscapeweb.ContinuousMapper#
+     */
+    /**
+     * An optional maximum value for the linear scale. If you don't specify it,
+     * Cytoscape Web gets the highest attribute value from the rendered nodes or edges (filtered-out elements are ignored).
+     * And if an element's data value is higher than the specified maximum, that element's visual property is simply scaled down to the maximum value.
+     * @property
+     * @name maxAttrValue
+     * @type Number
+     * @memberOf org.cytoscapeweb.ContinuousMapper#
+     */
+    
     /**
      * <p>This object represents a Discrete Mapper type, but is just an untyped object.</p>
      * <p>Discrete network attributes are mapped to discrete visual attributes.</p>

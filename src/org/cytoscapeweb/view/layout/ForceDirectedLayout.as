@@ -59,7 +59,7 @@ package org.cytoscapeweb.view.layout {
         // ========[ CONSTANTS ]====================================================================
         
         public static const NORMALIZED_WEIGHT:String = "linear";
-        public static const INV_NORMALIZED_WEIGHT:String = "inverselinear";
+        public static const INV_NORMALIZED_WEIGHT:String = "invlinear";
         public static const LOG_WEIGHT:String = "log";
         
         protected static const MIN_SPRING_WEIGHT:Number = 0.1;
@@ -135,9 +135,7 @@ package org.cytoscapeweb.view.layout {
                     switch (edgeWeightNormalization) {
                         case INV_NORMALIZED_WEIGHT:
                             rl /= (MIN_SPRING_WEIGHT + MAX_SPRING_WEIGHT - sw); break;
-                        case LOG_WEIGHT:
-                            // TODO...
-                        default: // normalized...
+                        default:
                             if (sw !== 0) rl /= sw;
                     }
                 }
@@ -322,6 +320,11 @@ package org.cytoscapeweb.view.layout {
                 }
             });
             
+            if (weightNormalization === LOG_WEIGHT) {
+                minWeight = Math.log(minWeight);
+                maxWeight = Math.log(maxWeight);
+            }
+            
             // set up simulation parameters
             // this needs to be kept separate from the above initialization
             // to ensure all simulation items are created first
@@ -340,6 +343,7 @@ package org.cytoscapeweb.view.layout {
                 
                 if (weighted) {
                     ew = e.data[weightAttr];
+                    if (weightNormalization === LOG_WEIGHT) ew = Math.log(ew);
 
                     // Normalize min and max weights for better visual results (always between 0 and 1):
                     if (minWeight === maxWeight) {
@@ -353,7 +357,7 @@ package org.cytoscapeweb.view.layout {
                         sw = Maths.linearInterp(f, MIN_SPRING_WEIGHT, MAX_SPRING_WEIGHT);
                     }
                 }
-                
+
                 e.props.springWeight = sw;
                 
                 if (restLength != null)

@@ -46,6 +46,8 @@ package org.cytoscapeweb.model.data {
         // Attribute values:
         private var _minAttrValue:Number;
         private var _maxAttrValue:Number;
+        private var _dynamicMin:Boolean = true;
+        private var _dynamicMax:Boolean = true;
         
         // ========[ PUBLIC PROPERTIES ]============================================================
         
@@ -58,7 +60,7 @@ package org.cytoscapeweb.model.data {
          */
         public function set dataList(list:Array):void {
             _dataList = list;
-            buildScale();
+            if (_dynamicMin || _dynamicMax) buildScale();
         }
         
         public function get minValue():Number {
@@ -69,15 +71,29 @@ package org.cytoscapeweb.model.data {
             return _maxValue;
         }
         
+        public function get minAttrValue():Number {
+            return _minAttrValue;
+        }
+        
+        public function get maxAttrValue():Number {
+            return _maxAttrValue;
+        }
+        
         // ========[ CONSTRUCTOR ]==================================================================
         
         public function ContinuousVizMapperVO(attrName:String,
                                               propName:String,
                                               minValue:Number,
-                                              maxValue:Number) {
+                                              maxValue:Number,
+                                              minAttrValue:Number=NaN,
+                                              maxAttrValue:Number=NaN) {
             super(attrName, propName, this);
-            this._minValue = minValue;
-            this._maxValue = maxValue;
+            _minValue = minValue;
+            _maxValue = maxValue;
+            _minAttrValue = minAttrValue;
+            _maxAttrValue = maxAttrValue;
+            _dynamicMin = isNaN(minAttrValue);
+            _dynamicMax = isNaN(maxAttrValue);
         }
         
         // ========[ PUBLIC METHODS ]===============================================================
@@ -107,6 +123,8 @@ package org.cytoscapeweb.model.data {
             obj.attrName = attrName;
             obj.minValue = VisualProperties.toExportValue(propName, minValue);
             obj.maxValue = VisualProperties.toExportValue(propName, maxValue);
+            if (!_dynamicMin) obj.minAttrValue = minAttrValue;
+            if (!_dynamicMax) obj.maxAttrValue = maxAttrValue;
             
             return obj;
         }
@@ -116,23 +134,29 @@ package org.cytoscapeweb.model.data {
             var min:Number = VisualProperties.parseValue(propName, obj.minValue) as Number;
             var max:Number = VisualProperties.parseValue(propName, obj.maxValue) as Number;
             
-            return new ContinuousVizMapperVO(attrName, propName, min, max);
+            var minAttr:Number, maxAttr:Number;
+            if (!isNaN(obj.minAttrValue)) minAttr = Number(obj.minAttrValue);
+            if (!isNaN(obj.maxAttrValue)) maxAttr = Number(obj.maxAttrValue);
+            
+            return new ContinuousVizMapperVO(attrName, propName, min, max, minAttr, maxAttr);
         }
         
         // ========[ PRIVATE METHODS ]==============================================================
         
         private function buildScale():void {
-            _maxAttrValue = _minAttrValue = 0;
+//            _maxAttrValue = _minAttrValue = 0;
             
             if (dataList != null && dataList.length > 0) {
-	            _maxAttrValue = Number.NEGATIVE_INFINITY;
-	            _minAttrValue = Number.POSITIVE_INFINITY;
+                if (_dynamicMin) _minAttrValue = Number.POSITIVE_INFINITY;
+	            if (_dynamicMax) _maxAttrValue = Number.NEGATIVE_INFINITY;
 	            
-	            for each (var dt:Object in dataList) {
-	                var value:Number = dt[attrName] as Number;
-	                _maxAttrValue = Math.max(_maxAttrValue, value);
-	                _minAttrValue = Math.min(_minAttrValue, value);
-	            }
+	            if (_dynamicMin || _dynamicMax) {
+    	            for each (var dt:Object in dataList) {
+    	                var value:Number = dt[attrName] as Number;
+    	                if (_dynamicMin) _minAttrValue = Math.min(_minAttrValue, value);
+    	                if (_dynamicMax) _maxAttrValue = Math.max(_maxAttrValue, value);
+    	            }
+    	        }
             }
         }
     }

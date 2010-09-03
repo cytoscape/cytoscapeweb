@@ -57,8 +57,9 @@
       <data key="shape">HEXAGON</data>
       <data key="label">A08</data>
     </node>
-    <node id="n1">
+    <node id="a09">
       <data key="weight">0.6234616006258875</data>
+      <data key="label">A09</data>
     </node>
     
     <edge id="e3" source="a01" directed="true" target="a02">
@@ -123,7 +124,7 @@
     <edge id="e15" source="a07" target="a04">
       <data key="weight">5000</data>
     </edge>
-    <edge id="e16" source="a07" target="n1">
+    <edge id="e16" source="a07" target="a09">
       <data key="weight">7000</data>
     </edge>
   </graph>

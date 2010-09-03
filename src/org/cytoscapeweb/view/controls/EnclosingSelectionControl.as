@@ -182,7 +182,7 @@ package org.cytoscapeweb.view.controls {
             }
         }
                 
-        private function mouseDown(evt:MouseEvent):void {
+        private function mouseDown(evt:MouseEvent):void {trace("--DOWN--");
             if (_stage == null) return;
             _stage.addEventListener(MouseEvent.MOUSE_UP, mouseUp);
             _stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseMove);
@@ -195,11 +195,11 @@ package org.cytoscapeweb.view.controls {
             
             DisplayObjectContainer(_object).addChild(_shape);
             renderShape(_shape.graphics);
-            
+            trace(_enabled);
             if (_enabled) {
                 if (fireImmediately) {
                     selectionTest(evt);
-                } else if (!evt.shiftKey) {
+                } else {
                     // ALTERED: if SHIFT key is not pressed, it should reset everything first:
                     _rem = _add = null;
                     _rem0 = _add0 = null;
@@ -219,14 +219,14 @@ package org.cytoscapeweb.view.controls {
             }
         }
         
-        private function mouseUp(evt:MouseEvent):void {
+        private function mouseUp(evt:MouseEvent):void {trace("--UP--");
             if (!enabled) return;
             if (!fireImmediately)
                 selectionTest(evt);
             stopSelection();
         }
         
-        private function stopSelection():void {
+        private function stopSelection():void {trace("--stop sel");
             if (_drag) {
                 DisplayObjectContainer(_object).removeChild(_shape);
             }
@@ -247,7 +247,7 @@ package org.cytoscapeweb.view.controls {
             }
         }
         
-        private function selectionTest(evt:MouseEvent):void {           
+        private function selectionTest(evt:MouseEvent):void { trace("-->sel TEST");          
             var con:DisplayObjectContainer = DisplayObjectContainer(_object);
             for (var i:uint=0; i<con.numChildren; ++i) {
                 walkTree(con.getChildAt(i), test);

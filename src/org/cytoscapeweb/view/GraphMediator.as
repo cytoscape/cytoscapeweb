@@ -548,7 +548,7 @@ package org.cytoscapeweb.view {
             if (configProxy.mouseDownToDragDelay >= 0) {
                 _dragAllTimer = new Timer(configProxy.mouseDownToDragDelay, 1);
                 _dragAllTimer.addEventListener(TimerEvent.TIMER, function(te:TimerEvent):void {
-                   trace("* Hold Mouse DOWN - will drag part...");
+                    trace("* Hold Mouse DOWN - will drag part...");
                     _draggingComponent = true;
                     updateCursor();
                     vis.showDragRectangle(n);
@@ -573,6 +573,7 @@ package org.cytoscapeweb.view {
             evt.currentTarget.removeEventListener(evt.type, arguments.callee);
             var n:NodeSprite = evt.target as NodeSprite;
             _draggingGraph = false;
+            _selectionControl.enabled = true;
             updateCursor();
             // Return the MOUSE DOWN to the View, so panning is possible again:
             graphView.stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDownView, false, 0, true);
@@ -675,12 +676,12 @@ package org.cytoscapeweb.view {
             if (_draggingComponent) vis.updateDragRectangle(amountX, amountY);
         }
         
-        private function onSelect(evt:SelectionEvent):void {
+        private function onSelect(evt:SelectionEvent):void {for each (var item in evt.items) { trace("   S---> " + item.data.label); }
             if (evt.items != null && evt.items.length > 0)
                 sendNotification(ApplicationFacade.SELECT, evt.items);
         }
         
-        private function onDeselect(evt:SelectionEvent):void {
+        private function onDeselect(evt:SelectionEvent):void {for each (var item in evt.items) { trace("   D---> " + item.data.label); }
             if (evt.items != null && evt.items.length > 0)
                 sendNotification(ApplicationFacade.DESELECT, evt.items);
         }
