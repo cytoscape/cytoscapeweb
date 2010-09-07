@@ -32,19 +32,18 @@ package org.cytoscapeweb.model.data {
     
     import flexunit.framework.TestCase;
     
+    import org.cytoscapeweb.util.VisualProperties;
+    
     
     public class ContinuousVizMapperVOTest extends TestCase {
         
         private const _ATTR_NAME:String = "anAttrName";
         private const _MIN:Number = 0.2;
-        private const _MAX:Number = 10;
-        private const _XML:XML = <continuous-mapper attr-name={_ATTR_NAME} min-value={_MIN} max-value={_MAX}/>;
-        
-        private const _MIN_VALUE:Number = -2;
-        private const _MAX_VALUE:Number = 400;
-        
+        private const _MAX:Number = 1;
+        private const _MIN_ATTR_VALUE:Number = -2;
+        private const _MAX_ATTR_VALUE:Number = 400;
+        private var _values:Array = [-1, 0, _MAX_ATTR_VALUE, 30, _MIN_ATTR_VALUE, _MAX_ATTR_VALUE, 5.5];
         private var _dataList:Array;
-        private var _values:Array = [-1, 0, _MAX_VALUE, 30, _MIN_VALUE, _MAX_VALUE, 5.5];
         
         public function ContinuousVizMapperVOTest() {
             _dataList = new Array();
@@ -60,30 +59,73 @@ package org.cytoscapeweb.model.data {
         }
         
         public function testFromObject():void {
-            // TODO:
-//            var mapper:ContinuousVizMapperVO = ContinuousVizMapperVO.fromXML(_XML);
-//            
-//            assertEquals(_ATTR_NAME, mapper.attrName);
-//            assertEquals(_MIN, mapper.minValue);
-//            assertEquals(_MAX, mapper.maxValue);
-//            
-//            // Test dinamicaly generated values:
-//            // -----------------------------------
-//            // First, bind the data list to the vizMapper:
-//            mapper.dataList = _dataList;
-//            
-//            for (var i:int = 0; i < _dataList.length; i++) {
-//            	var v:Number = _values[i];
-//            	var data:Object = _dataList[i];
-//            	var f:Number = Maths.invLinearInterp(v, _MIN_VALUE, _MAX_VALUE);
-//            	var interpValue:Number = Maths.linearInterp(f, _MIN, _MAX);
-//            	
-//            	assertEquals(interpValue, mapper.getValue(data));
-//            }
-//            
-//            // Double-check, in case the interpolation done here is incorrect:
-//            assertEquals(_MIN, mapper.getValue(_dataList[4]));
-//            assertEquals(_MAX, mapper.getValue(_dataList[2]));
+            var data:Object;
+            var i:int;
+            var v:Number;
+            
+            // Test conversion:
+            // -----------------------------------
+            var mapper:ContinuousVizMapperVO = ContinuousVizMapperVO.fromObject(
+                VisualProperties.EDGE_WIDTH,
+                { attrName: _ATTR_NAME, minValue: _MIN, maxValue: _MAX, minAttrValue: 0.001, maxAttrValue: 0.88 });
+                
+            assertEquals(_ATTR_NAME, mapper.attrName);
+            assertEquals(_MIN, mapper.minValue);
+            assertEquals(_MAX, mapper.maxValue);
+            assertEquals(0.001, mapper.minAttrValue);
+            assertEquals(0.88, mapper.maxAttrValue);
+            
+            var obj:Object = mapper.toObject();
+            assertEquals(_ATTR_NAME, obj.attrName);
+            assertEquals(_MIN, obj.minValue);
+            assertEquals(_MAX, obj.maxValue);
+            assertEquals(0.001, obj.minAttrValue);
+            assertEquals(0.88, obj.maxAttrValue);
+            
+            // Test dinamicaly generated values:
+            // -----------------------------------
+            mapper = ContinuousVizMapperVO.fromObject(
+                VisualProperties.EDGE_WIDTH, { attrName: _ATTR_NAME, minValue: _MIN, maxValue: _MAX });
+                
+            mapper.dataList = _dataList;
+            
+            // Min/Max attr. values from data list:
+            assertEquals(_MIN_ATTR_VALUE, mapper.minAttrValue);
+            assertEquals(_MAX_ATTR_VALUE, mapper.maxAttrValue);
+            
+            obj = mapper.toObject();
+            assertUndefined(obj.minAttrValue); // Dynamic range!
+            assertUndefined(obj.maxAttrValue);
+            
+            // Test interpolated values:
+            for (i = 0; i < _dataList.length; i++) {
+            	v = _values[i];
+            	data = _dataList[i];
+            	var f:Number = Maths.invLinearInterp(v, _MIN_ATTR_VALUE, _MAX_ATTR_VALUE);
+            	var interpValue:Number = Maths.linearInterp(f, _MIN, _MAX);
+            	
+            	assertEquals(interpValue, mapper.getValue(data));
+            }
+            
+            // Double-check, in case the interpolation done here is incorrect:
+            assertEquals(_MIN, mapper.getValue(_dataList[4]));
+            assertEquals(_MAX, mapper.getValue(_dataList[2]));
+            
+            
+            // Test with specified scale's MIN/MAX values:
+            // -------------------------------------------
+            mapper = ContinuousVizMapperVO.fromObject(
+                VisualProperties.EDGE_WIDTH,
+                { attrName: _ATTR_NAME, minValue: _MIN, maxValue: _MAX, minAttrValue: 0, maxAttrValue: 10 });
+                
+            mapper.dataList = _dataList;
+            
+            // Test interpolated values:
+            for (i = 0; i < _dataList.length; i++) {
+                data = _dataList[i];
+                v = mapper.getValue(data);
+                assertTrue(v >= 0 && v <= 10);
+            }
         }
     }
 }
