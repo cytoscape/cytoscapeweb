@@ -30,6 +30,7 @@
 package org.cytoscapeweb.model.data {
 	import flexunit.framework.TestCase;
 	
+	import org.cytoscapeweb.model.methods.error;
 	import org.cytoscapeweb.util.VisualProperties;
 	
 	
@@ -59,8 +60,8 @@ package org.cytoscapeweb.model.data {
         }
         
         public function testAddEntry():void {
-            _mapper1.addEntry("A", VisualProperties.parseValue(_mapper1.propName, "ff0000"));
-            _mapper1.addEntry("B", VisualProperties.parseValue(_mapper1.propName, "0000ff"));
+            _mapper1.addEntry("A", VisualProperties.parseValue(_mapper1.propName, "#ff0000"));
+            _mapper1.addEntry("B", VisualProperties.parseValue(_mapper1.propName, "#0000ff"));
             _mapper1.addEntry("C", VisualProperties.parseValue(_mapper1.propName, "00ffff"));
             
             assertEquals(0xffff0000, _mapper1.getValue(_dt1));
@@ -79,11 +80,21 @@ package org.cytoscapeweb.model.data {
         }
         
         public function testToObject():void {
-            // TODO
-        }
-        
-        public function testFromObject():void {
-            // TODO
+            _mapper1.addEntry("A", VisualProperties.parseValue(_mapper1.propName, "#ff0000"));
+            _mapper1.addEntry("B", VisualProperties.parseValue(_mapper1.propName, "0000ff"));
+            
+            var obj:Object = _mapper1.toObject();
+            assertEquals("attr1", obj.attrName);
+
+            var entries:Array = obj.entries;
+            assertEquals(2, entries.length);
+            assertEquals("A", entries[1].attrValue);
+            
+            for each (var entry:Object in entries) {
+                if (entry.attrValue === "A")      assertEquals("#ff0000", entry.value);
+                else if (entry.attrValue === "B") assertEquals("#0000ff", entry.value);
+                else fail("Entries attribute values should be 'A' or 'B'!");
+            }
         }
 	}
 }

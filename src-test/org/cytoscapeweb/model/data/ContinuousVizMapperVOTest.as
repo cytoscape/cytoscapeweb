@@ -58,12 +58,12 @@ package org.cytoscapeweb.model.data {
             }
         }
         
-        public function testFromObject():void {
+        public function testConversions():void {
             var data:Object;
             var i:int;
             var v:Number;
             
-            // Test conversion:
+            // Test conversion FROM OBJECT:
             // -----------------------------------
             var mapper:ContinuousVizMapperVO = ContinuousVizMapperVO.fromObject(
                 VisualProperties.EDGE_WIDTH,
@@ -75,6 +75,8 @@ package org.cytoscapeweb.model.data {
             assertEquals(0.001, mapper.minAttrValue);
             assertEquals(0.88, mapper.maxAttrValue);
             
+            // Test conversion TO OBJECT:
+            // -----------------------------------
             var obj:Object = mapper.toObject();
             assertEquals(_ATTR_NAME, obj.attrName);
             assertEquals(_MIN, obj.minValue);
