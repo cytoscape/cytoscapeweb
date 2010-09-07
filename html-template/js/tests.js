@@ -158,6 +158,14 @@ function runGraphTests(moduleName, vis, options) {
         same(vis.nodeTooltipsEnabled(),   options.nodeTooltipsEnabled,   "Node tooltips enabled?");
         same(vis.edgeTooltipsEnabled(),   options.edgeTooltipsEnabled,   "Edge tooltips enabled?");
     });
+	
+	test("Custom Cursors", function() {
+		ok(vis.customCursorsEnabled() === true, "Custom cursors enabled by default");
+		vis.customCursorsEnabled(false);
+		ok(vis.customCursorsEnabled() === false, "Custom cursors disabled");
+		vis.customCursorsEnabled(true);
+		ok(vis.customCursorsEnabled() === true, "Custom cursors enabled again");
+	});
 
     test("Pan-Zoom Control", function() {
         vis.panZoomControlVisible(false);

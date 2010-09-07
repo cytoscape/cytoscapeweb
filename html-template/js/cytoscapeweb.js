@@ -463,9 +463,17 @@
             else { return swf.isEdgeTooltipsEnabled(); }
         },
         
-        customCursorsEnabled: function (visible) {
-            this.swf().enableCustomCursor(visible);
-            return this;
+        /**
+         * <p>If the boolean argument is passed, it enables or disables custom mouse cursors, such as the hand icon used when panning the network.</p>
+         * <p>If no argument is passed, it returns a boolean value indicating whether or not custom cursors are enabled.</p>
+         * @param {Boolean} [enabled] If <code>true</code>, custom (Flash) cursors can be used in some actions.
+         *                            If <code>false</code>, Cytoscape Web will never replace the operating system's cursors.
+         * @return <ul><li>A boolean value for <code>customCursorsEnabled()</code>.</li>
+         *             <li>The {@link org.cytoscapeweb.Visualization} object for <code>panEnabled({Boolean})</code>.</li></ul>
+         */
+        customCursorsEnabled: function (/*enabled*/) {
+        	if (arguments.length > 0) { this.swf().enableCustomCursors(arguments[0]); return this; }
+        	else { return this.swf().isCustomCursorsEnabled(); }
         },
 
         /**

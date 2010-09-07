@@ -49,6 +49,7 @@ package org.cytoscapeweb.model.data {
         public var edgeLabelsVisible:Boolean;
         public var nodeTooltipsEnabled:Boolean;
         public var edgeTooltipsEnabled:Boolean;
+        public var customCursorsEnabled:Boolean = true;
         public var visualStyle:VisualStyleVO;
         public var currentLayout:Object;
         public var minZoom:Number = 0.002;

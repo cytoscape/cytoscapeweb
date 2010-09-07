@@ -187,6 +187,7 @@ package org.cytoscapeweb.view {
                     break;
                 case ApplicationFacade.ENABLE_CUSTOM_CURSORS:
                     _customCursorsEnabled = n.getBody();
+                    configProxy.customCursorsEnabled = _customCursorsEnabled;
                     if (_customCursorsEnabled === true) updateCursor(_cursorOptions);
                     else hideAllCustomCursors();
                     break;

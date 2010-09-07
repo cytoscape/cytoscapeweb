@@ -120,6 +120,14 @@ package org.cytoscapeweb.model {
             return config.edgeTooltipsEnabled;
         }
         
+        public function set customCursorsEnabled(enable:Boolean):void {
+            config.customCursorsEnabled = enable;
+        }
+        
+        public function get customCursorsEnabled():Boolean {
+            return config.customCursorsEnabled;
+        }
+        
         public function set edgesMerged(merged:Boolean):void {
             config.edgesMerged = merged;
         }

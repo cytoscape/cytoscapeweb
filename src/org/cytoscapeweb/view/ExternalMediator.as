@@ -223,8 +223,12 @@ package org.cytoscapeweb.view {
             return configProxy.panZoomControlVisible;
         }
 
-        private function enableCustomCursor(value:Boolean):void {
+        private function enableCustomCursors(value:Boolean):void {
             sendNotification(ApplicationFacade.ENABLE_CUSTOM_CURSORS, value);
+        }
+        
+        private function isCustomCursorsEnabled():Boolean {
+            return configProxy.customCursorsEnabled;
         }
 
         private function enableGrabToPan(value:Boolean):void {
@@ -471,7 +475,7 @@ package org.cytoscapeweb.view {
                                         "enableNodeTooltips", "isNodeTooltipsEnabled", 
                                         "enableEdgeTooltips", "isEdgeTooltipsEnabled", 
                                         "showPanZoomControl", "isPanZoomControlVisible",
-                                        "enableCustomCursor", 
+                                        "enableCustomCursors", "isCustomCursorsEnabled",
                                         "enableGrabToPan", "isGrabToPanEnabled", "panBy", "panToCenter", 
                                         "zoomTo", "zoomToFit", "getZoom", 
                                         "filter", "removeFilter", 
