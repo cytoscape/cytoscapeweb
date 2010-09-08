@@ -464,8 +464,8 @@
         },
         
         /**
-         * <p>If the boolean argument is passed, it enables or disables custom mouse cursors, such as the hand icon used when panning the network.</p>
-         * <p>If no argument is passed, it returns a boolean value indicating whether or not custom cursors are enabled.</p>
+         * <p>If the boolean argument is passed in, it enables or disables custom mouse cursors, such as the hand icon used when panning the network.</p>
+         * <p>If no argument is passed in, it returns a boolean value indicating whether or not custom cursors are enabled.</p>
          * @param {Boolean} [enabled] If <code>true</code>, custom (Flash) cursors can be used in some actions.
          *                            If <code>false</code>, Cytoscape Web will never replace the operating system's cursors.
          * @return <ul><li>A boolean value for <code>customCursorsEnabled()</code>.</li>
@@ -2265,17 +2265,17 @@
      *                                                   <code>maxTime</code> is reached. Set <code>false</code> if you think the results
      *                                                   look worse than expected, or if the layout is taking too long to execute.</li>
      *         <li><code>weightAttr</code> {String}: The name of the edge attribute that contains the weights.
-     *                                               The default value is <code>null</code>, which means that the layout is unweighted.
+     *                                               The default value is <code>null</code>, which means that the layout is unweighted with respect to edges.
      *                                               If you want to generate an edge-weighted layout, you just need to provide the name of the data attribute that should be used as weight.</li>
-     *         <li><code>weightNorm</code> {String}: The normalization method that is applied to the weight values when using a weighted layout.
+     *         <li><code>weightNorm</code> {String}: The normalization method that is applied to the weight values when using a weighted layout (i.e. <code>weightAttr != null</code>).
      *                                               Possible values are: <code>"linear"</code>, <code>"invlinear"</code> and <code>"log"</code>.
      *                                               The default value is <code>"linear"</code>.</li>
      *         <li><code>minWeight</code> {Number}: The minimum edge weight to consider, if the layout is set to be weighted.
      *                                              Do not specify any value if you want the layout to get the minimum weight from the rendered edges data (filtered-out edges are ignored).
-     *                                              Any edge with a weight bellow the minimum will be considered to have the minimum weight.</li>
+     *                                              Any edge with a weight bellow the minimum will be laid out the same as an edge with the minimum weight.</li>
      *         <li><code>maxWeight</code> {Number}: The maximum edge weight to consider, if the layout is set to be weighted.
      *                                              Do not specify any value if you want the layout to get the maximum weight from the rendered edges data (filtered-out edges are ignored).
-     *                                              Any edge with a weight above the maximum will be considered to have the maximum weight.</li>
+     *                                              Any edge with a weight above the maximum will be laid out the same as an edge with maximum weight.</li>
      *     </ul>
      * <li><b>Circle:</b></li>
      *     <ul class="options">
