@@ -2598,13 +2598,14 @@
      * </ul>
      * 
      * @example
-     * // A mapper that could be used to set the sizes of the nodes, for example:
+     * // A mapper that could be used to set the sizes of the nodes between 12 and 36 pixels:
      * var sizeMapper = { attrName: "weight",  minValue: 12, maxValue: 36 };
      * 
-     * // This one could be used to create a color gradient:
+     * // This one could be used to create a color range from yellow to green:
      * var colorMapper = { attrName: "score",  minValue: "#ffff00", maxValue: "#00ff00" };
      * 
-     * // In this example we want to specify the minimum and maximum data values for the scale:
+     * // This edge width mapper specifies the minimum and maximum data values for the scale.
+     * // Weights lower than 0.1 are given a width of 1, and weights higher than 1.0 are given a width of 4.
      * var widthMapper = { attrName: "weight",  minValue: 1, maxValue: 4, minAttrValue: 0.1, maxAttrValue: 1.0 };
      * @class
      * @name ContinuousMapper
@@ -2691,10 +2692,30 @@
      * @see org.cytoscapeweb.VisualStyle
      */
     /**
+     * The name of the data attribute that will be mapped to a visual style's property.
+     * @property
+     * @name attrName
+     * @type String
+     * @memberOf org.cytoscapeweb.DiscreteMapper#
+     */
+    /**
+     * An array of objects used to map data attributes to visual style values.
+     * Each entry object must define:
+     * <ul class="options"><li><code>attrValue</code>: The edge or node data attribute value.</li>
+     *     <li><code>value</code>: The visual style value (e.g. a color code).</li></ul>
+     * @property
+     * @name entries
+     * @type Array
+     * @memberOf org.cytoscapeweb.DiscreteMapper#
+     */
+    
+    /**
      * <p>This is an untyped object that represents a Passthrough Mapper type.</p>
      * <p>The values of network attributes are passed directly through to visual attributes.</p>
      * <p>The most common use case is using this mapper to specify node/edge labels.
      * For example, a passthrough mapper can label all nodes with their gene symbols.</p>
+     * <p>When defining a passthrough mapper, you just need to specify the name of the node or edge
+     * data attribute that contains the visual style values.</p>
      * @example
      * // Create the mapper and set it to a Visual Style's nodes.label property;
      * var style = {
@@ -2715,6 +2736,7 @@
      * @see org.cytoscapeweb.CustomMapper
      * @see org.cytoscapeweb.VisualStyle
      */
+    
     /**
      * <p>This is a special type of mapper that allows you to register a callback function
      * that will be called for each associated element (nodes or edges). 
@@ -2746,6 +2768,14 @@
      * @see org.cytoscapeweb.DiscreteMapper
      * @see org.cytoscapeweb.PassthroughMapper
      * @see org.cytoscapeweb.VisualStyle
+     */
+    /**
+     * The name of the JavaScript function that will return the visual style value for each node or edge.
+     * The callback function always receives the node's or edge's <code>data</code> object as argument.
+     * @property
+     * @name functionName
+     * @type String
+     * @memberOf org.cytoscapeweb.CustomMapper#
      */
 
      // ===[ Error ]================================================================================
