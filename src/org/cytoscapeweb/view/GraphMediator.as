@@ -607,6 +607,7 @@ package org.cytoscapeweb.view {
         
         private function onDoubleClickNode(evt:MouseEvent):void { trace("** 2-CLICK [node]");
             var n:NodeSprite = evt.target as NodeSprite;
+            if (_dragAllTimer != null && _dragAllTimer.running) _dragAllTimer.stop();
             sendNotification(ApplicationFacade.DOUBLE_CLICK_EVENT,
                              { target: n, mouseX: evt.stageX, mouseY: evt.stageY });
             evt.stopImmediatePropagation();
