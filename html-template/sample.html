@@ -41,7 +41,7 @@
                     },
                     edges: {
                     	color: "#0b94b1",
-                        width: { defaultValue: 2, continuousMapper: { attrName: "weight",  minValue: 2, maxValue: 8, minAttrValue: 4000, maxAttrValue: 6000 } },
+                        width: { defaultValue: 2, continuousMapper: { attrName: "weight",  minValue: 2, maxValue: 8 } },
                         mergeWidth: { defaultValue: 2, continuousMapper: { attrName: "weight",  minValue: 2, maxValue: 8 } },
                         mergeColor: "#0b94b1",
                         opacity: 0.7,
@@ -70,7 +70,7 @@
                     	layout = { name: "Preset", options: { fitToScreen: true } };
                     } else { // GraphML or SIF
                     	if ($("#layouts").val() !== "Preset") {
-                            layout = { name: $("#layouts").val(), options: { weightAttr: "weight", weightNorm: "log", restLength: 50, autoStabilize: false } };
+                            layout = { name: $("#layouts").val(), options: { weightAttr: "weight", restLength: 50, autoStabilize: false } };
                         }
 					}
 
