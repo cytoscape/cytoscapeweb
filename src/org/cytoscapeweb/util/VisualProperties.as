@@ -57,6 +57,7 @@ package org.cytoscapeweb.util {
         public static const NODE_ALPHA:String = "nodes.opacity";
         public static const NODE_LINE_COLOR:String = "nodes.borderColor";
         public static const NODE_LINE_WIDTH:String = "nodes.borderWidth";
+        public static const NODE_IMAGE:String = "nodes.image";
 
         public static const NODE_TOOLTIP_TEXT:String = "nodes.tooltipText";
         public static const NODE_TOOLTIP_FONT:String = "nodes.tooltipFont";

@@ -30,7 +30,6 @@
 package org.cytoscapeweb.model.data {
 	import flexunit.framework.TestCase;
 	
-	import org.cytoscapeweb.model.methods.error;
 	import org.cytoscapeweb.util.VisualProperties;
 	
 	
@@ -77,6 +76,20 @@ package org.cytoscapeweb.model.data {
             assertEquals(4, _mapper2.getValue(_dt2));
             assertUndefined(_mapper1.getValue(null));
             assertUndefined(_mapper1.getValue({}));
+        }
+        
+        public function testDistinctValues():void {
+            var m:DiscreteVizMapperVO = new DiscreteVizMapperVO("attrName", VisualProperties.NODE_IMAGE);
+            m.addEntry(1, "img1");
+            m.addEntry(2, "IMG1");
+            m.addEntry(3, "img2");
+            m.addEntry(4, "img3");
+            m.addEntry(5, "img3");
+            m.addEntry(6, "img1");
+            m.addEntry(7, "img1");
+            
+            var distinct:Array = m.distinctValues;
+            assertEquals(4, distinct.length);
         }
         
         public function testToObject():void {

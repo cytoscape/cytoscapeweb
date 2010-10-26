@@ -82,6 +82,7 @@ package org.cytoscapeweb.util {
                     lineColor: lineColor, 
                     lineWidth: lineWidth,
                     alpha: alpha,
+                    "props.imageUrl": imageUrl,
                     visible: visible,
                     buttonMode: true,
                     filters: filters,
@@ -154,6 +155,12 @@ package org.cytoscapeweb.util {
             else if (n.props.$selected && style.hasVisualProperty(VisualProperties.NODE_SELECTION_ALPHA))
                 propName = VisualProperties.NODE_SELECTION_ALPHA;
 
+            return style.getValue(propName, n.data);
+        }
+
+        public static function imageUrl(n:NodeSprite):String {
+            var propName:String = VisualProperties.NODE_IMAGE;
+            // TODO: selected/mouseover images
             return style.getValue(propName, n.data);
         }
         

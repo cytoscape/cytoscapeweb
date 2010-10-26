@@ -39,6 +39,24 @@ package org.cytoscapeweb.model.data {
 
 		// ========[ PUBLIC PROPERTIES ]============================================================
 		
+		public function get distinctValues():Array {
+		    var values:Array = [];
+		    var lookup:Object = {};
+		    
+		    if (_entries != null) {
+		        for (var k:* in _entries) {
+	                var v:* = _entries[k];
+	                
+                    if (!lookup[v]) {
+                        values.push(v);
+                        lookup[v] = true;
+                    }
+		        }
+		    }
+		    
+		    return values;
+		}
+		
 		// ========[ CONSTRUCTOR ]==================================================================
 		
 		public function DiscreteVizMapperVO(attrName:String, propName:String) {

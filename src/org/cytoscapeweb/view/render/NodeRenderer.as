@@ -32,8 +32,13 @@ package org.cytoscapeweb.view.render {
 	import flare.vis.data.DataSprite;
 	import flare.vis.data.render.ShapeRenderer;
 	
+	import flash.display.BitmapData;
 	import flash.display.Graphics;
+	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
+	import flash.utils.setTimeout;
+	
+	import mx.utils.StringUtil;
 	
 	import org.cytoscapeweb.util.NodeShapes;
 	
@@ -41,12 +46,19 @@ package org.cytoscapeweb.view.render {
     public class NodeRenderer extends ShapeRenderer {
     	
         private static var _instance:NodeRenderer = new NodeRenderer();
-        /** Static AppNodeRenderer instance. */
-        public static function get instance():NodeRenderer { return _instance; }        
+        public static function get instance():NodeRenderer { return _instance; }
+
+        // ========[ CONSTRUCTOR ]==================================================================
 
         public function NodeRenderer(defaultSize:Number = 6) {
             this.defaultSize = defaultSize;
         }
+        
+        // ========[ PRIVATE PROPERTIES ]===========================================================
+        
+        private var _imgCache:ImageCache = ImageCache.instance;
+        
+        // ========[ PUBLIC METHODS ]===============================================================
         
         /** @inheritDoc */
         public override function render(d:DataSprite):void {
@@ -56,16 +68,30 @@ package org.cytoscapeweb.view.render {
             
             var g:Graphics = d.graphics;
             g.clear();
-            if (fillAlpha > 0) {
-                // Using a bit mask to avoid transparent mdes when fillcolor=0xffffffff.
-                // See https://sourceforge.net/forum/message.php?msg_id=7393265
-                g.beginFill(0xffffff & d.fillColor, fillAlpha);
-            }
+            
             if (lineAlpha > 0 && d.lineWidth > 0) {
                 var pixelHinting:Boolean = d.shape === NodeShapes.ROUND_RECTANGLE;
                 g.lineStyle(d.lineWidth, d.lineColor, lineAlpha, pixelHinting);
             }
-
+            
+            if (fillAlpha > 0) {
+                // 1. Draw the background color:
+                // Using a bit mask to avoid transparent mdes when fillcolor=0xffffffff.
+                // See https://sourceforge.net/forum/message.php?msg_id=7393265
+                g.beginFill(0xffffff & d.fillColor, fillAlpha);
+                drawShape(d, size);
+                g.endFill();
+                
+                // 2. Draw an image on top:
+                drawImage(d, size);
+            }
+        }
+        
+        // ========[ PRIVATE METHODS ]==============================================================
+        
+        private function drawShape(d:DataSprite, size:Number):void {
+            var g:Graphics = d.graphics;
+            
             switch (d.shape) {
                 case null:
                     break;
@@ -89,8 +115,47 @@ package org.cytoscapeweb.view.render {
                 default:
                     Shapes.drawCircle(g, size/2);
             }
+        }
+        
+        private function drawImage(d:DataSprite, size:Number):void {
+            var url:String = d.props.imageUrl;
             
-            if (fillAlpha > 0) g.endFill();
-        }       
+            if (size > 0 && url != null && StringUtil.trim(url).length > 0) {
+                // Load the image into the cache first?
+                if (!_imgCache.contains(url)) {trace("Will load IMAGE...");
+                    _imgCache.loadImage(url);
+                }
+                if (_imgCache.isLoaded(url)) {trace("% LOADED :-)"); 
+                    draw();
+                } else {trace("% NOT loaded :-("); 
+                    drawWhenLoaded();
+                }
+
+                function drawWhenLoaded():void {
+                    setTimeout(function():void {trace("TIMEOUT: Checking again...");
+                        if (_imgCache.isLoaded(url)) draw();
+                        else drawWhenLoaded();
+                    }, 50);
+                }
+                
+                function draw():void {trace("Will DRAW...");
+                    // Get the image from cache:
+                    var bmp:BitmapData = _imgCache.getImage(url);
+                    
+                    if (bmp != null) {
+                        var maxBmpSize:Number = Math.max(bmp.height, bmp.width);
+                        var scale:Number =  size/maxBmpSize;
+    
+                        var m:Matrix = new Matrix();
+                        m.scale(scale, scale);
+                        m.translate(-size/2, -size/2);
+    
+                        d.graphics.beginBitmapFill(bmp, m, false, true);
+                        drawShape(d, size);
+                        d.graphics.endFill();
+                    }
+                }
+            }
+        }
     }
 }
