@@ -190,18 +190,20 @@ package org.cytoscapeweb.view.components {
             this._style = style;
             
             // Preload images:
-            var imgCache:ImageCache = ImageCache.instance;
-            imgCache.loadImages(style);
-            
-            if (imgCache.isLoading()) waitForImages();
-            else doSetStyle();
-            
-            function waitForImages():void {trace("%% waiting for images...");
-                setTimeout(function():void {
-                    if (imgCache.isLoading()) waitForImages();
-                    else doSetStyle();
-                }, 50);
-            }
+            doSetStyle();
+// TODO:           
+//            var imgCache:ImageCache = ImageCache.instance;
+//            imgCache.loadImages(style);
+//            
+//            if (imgCache.isLoading()) waitForImages();
+//            else doSetStyle();
+//            
+//            function waitForImages():void {trace("%% waiting for images...");
+//                setTimeout(function():void {
+//                    if (imgCache.isLoading()) waitForImages();
+//                    else doSetStyle();
+//                }, 50);
+//            }
             
             function doSetStyle():void {
                 // Nodes & Edges properties:
