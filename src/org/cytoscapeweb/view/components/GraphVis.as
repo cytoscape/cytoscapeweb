@@ -189,66 +189,52 @@ package org.cytoscapeweb.view.components {
             var firstTime:Boolean = this._style == null;
             this._style = style;
             
-            // Preload images:
-            doSetStyle();
-// TODO:           
-//            var imgCache:ImageCache = ImageCache.instance;
-//            imgCache.loadImages(style);
-//            
-//            if (imgCache.isLoading()) waitForImages();
-//            else doSetStyle();
-//            
-//            function waitForImages():void {trace("%% waiting for images...");
-//                setTimeout(function():void {
-//                    if (imgCache.isLoading()) waitForImages();
-//                    else doSetStyle();
-//                }, 50);
-//            }
+            // Preload images:     
+            var imgCache:ImageCache = ImageCache.instance;
+            imgCache.loadImages(style);
+
+            // Nodes & Edges properties:
+            // ---------------------------------------------------------
+            data.nodes.setProperties(Nodes.properties);
+            data.edges.setProperties(Edges.properties);
             
-            function doSetStyle():void {
-                // Nodes & Edges properties:
-                // ---------------------------------------------------------
-                data.nodes.setProperties(Nodes.properties);
-                data.edges.setProperties(Edges.properties);
-                
-                // Node labels:
-                // ---------------------------------------------------------
-                nodeLabeler.cacheText = false;
-                nodeLabeler.textMode = TextSprite.DEVICE;
-    
-                nodeLabeler.fontName = Labels.labelFontName;
-                nodeLabeler.fontColor = Labels.labelFontColor;
-                nodeLabeler.fontSize = Labels.labelFontSize;
-                nodeLabeler.fontWeight = Labels.labelFontWeight;
-                nodeLabeler.fontStyle = Labels.labelFontStyle;
-                nodeLabeler.hAnchor = Labels.labelHAnchor;
-                nodeLabeler.vAnchor = Labels.labelVAnchor;
-                nodeLabeler.xOffsetFunc = Labels.labelXOffset;
-                nodeLabeler.yOffsetFunc = Labels.labelYOffset;
-                nodeLabeler.filters = Labels.filters;
-                nodeLabeler.textFunction = Labels.text;
-                
-                // Edge labels:
-                // ---------------------------------------------------------
-                edgeLabeler.textMode = TextSprite.DEVICE;
-    
-                edgeLabeler.fontName = Labels.labelFontName;
-                edgeLabeler.fontColor = Labels.labelFontColor;
-                edgeLabeler.fontSize = Labels.labelFontSize;
-                edgeLabeler.fontWeight = Labels.labelFontWeight;
-                edgeLabeler.fontStyle = Labels.labelFontStyle;
-                edgeLabeler.filters = Labels.filters;
-                edgeLabeler.textFunction = Labels.text;
-    
-                if (!firstTime) {
-                    if (_config.nodeLabelsVisible) updateLabels(Data.NODES);
-                    if (_config.edgeLabelsVisible) updateLabels(Data.EDGES);
-                }
-    
-                // Tooltips:
-                // ---------------------------------------------------------
-                tooltipControl.showDelay = _style.getValue(VisualProperties.TOOLTIP_DELAY) as Number;
+            // Node labels:
+            // ---------------------------------------------------------
+            nodeLabeler.cacheText = false;
+            nodeLabeler.textMode = TextSprite.DEVICE;
+
+            nodeLabeler.fontName = Labels.labelFontName;
+            nodeLabeler.fontColor = Labels.labelFontColor;
+            nodeLabeler.fontSize = Labels.labelFontSize;
+            nodeLabeler.fontWeight = Labels.labelFontWeight;
+            nodeLabeler.fontStyle = Labels.labelFontStyle;
+            nodeLabeler.hAnchor = Labels.labelHAnchor;
+            nodeLabeler.vAnchor = Labels.labelVAnchor;
+            nodeLabeler.xOffsetFunc = Labels.labelXOffset;
+            nodeLabeler.yOffsetFunc = Labels.labelYOffset;
+            nodeLabeler.filters = Labels.filters;
+            nodeLabeler.textFunction = Labels.text;
+            
+            // Edge labels:
+            // ---------------------------------------------------------
+            edgeLabeler.textMode = TextSprite.DEVICE;
+
+            edgeLabeler.fontName = Labels.labelFontName;
+            edgeLabeler.fontColor = Labels.labelFontColor;
+            edgeLabeler.fontSize = Labels.labelFontSize;
+            edgeLabeler.fontWeight = Labels.labelFontWeight;
+            edgeLabeler.fontStyle = Labels.labelFontStyle;
+            edgeLabeler.filters = Labels.filters;
+            edgeLabeler.textFunction = Labels.text;
+
+            if (!firstTime) {
+                if (_config.nodeLabelsVisible) updateLabels(Data.NODES);
+                if (_config.edgeLabelsVisible) updateLabels(Data.EDGES);
             }
+
+            // Tooltips:
+            // ---------------------------------------------------------
+            tooltipControl.showDelay = _style.getValue(VisualProperties.TOOLTIP_DELAY) as Number;
         }
 
         public function applyLayout(layoutObj:Object):Transition {

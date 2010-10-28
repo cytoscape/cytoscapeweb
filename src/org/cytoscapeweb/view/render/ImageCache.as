@@ -99,11 +99,11 @@ package org.cytoscapeweb.view.render {
             });
         }
         
-        public function getImage(url:String):BitmapData {
+        public function getImage(url:String):BitmapData {trace("getImage...");
             return _images[normalize(url)];
         }
         
-        public function loadImage(url:String):void {
+        public function loadImage(url:String):void {trace("loadImage...");
             url = normalize(url);
             var bmp:BitmapData;
             

@@ -32,14 +32,20 @@ package org.cytoscapeweb.view.render {
 	import flare.vis.data.DataSprite;
 	import flare.vis.data.render.ShapeRenderer;
 	
+	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Graphics;
+	import flash.display.PixelSnapping;
+	import flash.display.Sprite;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	import flash.utils.setTimeout;
 	
 	import mx.utils.StringUtil;
 	
+	import org.cytoscapeweb.ApplicationFacade;
+	import org.cytoscapeweb.model.ConfigProxy;
+	import org.cytoscapeweb.model.GraphProxy;
 	import org.cytoscapeweb.util.NodeShapes;
 	
 
@@ -58,10 +64,24 @@ package org.cytoscapeweb.view.render {
         
         private var _imgCache:ImageCache = ImageCache.instance;
         
+        private var _graphProxy:GraphProxy;
+        protected function get graphProxy():GraphProxy {
+            if (_graphProxy == null)
+                _graphProxy = ApplicationFacade.getInstance().retrieveProxy(GraphProxy.NAME) as GraphProxy;
+            return _graphProxy;
+        }
+        
+        private var _configProxy:ConfigProxy;
+        protected function get configProxy():ConfigProxy {
+            if (_configProxy == null)
+                _configProxy = ApplicationFacade.getInstance().retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
+            return _configProxy;
+        }
+        
         // ========[ PUBLIC METHODS ]===============================================================
         
         /** @inheritDoc */
-        public override function render(d:DataSprite):void {
+        public override function render(d:DataSprite):void {trace("RENDER NODE: " + d.data.id);
             var lineAlpha:Number = d.lineAlpha;
             var fillAlpha:Number = d.fillAlpha;
             var size:Number = d.size * defaultSize;
@@ -79,7 +99,7 @@ package org.cytoscapeweb.view.render {
                 // Using a bit mask to avoid transparent mdes when fillcolor=0xffffffff.
                 // See https://sourceforge.net/forum/message.php?msg_id=7393265
                 g.beginFill(0xffffff & d.fillColor, fillAlpha);
-                drawShape(d, size);
+                drawShape(d, d.shape, size);
                 g.endFill();
                 
                 // 2. Draw an image on top:
@@ -89,10 +109,10 @@ package org.cytoscapeweb.view.render {
         
         // ========[ PRIVATE METHODS ]==============================================================
         
-        private function drawShape(d:DataSprite, size:Number):void {
-            var g:Graphics = d.graphics;
+        private function drawShape(s:Sprite, shape:String, size:Number):void {
+            var g:Graphics = s.graphics;
             
-            switch (d.shape) {
+            switch (shape) {
                 case null:
                     break;
                 case NodeShapes.RECTANGLE:
@@ -105,7 +125,7 @@ package org.cytoscapeweb.view.render {
                 case NodeShapes.PARALLELOGRAM:
                 case NodeShapes.V:
                     var r:Rectangle = new Rectangle(-size/2, -size/2, size, size);
-                    var points:Array = NodeShapes.getDrawPoints(r, d.shape);
+                    var points:Array = NodeShapes.getDrawPoints(r, shape);
                     Shapes.drawPolygon(g, points);
                     break;
                 case NodeShapes.ROUND_RECTANGLE:
@@ -138,24 +158,81 @@ package org.cytoscapeweb.view.render {
                     }, 50);
                 }
                 
-                function draw():void {trace("Will DRAW...");
+                function draw():void {trace("Will DRAW...: " + d.data.id);
                     // Get the image from cache:
-                    var bmp:BitmapData = _imgCache.getImage(url);
+                    var bd:BitmapData = _imgCache.getImage(url);
                     
-                    if (bmp != null) {
-                        var maxBmpSize:Number = Math.max(bmp.height, bmp.width);
-                        var scale:Number =  size/maxBmpSize;
-    
+                    if (bd != null) {
+                        var bmpSize:Number = Math.max(bd.height, bd.width);
+                        var maxZoom:Number = configProxy.maxZoom;
+                        
+                        // Reduce the image, if it is too large, to avoid some rendering issues:
+//                        const MAX_BMP_SCALE:uint = 30;
+//                        var zoom:Number = graphProxy.zoom;
+//                        var maxBmpSize:Number = size * zoom * MAX_BMP_SCALE;
+//                        
+//                        if (bmpSize > maxBmpSize) {
+//                            bd = resizeBitmap(bd, maxBmpSize/bmpSize);
+//                            bmpSize = Math.max(bd.height, bd.width);
+//                        }
+                        
+                        bd = resizeBitmapToFit(bd, size*maxZoom, size*maxZoom);
+                        bmpSize = Math.max(bd.height, bd.width);
+                        
+                        var scale:Number =  size/bmpSize;
+
                         var m:Matrix = new Matrix();
                         m.scale(scale, scale);
-                        m.translate(-size/2, -size/2);
-    
-                        d.graphics.beginBitmapFill(bmp, m, false, true);
-                        drawShape(d, size);
+                        m.translate(-(bd.width*scale)/2, -(bd.height*scale)/2);
+                        
+                        var b:Bitmap = new Bitmap();
+                        
+                        d.graphics.beginBitmapFill(bd, m, false, true);
+                        drawShape(d, d.shape, size);
                         d.graphics.endFill();
                     }
                 }
             }
         }
+        
+        private function resizeBitmapToFit(bd:BitmapData, nw:Number, nh:Number):BitmapData {
+            if (bd.width > 0 && bd.height > 0) {
+                var w:Number = bd.width;
+                var h:Number = bd.height;
+                var originalRatio:Number = w/h;
+                var maxRatio:Number = nw/nh;
+                var scale:Number;
+                
+                if (originalRatio > maxRatio) { // scale by width
+                    scale = nw/w;
+                } else { // scale by height
+                    scale = nh/h;
+                }
+                
+                var m:Matrix = new Matrix();
+                m.scale(scale, scale);
+                m.translate(nw/2-(w*scale)/2, nh/2-(h*scale)/2);
+                
+                var bd2:BitmapData = new BitmapData(nw, nh, true, 0x000000);
+                bd2.draw(bd, m, null, null, null, true);
+    
+                var bmp:Bitmap = new Bitmap(bd2, PixelSnapping.NEVER, true);
+                return bmp.bitmapData;
+            }
+            
+            return bd;
+        }
+        
+//        private function resizeBitmap(bd:BitmapData, scale:Number):BitmapData {   
+//            var matrix:Matrix = new Matrix();
+//            matrix.scale(scale, scale);
+//            
+//            var bd2:BitmapData = new BitmapData(bd.width * scale, bd.height * scale, true, 0x000000);
+//            bd2.draw(bd, matrix, null, null, null, true);
+//
+//            var bmp:Bitmap = new Bitmap(bd2, PixelSnapping.NEVER, true);
+//            
+//            return bmp.bitmapData;
+//        }
     }
 }
