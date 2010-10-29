@@ -40,6 +40,8 @@ package org.cytoscapeweb.view.render {
     import org.cytoscapeweb.model.data.DiscreteVizMapperVO;
     import org.cytoscapeweb.model.data.VisualPropertyVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
+    import org.cytoscapeweb.model.methods.error;
+    import org.cytoscapeweb.util.ErrorCodes;
     import org.cytoscapeweb.util.VisualProperties;
     import org.cytoscapeweb.util.methods.$each;
     
@@ -52,7 +54,8 @@ package org.cytoscapeweb.view.render {
         
         // ========[ PRIVATE PROPERTIES ]===========================================================
         
-        private var _images:Dictionary = new Dictionary();
+        private var _images:Object = {};
+        private var _broken:Object = {};
         
         // ========[ PUBLIC METHODS ]===============================================================
         
@@ -68,6 +71,11 @@ package org.cytoscapeweb.view.render {
             return _images[url] != null;
         }
         
+        public function isBroken(url:String):Boolean {
+            url = normalize(url);
+            return _broken[url];
+        }
+        
         public function contains(url:String):Boolean {
             url = normalize(url);
             return _images[url] !== undefined;
@@ -75,7 +83,8 @@ package org.cytoscapeweb.view.render {
         
         public function loadImages(style:VisualStyleVO):void {
             // First, clean the cache:
-            _images = new Dictionary();
+            _images = {};
+            _broken = {};
             
             // Then load all distinct URL values:
             $each(IMG_PROPS, function(i:uint, pname:String):Boolean { 
@@ -109,6 +118,7 @@ package org.cytoscapeweb.view.render {
             
             if (url.length > 0) {
                 _images[url] = null; // this flags the image state as "loading"
+                _broken[url] = false;
                 
                 var urlRequest:URLRequest = new URLRequest(url);
                 var loader:Loader = new Loader();
@@ -116,11 +126,12 @@ package org.cytoscapeweb.view.render {
                 loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):void {trace(">> IMG LOADED: " + url);
                     bmp = e.target.content.bitmapData;
                     _images[url] = bmp;
+                    _broken[url] = false;
                 });
                 
-                loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void {
-                    trace("NodeRenderer - Error loading image: " + e);
-                    // TODO: Do something else?
+                loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void {trace("ImageCache - Error loading image: " + e);
+                    _broken[url] = true;
+                    error("Image cannot be loaded: " + url, ErrorCodes.BROKEN_IMAGE, e.type, e.text);
                 });
                 
                 loader.load(urlRequest);

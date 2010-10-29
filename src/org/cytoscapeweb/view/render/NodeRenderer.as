@@ -145,16 +145,16 @@ package org.cytoscapeweb.view.render {
                 if (!_imgCache.contains(url)) {trace("Will load IMAGE...");
                     _imgCache.loadImage(url);
                 }
-                if (_imgCache.isLoaded(url)) {trace("% LOADED :-)"); 
+                if (_imgCache.isLoaded(url)) {trace("% LOADED :-)");
                     draw();
-                } else {trace("% NOT loaded :-("); 
+                } else {trace("% NOT loaded :-(");
                     drawWhenLoaded();
                 }
 
                 function drawWhenLoaded():void {
                     setTimeout(function():void {trace("TIMEOUT: Checking again...");
                         if (_imgCache.isLoaded(url)) draw();
-                        else drawWhenLoaded();
+                        else if (!_imgCache.isBroken(url)) drawWhenLoaded();
                     }, 50);
                 }
                 
