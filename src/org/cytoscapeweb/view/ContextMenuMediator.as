@@ -39,8 +39,8 @@ package org.cytoscapeweb.view {
     
     import org.cytoscapeweb.ApplicationFacade;
     import org.cytoscapeweb.model.ContextMenuProxy;
+    import org.cytoscapeweb.model.converters.ExternalObjectConverter;
     import org.cytoscapeweb.util.ExternalFunctions;
-    import org.cytoscapeweb.util.GraphUtils;
     import org.cytoscapeweb.util.Groups;
         
     /**
@@ -151,7 +151,7 @@ package org.cytoscapeweb.view {
                 menuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,
                     function(evt:ContextMenuEvent):void {
                         var target:* = _rolledOverNode ? _rolledOverNode : _rolledOverEdge;
-                        target = GraphUtils.toExtObject(target);
+                        target = ExternalObjectConverter.toExtObject(target);
                         
                         var body:Object = { functionName: ExternalFunctions.INVOKE_CONTEXT_MENU_CALLBACK, 
                                             argument: { type: "contextmenu",

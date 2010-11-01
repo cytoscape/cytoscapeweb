@@ -32,6 +32,7 @@ package org.cytoscapeweb {
 	
 	import org.cytoscapeweb.model.ConfigProxy;
 	import org.cytoscapeweb.model.GraphProxy;
+	import org.cytoscapeweb.model.converters.ExternalObjectConverterTest;
 	import org.cytoscapeweb.model.converters.SIFConverterTest;
 	import org.cytoscapeweb.model.converters.XGMMLConverterTest;
 	import org.cytoscapeweb.model.data.ConfigVOTest;
@@ -41,7 +42,6 @@ package org.cytoscapeweb {
 	import org.cytoscapeweb.model.data.VisualPropertyVOTest;
 	import org.cytoscapeweb.model.data.VisualStyleVOTest;
 	import org.cytoscapeweb.model.data.VizMapperVOTest;
-	import org.cytoscapeweb.util.GraphUtilsTest;
 	import org.cytoscapeweb.util.UtilsTest;
 	import org.cytoscapeweb.util.VisualPropertiesTest;
 	import org.cytoscapeweb.view.render.LabelerTest;
@@ -52,7 +52,6 @@ package org.cytoscapeweb {
 		    setupEnvironment();
 
 			addTestSuite(UtilsTest);
-			addTestSuite(GraphUtilsTest);
 			addTestSuite(VisualPropertiesTest);
 			
 			addTestSuite(VisualPropertyVOTest);
@@ -69,6 +68,7 @@ package org.cytoscapeweb {
 			
 			addTestSuite(XGMMLConverterTest);
 			addTestSuite(SIFConverterTest);
+			addTestSuite(ExternalObjectConverterTest);
 		}
 		
 		private function setupEnvironment():void {

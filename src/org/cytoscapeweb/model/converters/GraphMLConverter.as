@@ -101,7 +101,7 @@ package org.cytoscapeweb.model.converters {
         private static const STRING:String = "string";
         private static const DATE:String = "date";
 
-		// ========[ PUBLIC PROPERTIES ]============================================================
+		// ========[ PUBLIC METHODS ]===============================================================
 		
 		/** @inheritDoc */
 		public function read(input:IDataInput, schema:DataSchema=null):DataSet {
@@ -115,29 +115,30 @@ package org.cytoscapeweb.model.converters {
 		}
 		
 		/** @inheritDoc */
-		public function write(data:DataSet, output:IDataOutput=null):IDataOutput {			
+		public function write(ds:DataSet, output:IDataOutput=null):IDataOutput {			
 			// init GraphML
 			var graphml:XML = new XML(GRAPHML_HEADER);
 			
 			// add schema
-			graphml = addSchema(graphml, data.nodes.schema, NODE, NODE_ATTR);
-			graphml = addSchema(graphml, data.edges.schema, EDGE, EDGE_ATTR);
+			graphml = addSchema(graphml, ds.nodes.schema, NODE, NODE_ATTR);
+			graphml = addSchema(graphml, ds.edges.schema, EDGE, EDGE_ATTR);
 			
 			// add graph data
 			var graph:XML = new XML(<graph/>);
-			var ed:Object = data.edges.schema.getFieldByName(DIRECTED).defaultValue;
+			var ed:Object = ds.edges.schema.getFieldByName(DIRECTED).defaultValue;
 			// ############################################
 			// Patch for a Flare bug:
 			// ############################################
 			// graph.@[EDGEDEF] = ed==DIRECTED ? DIRECTED : UNDIRECTED;
 			graph.@[EDGEDEF] = ed ? DIRECTED : UNDIRECTED;
 			// ############################################
-			addData(graph, data.nodes.data, data.nodes.schema, NODE, NODE_ATTR);
-			addData(graph, data.edges.data, data.edges.schema, EDGE, EDGE_ATTR);
+			addData(graph, ds.nodes.data, ds.nodes.schema, NODE, NODE_ATTR);
+			addData(graph, ds.edges.data, ds.edges.schema, EDGE, EDGE_ATTR);
 			graphml = graphml.appendChild(graph);
 			
 			if (output == null) output = new ByteArray();
 			output.writeUTFBytes(graphml.toXMLString());
+			
 			return output;
 		}
 		
@@ -172,7 +173,7 @@ package org.cytoscapeweb.model.converters {
                 id       = key.@[ID].toString();
                 group    = key.@[FOR].toString();
                 attrName = key.@[ATTRNAME].toString();
-                type     = toType(key.@[ATTRTYPE].toString());
+                type     = toCW_Type(key.@[ATTRTYPE].toString());
                 def = key[DEFAULT].toString();
                 def = def != null && def.length > 0
                     ? DataUtil.parseValue(def, type) : null;
@@ -203,9 +204,9 @@ package org.cytoscapeweb.model.converters {
                 
                 // error checking
                 if (!lookup.hasOwnProperty(sid))
-                    error("Edge "+id+" references unknown node: "+sid);
+                    throw new Error("Edge "+id+" references unknown node: "+sid);
                 if (!lookup.hasOwnProperty(tid))
-                    error("Edge "+id+" references unknown node: "+tid);
+                    throw new Error("Edge "+id+" references unknown node: "+tid);
                                 
                 edges.push(e = parseData(edge, edgeSchema));
             }
@@ -265,7 +266,7 @@ package org.cytoscapeweb.model.converters {
 				key.@[ID] = field.id;
 				key.@[FOR] = group;
 				key.@[ATTRNAME] = field.name;
-				key.@[ATTRTYPE] = fromType(field.type);
+				key.@[ATTRTYPE] = fromCW_Type(field.type);
 			
 				if (field.defaultValue != null) {
 					var def:XML = new XML(<default/>);
@@ -288,7 +289,7 @@ package org.cytoscapeweb.model.converters {
 					if (field != null && value == field.defaultValue) continue;
 
                     var dataType:int = field != null ? field.type : Utils.dataType(value);
-                    var type:String = fromType(dataType); // GraphML type
+                    var type:String = fromCW_Type(dataType); // GraphML type
 
 					if (attrs.hasOwnProperty(name)) {
 						// add as attribute
@@ -304,7 +305,7 @@ package org.cytoscapeweb.model.converters {
 
 				xml.appendChild(x);
 			});
-		}	
+		}
 		
 		// -- static helpers --------------------------------------------------
 		
@@ -312,27 +313,22 @@ package org.cytoscapeweb.model.converters {
 			return o.toString(); // TODO: formatting control?
 		}
 		
-		private static function toType(type:String):int {
+		private static function toCW_Type(type:String):int {
 			switch (type) {
 				case INT:
-				case INTEGER:
-					return DataUtil.INT;
+				case INTEGER: return DataUtil.INT;
 				case LONG:
 				case FLOAT:
 				case DOUBLE:
-				case REAL:
-					return DataUtil.NUMBER;
-				case BOOLEAN:
-					return DataUtil.BOOLEAN;
-				case DATE:
-					return DataUtil.DATE;
+				case REAL:    return DataUtil.NUMBER;
+				case BOOLEAN: return DataUtil.BOOLEAN;
+				case DATE:    return DataUtil.DATE;
 				case STRING:
-				default:
-					return DataUtil.STRING;
+				default:      return DataUtil.STRING;
 			}
 		}
 		
-		private static function fromType(type:int):String {
+		private static function fromCW_Type(type:int):String {
 			switch (type) {
 				case DataUtil.INT: 		return INT;
 				case DataUtil.BOOLEAN: 	return BOOLEAN;

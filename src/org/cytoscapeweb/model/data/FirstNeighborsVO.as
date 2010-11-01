@@ -32,6 +32,7 @@ package org.cytoscapeweb.model.data {
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
     
+    import org.cytoscapeweb.model.converters.ExternalObjectConverter;
     import org.cytoscapeweb.util.GraphUtils;
     
 
@@ -152,10 +153,10 @@ package org.cytoscapeweb.model.data {
         public function toObject():Object {
             var obj:Object = {};
             
-            obj.rootNodes = GraphUtils.toExtObjectsArray(rootNodes);
-            obj.neighbors = GraphUtils.toExtObjectsArray(neighbors);
-            obj.edges = GraphUtils.toExtObjectsArray(edges);
-            obj.mergedEdges = GraphUtils.toExtObjectsArray(mergedEdges);
+            obj.rootNodes = ExternalObjectConverter.toExtObjectsArray(rootNodes);
+            obj.neighbors = ExternalObjectConverter.toExtObjectsArray(neighbors);
+            obj.edges = ExternalObjectConverter.toExtObjectsArray(edges);
+            obj.mergedEdges = ExternalObjectConverter.toExtObjectsArray(mergedEdges);
             
             return obj;
         }

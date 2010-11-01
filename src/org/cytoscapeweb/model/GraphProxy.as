@@ -49,6 +49,7 @@ package org.cytoscapeweb.model {
 	
 	import org.cytoscapeweb.ApplicationFacade;
 	import org.cytoscapeweb.model.converters.GraphMLConverter;
+	import org.cytoscapeweb.model.converters.ExternalObjectConverter;
 	import org.cytoscapeweb.model.converters.SIFConverter;
 	import org.cytoscapeweb.model.converters.XGMMLConverter;
 	import org.cytoscapeweb.model.data.ConfigVO;
@@ -666,11 +667,13 @@ package org.cytoscapeweb.model {
             }
         }
 
-        public function loadGraph(network:String, layout:*):void {
-            if (network != null) {
-                try {
+        public function loadGraph(network:*, layout:*):void {
+            try {
+                var ds:DataSet;
+                
+                if (network is String) {
+                    // Text:
                     var xml:XML = new XML(network);
-                    var ds:DataSet;
                     
                     if (xml != null && xml.name() != null) {
                         var isGraphml:Boolean = xml.name().localName === GraphMLConverter.GRAPHML;
@@ -702,17 +705,18 @@ package org.cytoscapeweb.model {
                         // SIF:
                         ds = new SIFConverter().parse(network);
                     }
-                    
-                    _nodesSchema = ds.nodes.schema;
-                    _edgesSchema = ds.edges.schema;
-                    
-                    setData(Data.fromDataSet(ds));
-                } catch (err:Error) {
-                    trace("[ERROR]: onLoadGraph_result: " + err.getStackTrace());
-                    throw err;
+                } else {
+                    // Plain objects:
+                    ds = ExternalObjectConverter.convertToDataSet(network);
                 }
-            } else {
-                throw new Error("Cannot load network: data is empty!");
+                
+                _nodesSchema = ds.nodes.schema;
+                _edgesSchema = ds.edges.schema;
+                
+                setData(Data.fromDataSet(ds));
+            } catch (err:Error) {
+                trace("[ERROR]: onLoadGraph_result: " + err.getStackTrace());
+                throw err;
             }
         }
         

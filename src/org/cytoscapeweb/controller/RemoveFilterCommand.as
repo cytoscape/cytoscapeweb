@@ -29,8 +29,8 @@
 */
 package org.cytoscapeweb.controller {
     import org.cytoscapeweb.ApplicationFacade;
+    import org.cytoscapeweb.model.converters.ExternalObjectConverter;
     import org.cytoscapeweb.util.ExternalFunctions;
-    import org.cytoscapeweb.util.GraphUtils;
     import org.cytoscapeweb.util.Groups;
     import org.puremvc.as3.interfaces.INotification;
     
@@ -95,7 +95,7 @@ package org.cytoscapeweb.controller {
                         if (fe != null) all = all.concat(fe);
                     }
     
-                    objs = GraphUtils.toExtObjectsArray(all);
+                    objs = ExternalObjectConverter.toExtObjectsArray(all);
                     body = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
                              argument: { type: type, group: Groups.NONE, target: objs } };
     

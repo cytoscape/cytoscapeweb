@@ -30,8 +30,6 @@
 package org.cytoscapeweb.view {
     import com.adobe.serialization.json.JSON;
     
-    import flare.data.DataField;
-    import flare.data.DataUtil;
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
     
@@ -42,12 +40,12 @@ package org.cytoscapeweb.view {
     import mx.utils.Base64Encoder;
     
     import org.cytoscapeweb.ApplicationFacade;
+    import org.cytoscapeweb.model.converters.ExternalObjectConverter;
     import org.cytoscapeweb.model.data.FirstNeighborsVO;
     import org.cytoscapeweb.model.data.VisualStyleBypassVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
     import org.cytoscapeweb.model.methods.error;
     import org.cytoscapeweb.util.ExternalFunctions;
-    import org.cytoscapeweb.util.GraphUtils;
     import org.cytoscapeweb.util.Groups;
     import org.puremvc.as3.interfaces.INotification;
         
@@ -287,39 +285,39 @@ package org.cytoscapeweb.view {
         }
 
         private function getNodeById(id:String):String {
-            var obj:Object = GraphUtils.toExtObject(graphProxy.getNode(id));
+            var obj:Object = ExternalObjectConverter.toExtObject(graphProxy.getNode(id));
             return JSON.encode(obj);
         }
         
         private function getEdgeById(id:String):String {
-            var obj:Object = GraphUtils.toExtObject(graphProxy.getEdge(id));
+            var obj:Object = ExternalObjectConverter.toExtObject(graphProxy.getEdge(id));
             return JSON.encode(obj);
         }
         
         private function getNodes():String {
-            var arr:Array = GraphUtils.toExtObjectsArray(graphProxy.graphData.nodes);
+            var arr:Array = ExternalObjectConverter.toExtObjectsArray(graphProxy.graphData.nodes);
             return JSON.encode(arr);
         }
         
         private function getEdges():String {
             var edges:Array = graphProxy.edges;
-            var arr:Array = GraphUtils.toExtObjectsArray(edges);
+            var arr:Array = ExternalObjectConverter.toExtObjectsArray(edges);
             return JSON.encode(arr);
         }
         
         private function getMergedEdges():String {
             var edges:Array = graphProxy.mergedEdges;
-            var arr:Array = GraphUtils.toExtObjectsArray(edges);
+            var arr:Array = ExternalObjectConverter.toExtObjectsArray(edges);
             return JSON.encode(arr);
         }
         
         private function getSelectedNodes():String {
-            var arr:Array = GraphUtils.toExtObjectsArray(graphProxy.selectedNodes);
+            var arr:Array = ExternalObjectConverter.toExtObjectsArray(graphProxy.selectedNodes);
             return JSON.encode(arr);
         }
         
         private function getSelectedEdges():String {
-            var arr:Array = GraphUtils.toExtObjectsArray(graphProxy.selectedEdges);
+            var arr:Array = ExternalObjectConverter.toExtObjectsArray(graphProxy.selectedEdges);
             return JSON.encode(arr);
         }
         
@@ -367,7 +365,7 @@ package org.cytoscapeweb.view {
                 graphMediator.initialize(Groups.NODES, [n]);
                 
                 if (updateVisualMappers) sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
-                o = GraphUtils.toExtObject(n);
+                o = ExternalObjectConverter.toExtObject(n);
 
             } catch (err:Error) {
                 trace("[ERROR]: addNode: " + err.getStackTrace());
@@ -387,7 +385,7 @@ package org.cytoscapeweb.view {
                 graphMediator.initialize(Groups.EDGES, [e]);
                 
                 if (updateVisualMappers) sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
-                o = GraphUtils.toExtObject(e);
+                o = ExternalObjectConverter.toExtObject(e);
                 
             } catch (err:Error) {
                 trace("[ERROR]: addEdge: " + err.getStackTrace());
@@ -405,27 +403,7 @@ package org.cytoscapeweb.view {
         }
         
         private function getDataSchema():Object {
-            var obj:Object = { nodes: [], edges: [] };
-            
-            var convert:Function = function(input:Array, output:Array):void {
-                for each (var df:DataField in input) {
-                    var type:* = df.type;
-                    switch (type) {
-                        case DataUtil.BOOLEAN: type = "boolean"; break;
-                        case DataUtil.INT:     type = "int";     break;
-                        case DataUtil.NUMBER:  type = "number";  break;
-                        case DataUtil.STRING:  type = "string";  break;
-                        case DataUtil.OBJECT:
-                        default:               type = "object";
-                    }
-                    
-                    output.push({ name: df.name, type: type, defValue: df.defaultValue });
-                }
-            };
-            
-            convert(graphProxy.nodesSchema.fields, obj.nodes);
-            convert(graphProxy.edgesSchema.fields, obj.edges);
-            
+            var obj:Object = ExternalObjectConverter.convertFromSchema(graphProxy.nodesSchema, graphProxy.edgesSchema);
             return obj;
         }
         

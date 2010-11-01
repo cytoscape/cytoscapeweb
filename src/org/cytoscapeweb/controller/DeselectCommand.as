@@ -32,8 +32,8 @@ package org.cytoscapeweb.controller {
     import flare.vis.data.NodeSprite;
     
     import org.cytoscapeweb.ApplicationFacade;
+    import org.cytoscapeweb.model.converters.ExternalObjectConverter;
     import org.cytoscapeweb.util.ExternalFunctions;
-    import org.cytoscapeweb.util.GraphUtils;
     import org.cytoscapeweb.util.Groups;
     import org.puremvc.as3.interfaces.INotification;
     
@@ -69,7 +69,7 @@ package org.cytoscapeweb.controller {
                 var objs:Array, body:Object, type:String = "deselect";
                 
                 if (nodes.length > 0 && extMediator.hasListener(type, Groups.NODES)) {
-                    objs = GraphUtils.toExtObjectsArray(nodes);
+                    objs = ExternalObjectConverter.toExtObjectsArray(nodes);
                     body = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
                              argument: { type: type, group: Groups.NODES, target: objs } };
                     
@@ -77,7 +77,7 @@ package org.cytoscapeweb.controller {
                 }
                 
                 if (edges.length > 0 && extMediator.hasListener(type, Groups.EDGES)) {
-                    objs = GraphUtils.toExtObjectsArray(edges);
+                    objs = ExternalObjectConverter.toExtObjectsArray(edges);
                     body = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
                              argument: { type: type, group: Groups.EDGES, target: objs } };
 
@@ -89,7 +89,7 @@ package org.cytoscapeweb.controller {
                     all = all.concat(nodes).concat(edges);
                     
                     if (all.length > 0) {
-                        objs = GraphUtils.toExtObjectsArray(all);
+                        objs = ExternalObjectConverter.toExtObjectsArray(all);
                         body = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
                                  argument: { type: type, group: Groups.NONE, target: objs } };
     

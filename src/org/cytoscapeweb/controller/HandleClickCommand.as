@@ -31,8 +31,8 @@ package org.cytoscapeweb.controller {
     import flare.vis.data.DataSprite;
     
     import org.cytoscapeweb.ApplicationFacade;
+    import org.cytoscapeweb.model.converters.ExternalObjectConverter;
     import org.cytoscapeweb.util.ExternalFunctions;
-    import org.cytoscapeweb.util.GraphUtils;
     import org.cytoscapeweb.util.Groups;
     import org.puremvc.as3.interfaces.INotification;
     
@@ -60,7 +60,7 @@ package org.cytoscapeweb.controller {
             
             // Call external listener:            
             if (extMediator.hasListener(type, group)) {
-                var target:Object = GraphUtils.toExtObject(ds);
+                var target:Object = ExternalObjectConverter.toExtObject(ds);
                 
                 body = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
                          argument: { type: type,
