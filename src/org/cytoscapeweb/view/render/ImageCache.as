@@ -33,7 +33,7 @@ package org.cytoscapeweb.view.render {
     import flash.events.Event;
     import flash.events.IOErrorEvent;
     import flash.net.URLRequest;
-    import flash.utils.Dictionary;
+    import flash.system.LoaderContext;
     
     import mx.utils.StringUtil;
     
@@ -134,7 +134,7 @@ package org.cytoscapeweb.view.render {
                     error("Image cannot be loaded: " + url, ErrorCodes.BROKEN_IMAGE, e.type, e.text);
                 });
                 
-                loader.load(urlRequest);
+                loader.load(urlRequest, new LoaderContext(true));
             }
         }
         
