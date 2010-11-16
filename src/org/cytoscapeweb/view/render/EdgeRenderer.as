@@ -234,7 +234,7 @@ package org.cytoscapeweb.view.render {
             points.start = sShaft.clone();
             points.end = eShaft.clone();
             points.c1 = e.shape != Shapes.LINE && op1 != null ? op1.clone() : null; // First control point of cubic bezier OR control point of quadratic bezier
-            points.c2 = e.shape != Shapes.LINE && op2 != null ? op2.clone() : null; // Second control point of cubic bezier
+            points.c2 = e.shape != Shapes.LINE && op2 != null && op2 != op1 ? op2.clone() : null; // Second control point of cubic bezier
             points.sourceArrow = saPoints != null ? saPoints.arrow : null;
             points.targetArrow = taPoints != null ? taPoints.arrow : null;
             points.sourceArrowJoint = saPoints != null ? saPoints.joint : null;

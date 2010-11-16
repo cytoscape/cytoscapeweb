@@ -1,0 +1,546 @@
+/*
+  This file is part of Cytoscape Web.
+  Copyright (c) 2009, The Cytoscape Consortium (www.cytoscape.org)
+
+  The Cytoscape Consortium is:
+    - Agilent Technologies
+    - Institut Pasteur
+    - Institute for Systems Biology
+    - Memorial Sloan-Kettering Cancer Center
+    - National Center for Integrative Biomedical Informatics
+    - Unilever
+    - University of California San Diego
+    - University of California San Francisco
+    - University of Toronto
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+*/
+package org.cytoscapeweb.model.converters { 
+    import flare.display.TextSprite;
+    import flare.vis.data.Data;
+    import flare.vis.data.DataList;
+    import flare.vis.data.DataSprite;
+    import flare.vis.data.EdgeSprite;
+    import flare.vis.data.NodeSprite;
+    
+    import flash.display.DisplayObject;
+    import flash.filters.BitmapFilter;
+    import flash.filters.GlowFilter;
+    import flash.geom.Point;
+    import flash.geom.Rectangle;
+    import flash.text.TextField;
+    
+    import org.cytoscapeweb.model.data.ConfigVO;
+    import org.cytoscapeweb.model.data.VisualStyleVO;
+    import org.cytoscapeweb.util.Anchors;
+    import org.cytoscapeweb.util.ArrowShapes;
+    import org.cytoscapeweb.util.Fonts;
+    import org.cytoscapeweb.util.NodeShapes;
+    import org.cytoscapeweb.util.Utils;
+    import org.cytoscapeweb.util.VisualProperties;
+    import org.cytoscapeweb.view.components.GraphView;
+        
+    /**
+     * Class that generates an SGV image from the network.
+     */
+    public class SVGExporter {
+        
+        // ========[ CONSTANTS ]====================================================================
+
+        private static const GLOW_WIDTH:Number = 3;
+
+        // ========[ PRIVATE PROPERTIES ]===========================================================
+        
+        private var _graphView:GraphView;
+        private var _style:VisualStyleVO;
+        private var _scale:Number;
+        private var _shiftX:Number;
+        private var _shiftY:Number;
+        
+        // ========[ PUBLIC PROPERTIES ]============================================================
+
+        public var margin:Number = 10;
+
+        // ========[ CONSTRUCTOR ]==================================================================
+        
+        public function SVGExporter(view:GraphView) {
+            this._graphView = view;         
+        }
+
+        // ========[ PUBLIC METHODS ]===============================================================
+
+        /**
+         * @param graphData
+         * @param scale The zooming scale applied to the graph.
+         * @param showLabels Whether or not labels will be included. 
+         * @param width The desired image width in pixels.
+         * @param height The desired image height in pixels.
+         */
+        public function export(graphData:Data,
+                               style:VisualStyleVO,
+                               config:ConfigVO,
+                               scale:Number=1, 
+                               width:Number=0, height:Number=0):String {
+            _style = style;
+            _scale = scale;
+            var bounds:Rectangle = _graphView.getRealBounds();
+            
+            // Width and height depends on the current zooming and
+            // we also add a margin to the image:
+            var w:Number = bounds.width/_scale + 2*margin;
+            var h:Number = bounds.height/_scale + 2*margin;
+            
+            var hPad:Number = 0
+            
+            if (width > 0 || height > 0) {
+                // If the client asked a custom size image, we need a new scale factor:
+                _scale = calculateNewScale(w,  h,  width,  height);
+                // Center image horizontally:
+                if (width/_scale > w) hPad = (width/_scale - w)/2;
+                h = height;
+                w = width;
+            } else {
+                // Otherwise, the other graphics elements don't need to be scaled: 
+                _scale = 1;
+            }
+            
+            // Create the root element:
+            var svg:String = '<?xml version="1.0" standalone="no"?>' +
+                             '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' +
+                             '<svg width="'+w+'px" height="'+h+'px" x="0px" y="0px" viewBox="0 0 '+w+' '+h+'" version="1.1" xmlns="http://www.w3.org/2000/svg">';
+            
+            // Draw the background:
+            var bgColor:String = Utils.rgbColorAsString(_style.getValue(VisualProperties.BACKGROUND_COLOR));
+            svg += '<rect x="0" y="0" width="100%" height="100%" fill="'+bgColor+'"/>';
+            
+            // Get the shift, in case one or more nodes were dragged or the graph view is not at [0,0]:
+            var sp:Point = _graphView.vis.globalToLocal(new Point(bounds.x, bounds.y));
+            _shiftX = sp.x - margin - hPad ;
+            _shiftY = sp.y - margin;
+            
+            // Draw edges and nodes:
+            svg += drawEdges(graphData.edges);
+            if (config.edgeLabelsVisible) svg += drawLabels(graphData.edges);
+            svg += drawNodes(graphData.nodes);
+            if (config.nodeLabelsVisible) svg += drawLabels(graphData.nodes);
+    
+            // Close the root element:
+            svg += '</svg>';
+    
+            return svg;
+        }
+        
+        // ========[ PRIVATE METHODS ]==============================================================
+        
+        private function drawEdges(edges:DataList):String {
+            var svg:String = '';
+            var c:String, a:Number;
+            var sortedEdges:Array = sortByZOrder(edges);
+            
+            for each (var e:EdgeSprite in sortedEdges) {
+                if (!e.visible || e.lineAlpha === 0 || e.lineWidth === 0) continue;
+                
+                // Edge points:
+                var start:Point, end:Point, c1:Point, c2:Point;
+                if (e.props.$points != null) {
+                    start = e.props.$points.start;
+                    end = e.props.$points.end;
+                    c1 = e.props.$points.c1;
+                    c2 = e.props.$points.c2;
+                }
+                
+                if (start != null && end != null) {
+                    start = toImagePoint(start, e);
+                    end = toImagePoint(end, e);
+                    
+                    if (c1 != null) c1 = toImagePoint(c1, e);
+                    if (c2 != null) c2 = toImagePoint(c2, e);
+                    
+                    // Arrows points:
+                    var sArrowPoints:Array = toImagePointsArray(e.props.$points.sourceArrow, e);
+                    var tArrowPoints:Array = toImagePointsArray(e.props.$points.targetArrow, e);
+                    var sJointPoints:Array = toImagePointsArray(e.props.$points.sourceArrowJoint, e);
+                    var tJointPoints:Array = toImagePointsArray(e.props.$points.targetArrowJoint, e);
+                    
+                    var saStyle:Object = ArrowShapes.getArrowStyle(e, e.props.sourceArrowShape, e.props.sourceArrowColor);
+                    var taStyle:Object = ArrowShapes.getArrowStyle(e, e.props.targetArrowShape, e.props.targetArrowColor);
+                    
+                    var w:Number = e.lineWidth * _scale;
+                    var loop:Boolean = e.source === e.target;
+                    
+                    // First let's draw any glow (e.g. for selected edges):
+                    // -----------------------------------------------------
+                    var filters:Array = e.filters;
+                    
+                    for each (var f:BitmapFilter in filters) {
+                        if (f is GlowFilter) {
+                            var glow:GlowFilter = f as GlowFilter;
+                            var gw:Number = w + (GLOW_WIDTH * _scale);
+                            c = Utils.rgbColorAsString(glow.color);
+                            a = Math.min(glow.alpha, e.alpha);
+                            
+                            // The current version of AlivePDF does not support glows, gradients, etc.
+                            // So we just draw a bigger shape behind the node:
+                            svg += '<g stroke-linejoin="round" stroke-width="'+gw+'" stroke-linecap="butt" fill="none" stroke-opacity="'+a+'" stroke="'+c+'">';
+                            svg += drawEdgeShaft(start, end, c1, c2, loop);
+                            svg += '</g>';
+                            
+                            // Arrow glow:
+                            gw = GLOW_WIDTH * _scale;
+                            
+                            svg += '<g fill="'+c+'" fill-opacity="'+a+'" stroke-linejoin="round" stroke-width="'+gw+'" stroke-linecap="butt" stroke-opacity="'+a+'" stroke="'+c+'">';
+                            svg += drawEdgeArrow(saStyle.shape, sArrowPoints, saStyle.height*_scale);
+                            svg += drawEdgeArrowJoint(sJointPoints, saStyle.shape);
+                            svg += drawEdgeArrow(taStyle.shape, tArrowPoints, taStyle.height*_scale);
+                            svg += drawEdgeArrowJoint(tJointPoints, taStyle.shape);
+                            svg += '</g>';
+                        }
+                    }
+                    
+                    c = Utils.rgbColorAsString(e.lineColor);
+                    a = e.alpha;
+                    
+                    // Draw the edge's line and joints:
+                    // -----------------------------------------------------
+                    svg += '<g stroke-linejoin="round" stroke-width="'+w+'" stroke-linecap="butt" fill="none" stroke-opacity="'+a+'" stroke="'+c+'">';
+                    svg += drawEdgeShaft(start, end, c1, c2, loop);
+                    svg += '</g>';
+                    
+                    // Draw arrow joints:
+                    // -----------------------------------------------------
+                    svg += '<g fill="'+c+'" fill-opacity="'+a+'" stroke="none">';
+                    svg += drawEdgeArrowJoint(sJointPoints, saStyle.shape);
+                    svg += drawEdgeArrowJoint(tJointPoints, taStyle.shape);
+                    svg += '</g>';
+                    
+                    // Draw arrows:
+                    // -----------------------------------------------------
+                    c = Utils.rgbColorAsString(saStyle.color);
+                    svg += '<g fill="'+c+'" fill-opacity="'+a+'" stroke="none">';
+                    svg += drawEdgeArrow(saStyle.shape, sArrowPoints, saStyle.height*_scale);
+                    svg += '</g>';
+                    
+                    c = Utils.rgbColorAsString(taStyle.color);
+                    svg += '<g fill="'+c+'" fill-opacity="'+a+'" stroke="none">';
+                    svg += drawEdgeArrow(taStyle.shape, tArrowPoints, taStyle.height*_scale);
+                    svg += '</g>';
+                }
+            }
+            
+            return svg;
+        }
+        
+        private function drawNodes(nodes:DataList):String {
+            var svg:String = '';
+            
+            // First, sort nodes by their z-order,
+            // so overlapping nodes will have the same position in the generated image:
+            var sortedNodes:Array = sortByZOrder(nodes);
+            var c:String, lc:String, a:Number, lw:Number;
+            var w:Number, h:Number;
+            
+            for each (var n:NodeSprite in sortedNodes) {
+                if (!n.visible || n.alpha === 0) continue;
+                
+                // Get the Global node point (relative to the stage):
+                var np:Point = toImagePoint(new Point(n.x, n.y), n);
+                
+                // First let's draw any node glow (e.g. for selected nodes):
+                var filters:Array = n.filters;
+                for each (var f:BitmapFilter in filters) {
+                    if (f is GlowFilter) {
+                        var glow:GlowFilter = f as GlowFilter;
+                        lw = GLOW_WIDTH * _scale;
+                        lc = Utils.rgbColorAsString(glow.color);
+                        a = Math.min(glow.alpha, n.alpha);
+                        w = (n.width + GLOW_WIDTH) * _scale;
+                        h = (n.height + GLOW_WIDTH) * _scale;
+                        
+                        // The current version of AlivePDF does not support glows, gradients, etc.
+                        // So we just draw a bigger shape behind the node:
+                        svg += '<g fill="none" stroke="'+lc+'" stroke-linejoin="round" stroke-width="'+lw+'" stroke-linecap="butt" stroke-opacity="'+a+'">';
+                        svg += drawNodeShape(n.shape, np.x, np.y, w, h);
+                        svg += '</g>';
+                    }
+                }
+                
+                // Then draw the node:
+                lw = n.lineWidth*_scale;
+                lc = Utils.rgbColorAsString(n.lineColor);
+                c = Utils.rgbColorAsString(n.fillColor);
+                a = n.alpha;
+                w = (n.width - n.lineWidth) * _scale;
+                h = (n.height - n.lineWidth) * _scale;
+                
+                svg += '<g fill="'+c+'" fill-opacity="'+a+'" stroke="'+lc+'" stroke-linejoin="round" stroke-width="'+lw+'" stroke-linecap="butt" stroke-opacity="'+a+'">';
+                svg += drawNodeShape(n.shape, np.x, np.y, w, h);
+                svg += '</g>';
+            }
+            
+            return svg;
+        }
+        
+        private function drawLabels(data:DataList):String {
+            var svg:String = '';
+            
+            for each (var d:DataSprite in data) {
+                var lbl:TextSprite = d.props.label;
+                
+                if (lbl != null && lbl.visible && lbl.alpha > 0) {
+                    var text:String = lbl.text;
+                    var lblSize:int = Math.round(lbl.size*_scale);
+                    
+                    if (text == null || text === "" || lblSize < 1) continue;
+                    var field:TextField = lbl.textField;
+
+                    // ATTENTION!!!
+                    // It seems that Flash does not convert points to pixels correctly. 
+                    // See: - http://alarmingdevelopment.org/?p=66
+                    //      - http://www.actionscript.org/forums/showthread.php3?p=821842
+                    // I found out that the text height is usually 28% smaller than the label size.
+                    var textHeight:Number = lbl.size * 0.72;
+                    var textWidth:Number = field.textWidth;
+
+                    // Get the Global label point (relative to the stage):
+                    var p:Point = toImagePoint(new Point(lbl.x, lbl.y), lbl);
+                    var hAnchor:String = Anchors.CENTER;
+                    var vAnchor:String = Anchors.MIDDLE;
+                    
+                    if (d is NodeSprite) {
+                        hAnchor = _style.getValue(VisualProperties.NODE_LABEL_HANCHOR, d.data);
+                        vAnchor = _style.getValue(VisualProperties.NODE_LABEL_VANCHOR, d.data);
+                    }
+
+                    var hpad:Number = 2;
+                    switch (hAnchor) {
+                        case Anchors.LEFT:   p.x += hpad * _scale; break;
+                        case Anchors.CENTER: p.x -= (textWidth/2)*_scale; break;
+                        case Anchors.RIGHT:  p.x -= (textWidth + hpad)*_scale; break;
+                    }
+                    // Vertical anchor:
+                    // The label height is different from the real text height, because
+                    // there is a margin between the text and the text field border:
+                    var vpad:Number = 2;
+                    switch (vAnchor) {
+                        case Anchors.TOP:    p.y += (field.height - textHeight)/2 * _scale; break;
+                        case Anchors.MIDDLE: p.y -= textHeight/2 * _scale; break;
+                        case Anchors.BOTTOM: p.y -= (vpad + textHeight) * _scale; break;
+                    }
+                    
+                    // Flare's label cordinates is relative to the label's upper-left corner (x,y)=(0,0),
+                    // but AlivePDF uses the bottom-left corner instead (x,y)=(0,fonSize):
+                    p.y += textHeight*_scale;
+
+                    var style:String = lbl.italic ? 'italic': 'normal';
+                    var weight:String = lbl.bold ? 'bold' : 'normal';
+                    
+                    // Choose the most similar font:
+                    var family:String = lbl.font;
+                    if (family == Fonts.SANS_SERIF) family = 'sans-serif';
+                    else if (family == Fonts.SERIF) family = 'serif';
+                    else if (family == Fonts.TYPEWRITER) family = 'courier';
+                    
+                    var c:String = Utils.rgbColorAsString(lbl.color);
+                    var a:Number = lbl.alpha;
+                    
+                    svg += '<text font-family="'+family+'" font-style="'+style+'" font-weight="'+weight+'" stroke="none" fill="'+c+'"' +
+                                ' fill-opacity="'+a+'" font-size="'+lblSize+'" x="'+p.x+'" y="'+p.y+'">' + text+ '</text>';
+                }
+            }
+            
+            return svg;
+        }
+        
+        private function drawNodeShape(shape:String, x:Number, y:Number, w:Number, h:Number):String {
+            var svg:String = '';
+            var r:Rectangle = new Rectangle(x-w/2, y-h/2, w, h);
+            
+            switch (shape) {
+                case NodeShapes.ELLIPSE:
+                    svg += '<circle cx="'+x+'" cy="'+y+'" r="'+(h/2)+'"/>';
+                    break;
+                case NodeShapes.RECTANGLE:
+                    svg += '<rect x="'+(x-w/2)+'" y="'+(y-h/2)+'" width="'+w+'" height="'+h+'"/>';
+                    break;
+                case NodeShapes.ROUND_RECTANGLE:
+                    // corners (and control points), clockwise:
+                    var x1:Number = x - w/2, y1:Number = y - h/2;
+                    var x2:Number = x + w/2, y2:Number = y1;
+                    var x3:Number = x2,      y3:Number = y + h/2;
+                    var x4:Number = x1,      y4:Number = y3;
+                    // rounded corner width/height:
+                    var w4:Number = w/4, h4:Number = h/4;
+                    
+                    svg += '<path d="M'+(x1+w4)+','+(y1) +
+                                   ' L'+(x2-w4)+','+(y2) +
+                                   ' Q'+(x2)+','+(y2)+' '+(x2)+','+(y2+h4) +
+                                   ' L'+(x3)+','+(y4-h4) +
+                                   ' Q'+(x3)+','+(y3)+' '+(x3-w4)+','+(y3) +
+                                   ' L'+(x4+w4)+','+(y4) +
+                                   ' Q'+(x4)+','+(y4)+' '+(x4)+','+(y4-h4) +
+                                   ' L'+(x1)+','+(y1+h4) +
+                                   ' Q'+(x1)+','+(y1)+' '+(x1+w4)+','+(y1)+'"/>';
+                    break;
+                default:
+                    var points:Array = NodeShapes.getDrawPoints(r, shape);
+                    var pp:String = '';
+                    for (var i:int = 0; i < points.length; i += 2) pp += (points[i]+','+points[i+1]+' ');
+                    svg += '<polygon points="'+pp+'"/>';
+            }
+            
+            return svg;
+        }
+        
+        private function drawEdgeShaft(start:Point, end:Point, c1:Point, c2:Point, loop:Boolean):String {
+            var svg:String = '<path d="M'+start.x+','+start.y+' ';
+            
+            if (c1 != null) {
+                // Curve:
+                if (c2 != null) {
+                    // Cubic bezier:
+                    if (loop) {
+                        // Invert control points:
+                        var p:Point = c1.clone();
+                        c1 = c2.clone();
+                        c2 = p;
+                    }
+                    svg += 'C'+c1.x+","+c1.y+" "+c2.x+","+c2.y+" "+end.x+','+end.y;
+                } else {
+                    // Quadratic bezier:
+                    svg += 'Q'+c1.x+","+c1.y+" "+end.x+','+end.y;
+                }
+            } else {
+                // Line:
+                svg += 'L'+end.x+','+end.y;
+            }
+            svg += '"/>';
+            
+            return svg;
+        }
+        
+        private function drawEdgeArrow(shape:String, points:Array, diameter:Number=0):String {
+            var svg:String = '';
+            
+            if (points != null && points.length > 0) {
+                if (shape === ArrowShapes.CIRCLE) {
+                    var center:Point = points[0];
+                    svg += '<circle cx="'+center.x+'" cy="'+center.y+'" r="'+(diameter/2)+'"/>';
+                } else if (shape === ArrowShapes.ARROW) {
+                    var p1:Point = points[0];
+                    var c1:Point = points[1];
+                    var p2:Point = points[2];
+                    var p3:Point = points[3];
+                    var c2:Point = points[4];
+                    svg += '<path d="M'+p1.x+','+p1.y +
+                                   ' Q'+c1.x+','+c1.y+' '+p2.x+','+p2.y +
+                                   ' L'+p3.x+','+p3.y +
+                                   ' Q'+c2.x+','+c2.y+' '+p1.x+','+p1.y+'"/>';
+                } else {
+                    // Draw a polygon:
+                    var pp:String = '';
+                    for each (var p:Point in points) pp += (p.x+','+p.y+' ');
+                    svg += '<polygon points="'+pp+'"/>';
+                }
+            }
+            
+            return svg;
+        }
+        
+        private function drawEdgeArrowJoint(points:Array, arrowShape:String):String {
+            var svg:String = '';
+            
+            if (points != null && points.length > 0) {
+                switch (arrowShape) {
+                    case ArrowShapes.CIRCLE:
+                        if (points.length > 4) {
+                            svg += '<path d="M'+points[0].x+','+points[0].y +
+                                           ' L'+points[1].x+','+points[1].y +
+                                           ' L'+points[2].x+','+points[2].y +
+                                           ' L'+points[3].x+','+points[2].y +
+                                           ' Q'+points[4].x+','+points[4].y+' '+points[0].x+','+points[0].y+'"/>';
+                        }
+                        break;
+                    default:
+                        var pp:String = '';
+                        for each (var p:Point in points) pp += (p.x+','+p.y+' ');
+                        svg += '<polygon points="'+pp+'"/>';
+                        break;
+                }
+            }
+            
+            return svg;
+        }
+        
+         private function sortByZOrder(list:DataList):Array {
+            var arr:Array = new Array();
+            
+            for each (var sp:DataSprite in list) arr.push(sp);
+            
+            arr.sort(function(a:DataSprite, b:DataSprite):int {
+                var z1:int = a.parent.getChildIndex(a);
+                var z2:int = b.parent.getChildIndex(b);
+                
+                return z1 < z2 ? -1 : (z1 > z2 ? 1 : 0);
+            });
+            
+            return arr;
+        }
+        
+        /**
+         * It converts a sprite coordinate to its correspondent element in the PDF.
+         */
+        private function toImagePoint(p:Point, display:DisplayObject):Point {
+            // Get the Global point (relative to the stage):
+            var ip:Point = display.parent.localToGlobal(p);
+            // Get the local point, relative to the graph container:
+            ip = _graphView.vis.globalToLocal(ip);
+            // Remove the shift:
+            ip.x -= _shiftX;
+            ip.y -= _shiftY;
+            ip.x *= _scale;
+            ip.y *= _scale;
+            
+            return ip;
+        }
+        
+        private function toImagePointsArray(points:Array, display:DisplayObject):Array {
+            var arr:Array;
+            
+            if (points != null) {
+                arr = [];
+                for each (var p:Point in points) {
+                   arr.push(toImagePoint(p, display));
+                }
+            }
+            
+            return arr;
+        }
+
+        private function calculateNewScale(w:Number, h:Number, newW:Number, newH:Number):Number {
+            if (newW == 0) newW = w;
+            if (newH == 0) newH = h;
+            
+            var graphEdge:Number = w; 
+            var pageEdge:Number = newW;
+            
+            if (h/w > newH/newW) {
+                graphEdge = h;
+                pageEdge = newH;
+            }
+     
+            return pageEdge / graphEdge;
+        }
+    }
+}

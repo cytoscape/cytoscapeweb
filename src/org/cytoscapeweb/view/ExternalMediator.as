@@ -428,12 +428,15 @@ package org.cytoscapeweb.view {
             if (options == null) options = {};
             // TODO: Refactor - proxy should NOT use a mediator!!!
             var appMediator:ApplicationMediator = facade.retrieveMediator(ApplicationMediator.NAME) as ApplicationMediator;
-            var ba:ByteArray = appMediator.getGraphImage(format, options.width, options.height);
+            var img:* = appMediator.getGraphImage(format, options.width, options.height);
             
-            var encoder:Base64Encoder = new Base64Encoder();
-            encoder.encodeBytes(ba);
+            if (img is ByteArray) {
+                var encoder:Base64Encoder = new Base64Encoder();
+                encoder.encodeBytes(img);
+                img = encoder.toString();
+            }
 
-            return encoder.toString();
+            return "" + img;
         }
         
         private function exportNetwork(format:String, url:String, options:Object=null):void {

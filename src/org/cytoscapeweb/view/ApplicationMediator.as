@@ -51,6 +51,7 @@ package org.cytoscapeweb.view {
 	
 	import org.cytoscapeweb.ApplicationFacade;
 	import org.cytoscapeweb.model.converters.PDFExporter;
+	import org.cytoscapeweb.model.converters.SVGExporter;
 	import org.cytoscapeweb.model.data.VisualStyleVO;
 	import org.cytoscapeweb.model.methods.$;
 	import org.cytoscapeweb.util.ExternalFunctions;
@@ -201,9 +202,10 @@ package org.cytoscapeweb.view {
             application.graphBox.setStyle("backgroundColor", bgColor);
         }
         
-        public function getGraphImage(type:String="png", width:Number=0, height:Number=0):ByteArray {
-            var bytes:ByteArray;
+        public function getGraphImage(type:String="png", width:Number=0, height:Number=0):* {
+            var image:*;
             var scale:Number = graphProxy.zoom;
+            type = type != null ? type.toLowerCase() : "png";
 
             // Otherwise, it may draw the shapes incorrectly, or labels might have wrong alignment:
             if (scale !== 1) graphView.zoomTo(1);
@@ -221,22 +223,29 @@ package org.cytoscapeweb.view {
                 source.draw(graphView.vis, matrix);
 
                 var encoder:PNGEncoder = new PNGEncoder();
-                bytes = encoder.encode(source);
-            } else {
-                // PDF:
-                var pdfConv:PDFExporter = new PDFExporter(graphView);
-                bytes = pdfConv.export(graphProxy.graphData,
+                image = encoder.encode(source);
+            } else if (type === "svg") {
+                var svgConv:SVGExporter = new SVGExporter(graphView);
+                image = svgConv.export(graphProxy.graphData,
                                        configProxy.visualStyle,
                                        configProxy.config,
                                        graphProxy.zoom,
                                        width,
                                        height);
+            } else {
+                // PDF:
+                var pdfExp:PDFExporter = new PDFExporter(graphView);
+                image = pdfExp.export(graphProxy.graphData,
+                                      configProxy.visualStyle,
+                                      configProxy.config,
+                                      graphProxy.zoom,
+                                      width,
+                                      height);
             }
             
             // Set previous scale:
             if (scale != graphProxy.zoom) graphView.zoomTo(scale);
-            
-            return bytes;
+            return image;
         }
         
         public function showPanZoomControl(visible:Boolean):void {

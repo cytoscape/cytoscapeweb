@@ -35,7 +35,6 @@ package org.cytoscapeweb.view.render {
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Graphics;
-	import flash.display.PixelSnapping;
 	import flash.display.Sprite;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
@@ -46,6 +45,7 @@ package org.cytoscapeweb.view.render {
 	import org.cytoscapeweb.ApplicationFacade;
 	import org.cytoscapeweb.model.ConfigProxy;
 	import org.cytoscapeweb.model.GraphProxy;
+	import org.cytoscapeweb.util.Images;
 	import org.cytoscapeweb.util.NodeShapes;
 	
 
@@ -163,7 +163,6 @@ package org.cytoscapeweb.view.render {
                     var bd:BitmapData = _imgCache.getImage(url);
                     
                     if (bd != null) {
-                        var bmpSize:Number = Math.max(bd.height, bd.width);
                         var maxZoom:Number = configProxy.maxZoom;
                         
                         // Reduce the image, if it is too large, to avoid some rendering issues:
@@ -176,8 +175,9 @@ package org.cytoscapeweb.view.render {
 //                            bmpSize = Math.max(bd.height, bd.width);
 //                        }
                         
-                        bd = resizeBitmapToFit(bd, size*maxZoom, size*maxZoom);
-                        bmpSize = Math.max(bd.height, bd.width);
+                        // TODO: only if "tofit_cropping" option:
+//                        bd = Images.resizeBitmapToFit(bd, size*maxZoom, size*maxZoom);
+                        var bmpSize:Number = Math.min(bd.height, bd.width);
                         
                         var scale:Number =  size/bmpSize;
 
@@ -194,45 +194,5 @@ package org.cytoscapeweb.view.render {
                 }
             }
         }
-        
-        private function resizeBitmapToFit(bd:BitmapData, nw:Number, nh:Number):BitmapData {
-            if (bd.width > 0 && bd.height > 0) {
-                var w:Number = bd.width;
-                var h:Number = bd.height;
-                var originalRatio:Number = w/h;
-                var maxRatio:Number = nw/nh;
-                var scale:Number;
-                
-                if (originalRatio > maxRatio) { // scale by width
-                    scale = nw/w;
-                } else { // scale by height
-                    scale = nh/h;
-                }
-                
-                var m:Matrix = new Matrix();
-                m.scale(scale, scale);
-                m.translate(nw/2-(w*scale)/2, nh/2-(h*scale)/2);
-                
-                var bd2:BitmapData = new BitmapData(nw, nh, true, 0x000000);
-                bd2.draw(bd, m, null, null, null, true);
-    
-                var bmp:Bitmap = new Bitmap(bd2, PixelSnapping.NEVER, true);
-                return bmp.bitmapData;
-            }
-            
-            return bd;
-        }
-        
-//        private function resizeBitmap(bd:BitmapData, scale:Number):BitmapData {   
-//            var matrix:Matrix = new Matrix();
-//            matrix.scale(scale, scale);
-//            
-//            var bd2:BitmapData = new BitmapData(bd.width * scale, bd.height * scale, true, 0x000000);
-//            bd2.draw(bd, matrix, null, null, null, true);
-//
-//            var bmp:Bitmap = new Bitmap(bd2, PixelSnapping.NEVER, true);
-//            
-//            return bmp.bitmapData;
-//        }
     }
 }

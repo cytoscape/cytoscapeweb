@@ -1238,6 +1238,19 @@
         },
         
         /**
+         * <p>Return an SVG image.</p>
+         * @param {Object} [options] Additional options:
+         *                           <ul class="options">
+         *                               <li><code>width</code>:</strong> The desired width of the image in pixels.</li>
+         *                               <li><code>height</code>:</strong> The desired height of the image in pixels.</li>
+         *                           </ul>
+         * @return {String} The SVG image.
+         */
+        svg: function (options) {
+        	return this.swf().getNetworkAsImage("svg", options);
+        },
+        
+        /**
          * <p>Return the network as a PNG image.</p>
          * @return {String} The PNG binary data encoded to a Base64 string.
          */
