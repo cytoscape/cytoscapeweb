@@ -257,6 +257,35 @@ package org.cytoscapeweb.util {
         public static function bezierPos(a:Number, b:Number, c:Number, t:Number):Number {
             return a*(1-t)*(1-t) + 2*c*(1-t)*t + b*t*t;
         }
+        
+        /**
+         * Simple linear interpolation between two points (see http://www.cubic.org/docs/bezier.htm).
+         */
+        public static function lerp(a:Point, b:Point, t:Number):Point {
+            var p:Point = new Point();
+            p.x = a.x + (b.x-a.x)*t;
+            p.y = a.y + (b.y-a.y)*t;
+            return p;
+        }
+
+        /**
+         * Evaluate a point on a cubic bezier-curve. t goes from 0 to 1.0.
+         * DeCasteljau Algorithm (see http://www.cubic.org/docs/bezier.htm).
+         * 
+         * @param a The start point of the curve.
+         * @param b The first control point of the bezier.
+         * @param c The second control point of the bezier.
+         * @param d The end point.
+         */
+        public static function cubicBezierPoint(a:Point, b:Point, c:Point, d:Point, t:Number):Point {
+            var ab:Point = lerp(a,b,t);
+            var bc:Point = lerp(b, c, t);
+            var cd:Point = lerp(c, d, t);
+            var abbc:Point = lerp(ab, bc, t);
+            var bccd:Point = lerp(bc, cd, t);
+            var p:Point = lerp(abbc, bccd, t);
+            return p;
+        }
 
         public static function dataType(value:*):int {
             var type:int = DataUtil.OBJECT;

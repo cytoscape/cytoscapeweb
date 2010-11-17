@@ -29,6 +29,7 @@
 */
 package org.cytoscapeweb.model.data {
     import org.cytoscapeweb.util.ArrowShapes;
+    import org.cytoscapeweb.util.LineStyles;
     import org.cytoscapeweb.util.NodeShapes;
     import org.cytoscapeweb.util.Utils;
 
@@ -94,6 +95,8 @@ package org.cytoscapeweb.model.data {
                     mergeWidth: 1,
                     opacity: 0.8,
                     mergeOpacity: 0.8,
+                    style: LineStyles.SOLID,
+                    mergeStyle: LineStyles.SOLID,
                     sourceArrowShape: "none",
                     targetArrowShape: {
                         defaultValue: "none",

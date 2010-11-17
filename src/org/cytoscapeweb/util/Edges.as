@@ -84,6 +84,7 @@ package org.cytoscapeweb.util {
                     lineWidth: lineWidth,
                     shape: shape,
                     lineColor: lineColor,
+                    "props.lineStyle": lineStyle,
                     alpha: alpha,
                     visible: visible,
                     arrowHeight: 10, // default value, when edge width = 1
@@ -92,9 +93,9 @@ package org.cytoscapeweb.util {
                     "props.targetArrowShape": targetArrowShape,
                     "props.sourceArrowColor": sourceArrowColor,
                     "props.targetArrowColor": targetArrowColor,
-                    renderer: renderer,
                     "props.curvature": curvature,
                     filters: filters,
+                    renderer: renderer,
                     buttonMode: true,
                     mouseChildren: false
                 };
@@ -131,6 +132,13 @@ package org.cytoscapeweb.util {
                 propName = VisualProperties.EDGE_SELECTION_COLOR;
             else if (e.props.$merged) 
                 propName = VisualProperties.EDGE_COLOR_MERGE;
+            
+            return style.getValue(propName, e.data);
+        }
+        
+        public static function lineStyle(e:EdgeSprite):String {
+            var propName:String = VisualProperties.EDGE_STYLE;
+            if (e.props.$merged) propName = VisualProperties.EDGE_STYLE_MERGE;
             
             return style.getValue(propName, e.data);
         }

@@ -104,10 +104,12 @@ package org.cytoscapeweb.util {
         public static const EDGE_COLOR:String = "edges.color";
         public static const EDGE_WIDTH:String = "edges.width";
         public static const EDGE_ALPHA:String = "edges.opacity";
+        public static const EDGE_STYLE:String = "edges.style";
         
         public static const EDGE_COLOR_MERGE:String = "edges.mergeColor";
         public static const EDGE_WIDTH_MERGE:String = "edges.mergeWidth";
         public static const EDGE_ALPHA_MERGE:String = "edges.mergeOpacity";
+        public static const EDGE_STYLE_MERGE:String = "edges.mergeStyle";
 
         public static const EDGE_SOURCE_ARROW_SHAPE:String = "edges.sourceArrowShape";
         public static const EDGE_SOURCE_ARROW_COLOR:String = "edges.sourceArrowColor";

@@ -28,6 +28,8 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.view.render {
+	import com.senocular.drawing.DashedLine;
+	
 	import flare.util.Geometry;
 	import flare.util.Shapes;
 	import flare.vis.data.DataSprite;
@@ -40,6 +42,7 @@ package org.cytoscapeweb.view.render {
 	import flash.geom.Rectangle;
 	
 	import org.cytoscapeweb.util.ArrowShapes;
+	import org.cytoscapeweb.util.LineStyles;
 	import org.cytoscapeweb.util.NodeShapes;
 	import org.cytoscapeweb.util.Utils;
 	
@@ -174,27 +177,69 @@ package org.cytoscapeweb.view.render {
 
             // Draw the line of the edge:
             // ---------------------------
+            var lineStyle:String = e.props.lineStyle;
+            var solid:Boolean = lineStyle === LineStyles.SOLID;
+            var dashedLine:DashedLine;
+            
             g.clear();
             
-            g.lineStyle(w, color, 1, pixelHinting, scaleMode, caps, joints, miterLimit); 
-            g.moveTo(sShaft.x, sShaft.y);
+            if (solid) {
+                g.lineStyle(w, color, 1, pixelHinting, scaleMode, caps, joints, miterLimit);
+                g.moveTo(sShaft.x, sShaft.y);
+            } else {
+                var onLength:Number = LineStyles.getOnLength(e, lineStyle);
+                var offLength:Number = LineStyles.getOffLength(e, lineStyle);
+                
+                dashedLine = new DashedLine(e, onLength, offLength);
+                dashedLine.lineStyle(w, color, 1);
+                dashedLine.moveTo(sShaft.x, sShaft.y);
+                
+                var newCaps:String = LineStyles.getCaps(lineStyle);
+                g.lineStyle(w, color, 1, pixelHinting, scaleMode, newCaps, joints, miterLimit);
+            }
             
             if (loop) {
-                Shapes.drawCubic(g, sShaft.x, sShaft.y, op2.x, op2.y, op1.x, op1.y, eShaft.x, eShaft.y, false);
+                if (solid) {
+                    Shapes.drawCubic(g, sShaft.x, sShaft.y, op2.x, op2.y, op1.x, op1.y, eShaft.x, eShaft.y, false);
+                } else {
+                    // We cannot draw a cubic bezier here, so let's just split it in 2 quadratic curves...
+                    // First, find the middle point of the original cubic curve:
+                    var m:Point = Utils.cubicBezierPoint(sShaft, op2, op1, eShaft, 0.5);
+                    var cp1:Point = Utils.cubicBezierPoint(sShaft, op2, op1, eShaft, 0.25);
+                    var cp2:Point = Utils.cubicBezierPoint(sShaft, op2, op1, eShaft, 0.75);
+                    
+                    // Find the middle point of a segment that goes from the edge's start point the edge's middle point:
+                    var ms:Point = Point.interpolate(m, sShaft, 0.5);
+                    // Find the middle point of a segment that goes from the edge's end point the edge's middle point:
+                    var me:Point = Point.interpolate(m, eShaft, 0.5);
+
+                    // Move the original contol point--just an aproximation:
+                    cp1 = Utils.lerp(ms, cp1, 1.9);
+                    cp2 = Utils.lerp(me, cp2, 1.9);
+                    
+                    // Draw 2 quadratic bezier curves:
+                    dashedLine.curveTo(cp1.x, cp1.y, m.x, m.y);
+                    dashedLine.curveTo(cp2.x, cp2.y, eShaft.x, eShaft.y);
+                }
             } else {
                 if (e.shape != Shapes.LINE) {
-                    if (nd > 5*w) {
-                        // Nodes are not too close...
-                        g.curveTo(op1.x, op1.y, eShaft.x, eShaft.y);
+                    if (solid) {
+                        if (nd > 5*w) {
+                            // Nodes are not too close...
+                            g.curveTo(op1.x, op1.y, eShaft.x, eShaft.y);
+                        } else {
+                            // Flash has a knowm problem with cubic beziers, which can create artifacts.
+                            // Let's try to avoid it by using a quadratic bezier, instead:
+                            var c1:Point = new Point(), c2:Point = new Point();
+                            Utils.quadraticToCubic(sShaft, op1, eShaft, c1, c2);
+                            Shapes.drawCubic(g, sShaft.x, sShaft.y, c1.x, c1.y, c2.x, c2.y, eShaft.x, eShaft.y, false);
+                        }
                     } else {
-                        // Flash has a knowm problem with cubic beziers, which can create artifacts.
-                        // Let's try to avoid it by using a quadratic bezier, instead:
-                        var c1:Point = new Point(), c2:Point = new Point();
-                        Utils.quadraticToCubic(sShaft, op1, eShaft, c1, c2);
-                        Shapes.drawCubic(g, sShaft.x, sShaft.y, c1.x, c1.y, c2.x, c2.y, eShaft.x, eShaft.y, false);
+                        dashedLine.curveTo(op1.x, op1.y, eShaft.x, eShaft.y);
                     }
                 } else {
-                    g.lineTo(eShaft.x, eShaft.y);
+                    if (solid) g.lineTo(eShaft.x, eShaft.y);
+                    else       dashedLine.lineTo(eShaft.x, eShaft.y);
                 }
             }
 

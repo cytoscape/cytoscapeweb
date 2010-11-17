@@ -2500,6 +2500,12 @@
      * <ul class="options"><li><code>color</code> {String}: Color of edges. The default value is "#999999".</li>
      *     <li><code>width</code> {Number}: Line width of edges. The default value is 1 pixel.</li>
      *     <li><code>opacity</code> {Number}: The edge opacity (0 to 1). The default value is 0.8.</li>
+     *     <li><code>style</code> {String}: The edge line style.
+     *                                      One of: <code>"SOLID"</code>, <code>"DOT"</code>, <code>"LONG_DASH"</code>, <code>"EQUAL_DASH"</code>.
+     *                                      The default value is <code>"SOLID"</code>.</li>
+     *     <li><code>mergeStyle</code> {String}: The line style for merged edges.
+     *                                           One of: <code>"SOLID"</code>, <code>"DOT"</code>, <code>"LONG_DASH"</code>, <code>"EQUAL_DASH"</code>.
+     *                                           The default value is <code>"SOLID"</code>.</li>
      *     <li><code>mergeColor</code> {String}: Line color for merged edges. The default value is "#666666".</li>
      *     <li><code>mergeWidth</code> {Number}: Line width for merged edges. The default value is 1 pixel.</li>
      *     <li><code>mergeOpacity</code> {Number}: Opacity of merged edges (0 to 1). The default value is 0.8.</li>
