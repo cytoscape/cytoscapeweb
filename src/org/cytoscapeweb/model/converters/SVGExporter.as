@@ -35,6 +35,7 @@ package org.cytoscapeweb.model.converters {
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
     
+    import flash.display.CapsStyle;
     import flash.display.DisplayObject;
     import flash.filters.BitmapFilter;
     import flash.filters.GlowFilter;
@@ -47,6 +48,7 @@ package org.cytoscapeweb.model.converters {
     import org.cytoscapeweb.util.Anchors;
     import org.cytoscapeweb.util.ArrowShapes;
     import org.cytoscapeweb.util.Fonts;
+    import org.cytoscapeweb.util.LineStyles;
     import org.cytoscapeweb.util.NodeShapes;
     import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.VisualProperties;
@@ -179,6 +181,18 @@ package org.cytoscapeweb.model.converters {
                     
                     var w:Number = e.lineWidth * _scale;
                     var loop:Boolean = e.source === e.target;
+                    var lineStyle:String = e.props.lineStyle;
+                    var solid:Boolean = lineStyle === LineStyles.SOLID;
+                    var cap:String = 'butt';
+                    var dashArr:String = '';
+                    
+                    if (!solid) {
+                        var onLength:Number = LineStyles.getOnLength(e, lineStyle);
+                        var offLength:Number = LineStyles.getOffLength(e, lineStyle);
+                        dashArr = 'stroke-dasharray="'+onLength+','+offLength+'"';
+                        cap = LineStyles.getCaps(lineStyle);
+                        cap = cap === CapsStyle.ROUND ? 'round' : 'butt';
+                    }
                     
                     // First let's draw any glow (e.g. for selected edges):
                     // -----------------------------------------------------
@@ -193,7 +207,7 @@ package org.cytoscapeweb.model.converters {
                             
                             // The current version of AlivePDF does not support glows, gradients, etc.
                             // So we just draw a bigger shape behind the node:
-                            svg += '<g stroke-linejoin="round" stroke-width="'+gw+'" stroke-linecap="butt" fill="none" stroke-opacity="'+a+'" stroke="'+c+'">';
+                            svg += '<g stroke-linejoin="round" stroke-width="'+gw+'" stroke-linecap="'+cap+'" fill="none" stroke-opacity="'+a+'" stroke="'+c+'" '+dashArr+'>';
                             svg += drawEdgeShaft(start, end, c1, c2, loop);
                             svg += '</g>';
                             
@@ -214,7 +228,7 @@ package org.cytoscapeweb.model.converters {
                     
                     // Draw the edge's line and joints:
                     // -----------------------------------------------------
-                    svg += '<g stroke-linejoin="round" stroke-width="'+w+'" stroke-linecap="butt" fill="none" stroke-opacity="'+a+'" stroke="'+c+'">';
+                    svg += '<g stroke-linejoin="round" stroke-width="'+w+'" stroke-linecap="'+cap+'" fill="none" stroke-opacity="'+a+'" stroke="'+c+'" '+dashArr+'>';
                     svg += drawEdgeShaft(start, end, c1, c2, loop);
                     svg += '</g>';
                     
