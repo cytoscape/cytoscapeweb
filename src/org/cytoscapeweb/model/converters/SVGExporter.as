@@ -35,6 +35,7 @@ package org.cytoscapeweb.model.converters {
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
     
+    import flash.display.BitmapData;
     import flash.display.CapsStyle;
     import flash.display.DisplayObject;
     import flash.filters.BitmapFilter;
@@ -42,17 +43,23 @@ package org.cytoscapeweb.model.converters {
     import flash.geom.Point;
     import flash.geom.Rectangle;
     import flash.text.TextField;
+    import flash.utils.ByteArray;
+    
+    import mx.graphics.codec.PNGEncoder;
+    import mx.utils.Base64Encoder;
     
     import org.cytoscapeweb.model.data.ConfigVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
     import org.cytoscapeweb.util.Anchors;
     import org.cytoscapeweb.util.ArrowShapes;
     import org.cytoscapeweb.util.Fonts;
+    import org.cytoscapeweb.util.Images;
     import org.cytoscapeweb.util.LineStyles;
     import org.cytoscapeweb.util.NodeShapes;
     import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.VisualProperties;
     import org.cytoscapeweb.view.components.GraphView;
+    import org.cytoscapeweb.view.render.ImageCache;
         
     /**
      * Class that generates an SGV image from the network.
@@ -70,6 +77,7 @@ package org.cytoscapeweb.model.converters {
         private var _scale:Number;
         private var _shiftX:Number;
         private var _shiftY:Number;
+        private var _imgCache:ImageCache = ImageCache.instance;
         
         // ========[ PUBLIC PROPERTIES ]============================================================
 
@@ -121,7 +129,8 @@ package org.cytoscapeweb.model.converters {
             // Create the root element:
             var svg:String = '<?xml version="1.0" standalone="no"?>' +
                              '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' +
-                             '<svg width="'+w+'px" height="'+h+'px" x="0px" y="0px" viewBox="0 0 '+w+' '+h+'" version="1.1" xmlns="http://www.w3.org/2000/svg">';
+                             '<svg width="'+w+'px" height="'+h+'px" x="0px" y="0px" viewBox="0 0 '+w+' '+h+'" ' +
+                                  'version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">';
             
             // Draw the background:
             var bgColor:String = Utils.rgbColorAsString(_style.getValue(VisualProperties.BACKGROUND_COLOR));
@@ -264,6 +273,8 @@ package org.cytoscapeweb.model.converters {
             var sortedNodes:Array = sortByZOrder(nodes);
             var c:String, lc:String, a:Number, lw:Number;
             var w:Number, h:Number;
+            var nodeSvgShape:String;
+            var img:BitmapData;
             
             for each (var n:NodeSprite in sortedNodes) {
                 if (!n.visible || n.alpha === 0) continue;
@@ -297,9 +308,39 @@ package org.cytoscapeweb.model.converters {
                 a = n.alpha;
                 w = (n.width - n.lineWidth) * _scale;
                 h = (n.height - n.lineWidth) * _scale;
-                
+ 
                 svg += '<g fill="'+c+'" fill-opacity="'+a+'" stroke="'+lc+'" stroke-linejoin="round" stroke-width="'+lw+'" stroke-linecap="butt" stroke-opacity="'+a+'">';
-                svg += drawNodeShape(n.shape, np.x, np.y, w, h);
+                
+                // Basic node shape
+                svg += (nodeSvgShape = drawNodeShape(n.shape, np.x, np.y, w, h));
+                
+                // Node image, if any:
+                img = _imgCache.getImage(n.props.imageUrl);
+                
+                if (img != null) {
+                    // Rescale image:
+                    var bmpSize:Number = Math.min(img.height, img.width);
+                    var scale:Number = w/bmpSize;
+                    img = Images.resizeBitmap(img, scale);
+                    
+                    // Encode as PNG and get bytes as Base64:
+                    var encoder:PNGEncoder = new PNGEncoder();
+                    var ba:ByteArray = encoder.encode(img);
+                    var b64Enc:Base64Encoder = new Base64Encoder();
+                    b64Enc.encodeBytes(ba);
+                    var b64:String = b64Enc.toString();
+                    var mimeType:String = 'image/PNG';// TODO
+                    
+                    svg += '<clipPath id="clipNode_'+n.data.id+'">';
+                    svg += nodeSvgShape;
+                    svg += '</clipPath>';
+                    svg += '<g clip-path="url(#clipNode_'+n.data.id+')">';
+                    svg += '<g transform="matrix(1, 0, 0, 1, '+(np.x-w/2)+', '+(np.y-h/2)+')">';
+                    svg += '<image x="0" y="0" width="'+img.width+'" height="'+img.height+'" xlink:href="data:'+mimeType+';base64,'+b64+'"/>';
+                    svg += '</g>';
+                    svg += '</g>';
+                }
+                
                 svg += '</g>';
             }
             

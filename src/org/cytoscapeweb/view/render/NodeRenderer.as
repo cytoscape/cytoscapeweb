@@ -32,7 +32,6 @@ package org.cytoscapeweb.view.render {
 	import flare.vis.data.DataSprite;
 	import flare.vis.data.render.ShapeRenderer;
 	
-	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Graphics;
 	import flash.display.Sprite;
@@ -45,7 +44,6 @@ package org.cytoscapeweb.view.render {
 	import org.cytoscapeweb.ApplicationFacade;
 	import org.cytoscapeweb.model.ConfigProxy;
 	import org.cytoscapeweb.model.GraphProxy;
-	import org.cytoscapeweb.util.Images;
 	import org.cytoscapeweb.util.NodeShapes;
 	
 
@@ -163,10 +161,9 @@ package org.cytoscapeweb.view.render {
                     var bd:BitmapData = _imgCache.getImage(url);
                     
                     if (bd != null) {
-                        var maxZoom:Number = configProxy.maxZoom;
-                        
                         // Reduce the image, if it is too large, to avoid some rendering issues:
 //                        const MAX_BMP_SCALE:uint = 30;
+//                        var maxZoom:Number = configProxy.maxZoom;
 //                        var zoom:Number = graphProxy.zoom;
 //                        var maxBmpSize:Number = size * zoom * MAX_BMP_SCALE;
 //                        
@@ -178,14 +175,11 @@ package org.cytoscapeweb.view.render {
                         // TODO: only if "tofit_cropping" option:
 //                        bd = Images.resizeBitmapToFit(bd, size*maxZoom, size*maxZoom);
                         var bmpSize:Number = Math.min(bd.height, bd.width);
-                        
-                        var scale:Number =  size/bmpSize;
+                        var scale:Number = size/bmpSize;
 
                         var m:Matrix = new Matrix();
                         m.scale(scale, scale);
                         m.translate(-(bd.width*scale)/2, -(bd.height*scale)/2);
-                        
-                        var b:Bitmap = new Bitmap();
                         
                         d.graphics.beginBitmapFill(bd, m, false, true);
                         drawShape(d, d.shape, size);

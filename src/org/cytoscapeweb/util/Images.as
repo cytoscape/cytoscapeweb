@@ -75,16 +75,16 @@ package org.cytoscapeweb.util {
             return bd;
         }
     
-//        private function resizeBitmap(bd:BitmapData, scale:Number):BitmapData {   
-//            var matrix:Matrix = new Matrix();
-//            matrix.scale(scale, scale);
-//            
-//            var bd2:BitmapData = new BitmapData(bd.width * scale, bd.height * scale, true, 0x000000);
-//            bd2.draw(bd, matrix, null, null, null, true);
-//
-//            var bmp:Bitmap = new Bitmap(bd2, PixelSnapping.NEVER, true);
-//            
-//            return bmp.bitmapData;
-//        }
+        public static function resizeBitmap(bd:BitmapData, scale:Number):BitmapData {   
+            var matrix:Matrix = new Matrix();
+            matrix.scale(scale, scale);
+            
+            var bd2:BitmapData = new BitmapData(bd.width * scale, bd.height * scale, true, 0x000000);
+            bd2.draw(bd, matrix, null, null, null, true);
+
+            var bmp:Bitmap = new Bitmap(bd2, PixelSnapping.NEVER, true);
+            
+            return bmp.bitmapData;
+        }
     }
 }
