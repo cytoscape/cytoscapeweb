@@ -196,11 +196,11 @@ package org.cytoscapeweb.model.converters {
                     var dashArr:String = '';
                     
                     if (!solid) {
-                        var onLength:Number = LineStyles.getOnLength(e, lineStyle);
-                        var offLength:Number = LineStyles.getOffLength(e, lineStyle);
+                        var onLength:Number = LineStyles.getOnLength(e, lineStyle, _scale);
+                        var offLength:Number = LineStyles.getOffLength(e, lineStyle, _scale);
                         dashArr = 'stroke-dasharray="'+onLength+','+offLength+'"';
                         cap = LineStyles.getCaps(lineStyle);
-                        cap = cap === CapsStyle.ROUND ? 'round' : 'butt';
+                        if (cap === CapsStyle.ROUND) cap = 'round';
                     }
                     
                     // First let's draw any glow (e.g. for selected edges):
@@ -319,9 +319,7 @@ package org.cytoscapeweb.model.converters {
                 
                 if (img != null) {
                     // Rescale image:
-                    var bmpSize:Number = Math.min(img.height, img.width);
-                    var scale:Number = w/bmpSize;
-                    img = Images.resizeBitmap(img, scale);
+                    img = Images.resizeToFill(img, new Rectangle(0, 0, w, h));
                     
                     // Encode as PNG and get bytes as Base64:
                     var encoder:PNGEncoder = new PNGEncoder();
@@ -329,14 +327,13 @@ package org.cytoscapeweb.model.converters {
                     var b64Enc:Base64Encoder = new Base64Encoder();
                     b64Enc.encodeBytes(ba);
                     var b64:String = b64Enc.toString();
-                    var mimeType:String = 'image/PNG';// TODO
                     
                     svg += '<clipPath id="clipNode_'+n.data.id+'">';
                     svg += nodeSvgShape;
                     svg += '</clipPath>';
                     svg += '<g clip-path="url(#clipNode_'+n.data.id+')">';
                     svg += '<g transform="matrix(1, 0, 0, 1, '+(np.x-w/2)+', '+(np.y-h/2)+')">';
-                    svg += '<image x="0" y="0" width="'+img.width+'" height="'+img.height+'" xlink:href="data:'+mimeType+';base64,'+b64+'"/>';
+                    svg += '<image x="0" y="0" width="'+img.width+'" height="'+img.height+'" xlink:href="data:image/PNG;base64,'+b64+'"/>';
                     svg += '</g>';
                     svg += '</g>';
                 }

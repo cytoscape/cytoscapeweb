@@ -161,19 +161,6 @@ package org.cytoscapeweb.view.render {
                     var bd:BitmapData = _imgCache.getImage(url);
                     
                     if (bd != null) {
-                        // Reduce the image, if it is too large, to avoid some rendering issues:
-//                        const MAX_BMP_SCALE:uint = 30;
-//                        var maxZoom:Number = configProxy.maxZoom;
-//                        var zoom:Number = graphProxy.zoom;
-//                        var maxBmpSize:Number = size * zoom * MAX_BMP_SCALE;
-//                        
-//                        if (bmpSize > maxBmpSize) {
-//                            bd = resizeBitmap(bd, maxBmpSize/bmpSize);
-//                            bmpSize = Math.max(bd.height, bd.width);
-//                        }
-                        
-                        // TODO: only if "tofit_cropping" option:
-//                        bd = Images.resizeBitmapToFit(bd, size*maxZoom, size*maxZoom);
                         var bmpSize:Number = Math.min(bd.height, bd.width);
                         var scale:Number = size/bmpSize;
 

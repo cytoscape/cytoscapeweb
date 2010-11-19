@@ -32,6 +32,7 @@ package org.cytoscapeweb.util {
     import flash.display.BitmapData;
     import flash.display.PixelSnapping;
     import flash.geom.Matrix;
+    import flash.geom.Rectangle;
     
     public class Images {
         
@@ -46,38 +47,32 @@ package org.cytoscapeweb.util {
 
         // ========[ PUBLIC METHODS ]===============================================================
 
-        public static function resizeBitmapToFit(bd:BitmapData, nw:Number, nh:Number):BitmapData {
-            if (bd.width > 0 && bd.height > 0) {
+        public static function resizeToFill(bd:BitmapData, rect:Rectangle):BitmapData {
+            if (bd.width > 0 && bd.height > 0 && rect.height > 0 && rect.width > 0) {
+            	var rw:Number = rect.width;
+            	var rh:Number = rect.height;
                 var w:Number = bd.width;
                 var h:Number = bd.height;
                 var originalRatio:Number = w/h;
-                var maxRatio:Number = nw/nh;
+                var maxRatio:Number = rw/rh;
                 var scale:Number;
                 
-                if (originalRatio > maxRatio) { // scale by width
-                    scale = nw/w;
+                if (originalRatio < maxRatio) { // scale by width
+                    scale = rw/w;
                 } else { // scale by height
-                    scale = nh/h;
+                    scale = rh/h;
                 }
                 
-                var m:Matrix = new Matrix();
-                m.scale(scale, scale);
-                m.translate(nw/2-(w*scale)/2, nh/2-(h*scale)/2);
-                
-                var bd2:BitmapData = new BitmapData(nw, nh, true, 0x000000);
-                bd2.draw(bd, m, null, null, null, true);
-    
-                var bmp:Bitmap = new Bitmap(bd2, PixelSnapping.NEVER, true);
-                
-                return bmp.bitmapData;
+                bd = resize(bd, scale, rw/2-(w*scale)/2, rh/2-(h*scale)/2);
             }
             
             return bd;
         }
     
-        public static function resizeBitmap(bd:BitmapData, scale:Number):BitmapData {   
+        public static function resize(bd:BitmapData, scale:Number, dx:Number=0, dy:Number=0):BitmapData {   
             var matrix:Matrix = new Matrix();
             matrix.scale(scale, scale);
+            matrix.translate(dx, dy);
             
             var bd2:BitmapData = new BitmapData(bd.width * scale, bd.height * scale, true, 0x000000);
             bd2.draw(bd, matrix, null, null, null, true);

@@ -35,6 +35,7 @@ package org.cytoscapeweb.model.converters {
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
     
+    import flash.display.CapsStyle;
     import flash.display.DisplayObject;
     import flash.filters.BitmapFilter;
     import flash.filters.GlowFilter;
@@ -47,6 +48,7 @@ package org.cytoscapeweb.model.converters {
     import org.alivepdf.display.Display;
     import org.alivepdf.drawing.Blend;
     import org.alivepdf.drawing.Caps;
+    import org.alivepdf.drawing.DashedLine;
     import org.alivepdf.drawing.Joint;
     import org.alivepdf.drawing.WindingRule;
     import org.alivepdf.fonts.CoreFont;
@@ -64,6 +66,7 @@ package org.cytoscapeweb.model.converters {
     import org.cytoscapeweb.util.Anchors;
     import org.cytoscapeweb.util.ArrowShapes;
     import org.cytoscapeweb.util.Fonts;
+    import org.cytoscapeweb.util.LineStyles;
     import org.cytoscapeweb.util.NodeShapes;
     import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.VisualProperties;
@@ -202,6 +205,19 @@ package org.cytoscapeweb.model.converters {
                     
                     var w:Number = e.lineWidth * _scale;
                     var loop:Boolean = e.source === e.target;
+                    var lineStyle:String = e.props.lineStyle;
+                    var solid:Boolean = lineStyle === LineStyles.SOLID;
+                    var dashedLine:DashedLine;
+                    var cap:String = (LineStyles.getCaps(lineStyle) === CapsStyle.ROUND) ? Caps.ROUND : Caps.NONE;
+                    var dashArr:String = '';
+                    
+                    if (!solid) {
+                        var onLength:Number = LineStyles.getOnLength(e, lineStyle, _scale);
+                        var offLength:Number = LineStyles.getOffLength(e, lineStyle, _scale);
+                        dashedLine = new DashedLine([onLength, offLength, onLength, offLength]);
+                    } else {
+                    	dashedLine = null;
+                    }
                     
                     // First let's draw any glow (e.g. for selected edges):
                     // -----------------------------------------------------
@@ -215,11 +231,11 @@ package org.cytoscapeweb.model.converters {
                             
                             // The current version of AlivePDF does not support glows, gradients, etc.
                             // So we just draw a bigger shape behind the node:
-                            pdf.lineStyle(gc, gw, 0, ga);
+                            pdf.lineStyle(gc, gw, 0, ga, WindingRule.NON_ZERO, Blend.NORMAL, dashedLine, cap, Joint.MITER);
                             drawEdgeShaft(pdf, start, end, c1, c2, loop);
                             
                             // Arrow glow:
-                            pdf.lineStyle(gc, GLOW_WIDTH*_scale, 0, ga);
+                            pdf.lineStyle(gc, GLOW_WIDTH*_scale, 0, ga, WindingRule.NON_ZERO, Blend.NORMAL, null, Caps.NONE, Joint.MITER);
                             pdf.beginFill(gc);
                             drawEdgeArrowJoint(pdf, sJointPoints, saStyle.shape);
                             drawEdgeArrowJoint(pdf, tJointPoints, taStyle.shape);
@@ -232,31 +248,29 @@ package org.cytoscapeweb.model.converters {
                     // Draw the edge's line:
                     // -----------------------------------------------------
                     var edgeColor:RGBColor = new RGBColor(e.lineColor);
-                    pdf.lineStyle(edgeColor, w, 0, e.alpha, WindingRule.NON_ZERO, Blend.NORMAL, null, Caps.NONE, Joint.MITER);
+                    pdf.lineStyle(edgeColor, w, 0, e.alpha, WindingRule.NON_ZERO, Blend.NORMAL, dashedLine, cap, Joint.MITER);
                                   
                     drawEdgeShaft(pdf, start, end, c1, c2, loop);
                     
                     // Draw arrow joints:
                     // -----------------------------------------------------
-                    pdf.lineStyle(edgeColor, 0, 0, e.alpha);
+                    pdf.lineStyle(edgeColor, 0, 0, e.alpha, WindingRule.NON_ZERO, Blend.NORMAL, null, Caps.NONE, Joint.MITER);
                     
                     pdf.beginFill(edgeColor);
                     drawEdgeArrowJoint(pdf, sJointPoints, saStyle.shape);
-                    pdf.endFill();
-                    pdf.beginFill(edgeColor);
                     drawEdgeArrowJoint(pdf, tJointPoints, taStyle.shape);
                     pdf.endFill();
                     
                     // Draw arrows:
                     // -----------------------------------------------------
                     var saColor:RGBColor = new RGBColor(saStyle.color);
-                    pdf.lineStyle(saColor, 0, 0, e.alpha);
+                    pdf.lineStyle(saColor, 0, 0, e.alpha, WindingRule.NON_ZERO, Blend.NORMAL, null, Caps.NONE, Joint.MITER);
                     pdf.beginFill(saColor);
                     drawEdgeArrow(pdf, saStyle.shape, sArrowPoints, saStyle.height*_scale);
                     pdf.endFill();
                     
                     var taColor:RGBColor = new RGBColor(taStyle.color);
-                    pdf.lineStyle(taColor, 0, 0, e.alpha);
+                    pdf.lineStyle(taColor, 0, 0, e.alpha, WindingRule.NON_ZERO, Blend.NORMAL, null, Caps.NONE, Joint.MITER);
                     pdf.beginFill(taColor);
                     drawEdgeArrow(pdf, taStyle.shape, tArrowPoints, taStyle.height*_scale);
                     pdf.endFill();
@@ -430,6 +444,7 @@ package org.cytoscapeweb.model.converters {
                 if (shape === ArrowShapes.CIRCLE) {
                     var center:Point = points[0];
                     pdf.drawCircle(center.x, center.y, diameter/2);
+                    pdf.end(false);
                 } else if (shape === ArrowShapes.ARROW) {
                     var p1:Point = points[0];
                     var c1:Point = points[1];
@@ -443,6 +458,7 @@ package org.cytoscapeweb.model.converters {
                     pdf.lineTo(p3.x, p3.y);
                     Utils.quadraticToCubic(p3, c2, p1, ctrl1, ctrl2);
                     pdf.curveTo(ctrl1.x, ctrl1.y, ctrl2.x, ctrl2.y, p1.x, p1.y);
+                    pdf.moveTo(p1.x, p1.y);
                     pdf.end();
                 } else {
                     // Draw a polygon:
@@ -452,6 +468,8 @@ package org.cytoscapeweb.model.converters {
                         coordinates.push(p.y);
                     }
                     pdf.drawPolygone(coordinates);
+                    pdf.moveTo(points[0].x, points[0].y);
+                    pdf.end();
                 }
             }
         }
@@ -470,6 +488,7 @@ package org.cytoscapeweb.model.converters {
                             var ctrl2:Point = new Point();
                             Utils.quadraticToCubic(points[0], points[4], points[3], ctrl1, ctrl2);
                             pdf.curveTo(ctrl2.x, ctrl2.y, ctrl1.x, ctrl1.y, points[0].x, points[0].y);
+                            pdf.moveTo(points[0].x, points[0].y);
                             pdf.end();
                         }
                         break;
@@ -480,6 +499,8 @@ package org.cytoscapeweb.model.converters {
                             coordinates.push(p.y);
                         }
                         pdf.drawPolygone(coordinates);
+                        pdf.moveTo(points[0].x, points[0].y);
+                        pdf.end();
                         break;
                 }
             }

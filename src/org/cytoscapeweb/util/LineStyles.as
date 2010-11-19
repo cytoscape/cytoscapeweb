@@ -55,20 +55,20 @@ package org.cytoscapeweb.util {
         
         // ========[ PUBLIC METHODS ]===============================================================
         
-        public static function getOnLength(e:EdgeSprite, lineStyle:String):Number {
+        public static function getOnLength(e:EdgeSprite, lineStyle:String, scale:Number=1):Number {
             var w:Number = e.lineWidth;
 
             switch (lineStyle) {
                 case DOT:       return 0.5;
-                case LONG_DASH: return 4*w;
+                case LONG_DASH: return 4 * w * scale;
                 case EQUAL_DASH:
-                default:        return 2*w;
+                default:        return 2 * w * scale;
             }
         }
         
-        public static function getOffLength(e:EdgeSprite, lineStyle:String):Number {
+        public static function getOffLength(e:EdgeSprite, lineStyle:String, scale:Number=1):Number {
             var w:Number = e.lineWidth;
-            return 2*w;
+            return 2 * w * scale;
         }
         
         public static function getCaps(lineStyle:String):String {
