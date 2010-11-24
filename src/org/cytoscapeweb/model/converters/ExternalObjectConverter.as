@@ -92,15 +92,7 @@ package org.cytoscapeweb.model.converters {
         /** @inheritDoc */
         public function write(ds:DataSet, output:IDataOutput=null):IDataOutput {
             // Plain object to output
-            var obj:Object = {};
-            
-            // Add schema
-            obj[SCHEMA] = convertFromSchema(ds.nodes.schema, ds.edges.schema);
-            
-            // Add graph data
-            var objData:Object = obj[DATA] = {};
-            obj[Groups.NODES] = ds.nodes.data;
-            obj[Groups.EDGES] = ds.edges.data;
+            var obj:Object = toExtNetwork(ds);
             
             if (output == null) output = new ByteArray();
             output.writeObject(obj);
@@ -192,20 +184,34 @@ package org.cytoscapeweb.model.converters {
             );
         }
         
-        public static function toExtObjectsArray(dataSprites:*):Array {
+        public static function toExtNetwork(ds:DataSet):Object {
+            var obj:Object = {};
+            
+            // Add schema
+            obj[SCHEMA] = toExtSchema(ds.nodes.schema, ds.edges.schema);
+            
+            // Add graph data
+            obj[DATA] = {};
+            obj[DATA][Groups.NODES] = ds.nodes.data;
+            obj[DATA][Groups.EDGES] = ds.edges.data;
+            
+            return obj;
+        }
+        
+        public static function toExtElementsArray(dataSprites:*):Array {
             var arr:Array = null;
                      
             if (dataSprites is DataList || dataSprites is Array) {
                 arr = [];
                 for each (var ds:DataSprite in dataSprites) {
-                    arr.push(toExtObject(ds));
+                    arr.push(toExtElement(ds));
                 }
             }
 
             return arr;
         }
         
-        public static function toExtObject(ds:DataSprite):Object {
+        public static function toExtElement(ds:DataSprite):Object {
             var obj:Object = null;
 
             if (ds != null) {
@@ -244,7 +250,7 @@ package org.cytoscapeweb.model.converters {
                     
                     if (e.props.$merged) {
                         var ee:Array = e.props.$edges;
-                        ee = toExtObjectsArray(ee);
+                        ee = toExtElementsArray(ee);
                         obj.edges = ee;
                     }
                 }
@@ -253,7 +259,7 @@ package org.cytoscapeweb.model.converters {
             return obj;
         }
         
-        public static function convertFromSchema(nodesSchema:DataSchema, edgesSchema:DataSchema):Object {
+        public static function toExtSchema(nodesSchema:DataSchema, edgesSchema:DataSchema):Object {
             var obj:Object = {};
             
             var convertFromDataFields:Function = function(fields:Array):Array {

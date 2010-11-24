@@ -60,7 +60,7 @@ package org.cytoscapeweb.controller {
             
             // Call external listener:            
             if (extMediator.hasListener(type, group)) {
-                var target:Object = ExternalObjectConverter.toExtObject(ds);
+                var target:Object = ExternalObjectConverter.toExtElement(ds);
                 
                 body = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
                          argument: { type: type,

@@ -127,7 +127,7 @@ package org.cytoscapeweb.model.converters {
             var attrs:Array = ["id"];
             
             for each (var n:NodeSprite in data.nodes) {
-                o = ExternalObjectConverter.toExtObject(n);
+                o = ExternalObjectConverter.toExtElement(n);
                 assertEquals(Groups.NODES, o.group);
                 
                 for each (k in props) assertTrue("Node property: " + k, o.hasOwnProperty(k));
@@ -141,7 +141,7 @@ package org.cytoscapeweb.model.converters {
             attrs = ["id","source","target","directed"];
             
             for each (var e:EdgeSprite in data.edges) {
-                o = ExternalObjectConverter.toExtObject(e);
+                o = ExternalObjectConverter.toExtElement(e);
                 assertEquals(Groups.EDGES, o.group);
                 
                 for each (k in props) assertTrue("Edge property: " + k, o.hasOwnProperty(k));

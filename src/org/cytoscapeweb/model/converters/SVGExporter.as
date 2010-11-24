@@ -69,6 +69,11 @@ package org.cytoscapeweb.model.converters {
         // ========[ CONSTANTS ]====================================================================
 
         private static const GLOW_WIDTH:Number = 3;
+        private static const BACKGROUND_CLASS:String = "cw-background";
+        private static const NODE_CLASS:String = "cw-node";
+        private static const NODE_SHAPE_CLASS:String = "cw-node-shape";
+        private static const EDGE_CLASS:String = "cw-edge";
+        private static const EDGE_LINE_CLASS:String = "cw-edge-line";
 
         // ========[ PRIVATE PROPERTIES ]===========================================================
         
@@ -134,7 +139,7 @@ package org.cytoscapeweb.model.converters {
             
             // Draw the background:
             var bgColor:String = Utils.rgbColorAsString(_style.getValue(VisualProperties.BACKGROUND_COLOR));
-            svg += '<rect x="0" y="0" width="100%" height="100%" fill="'+bgColor+'"/>';
+            svg += '<rect class="'+BACKGROUND_CLASS+'" x="0" y="0" width="100%" height="100%" fill="'+bgColor+'"/>';
             
             // Get the shift, in case one or more nodes were dragged or the graph view is not at [0,0]:
             var sp:Point = _graphView.vis.globalToLocal(new Point(bounds.x, bounds.y));
@@ -203,6 +208,8 @@ package org.cytoscapeweb.model.converters {
                         if (cap === CapsStyle.ROUND) cap = 'round';
                     }
                     
+                    svg += '<g class="'+EDGE_CLASS+'">';
+                    
                     // First let's draw any glow (e.g. for selected edges):
                     // -----------------------------------------------------
                     var filters:Array = e.filters;
@@ -237,7 +244,7 @@ package org.cytoscapeweb.model.converters {
                     
                     // Draw the edge's line and joints:
                     // -----------------------------------------------------
-                    svg += '<g stroke-linejoin="round" stroke-width="'+w+'" stroke-linecap="'+cap+'" fill="none" stroke-opacity="'+a+'" stroke="'+c+'" '+dashArr+'>';
+                    svg += '<g class="'+EDGE_LINE_CLASS+'" stroke-linejoin="round" stroke-width="'+w+'" stroke-linecap="'+cap+'" fill="none" stroke-opacity="'+a+'" stroke="'+c+'" '+dashArr+'>';
                     svg += drawEdgeShaft(start, end, c1, c2, loop);
                     svg += '</g>';
                     
@@ -258,6 +265,9 @@ package org.cytoscapeweb.model.converters {
                     c = Utils.rgbColorAsString(taStyle.color);
                     svg += '<g fill="'+c+'" fill-opacity="'+a+'" stroke="none">';
                     svg += drawEdgeArrow(taStyle.shape, tArrowPoints, taStyle.height*_scale);
+                    svg += '</g>';
+                    
+                    // Close edge group:
                     svg += '</g>';
                 }
             }
@@ -281,6 +291,8 @@ package org.cytoscapeweb.model.converters {
                 
                 // Get the Global node point (relative to the stage):
                 var np:Point = toImagePoint(new Point(n.x, n.y), n);
+                
+                svg += '<g class="'+NODE_CLASS+'">';
                 
                 // First let's draw any node glow (e.g. for selected nodes):
                 var filters:Array = n.filters;
@@ -309,7 +321,7 @@ package org.cytoscapeweb.model.converters {
                 w = (n.width - n.lineWidth) * _scale;
                 h = (n.height - n.lineWidth) * _scale;
  
-                svg += '<g fill="'+c+'" fill-opacity="'+a+'" stroke="'+lc+'" stroke-linejoin="round" stroke-width="'+lw+'" stroke-linecap="butt" stroke-opacity="'+a+'">';
+                svg += '<g class="'+NODE_SHAPE_CLASS+'" fill="'+c+'" fill-opacity="'+a+'" stroke="'+lc+'" stroke-linejoin="round" stroke-width="'+lw+'" stroke-linecap="butt" stroke-opacity="'+a+'">';
                 
                 // Basic node shape
                 svg += (nodeSvgShape = drawNodeShape(n.shape, np.x, np.y, w, h));
@@ -338,7 +350,8 @@ package org.cytoscapeweb.model.converters {
                     svg += '</g>';
                 }
                 
-                svg += '</g>';
+                svg += '</g>'; // Close node shape groupd
+                svg += '</g>'; // Close node group
             }
             
             return svg;

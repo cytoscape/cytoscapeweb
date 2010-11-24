@@ -95,7 +95,7 @@ package org.cytoscapeweb.controller {
                         if (fe != null) all = all.concat(fe);
                     }
     
-                    objs = ExternalObjectConverter.toExtObjectsArray(all);
+                    objs = ExternalObjectConverter.toExtElementsArray(all);
                     body = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
                              argument: { type: type, group: Groups.NONE, target: objs } };
     

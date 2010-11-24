@@ -1193,6 +1193,65 @@ function runGraphTests(moduleName, vis, options) {
     	ok(fail === false, "Null 'name' throws exception");
     });
     
+    test("Network", function() {
+    	var net = vis.network();
+    	var nodes = vis.nodes();
+    	var edges = vis.edges();
+    	var schema = vis.dataSchema();
+    	
+    	var nodesData = [];
+    	var edgesData = [];
+    	$.each(nodes, function(i, n) { nodesData.push(n.data); });
+    	$.each(edges, function(i, e) { edgesData.push(e.data); });
+
+    	same(net.schema, schema, "Schema");
+    	same(net.data.nodes, nodesData, "Nodes Data");
+    	same(net.data.edges, edgesData, "Edges Data");
+    });
+    
+    test("GraphML", function() {
+    	var xml = $(vis.graphml());
+    	var nodes = vis.nodes();
+    	var edges = vis.edges();
+    	var schema = vis.dataSchema();
+    	var ignoredFields = 5; // id (nodes), id (edges), source, target, directed
+    	
+    	same(xml[0].tagName.toLowerCase(), "graphml", "<graphml> tag");
+    	same(xml.find("graph").length, 1, "<graph> tag");
+    	same(xml.find("key").length, (schema.nodes.length + schema.edges.length - ignoredFields), "Number <key> tags");
+    	same(xml.find("node").length, nodes.length, "Number of nodes");
+    	same(xml.find("edge").length, edges.length, "Number of edges");
+    });
+    
+    test("XGMML", function() {
+    	var xml = $(vis.xgmml());
+    	var nodes = vis.nodes();
+    	var edges = vis.edges();
+    	
+    	same(xml[0].tagName.toLowerCase(), "graph", "<graph> tag");
+    	same(xml.find("node").length, nodes.length, "Number of nodes");
+    	same(xml.find("node graphics").length, nodes.length, "Number of node graphics");
+    	same(xml.find("edge").length, edges.length, "Number of edges");
+    	same(xml.find("edge graphics").length, edges.length, "Number of edge graphics");
+    });
+    
+    test("SIF", function() {
+    	var sif = vis.sif();
+    	var edges = vis.edges();
+    	$.each(edges, function(i, e) {
+    		var inter = e.data.interaction ? e.data.interaction : e.data.id;
+    		var line = e.data.source + "\t" + inter + "\t" + e.data.target; 
+    		ok(sif.indexOf(line) > -1, "SIF text should have the line: '"+line+"'");
+    	});
+    	// Now replace the default interaction field:
+    	var sif = vis.sif("type");
+    	var edges = vis.edges();
+    	$.each(edges, function(i, e) {
+    		var line = e.data.source + "\t" + e.data.type + "\t" + e.data.target; 
+    		ok(sif.indexOf(line) > -1, "SIF text should have the line: '"+line+"'");
+    	});
+    });
+    
     test("PNG", function() {
     	vis.zoom(Math.random()*2);
     	vis.panBy(Math.random()*-1000, Math.random()*1000);
@@ -1232,24 +1291,21 @@ function runGraphTests(moduleName, vis, options) {
     	same(base64.indexOf(beginning), 0, "PDF begins with correct chars");
     });
     
-    test("SIF", function() {
-    	var sif = vis.sif();
+    test("SVG", function() {
+    	var svg = $(vis.svg());
+    	var nodes = vis.nodes();
     	var edges = vis.edges();
-    	$.each(edges, function(i, e) {
-    		var inter = e.data.interaction ? e.data.interaction : e.data.id;
-    		var line = e.data.source + "\t" + inter + "\t" + e.data.target; 
-    		ok(sif.indexOf(line) > -1, "SIF text should have the line: '"+line+"'");
-    	});
-    	// Now replace the default interaction field:
-    	var sif = vis.sif("type");
-    	var edges = vis.edges();
-    	$.each(edges, function(i, e) {
-    		var line = e.data.source + "\t" + e.data.type + "\t" + e.data.target; 
-    		ok(sif.indexOf(line) > -1, "SIF text should have the line: '"+line+"'");
-    	});
+
+    	same(svg.find(".cw-background").length, 1, "Background rectangle");
+    	same(svg.find(".cw-node").length, nodes.length, "Number of SVG nodes");
+    	same(svg.find(".cw-node .cw-node-shape").length, nodes.length, "Number of SVG node shapes");
+    	same(svg.find(".cw-edge").length, edges.length, "Number of SVG edges");
+    	same(svg.find(".cw-edge .cw-edge-line").length, edges.length, "Number of SVG edge lines");
+    	
+    	// TODO: test node images
+    	// TODO: test edge arrows
     });
     
-    // TODO: test graphml(), xgmml()
     // TODO: test selection styles
     // TODO: text context menu methods
 }

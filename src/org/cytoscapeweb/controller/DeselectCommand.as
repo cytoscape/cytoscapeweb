@@ -69,7 +69,7 @@ package org.cytoscapeweb.controller {
                 var objs:Array, body:Object, type:String = "deselect";
                 
                 if (nodes.length > 0 && extMediator.hasListener(type, Groups.NODES)) {
-                    objs = ExternalObjectConverter.toExtObjectsArray(nodes);
+                    objs = ExternalObjectConverter.toExtElementsArray(nodes);
                     body = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
                              argument: { type: type, group: Groups.NODES, target: objs } };
                     
@@ -77,7 +77,7 @@ package org.cytoscapeweb.controller {
                 }
                 
                 if (edges.length > 0 && extMediator.hasListener(type, Groups.EDGES)) {
-                    objs = ExternalObjectConverter.toExtObjectsArray(edges);
+                    objs = ExternalObjectConverter.toExtElementsArray(edges);
                     body = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
                              argument: { type: type, group: Groups.EDGES, target: objs } };
 
@@ -89,7 +89,7 @@ package org.cytoscapeweb.controller {
                     all = all.concat(nodes).concat(edges);
                     
                     if (all.length > 0) {
-                        objs = ExternalObjectConverter.toExtObjectsArray(all);
+                        objs = ExternalObjectConverter.toExtElementsArray(all);
                         body = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
                                  argument: { type: type, group: Groups.NONE, target: objs } };
     

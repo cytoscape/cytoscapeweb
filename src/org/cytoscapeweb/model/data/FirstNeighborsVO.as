@@ -153,10 +153,10 @@ package org.cytoscapeweb.model.data {
         public function toObject():Object {
             var obj:Object = {};
             
-            obj.rootNodes = ExternalObjectConverter.toExtObjectsArray(rootNodes);
-            obj.neighbors = ExternalObjectConverter.toExtObjectsArray(neighbors);
-            obj.edges = ExternalObjectConverter.toExtObjectsArray(edges);
-            obj.mergedEdges = ExternalObjectConverter.toExtObjectsArray(mergedEdges);
+            obj.rootNodes = ExternalObjectConverter.toExtElementsArray(rootNodes);
+            obj.neighbors = ExternalObjectConverter.toExtElementsArray(neighbors);
+            obj.edges = ExternalObjectConverter.toExtElementsArray(edges);
+            obj.mergedEdges = ExternalObjectConverter.toExtElementsArray(mergedEdges);
             
             return obj;
         }

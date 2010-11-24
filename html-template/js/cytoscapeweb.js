@@ -1161,13 +1161,25 @@
         },
 
         /**
+         * <p>Return the network as an object.</p>
+         * @return {org.cytoscapeweb.Network} The network as a JavaScript object.
+         * @see org.cytoscapeweb.Visualization#graphml
+         * @see org.cytoscapeweb.Visualization#xgmml
+         * @see org.cytoscapeweb.Visualization#sif
+         */
+        network: function () {
+            return this.swf().getNetwork();
+        },
+        
+        /**
          * <p>Return the network data as <a href="http://graphml.graphdrawing.org/primer/graphml-primer.html" target="_blank">GraphML</a>.</p>
          * @return {String} The XML text.
          * @see org.cytoscapeweb.Visualization#xgmml
          * @see org.cytoscapeweb.Visualization#sif
+         * @see org.cytoscapeweb.Visualization#network
          */
         graphml: function () {
-            return this.swf().getNetworkAsText("graphml");
+        	return this.swf().getNetworkAsText("graphml");
         },
 
         /**
@@ -1175,6 +1187,7 @@
          * @return {String} The XML text.
          * @see org.cytoscapeweb.Visualization#graphml
          * @see org.cytoscapeweb.Visualization#sif
+         * @see org.cytoscapeweb.Visualization#network
          */
         xgmml: function () {
             return this.swf().getNetworkAsText("xgmml");
@@ -1219,6 +1232,7 @@
          * @return {String} The SIF text.
          * @see org.cytoscapeweb.Visualization#graphml
          * @see org.cytoscapeweb.Visualization#xgmml
+         * @see org.cytoscapeweb.Visualization#network
          */
         sif: function (interactionAttr) {
             return this.swf().getNetworkAsText("sif", { interactionAttr: interactionAttr });
