@@ -39,6 +39,7 @@ package org.cytoscapeweb.view.render {
     
     import org.cytoscapeweb.model.data.DiscreteVizMapperVO;
     import org.cytoscapeweb.model.data.VisualPropertyVO;
+    import org.cytoscapeweb.model.data.VisualStyleBypassVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
     import org.cytoscapeweb.model.methods.error;
     import org.cytoscapeweb.util.ErrorCodes;
@@ -56,6 +57,8 @@ package org.cytoscapeweb.view.render {
         
         private var _images:Object = {};
         private var _broken:Object = {};
+        private var _noCache:Boolean = true;
+        private var _onLoadingEnd:Function;
         
         // ========[ PUBLIC METHODS ]===============================================================
         
@@ -76,49 +79,64 @@ package org.cytoscapeweb.view.render {
             return _broken[url];
         }
         
+        public function hasNoCache():Boolean {
+            return _noCache;
+        }
+        
         public function contains(url:String):Boolean {
             url = normalize(url);
             return _images[url] !== undefined;
         }
         
-        public function loadImages(style:VisualStyleVO):void {
+        /**
+         * @param style a VisualStyleVO or VisualStyleBypassVO object
+         * @param onLoadingEnd an optional callback function
+         */
+        public function loadImages(style:*, onLoadingEnd:Function=null):void {trace("ImageCache.loadImages...");
             // First, clean the cache:
             _images = {};
             _broken = {};
+            _onLoadingEnd = onLoadingEnd;
+            _noCache = true;
             
             // Then load all distinct URL values:
-            $each(IMG_PROPS, function(i:uint, pname:String):Boolean { 
-                if (style.hasVisualProperty(pname)) {
-                    var vp:VisualPropertyVO = style.getVisualProperty(pname);
-                    // Default value:
-                    if (!contains(vp.defaultValue)) loadImage(vp.defaultValue);
-                    
-                    // Discrete Mapper values:
-                    var mapper:DiscreteVizMapperVO = vp.vizMapper as DiscreteVizMapperVO;
-                    if (mapper != null) {
-                        var values:Array = mapper.distinctValues;
-                        
-                        $each(IMG_PROPS, function(j:uint, url:String):Boolean {
-                           if (!contains(url)) loadImage(url);
-                           return false; 
-                        });
-                    }
-                }
-                return false;
-            });
+            if (style is VisualStyleVO) {
+	            $each(IMG_PROPS, function(i:uint, pname:String):Boolean { 
+	                if (style.hasVisualProperty(pname)) {
+	                    var vp:VisualPropertyVO = style.getVisualProperty(pname);
+	                    // Default value:
+	                    if (!contains(vp.defaultValue)) loadImage(vp.defaultValue);
+	                    
+	                    // Discrete Mapper values:
+	                    var mapper:DiscreteVizMapperVO = vp.vizMapper as DiscreteVizMapperVO;
+	                    if (mapper != null) {
+	                        var values:Array = mapper.distinctValues;
+	                        
+	                        $each(IMG_PROPS, function(j:uint, url:String):Boolean {
+	                           if (!contains(url)) loadImage(url);
+	                           return false; 
+	                        });
+	                    }
+	                }
+	                return false;
+	            });
+            } else if (style is VisualStyleBypassVO) {
+                // TODO
+            }
         }
         
-        public function getImage(url:String):BitmapData {trace("getImage...");
+        public function getImage(url:String):BitmapData {trace("getImage: " + url);
             return _images[normalize(url)];
         }
         
-        public function loadImage(url:String):void {trace("loadImage...");
+        public function loadImage(url:String, onImgLoaded:Function=null):void {trace("loadImage...");
             url = normalize(url);
             var bmp:BitmapData;
             
             if (url.length > 0) {
                 _images[url] = null; // this flags the image state as "loading"
                 _broken[url] = false;
+                _noCache = false;
                 
                 var urlRequest:URLRequest = new URLRequest(url);
                 var loader:Loader = new Loader();
@@ -127,11 +145,14 @@ package org.cytoscapeweb.view.render {
                     bmp = e.target.content.bitmapData;
                     _images[url] = bmp;
                     _broken[url] = false;
+                    if (onImgLoaded != null) onImgLoaded(url, bmp);
+                    checkOnLoadingEnd();
                 });
                 
                 loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void {trace("ImageCache - Error loading image: " + e);
                     _broken[url] = true;
                     error("Image cannot be loaded: " + url, ErrorCodes.BROKEN_IMAGE, e.type, e.text);
+                    checkOnLoadingEnd();
                 });
                 
                 loader.load(urlRequest, new LoaderContext(true));
@@ -145,6 +166,12 @@ package org.cytoscapeweb.view.render {
          */
         private function normalize(url:String):String {
             return url != null ? StringUtil.trim(url) : "";
+        }
+        
+        private function checkOnLoadingEnd():void {
+        	if (_onLoadingEnd != null) {
+        		if (!isLoading()) _onLoadingEnd();
+        	}
         }
         
         // ========[ SINGLETON STUFF ]==============================================================

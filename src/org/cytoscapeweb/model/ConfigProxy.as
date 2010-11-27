@@ -208,6 +208,14 @@ package org.cytoscapeweb.model {
         public function set mouseDownToDragDelay(value:Number):void {
             config.mouseDownToDragDelay = value;
         }
+        
+        public function get preloadImages():Boolean {
+            return config.preloadImages;
+        }
+        
+        public function set preloadImages(value:Boolean):void {
+            config.preloadImages = value;
+        }
 
         // ========[ CONSTRUCTOR ]==================================================================
 

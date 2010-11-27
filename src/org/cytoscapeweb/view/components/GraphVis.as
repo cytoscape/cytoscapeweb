@@ -52,7 +52,6 @@ package org.cytoscapeweb.view.components {
     import flash.display.DisplayObject;
     import flash.geom.Point;
     import flash.geom.Rectangle;
-    import flash.utils.setTimeout;
     
     import org.cytoscapeweb.model.data.ConfigVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
@@ -72,7 +71,6 @@ package org.cytoscapeweb.view.components {
     import org.cytoscapeweb.view.layout.PresetLayout;
     import org.cytoscapeweb.view.layout.RadialTreeLayout;
     import org.cytoscapeweb.view.layout.physics.Simulation;
-    import org.cytoscapeweb.view.render.ImageCache;
     import org.cytoscapeweb.view.render.Labeler;
     
 
@@ -188,10 +186,6 @@ package org.cytoscapeweb.view.components {
         public function applyVisualStyle(style:VisualStyleVO):void {
             var firstTime:Boolean = this._style == null;
             this._style = style;
-            
-            // Preload images:     
-            var imgCache:ImageCache = ImageCache.instance;
-            imgCache.loadImages(style);
 
             // Nodes & Edges properties:
             // ---------------------------------------------------------

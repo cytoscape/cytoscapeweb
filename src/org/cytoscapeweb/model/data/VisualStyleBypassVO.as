@@ -56,8 +56,8 @@ package org.cytoscapeweb.model.data {
         
         /**
          * Return the visual property value associated with a node or edge.
-         * @param id a node or edge id
          * @param propName the visual property name.
+         * @param id a node or edge id
          * @return the mapped visual property value
          */
         public function getValue(propName:String, id:*):* {

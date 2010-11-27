@@ -29,14 +29,19 @@
 */
 package org.cytoscapeweb.controller {
     
+    import flash.utils.setTimeout;
+    
     import org.cytoscapeweb.model.data.VisualStyleVO;
     import org.cytoscapeweb.model.methods.error;
     import org.cytoscapeweb.view.GraphMediator;
     import org.cytoscapeweb.view.components.GraphView;
+    import org.cytoscapeweb.view.render.ImageCache;
     import org.puremvc.as3.interfaces.INotification;
     
     
     public class DrawGraphCommand extends BaseSimpleCommand {
+        
+        private var _imgCache:ImageCache = ImageCache.instance;
         
         override public function execute(notification:INotification):void {
             try {
@@ -60,15 +65,27 @@ package org.cytoscapeweb.controller {
                     configProxy.panZoomControlVisible = options.panZoomControlVisible;
                 if (options.mouseDownToDragDelay != null)
                     configProxy.mouseDownToDragDelay = options.mouseDownToDragDelay;
+                if (options.preloadImages != null)
+                    configProxy.preloadImages = options.preloadImages;
                 
+                // Preload images:
+                if (configProxy.preloadImages)
+                    _imgCache.loadImages(configProxy.visualStyle, draw);
+                
+                // Load the model:
                 graphProxy.loadGraph(options.network, configProxy.currentLayout);
                 
-                appMediator.applyVisualStyle(configProxy.visualStyle);
-
-                var graphView:GraphView = CytoscapeWeb(appMediator.getViewComponent()).graphView;
-                facade.registerMediator(new GraphMediator(graphView));
-
-                graphMediator.drawGraph();
+                // No image to preload; just draw:
+                if (_imgCache.hasNoCache()) draw();
+                
+                function draw():void {
+	                appMediator.applyVisualStyle(configProxy.visualStyle);
+	
+	                var graphView:GraphView = CytoscapeWeb(appMediator.getViewComponent()).graphView;
+	                facade.registerMediator(new GraphMediator(graphView));
+	
+	                graphMediator.drawGraph();
+	            }
                 
             } catch (err:Error) {
                 trace("[ERROR]: DrawGraphCommand.execute: " + err.getStackTrace());

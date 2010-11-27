@@ -29,10 +29,13 @@
 */
 package org.cytoscapeweb.controller {
 	import org.cytoscapeweb.model.data.VisualStyleVO;
+	import org.cytoscapeweb.view.render.ImageCache;
 	import org.puremvc.as3.interfaces.INotification;
 	
 
     public class SetVisualStyleCommand extends BaseSimpleCommand {
+        
+        private var _imgCache:ImageCache = ImageCache.instance;
         
         override public function execute(notification:INotification):void {
             var style:VisualStyleVO = notification.getBody() as VisualStyleVO;
@@ -40,13 +43,23 @@ package org.cytoscapeweb.controller {
             if (style != null) {
                 // Set the new style:
                 configProxy.visualStyle = style;
+                
+                // Preload images:
+                if (configProxy.preloadImages)
+                    _imgCache.loadImages(configProxy.visualStyle, setVisualStyle);
+                
 	            // Then bind the data again, so the new vizMappers can work:
 	            configProxy.bindGraphData(graphProxy.graphData);
 	            
-	            // Finally ask the mediators to apply the new style:
-	            appMediator.applyVisualStyle(configProxy.visualStyle);
-	            graphMediator.applyVisualStyle(configProxy.visualStyle);
+	             // No image to preload; just set the new style:
+                if (_imgCache.hasNoCache()) setVisualStyle();
             }
+        }
+        
+        private function setVisualStyle():void {
+            // Ask the mediators to apply the new style:
+            appMediator.applyVisualStyle(configProxy.visualStyle);
+            graphMediator.applyVisualStyle(configProxy.visualStyle);
         }
     }
 }

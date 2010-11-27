@@ -220,6 +220,11 @@
          *                                                            will be visible. The default value is <code>true</code>.
          *                                                            The visibility of the control can be changed later with
          *                                                            {@link org.cytoscapeweb.Visualization#panZoomControlVisible}.</li>
+         *                    <li><code>preloadImages</code>: Boolean that defines whether or not to load all images before rendering the network.
+         *                                                    If <code>true</code>, all images from a 
+         *                                                    {@link org.cytoscapeweb.VisualStyle} or {@link org.cytoscapeweb.VisualStyleBypass}
+         *                                                    will be loaded before the network is drawn or before a visual style (or bypass) is applied.
+         *                                                    The default value is <code>true</code>.</li>
          *                </ul>
          * @return {org.cytoscapeweb.Visualization} The Visualization instance.
          * @see org.cytoscapeweb.Visualization#ready

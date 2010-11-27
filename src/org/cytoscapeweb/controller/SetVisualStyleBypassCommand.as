@@ -29,15 +29,27 @@
 */
 package org.cytoscapeweb.controller {
     import org.cytoscapeweb.model.data.VisualStyleBypassVO;
+    import org.cytoscapeweb.view.render.ImageCache;
     import org.puremvc.as3.interfaces.INotification;
     
 
     public class SetVisualStyleBypassCommand extends BaseSimpleCommand {
         
+        private var _imgCache:ImageCache = ImageCache.instance;
+        
         override public function execute(notification:INotification):void {
             var bypass:VisualStyleBypassVO = notification.getBody() as VisualStyleBypassVO;
-
             configProxy.visualStyleBypass = bypass;
+            
+            // Preload images:
+            if (configProxy.preloadImages)
+                _imgCache.loadImages(configProxy.visualStyleBypass, setVisualStyleBypass);
+
+            // No image to preload; just set the new bypass
+            if (_imgCache.hasNoCache()) setVisualStyleBypass();
+        }
+        
+        private function setVisualStyleBypass():void {
             graphMediator.applyVisualBypass(configProxy.visualStyle);
         }
     }
