@@ -158,11 +158,13 @@ package org.cytoscapeweb.model.data {
                 // Summed weight:
                 var w:Number = Number(e.data.weight);
                 if (!isNaN(w)) weight += w;
+                e.dirty();
             }
 
             // Other cached data:
             mergedEdge.data.weight = weight;
             mergedEdge.props.$filteredOut = edgesList.length === 0;
+            mergedEdge.dirty();
 		}
 		
 		public static function createKey(node1:NodeSprite, node2:NodeSprite):String {

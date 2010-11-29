@@ -56,7 +56,7 @@ package org.cytoscapeweb.model.converters {
         
         // ========[ CONSTANTS ]====================================================================
         
-        public static const SCHEMA:String = "schema";
+        public static const SCHEMA:String = "dataSchema";
         public static const DATA:String = "data";
         public static const NAME:String = "name";
         public static const TYPE:String = "type";
@@ -92,7 +92,7 @@ package org.cytoscapeweb.model.converters {
         /** @inheritDoc */
         public function write(ds:DataSet, output:IDataOutput=null):IDataOutput {
             // Plain object to output
-            var obj:Object = toExtNetwork(ds);
+            var obj:Object = toExtNetworkModel(ds);
             
             if (output == null) output = new ByteArray();
             output.writeObject(obj);
@@ -184,7 +184,7 @@ package org.cytoscapeweb.model.converters {
             );
         }
         
-        public static function toExtNetwork(ds:DataSet):Object {
+        public static function toExtNetworkModel(ds:DataSet):Object {
             var obj:Object = {};
             
             // Add schema

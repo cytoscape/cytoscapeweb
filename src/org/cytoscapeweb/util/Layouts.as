@@ -29,6 +29,9 @@
 */
 package org.cytoscapeweb.util {
     import flare.util.Orientation;
+    import flare.vis.data.Data;
+    import flare.vis.data.DataList;
+    import flare.vis.data.NodeSprite;
     
     import org.cytoscapeweb.view.layout.ForceDirectedLayout;
     
@@ -105,6 +108,18 @@ package org.cytoscapeweb.util {
             }
             
             return o;
+        }
+        
+        public static function rootNode(data:Data):NodeSprite {
+            var nodes:DataList = data.nodes;
+            
+            if (data.directedEdges) {
+                for each (var n:NodeSprite in nodes) {
+                    if (n.inDegree === 0 && n.outDegree > 0) return n;
+                }
+            }
+            
+            return data.nodes[0];
         }
         
         // ========[ PRIVATE METHODS ]==============================================================

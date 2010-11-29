@@ -423,7 +423,7 @@ package org.cytoscapeweb.view {
                 sendNotification(ApplicationFacade.UPDATE_DATA, { group: group, items: items, data: data });
         }
         
-        private function getNetwork():Object {
+        private function getNetworkModel():Object {
         	var data:Object = graphProxy.graphData;
         	var nodesSchema:DataSchema = graphProxy.nodesSchema;
         	var edgesSchema:DataSchema = graphProxy.edgesSchema;
@@ -432,7 +432,7 @@ package org.cytoscapeweb.view {
             var edgesTable:GraphicsDataTable = new GraphicsDataTable(data.group(Groups.REGULAR_EDGES), edgesSchema);
             var ds:DataSet = new DataSet(nodesTable, edgesTable);
         	
-            return ExternalObjectConverter.toExtNetwork(ds);
+            return ExternalObjectConverter.toExtNetworkModel(ds);
         }
         
         private function getNetworkAsText(format:String="xgmml", options:Object=null):String {
@@ -484,7 +484,7 @@ package org.cytoscapeweb.view {
                                         "getVisualStyleBypass", "setVisualStyleBypass",
                                         "addNode", "addEdge", "removeElements",
                                         "getDataSchema", "addDataField", "removeDataField", "updateData",
-                                        "getNetwork", "getNetworkAsText", "getNetworkAsImage", 
+                                        "getNetworkModel", "getNetworkAsText", "getNetworkAsImage", 
                                         "exportNetwork" ];
 
                 for each (var f:String in functions) addFunction(f);

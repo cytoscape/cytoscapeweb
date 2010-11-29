@@ -187,11 +187,15 @@
          *
          * @param {Object} options
          *               <ul class="options">
-         *                    <li><code>network</code>: The string that describes the network. Cytoscape supports one of the following formats:
-         *                                              <a href="http://graphml.graphdrawing.org/primer/graphml-primer.html" target="_blank">GraphML</a>,
-         *                                              <a href="http://www.cs.rpi.edu/~puninj/XGMML/" target="_blank">XGMML</a> or
-         *                                              <a href="http://cytoscape.wodaklab.org/wiki/Cytoscape_User_Manual/Network_Formats/" target="_blank">SIF</a>.
-         *                                              Only this option is mandatory.</li>
+         *                    <li><code>network</code>: The model that describes the network. Only this option is mandatory. It can be one of the following formats:
+         *                                              <ul><li>{@link org.cytoscapeweb.NetworkModel}: A simple JavaScript object that defines the raw data from which to build a network.</li>
+         *                                                  <li><a href="http://graphml.graphdrawing.org/primer/graphml-primer.html" target="_blank">GraphML</a>: An XML format for graphs.</li>
+         *                                                  <li><a href="http://www.cs.rpi.edu/~puninj/XGMML/" target="_blank">XGMML</a>: This XML format allows you to define
+         *                                                      visual properties (e.g. colors and shapes) and nodes positioning, if you want to,
+         *                                                      although using the <code>visualStyle</code> and <code>layout</code> options is usually better.</li>
+         *                                                  <li><a href="http://cytoscape.wodaklab.org/wiki/Cytoscape_User_Manual/Network_Formats/" target="_blank">SIF</a>: A simpler text format
+         *                                                      that can be very useful if you do not need to set custom nodes/edges attributes.</li>
+         *                                              </ul></li>
          *                    <li><code>visualStyle</code>: an optional {@link org.cytoscapeweb.VisualStyle} object to be applied on this network.</li>
          *                    <li><code>layout</code>: an optional {@link org.cytoscapeweb.Layout} object, or just the layout name.
          *                                             The default is "ForceDirected", unless the network data is an 
@@ -1166,14 +1170,14 @@
         },
 
         /**
-         * <p>Return the network as an object.</p>
-         * @return {org.cytoscapeweb.Network} The network as a JavaScript object.
+         * <p>Return the network model as an object.</p>
+         * @return {org.cytoscapeweb.NetworkModel} The network model as a JavaScript object.
          * @see org.cytoscapeweb.Visualization#graphml
          * @see org.cytoscapeweb.Visualization#xgmml
          * @see org.cytoscapeweb.Visualization#sif
          */
-        network: function () {
-            return this.swf().getNetwork();
+        networkModel: function () {
+            return this.swf().getNetworkModel();
         },
         
         /**
@@ -1181,7 +1185,7 @@
          * @return {String} The XML text.
          * @see org.cytoscapeweb.Visualization#xgmml
          * @see org.cytoscapeweb.Visualization#sif
-         * @see org.cytoscapeweb.Visualization#network
+         * @see org.cytoscapeweb.Visualization#networkModel
          */
         graphml: function () {
         	return this.swf().getNetworkAsText("graphml");
@@ -1192,7 +1196,7 @@
          * @return {String} The XML text.
          * @see org.cytoscapeweb.Visualization#graphml
          * @see org.cytoscapeweb.Visualization#sif
-         * @see org.cytoscapeweb.Visualization#network
+         * @see org.cytoscapeweb.Visualization#networkModel
          */
         xgmml: function () {
             return this.swf().getNetworkAsText("xgmml");
@@ -1237,7 +1241,7 @@
          * @return {String} The SIF text.
          * @see org.cytoscapeweb.Visualization#graphml
          * @see org.cytoscapeweb.Visualization#xgmml
-         * @see org.cytoscapeweb.Visualization#network
+         * @see org.cytoscapeweb.Visualization#networkModel
          */
         sif: function (interactionAttr) {
             return this.swf().getNetworkAsText("sif", { interactionAttr: interactionAttr });
@@ -1995,6 +1999,52 @@
          */
         this.mouseY = options.mouseY;
     };
+    
+    // ===[ NetworkModel ]==========================================================================
+    
+    /**
+     * <p>This object represents a NetworkModel type, but is actually just an untyped object.</p>
+     * <p>It defines the raw data (nodes and edges data values) and the data schema for a network.
+     * It is important to notice that the network model does <b>not</b> contain {@link org.cytoscapeweb.Node} and {@link org.cytoscapeweb.Edge} objects, 
+     * as it is not supposed to describe visual attributes such as colors, shapes and x/y coordinates.
+     * Visual styles must be defined separately, through {@link org.cytoscapeweb.VisualStyle} or {@link org.cytoscapeweb.VisualStyleBypass}.
+     * Nodes positioning are done by {@link org.cytoscapeweb.Layout} objects.</p>
+     * <p>A NetworkModel object has only two fields:</p>
+     * <ul class="options">
+      *     <li><code>dataSchema</code> {{@link org.cytoscapeweb.DataSchema}}: It defines the nodes/edges data fields.</li>
+      *     <li><code>data</code> {Object}: The actual nodes/edges data values used to create {@link org.cytoscapeweb.Node} and {@link org.cytoscapeweb.Edge} elements.
+      *         It contains two fields (<code>nodes</code> and <code>edges</code>), which are arrays of nodes/edges data objects.</li>
+      *</ul>
+     * @example
+     * var network = {
+     * 
+     *     dataSchema: {
+     *         nodes: [ { name: "label", type: "string" },
+     *                  { name: "score", type: "number" } ],
+     *                  
+     *         edges: [ { name: "label", type: "string" },
+     *                  { name: "weight", type: "number" },
+     *                  { name: "directed", type: "boolean", defValue: true} ]
+     *     },
+     *     
+     *     data: {
+     *         nodes: [ { id: "n1", label: "Node 1", score: 1.0 },
+     *                  { id: "n2", label: "Node 2", score: 2.2 },
+     *                  { id: "n3", label: "Node 3", score: 3.5 } ],
+     *                  
+     *         edges: [ { id: "e1", label: "Edge 1", weight: 1.1, source: "n1", target: "n3" },
+     *                  { id: "e2", label: "Edge 2", weight: 3.3, source:"n2", target:"n1"} ]
+     *     }
+     * };
+     * @class
+     * @name NetworkModel
+     * @type Object
+     * @memberOf org.cytoscapeweb
+     * @see org.cytoscapeweb.Visualization#draw
+     * @see org.cytoscapeweb.Visualization#networkModel
+     * @see org.cytoscapeweb.Visualization#dataSchema
+     * @see org.cytoscapeweb.DataSchema
+     */
     
     // ===[ Node ]==================================================================================
      

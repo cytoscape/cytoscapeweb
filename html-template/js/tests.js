@@ -1193,8 +1193,8 @@ function runGraphTests(moduleName, vis, options) {
     	ok(fail === false, "Null 'name' throws exception");
     });
     
-    test("Network", function() {
-    	var net = vis.network();
+    test("NetworkModel", function() {
+    	var model = vis.networkModel();
     	var nodes = vis.nodes();
     	var edges = vis.edges();
     	var schema = vis.dataSchema();
@@ -1204,9 +1204,9 @@ function runGraphTests(moduleName, vis, options) {
     	$.each(nodes, function(i, n) { nodesData.push(n.data); });
     	$.each(edges, function(i, e) { edgesData.push(e.data); });
 
-    	same(net.schema, schema, "Schema");
-    	same(net.data.nodes, nodesData, "Nodes Data");
-    	same(net.data.edges, edgesData, "Edges Data");
+    	same(model.dataSchema, schema, "Schema");
+    	same(model.data.nodes, nodesData, "Nodes Data");
+    	same(model.data.edges, edgesData, "Edges Data");
     });
     
     test("GraphML", function() {
