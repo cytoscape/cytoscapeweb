@@ -229,6 +229,9 @@ package org.cytoscapeweb.view.components {
             // Tooltips:
             // ---------------------------------------------------------
             tooltipControl.showDelay = _style.getValue(VisualProperties.TOOLTIP_DELAY) as Number;
+            
+            // Force the rendering--might be necessary for some browsers:
+            DirtySprite.renderDirty();
         }
 
         public function applyLayout(layoutObj:Object):Transition {

@@ -270,6 +270,7 @@ package org.cytoscapeweb.view.components {
                 e.props.targetArrowColor = Edges.targetArrowColor(e);
                 e.alpha = Edges.alpha(e);  
                 e.arrowType = Edges.targetArrowShape(e);
+                e.props.lineStyle = Edges.lineStyle(e);
                 e.props.curvature = Edges.curvature(e);
                 e.filters = Edges.filters(e);
                 if (e.props.label != null) e.props.label.alpha = e.alpha;

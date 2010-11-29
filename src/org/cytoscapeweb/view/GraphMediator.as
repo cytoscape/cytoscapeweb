@@ -258,6 +258,7 @@ package org.cytoscapeweb.view {
                     var edges:* = graphProxy.graphData.edges;
                     var e:EdgeSprite;
                     for each (e in edges) {
+                        e.props.curvature = Edges.curvature(e);
                         e.visible = Edges.visible(e);
                     }
                 }
@@ -677,12 +678,12 @@ package org.cytoscapeweb.view {
             if (_draggingComponent) vis.updateDragRectangle(amountX, amountY);
         }
         
-        private function onSelect(evt:SelectionEvent):void {for each (var item in evt.items) { trace("   S---> " + item.data.label); }
+        private function onSelect(evt:SelectionEvent):void {
             if (evt.items != null && evt.items.length > 0)
                 sendNotification(ApplicationFacade.SELECT, evt.items);
         }
         
-        private function onDeselect(evt:SelectionEvent):void {for each (var item in evt.items) { trace("   D---> " + item.data.label); }
+        private function onDeselect(evt:SelectionEvent):void {
             if (evt.items != null && evt.items.length > 0)
                 sendNotification(ApplicationFacade.DESELECT, evt.items);
         }
