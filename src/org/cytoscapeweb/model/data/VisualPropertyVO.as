@@ -167,9 +167,6 @@ package org.cytoscapeweb.model.data {
             
             if (name != null && prop != null) {
                 var defValue:* = null;
-                if (prop.hasOwnProperty("defaultValue"))
-                    defValue = prop.defaultValue;
-
                 var mapper:VizMapperVO = null;
     
                 if (prop.hasOwnProperty("discreteMapper"))
@@ -180,7 +177,10 @@ package org.cytoscapeweb.model.data {
                     mapper = PassthroughVizMapperVO.fromObject(name, prop.passthroughMapper);
                 else if (prop.hasOwnProperty("customMapper"))
                     mapper = CustomVizMapperVO.fromObject(name, prop.customMapper);
-                else
+                
+                if (prop.hasOwnProperty("defaultValue"))
+                    defValue = prop.defaultValue;
+                else if (mapper == null)
                     defValue = prop;
                 
                 defValue = VisualProperties.parseValue(name, defValue);

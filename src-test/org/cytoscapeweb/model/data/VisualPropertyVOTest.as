@@ -119,5 +119,34 @@ package org.cytoscapeweb.model.data {
                 }
             }
         }
+        
+        public function testFromObject():void {
+            var vp:VisualPropertyVO;
+            var def:* = "/anImage.png";
+            
+            vp = VisualPropertyVO.fromObject(VisualProperties.NODE_IMAGE, def);
+            assertEquals(def, vp.defaultValue);
+            
+            vp = VisualPropertyVO.fromObject(VisualProperties.NODE_IMAGE, { defaultValue: def });
+            assertEquals(def, vp.defaultValue);
+            
+            vp = VisualPropertyVO.fromObject(VisualProperties.EDGE_WIDTH,
+                                             { defaultValue: 3, 
+                                               continuousMapper: { attrName: "weight", minValue: 1, maxValue: 4 } });
+            assertEquals(3, vp.defaultValue);
+            assertEquals("weight", vp.vizMapper.attrName);
+            assertEquals(1, ContinuousVizMapperVO(vp.vizMapper).minValue);
+            assertEquals(4, ContinuousVizMapperVO(vp.vizMapper).maxValue);
+            
+            vp = VisualPropertyVO.fromObject(VisualProperties.EDGE_WIDTH,
+                                             { defaultValue: 3, 
+                                               discreteMapper: { attrName: "type", 
+                                                                 entries: [ { attrValue: "1",  value: 10 }, { attrValue: "2",  value: 40 } ]
+                                              } });
+            assertEquals(3, vp.defaultValue);
+            assertEquals("type", vp.vizMapper.attrName);
+            assertEquals(10, vp.vizMapper.getValue({ type: "1" }));
+            assertEquals(40, vp.vizMapper.getValue({ type: "2" }));
+        }
     }
 }

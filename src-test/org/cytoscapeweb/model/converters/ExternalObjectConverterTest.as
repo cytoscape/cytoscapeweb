@@ -64,7 +64,7 @@ package org.cytoscapeweb.model.converters {
             // A simple network:
             // --------------------------------------------------------------
             n = {
-                schema: {
+                dataSchema: {
                     nodes: [
                         { name: "id", type: "number" }, // WRONG! Should be string and will be ignored
                         { name: "score", type: "number", defValue: -1 }
