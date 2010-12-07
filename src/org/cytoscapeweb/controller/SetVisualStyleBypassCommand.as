@@ -41,12 +41,11 @@ package org.cytoscapeweb.controller {
             var bypass:VisualStyleBypassVO = notification.getBody() as VisualStyleBypassVO;
             configProxy.visualStyleBypass = bypass;
             
-            // Preload images:
+            // Preload images?
             if (configProxy.preloadImages)
-                _imgCache.loadImages(configProxy.visualStyleBypass, setVisualStyleBypass);
-
-            // No image to preload; just set the new bypass
-            if (_imgCache.hasNoCache()) setVisualStyleBypass();
+                _imgCache.loadImages(configProxy.visualStyleBypass, null, setVisualStyleBypass);
+            else
+                setVisualStyleBypass();
         }
         
         private function setVisualStyleBypass():void {

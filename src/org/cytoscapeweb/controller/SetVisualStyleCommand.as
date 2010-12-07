@@ -44,15 +44,14 @@ package org.cytoscapeweb.controller {
                 // Set the new style:
                 configProxy.visualStyle = style;
                 
-                // Preload images:
-                if (configProxy.preloadImages)
-                    _imgCache.loadImages(configProxy.visualStyle, setVisualStyle);
+                // Then bind the data again, so the new vizMappers can work:
+                configProxy.bindGraphData(graphProxy.graphData);
                 
-	            // Then bind the data again, so the new vizMappers can work:
-	            configProxy.bindGraphData(graphProxy.graphData);
-	            
-	             // No image to preload; just set the new style:
-                if (_imgCache.hasNoCache()) setVisualStyle();
+                // Preload images?
+                if (configProxy.preloadImages)
+                    _imgCache.loadImages(configProxy.visualStyle, graphProxy.nodes, setVisualStyle);
+                else
+                    setVisualStyle();
             }
         }
         

@@ -28,6 +28,8 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.view.render {
+    import flare.vis.data.NodeSprite;
+    
     import flash.display.BitmapData;
     import flash.display.Loader;
     import flash.events.Event;
@@ -38,9 +40,11 @@ package org.cytoscapeweb.view.render {
     import mx.utils.StringUtil;
     
     import org.cytoscapeweb.model.data.DiscreteVizMapperVO;
+    import org.cytoscapeweb.model.data.PassthroughVizMapperVO;
     import org.cytoscapeweb.model.data.VisualPropertyVO;
     import org.cytoscapeweb.model.data.VisualStyleBypassVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
+    import org.cytoscapeweb.model.data.VizMapperVO;
     import org.cytoscapeweb.model.methods.error;
     import org.cytoscapeweb.util.ErrorCodes;
     import org.cytoscapeweb.util.VisualProperties;
@@ -57,7 +61,6 @@ package org.cytoscapeweb.view.render {
         
         private var _images:Object = {};
         private var _broken:Object = {};
-        private var _noCache:Boolean = true;
         private var _onLoadingEnd:Function;
         
         // ========[ PUBLIC METHODS ]===============================================================
@@ -79,43 +82,51 @@ package org.cytoscapeweb.view.render {
             return _broken[url];
         }
         
-        public function hasNoCache():Boolean {
-            return _noCache;
-        }
-        
         public function contains(url:String):Boolean {
             url = normalize(url);
             return _images[url] !== undefined;
         }
         
         /**
-         * @param style a VisualStyleVO or VisualStyleBypassVO object
-         * @param onLoadingEnd an optional callback function
+         * @param style A VisualStyleVO or VisualStyleBypassVO object
+         * @param nodes An optional array of nodes. Necessary if loading from a VisualStyleVO that
+         *              sets images from Passthrough or Custom mappers.
+         * @param onLoadingEnd An optional callback function
          */
-        public function loadImages(style:*, onLoadingEnd:Function=null):void {trace("ImageCache.loadImages...");
+        public function loadImages(style:*, nodes:Array=null, onLoadingEnd:Function=null):void {trace("ImageCache.loadImages...");
+            var url:String;
+            
             // First, clean the cache:
             _images = {};
             _broken = {};
             _onLoadingEnd = onLoadingEnd;
-            _noCache = true;
             
             // Then load all distinct URL values:
             if (style is VisualStyleVO) {
+                var vs:VisualStyleVO = VisualStyleVO(style);
+                
 	            $each(IMG_PROPS, function(i:uint, pname:String):Boolean { 
-	                if (style.hasVisualProperty(pname)) {
-	                    var vp:VisualPropertyVO = style.getVisualProperty(pname);
+	                if (vs.hasVisualProperty(pname)) {
+	                    var vp:VisualPropertyVO = vs.getVisualProperty(pname);
 	                    // Default value:
-	                    if (!contains(vp.defaultValue)) loadImage(vp.defaultValue);
+	                    var def:String = vp.defaultValue;
+	                    if (!contains(def)) loadImage(def);
 	                    
 	                    // Discrete Mapper values:
-	                    var mapper:DiscreteVizMapperVO = vp.vizMapper as DiscreteVizMapperVO;
-	                    if (mapper != null) {
-	                        var values:Array = mapper.distinctValues;
+	                    var mapper:VizMapperVO= vp.vizMapper;
+	                    
+	                    if (mapper is DiscreteVizMapperVO) {
+	                        var dm:DiscreteVizMapperVO = DiscreteVizMapperVO(mapper);
+	                        var values:Array = dm.distinctValues;
 	                        
-	                        $each(IMG_PROPS, function(j:uint, url:String):Boolean {
+	                        for each (url in values) {
+                                if (!contains(url)) loadImage(url);
+	                        }
+	                    } else if (mapper != null && nodes != null) {
+	                        for each (var n:NodeSprite in nodes) {
+	                           url = mapper.getValue(n.data);
 	                           if (!contains(url)) loadImage(url);
-	                           return false; 
-	                        });
+	                        }
 	                    }
 	                }
 	                return false;
@@ -123,6 +134,8 @@ package org.cytoscapeweb.view.render {
             } else if (style is VisualStyleBypassVO) {
                 // TODO
             }
+            
+            checkOnLoadingEnd();
         }
         
         public function getImage(url:String):BitmapData {trace("getImage: " + url);
@@ -136,7 +149,6 @@ package org.cytoscapeweb.view.render {
             if (url.length > 0) {
                 _images[url] = null; // this flags the image state as "loading"
                 _broken[url] = false;
-                _noCache = false;
                 
                 var urlRequest:URLRequest = new URLRequest(url);
                 var loader:Loader = new Loader();
@@ -170,7 +182,12 @@ package org.cytoscapeweb.view.render {
         
         private function checkOnLoadingEnd():void {
         	if (_onLoadingEnd != null) {
-        		if (!isLoading()) _onLoadingEnd();
+        		if (!isLoading()) {
+        		    // Execute the callback function only once!
+                    var fn:Function = _onLoadingEnd;
+                    _onLoadingEnd = null;
+                    fn();
+        		}
         	}
         }
         

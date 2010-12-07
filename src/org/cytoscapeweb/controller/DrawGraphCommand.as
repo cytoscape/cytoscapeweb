@@ -68,15 +68,13 @@ package org.cytoscapeweb.controller {
                 if (options.preloadImages != null)
                     configProxy.preloadImages = options.preloadImages;
                 
-                // Preload images:
-                if (configProxy.preloadImages)
-                    _imgCache.loadImages(configProxy.visualStyle, draw);
-                
                 // Load the model:
                 graphProxy.loadGraph(options.network, configProxy.currentLayout);
                 
-                // No image to preload; just draw:
-                if (_imgCache.hasNoCache()) draw();
+                if (configProxy.preloadImages)
+                    _imgCache.loadImages(configProxy.visualStyle, graphProxy.nodes, draw);
+                else
+                    draw();
                 
                 function draw():void {
 	                appMediator.applyVisualStyle(configProxy.visualStyle);
