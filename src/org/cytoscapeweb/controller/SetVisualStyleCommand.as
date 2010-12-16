@@ -49,13 +49,13 @@ package org.cytoscapeweb.controller {
                 
                 // Preload images?
                 if (configProxy.preloadImages)
-                    _imgCache.loadImages(configProxy.visualStyle, graphProxy.nodes, setVisualStyle);
+                    _imgCache.loadImages(configProxy.visualStyle, graphProxy.nodes, ready);
                 else
-                    setVisualStyle();
+                    ready();
             }
         }
         
-        private function setVisualStyle():void {
+        private function ready():void {
             // Ask the mediators to apply the new style:
             appMediator.applyVisualStyle(configProxy.visualStyle);
             graphMediator.applyVisualStyle(configProxy.visualStyle);

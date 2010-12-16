@@ -40,7 +40,6 @@ package org.cytoscapeweb.view.render {
     import mx.utils.StringUtil;
     
     import org.cytoscapeweb.model.data.DiscreteVizMapperVO;
-    import org.cytoscapeweb.model.data.PassthroughVizMapperVO;
     import org.cytoscapeweb.model.data.VisualPropertyVO;
     import org.cytoscapeweb.model.data.VisualStyleBypassVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
@@ -59,8 +58,11 @@ package org.cytoscapeweb.view.render {
         
         // ========[ PRIVATE PROPERTIES ]===========================================================
         
-        private var _images:Object = {};
-        private var _broken:Object = {};
+        private var _images:/*URL->BitmapData*/Object = {};
+        private var _broken:/*URL->Boolean*/Object = {};
+        private var _imgCounter:/*URL->int*/Object = {};
+        private var _styleUrl:/*URL->Boolean*/Object = {};
+        private var _bypassUrl:/*URL->Boolean*/Object = {};
         private var _onLoadingEnd:Function;
         
         // ========[ PUBLIC METHODS ]===============================================================
@@ -94,47 +96,67 @@ package org.cytoscapeweb.view.render {
          * @param onLoadingEnd An optional callback function
          */
         public function loadImages(style:*, nodes:Array=null, onLoadingEnd:Function=null):void {trace("ImageCache.loadImages...");
-            var url:String;
-            
-            // First, clean the cache:
-            _images = {};
-            _broken = {};
+            var url:String, values:Array;
             _onLoadingEnd = onLoadingEnd;
+
+            function loadIfNew(url:String, urlMap:Object):void {
+                url = normalize(url);
+                if (!contains(url)) {
+                    urlMap[url] = true;
+                    loadImage(url);
+                }
+            }
             
-            // Then load all distinct URL values:
+            // Load all distinct URL values:
             if (style is VisualStyleVO) {
+                // Decrease image counter for all current images associated with the previous visual style:
+                releasePrevious(_styleUrl);
+                
                 var vs:VisualStyleVO = VisualStyleVO(style);
                 
-	            $each(IMG_PROPS, function(i:uint, pname:String):Boolean { 
+	            $each(IMG_PROPS, function(i:uint, pname:String):Boolean {
 	                if (vs.hasVisualProperty(pname)) {
 	                    var vp:VisualPropertyVO = vs.getVisualProperty(pname);
 	                    // Default value:
 	                    var def:String = vp.defaultValue;
-	                    if (!contains(def)) loadImage(def);
+	                    if (!contains(def)) loadIfNew(url, _styleUrl);
 	                    
 	                    // Discrete Mapper values:
 	                    var mapper:VizMapperVO= vp.vizMapper;
 	                    
 	                    if (mapper is DiscreteVizMapperVO) {
 	                        var dm:DiscreteVizMapperVO = DiscreteVizMapperVO(mapper);
-	                        var values:Array = dm.distinctValues;
+	                        values = dm.distinctValues;
 	                        
 	                        for each (url in values) {
-                                if (!contains(url)) loadImage(url);
+                                loadIfNew(url, _styleUrl);
 	                        }
 	                    } else if (mapper != null && nodes != null) {
 	                        for each (var n:NodeSprite in nodes) {
 	                           url = mapper.getValue(n.data);
-	                           if (!contains(url)) loadImage(url);
+	                           loadIfNew(url, _styleUrl);
 	                        }
 	                    }
 	                }
+	                
 	                return false;
 	            });
             } else if (style is VisualStyleBypassVO) {
-                // TODO
+// TODO: Test!!!
+                releasePrevious(_bypassUrl);
+
+                $each(IMG_PROPS, function(i:uint, pname:String):Boolean {
+                    values = VisualStyleBypassVO(style).getValuesSet(pname);
+                    
+                    for each (url in values) {
+                        loadIfNew(url, _bypassUrl);
+                    }
+                    
+                    return false;
+                });
             }
             
+            deleteUnusedImages();
             checkOnLoadingEnd();
         }
         
@@ -171,6 +193,11 @@ package org.cytoscapeweb.view.render {
             }
         }
         
+        public function releaseBypassImages() {
+            releasePrevious(_bypassUrl);
+            deleteUnusedImages();
+        }
+        
         // ========[ PRIVATE METHODS ]==============================================================
         
         /**
@@ -189,6 +216,31 @@ package org.cytoscapeweb.view.render {
                     fn();
         		}
         	}
+        }
+        
+        private function retain(url:String):void {
+            var count:int = _imgCounter[url];
+            if (isNaN(count)) count = 0;
+            _imgCounter[url] = ++count;
+        }
+        
+        private function release(url:String):void {
+            var count:int = _imgCounter[url];
+            _imgCounter[url] = --count;
+        }
+        
+        private function releasePrevious(urlMap:Object):void {
+            for (var url:String in urlMap) release(url);
+        }
+        
+        private function deleteUnusedImages():void {
+            for (var url:String in _imgCounter) {
+                if (_imgCounter[url] === 0) {
+                    delete _imgCounter[url];
+                    delete _broken[url];
+                    delete _images[url];
+                }
+            }
         }
         
         // ========[ SINGLETON STUFF ]==============================================================

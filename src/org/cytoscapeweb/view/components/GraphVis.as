@@ -183,9 +183,9 @@ package org.cytoscapeweb.view.components {
         
         // ========[ PUBLIC METHODS ]===============================================================
 
-        public function applyVisualStyle(style:VisualStyleVO):void {
+        public function refreshVisualProperties(newStyle:VisualStyleVO=null):void {
             var firstTime:Boolean = this._style == null;
-            this._style = style;
+            if (newStyle != null) this._style = newStyle;
 
             // Nodes & Edges properties:
             // ---------------------------------------------------------

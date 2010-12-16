@@ -314,7 +314,7 @@ package org.cytoscapeweb.view.components {
         
         public function applyVisualStyle(style:VisualStyleVO):void {
             this._style = style;
-            vis.applyVisualStyle(style);
+            vis.refreshVisualProperties(style);
         }
         
         public function updateLabels(group:String=null):void {
@@ -372,7 +372,7 @@ package org.cytoscapeweb.view.components {
             vis.bounds = b;
 
             addChild(vis);
-            vis.applyVisualStyle(_style);
+            vis.refreshVisualProperties(_style);
             
             return vis;
 		}

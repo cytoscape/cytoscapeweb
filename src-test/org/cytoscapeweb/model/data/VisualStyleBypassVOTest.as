@@ -27,36 +27,25 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
-package org.cytoscapeweb.controller {
-    import org.cytoscapeweb.model.data.VisualStyleBypassVO;
-    import org.cytoscapeweb.view.render.ImageCache;
-    import org.puremvc.as3.interfaces.INotification;
+package org.cytoscapeweb.model.data {
+    import flexunit.framework.TestCase;
     
-
-    public class SetVisualStyleBypassCommand extends BaseSimpleCommand {
+    
+    public class VisualStyleBypassVOTest extends TestCase {
         
-        private var _imgCache:ImageCache = ImageCache.instance;
-        
-        override public function execute(notification:INotification):void {
-            var bypass:VisualStyleBypassVO = notification.getBody() as VisualStyleBypassVO;
-            configProxy.visualStyleBypass = bypass;
+        public function testEmpty():void {
+            var bp:VisualStyleBypassVO = VisualStyleBypassVO.fromObject(null);
+            assertTrue(bp.isEmpty());
+            bp = VisualStyleBypassVO.fromObject({});
+            assertTrue(bp.isEmpty());
+            bp = VisualStyleBypassVO.fromObject({ nodes: {}, edges: {} });
+            assertTrue(bp.isEmpty());
             
-            if (bypass == null || bypass.isEmpty()) {
-                // Just removing a previous bypass...
-                // It is still important to release any cached image:
-                _imgCache.releaseBypassImages();
-                ready();
-            } else {
-                // Preload images?
-                if (configProxy.preloadImages)
-                    _imgCache.loadImages(configProxy.visualStyleBypass, null, ready);
-                else
-                    ready();
-            }
+            bp = VisualStyleBypassVO.fromObject({ nodes: { "n1": {size: 25} } });
+            assertFalse(bp.isEmpty());
+            bp = VisualStyleBypassVO.fromObject({ edges: { "e1": {opacity: 0.5} } });
+            assertFalse(bp.isEmpty());
         }
-        
-        private function ready():void {
-            graphMediator.applyVisualBypass(configProxy.visualStyleBypass);
-        }
+
     }
 }

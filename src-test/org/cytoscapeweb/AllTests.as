@@ -40,6 +40,7 @@ package org.cytoscapeweb {
 	import org.cytoscapeweb.model.data.DiscreteVizMapperVOTest;
 	import org.cytoscapeweb.model.data.FirstNeighborsVOTest;
 	import org.cytoscapeweb.model.data.VisualPropertyVOTest;
+	import org.cytoscapeweb.model.data.VisualStyleBypassVOTest;
 	import org.cytoscapeweb.model.data.VisualStyleVOTest;
 	import org.cytoscapeweb.model.data.VizMapperVOTest;
 	import org.cytoscapeweb.util.UtilsTest;
@@ -56,6 +57,7 @@ package org.cytoscapeweb {
 			
 			addTestSuite(VisualPropertyVOTest);
 			addTestSuite(VisualStyleVOTest);
+			addTestSuite(VisualStyleBypassVOTest);
 			addTestSuite(ConfigVOTest);
 			
 			addTestSuite(VizMapperVOTest);

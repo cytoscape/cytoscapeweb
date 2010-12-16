@@ -48,6 +48,7 @@ package org.cytoscapeweb.view {
     import org.cytoscapeweb.ApplicationFacade;
     import org.cytoscapeweb.events.DragEvent;
     import org.cytoscapeweb.events.GraphViewEvent;
+    import org.cytoscapeweb.model.data.VisualStyleBypassVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
     import org.cytoscapeweb.util.Edges;
     import org.cytoscapeweb.util.ExternalFunctions;
@@ -180,9 +181,8 @@ package org.cytoscapeweb.view {
             setStyleToSelectionControl(style);
         }
         
-        public function applyVisualBypass(style:VisualStyleVO):void {
-            // TODO: make it faster (do not have to reapply everything)
-            graphView.applyVisualStyle(style);
+        public function applyVisualBypass(bypass:VisualStyleBypassVO):void {
+            vis.refreshVisualProperties();
         }
         
         public function applyLayout(layout:Object):void {

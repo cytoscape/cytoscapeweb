@@ -98,6 +98,32 @@ package org.cytoscapeweb.model.data {
             }
         }
         
+        public function getValuesSet(propName:String):Array {
+// TODO: TEST!!!
+            var values:Array = [];
+            var lookup:Object = {};
+            var group:String = VisualProperties.getGroup(propName);
+            var idMap:Object = _map[group];
+            
+            for each (var propMap:Object in idMap) {
+                var v:* = propMap[propName];
+                
+                if (v !== undefined && !lookup[v]) {
+                    values.push(v);
+                    lookup[v] = true;
+                }
+            }
+            
+            return values;
+        }
+        
+        public function isEmpty():Boolean {
+            var k:*;
+            for (k in _map[Groups.NODES]) return false;
+            for (k in _map[Groups.EDGES]) return false;
+            return true;
+        }
+        
         public function toObject():Object {
             var obj:Object = { nodes: {}, edges: {} };
             var groups:Array = [Groups.NODES, Groups.EDGES];
