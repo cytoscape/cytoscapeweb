@@ -343,13 +343,15 @@ package org.cytoscapeweb.view {
             return configProxy.visualStyle.toObject();
         }
         
-        private function setVisualStyleBypass(obj:/*{group->{id->{propName->value}}}*/Object):void {
+        private function setVisualStyleBypass(json:/*{group->{id->{propName->value}}}*/String):void {
+            var obj:Object = JSON.decode(json);
             var bypass:VisualStyleBypassVO = VisualStyleBypassVO.fromObject(obj);
             sendNotification(ApplicationFacade.SET_VISUAL_STYLE_BYPASS, bypass);
         }
         
-        private function getVisualStyleBypass():Object {
-            return configProxy.visualStyleBypass.toObject();
+        private function getVisualStyleBypass():String {
+            var obj:Object = configProxy.visualStyleBypass.toObject();
+            return JSON.encode(obj);
         }
         
         private function addNode(x:Number, y:Number, 

@@ -48,14 +48,16 @@ package org.cytoscapeweb.controller {
                 configProxy.bindGraphData(graphProxy.graphData);
                 
                 // Preload images?
-                if (configProxy.preloadImages)
+                if (configProxy.preloadImages) {
                     _imgCache.loadImages(configProxy.visualStyle, graphProxy.nodes, ready);
-                else
+                } else {
+                    _imgCache.dispose(); // TODO: implement a better way of disposing previous images.
                     ready();
+                }
             }
         }
         
-        private function ready():void {
+        private function ready(obj:Object=null):void {
             // Ask the mediators to apply the new style:
             appMediator.applyVisualStyle(configProxy.visualStyle);
             graphMediator.applyVisualStyle(configProxy.visualStyle);

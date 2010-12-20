@@ -55,7 +55,7 @@ package org.cytoscapeweb.controller {
             }
         }
         
-        private function ready():void {
+        private function ready(obj:Object=null):void {
             graphMediator.applyVisualBypass(configProxy.visualStyleBypass);
         }
     }

@@ -531,6 +531,19 @@ function runGraphTests(moduleName, vis, options) {
 
     });
     
+    test("Get empty Visual Style Bypass", function() {
+    	var bypass = vis.visualStyleBypass();
+    	ok(bypass.nodes != null);
+    	ok(bypass.edges != null);
+
+    	var fail = false;
+    	try {
+    		for (k in bypass.nodes) throw("Bypass.nodes should be empty!");
+    		for (k in bypass.edges) throw("Bypass.edges should be empty!");
+    	} catch (err) { fail = true; }
+    	ok(fail === false, "bypass[nodes|edges] should be empty");
+    });
+    
     test("Set Visual Style Bypass", function() {
     	var bypass = { nodes: {}, edges: {} };
     	var id;
@@ -541,40 +554,43 @@ function runGraphTests(moduleName, vis, options) {
     	var edgeOpacity = function(id) { return (id % 2 === 0 ? 0.5 : 0); };
     	var nodeColor = "#345678";
     	var edgeWidth = 4;
+    	
+    	$.each(nodes, function(i, n) {
+    		var o = nodeOpacity(n.data.id);
+    		bypass.nodes[n.data.id] = { opacity: o, color: nodeColor };
+    	});
+    	$.each(edges, function(i, e) {
+    		var o = edgeOpacity(e.data.id);
+    		bypass.edges[e.data.id] = { opacity: o, width: edgeWidth };
+    	});
+    	
+    	// Just to test special characters as part of ID's:
+    	// Note: Any UNICODE character except " or \ or control character
+    	bypass.nodes["_=5.@1/4-4+9,0;'3:a?*&^%$#!`~<>{}[]"] = { color: "#000000" };
+    	vis.visualStyleBypass(bypass);
 
-		$.each(nodes, function(i, n) {
-			var o = nodeOpacity(n.data.id);
-			bypass.nodes[n.data.id] = { opacity: o, color: nodeColor };
-	    });
-		$.each(edges, function(i, e) {
-			var o = edgeOpacity(e.data.id);
-			bypass.edges[e.data.id] = { opacity: o, width: edgeWidth };
-		});
-
-		vis.visualStyleBypass(bypass);
-
-		var bp = vis.visualStyleBypass();
-		same (bp, bypass);
-		
-		nodes = vis.nodes();
-		edges = vis.edges();
-		
-		$.each(nodes, function(i, n) {
-			var expected = nodeOpacity(n.data.id);
-			same(bp.nodes[n.data.id].opacity, expected);
-			same(Math.round(n.opacity*100)/100, expected);
-			
-			same(bp.nodes[n.data.id].color, nodeColor);
-			same(n.color, nodeColor);
-	    });
-		$.each(edges, function(i, e) {
-			var expected = edgeOpacity(e.data.id);
-			same(bp.edges[e.data.id].opacity, expected);
-			same(Math.round(e.opacity*100)/100, expected);
-			
-			same(bp.edges[e.data.id].width, edgeWidth);
-			same(e.width, edgeWidth);
-		});
+    	var bp = vis.visualStyleBypass();
+    	same (bp, bypass);
+    	
+    	nodes = vis.nodes();
+    	edges = vis.edges();
+    	
+    	$.each(nodes, function(i, n) {
+    		var expected = nodeOpacity(n.data.id);
+    		same(bp.nodes[n.data.id].opacity, expected);
+    		same(Math.round(n.opacity*100)/100, expected);
+    		
+    		same(bp.nodes[n.data.id].color, nodeColor);
+    		same(n.color, nodeColor);
+    	});
+    	$.each(edges, function(i, e) {
+    		var expected = edgeOpacity(e.data.id);
+    		same(bp.edges[e.data.id].opacity, expected);
+    		same(Math.round(e.opacity*100)/100, expected);
+    		
+    		same(bp.edges[e.data.id].width, edgeWidth);
+    		same(e.width, edgeWidth);
+    	});
     });
     
     test("Remove Visual Style Bypass", function() {

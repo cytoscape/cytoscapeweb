@@ -45,6 +45,7 @@ package org.cytoscapeweb {
 	import org.cytoscapeweb.model.data.VizMapperVOTest;
 	import org.cytoscapeweb.util.UtilsTest;
 	import org.cytoscapeweb.util.VisualPropertiesTest;
+	import org.cytoscapeweb.view.render.ImageCacheTest;
 	import org.cytoscapeweb.view.render.LabelerTest;
 
 	public class AllTests extends TestSuite {
@@ -67,6 +68,7 @@ package org.cytoscapeweb {
 			addTestSuite(FirstNeighborsVOTest);
 			
 			addTestSuite(LabelerTest);
+			addTestSuite(ImageCacheTest);
 			
 			addTestSuite(XGMMLConverterTest);
 			addTestSuite(SIFConverterTest);

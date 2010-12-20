@@ -65,6 +65,16 @@ package org.cytoscapeweb.view.render {
         private var _bypassUrl:/*URL->Boolean*/Object = {};
         private var _onLoadingEnd:Function;
         
+        // ========[ PUBLIC PROPERTIES ]============================================================
+        
+        public function get size():int {
+            var count:int = 0;
+            for (var url:String in _images) {
+                if (_images[url] is BitmapData) count++;
+            }
+            return count;
+        }
+                
         // ========[ PUBLIC METHODS ]===============================================================
         
         public function isLoading():Boolean {
@@ -96,7 +106,7 @@ package org.cytoscapeweb.view.render {
          * @param onLoadingEnd An optional callback function
          */
         public function loadImages(style:*, nodes:Array=null, onLoadingEnd:Function=null):void {trace("ImageCache.loadImages...");
-            var url:String, values:Array;
+            var url:String, values:Array, pname:String;
             _onLoadingEnd = onLoadingEnd;
 
             function loadIfNew(url:String, urlMap:Object):void {
@@ -111,15 +121,14 @@ package org.cytoscapeweb.view.render {
             if (style is VisualStyleVO) {
                 // Decrease image counter for all current images associated with the previous visual style:
                 releasePrevious(_styleUrl);
-                
                 var vs:VisualStyleVO = VisualStyleVO(style);
                 
-	            $each(IMG_PROPS, function(i:uint, pname:String):Boolean {
+	            for each (pname in IMG_PROPS) {
 	                if (vs.hasVisualProperty(pname)) {
 	                    var vp:VisualPropertyVO = vs.getVisualProperty(pname);
 	                    // Default value:
-	                    var def:String = vp.defaultValue;
-	                    if (!contains(def)) loadIfNew(url, _styleUrl);
+	                    url = vp.defaultValue;
+	                    loadIfNew(url, _styleUrl);
 	                    
 	                    // Discrete Mapper values:
 	                    var mapper:VizMapperVO= vp.vizMapper;
@@ -138,22 +147,17 @@ package org.cytoscapeweb.view.render {
 	                        }
 	                    }
 	                }
-	                
-	                return false;
-	            });
+	            }
             } else if (style is VisualStyleBypassVO) {
-// TODO: Test!!!
                 releasePrevious(_bypassUrl);
 
-                $each(IMG_PROPS, function(i:uint, pname:String):Boolean {
+                for each (pname in IMG_PROPS) {
                     values = VisualStyleBypassVO(style).getValuesSet(pname);
                     
                     for each (url in values) {
                         loadIfNew(url, _bypassUrl);
                     }
-                    
-                    return false;
-                });
+                }
             }
             
             deleteUnusedImages();
@@ -179,6 +183,7 @@ package org.cytoscapeweb.view.render {
                     bmp = e.target.content.bitmapData;
                     _images[url] = bmp;
                     _broken[url] = false;
+                    retain(url);
                     if (onImgLoaded != null) onImgLoaded(url, bmp);
                     checkOnLoadingEnd();
                 });
@@ -193,9 +198,18 @@ package org.cytoscapeweb.view.render {
             }
         }
         
-        public function releaseBypassImages() {
+        public function releaseBypassImages():void {
             releasePrevious(_bypassUrl);
             deleteUnusedImages();
+        }
+        
+        public function dispose():void {
+            _images = {};
+            _broken = {};
+            _imgCounter= {};
+            _styleUrl = {};
+            _bypassUrl = {};
+            _onLoadingEnd = null;
         }
         
         // ========[ PRIVATE METHODS ]==============================================================
@@ -213,7 +227,7 @@ package org.cytoscapeweb.view.render {
         		    // Execute the callback function only once!
                     var fn:Function = _onLoadingEnd;
                     _onLoadingEnd = null;
-                    fn();
+                    fn(undefined);
         		}
         	}
         }

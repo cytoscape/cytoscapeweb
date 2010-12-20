@@ -242,8 +242,6 @@
             this.embedSWF();
             return this;
         },
-        
-        _debug: function(o) { console.log(o); },
 
         /**
          * <p>Register a function to be called after a {@link org.cytoscapeweb.Visualization#draw} method is executed and the visualization
@@ -390,8 +388,15 @@
          */
         visualStyleBypass: function (/*bypass*/) {
             var swf = this.swf();
-            if (arguments.length > 0) { swf.setVisualStyleBypass(arguments[0]); return this; }
-            else { return swf.getVisualStyleBypass(); }
+            var json;
+            if (arguments.length > 0) {
+            	json = JSON.stringify(arguments[0]); // to avoid errors with special characters in node IDs
+            	swf.setVisualStyleBypass(json);
+            	return this;
+            } else {
+            	json = swf.getVisualStyleBypass();
+            	return JSON.parse(json);
+            }
         },
 
         /**
