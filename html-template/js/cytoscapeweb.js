@@ -1319,7 +1319,7 @@
          *     print &#36;data;
          * ?&gt;
          * 
-         * @param {String} format One of: <code>"png"</code>, <code>"pdf"</code>, <code>"xgmml"</code>, <code>"graphml"</code>, <code>"sif"</code>.
+         * @param {String} format One of: <code>"png"</code>, <code>"svg"</code>, <code>"pdf"</code>, <code>"xgmml"</code>, <code>"graphml"</code>, <code>"sif"</code>.
          * @param {String} url The url that will receive the exported image (bytes) or xml (text).
          * @param {Object} [options] Additional options:
          *                              <ul class="options"><li><code>width</code>:</strong> The desired width of the image in pixels (only for 'pdf' format).</li>
@@ -1337,6 +1337,7 @@
          * @see org.cytoscapeweb.Visualization#pdf
          * @see org.cytoscapeweb.Visualization#sif
          * @see org.cytoscapeweb.Visualization#graphml
+         * @see org.cytoscapeweb.Visualization#svg
          * @see org.cytoscapeweb.Visualization#xgmml
          */
         exportNetwork: function (format, url, options) {
@@ -2490,6 +2491,12 @@
      * <ul class="options"><li><code>shape</code> {{@link org.cytoscapeweb.NodeShape}}: Node shape name. The default value is "ELLIPSE".</li>
      *     <li><code>size</code> {Number}: Node size, in pixels. The default value is 24.</li>
      *     <li><code>color</code> {String}: Fill color code of nodes. The default value is "#f5f5f5".</li>
+     *     <li><code>image</code> {String}: The URL of the image to be used as the node background. No image is used by default.
+     *                                      If you specify a cross-domain address, then the image might not be loaded by Flash, unless
+     *                                      the host provides a cross-domain XML file that allows you to do so.  We recommend you use
+     *                                      a server-side proxy on your web host machine if you have this issue. See an
+     *                                      <a href="http://www.abdulqabiz.com/blog/archives/2007/05/31/php-proxy-script-for-cross-domain-requests/" rel="external">example in PHP</a>
+     *                                      to understand the process of writing your own proxy.</li>
      *     <li><code>borderColor</code> {String}: Border color of nodes. The default value is "#666666".</li>
      *     <li><code>borderWidth</code> {Number}: Border width of nodes. The default value is 1.</li>
      *     <li><code>opacity</code> {Number}: The node opacity (0 to 1). The default value is 0.8.</li>
