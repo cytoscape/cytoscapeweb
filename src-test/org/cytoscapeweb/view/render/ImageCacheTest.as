@@ -101,13 +101,17 @@ package org.cytoscapeweb.view.render {
         }
         
         public function testDispose():void {
-            // Initial state:
-            assertEquals(1, _cache.size);
-            assertFalse(_cache.isLoading());
+            function runTest():void {trace(_cache.size)
+                // Initial state:
+                assertTrue(_cache.size > 0);
+                assertFalse(_cache.isLoading());
+                
+                _cache.dispose();
+                assertEquals(0, _cache.size);
+                assertFalse(_cache.isLoading());
+            };
             
-            _cache.dispose();
-            assertEquals(0, _cache.size);
-            assertFalse(_cache.isLoading());
+            _cache.loadImages(_simpleVs, null, addAsync(runTest, 3000));
         }
 
     }

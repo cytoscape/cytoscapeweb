@@ -998,13 +998,13 @@ function runGraphTests(moduleName, vis, options) {
     	var ids = [];
     	
     	// 1: Update all nodes and edges (same data):
-        var data = { weight: 1, new_attr: "ignore it!" };
+        var data = { weight: 1/*, new_attr: "ignore it!"*/ };
         vis.updateData(data);
     	
         all = vis.nodes().concat(vis.edges());
         $.each(all, function(i, el) {
     		same(el.data.weight, 1, "weight updated ("+el.data.id+")");
-    		same(el.data.new_attr, undefined, "New attribute ignored ("+el.data.id+")");
+//    		same(el.data.new_attr, undefined, "New attribute ignored ("+el.data.id+")");
     	});
         
         // 2: Update more than one node and edge at once (by ID - ALL groups - same data):
@@ -1086,6 +1086,31 @@ function runGraphTests(moduleName, vis, options) {
         		ok(el.data.label != n.data.label, "Other nodes or edges label NOT updated ("+id+")");
         	}
     	});
+        
+        var id = nodes[0].data.id;
+        
+        // 6: Update a field with type 'number' to null (should work):
+        vis.updateData("nodes", [id], { weight: null });
+        ok(vis.node(id).data.weight === null, "Node weight should be null");
+        
+        // Test Errors:
+        var errId;
+        var onError = function(evt) {console.log(evt.value.id);
+        	errId = evt.value.id;
+        }
+        vis.addListener("error", onError);
+        
+        // 7: Update a field with type 'int' to null (should set 0 as default):
+        vis.updateData("nodes", [id], { ranking: null });
+        same(errId, "dat001", "node.data.ranking (error: int type with null value)");
+        errId = null;
+        
+        // 8: Update a field with type 'boolean' to null (should set false as default):
+        vis.updateData("nodes", [id], { special: null });
+        same(errId, "dat001", "node.data.special (error: boolean type with null value)");
+        errId = null;
+        
+        vis.removeListener("error", onError);
     });
     
     test("Get Data Schema", function() {

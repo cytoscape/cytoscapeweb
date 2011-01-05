@@ -31,6 +31,7 @@ package org.cytoscapeweb.model.converters {
     
     import flare.data.DataSet;
     import flare.data.DataTable;
+    import flare.data.DataUtil;
     import flare.vis.data.Data;
     
     import flash.utils.IDataOutput;
@@ -89,7 +90,7 @@ package org.cytoscapeweb.model.converters {
             }
         }
         
-        public function testParseValue():void {
+        public function testParseGraphicsValue():void {
             // Device fonts:
             const F1:String = "Default-0-12";
             const F2:String = "SansSerif-0-08";
@@ -144,7 +145,23 @@ package org.cytoscapeweb.model.converters {
             ];
             
             for each (var t:Object in tests) {
-                var v:* = XGMMLConverter.parseValue(t.prop, t.value);
+                var v:* = XGMMLConverter.parseGraphicsValue(t.prop, t.value);
+                assertEquals(t.res, v);
+            }
+        }
+        
+        public function testParseAttValue():void {
+            var tests:Array = [
+                { value: "0",     type: DataUtil.BOOLEAN, res: false },
+                { value: "false", type: DataUtil.BOOLEAN, res: false },
+                { value: "FALSE", type: DataUtil.BOOLEAN, res: false },
+                { value: "1",     type: DataUtil.BOOLEAN, res: true },
+                { value: "true",  type: DataUtil.BOOLEAN, res: true },
+                { value: "TRUE",  type: DataUtil.BOOLEAN, res: true }
+            ];
+            
+            for each (var t:Object in tests) {
+                var v:* = XGMMLConverter.parseAttValue(t.value, t.type);
                 assertEquals(t.res, v);
             }
         }

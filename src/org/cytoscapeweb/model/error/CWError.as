@@ -27,26 +27,15 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
-package org.cytoscapeweb.util {
-    
-    /**
-     * Abstract utility class defining constants for the error codes used by Cytoscape Web.
-     */
-    public class ErrorCodes {
+package org.cytoscapeweb.model.error {
+    public class CWError extends Error {
         
-        // ========[ CONSTANTS ]====================================================================
-
-        public static const INVALID_DATA_CONVERSION:String = "dat001";
-        public static const BROKEN_IMAGE:String = "img001";
-
-        // ========[ CONSTRUCTOR ]==================================================================
+        public var code:String;
         
-        /**
-         * This constructor will throw an error, as this is an abstract class. 
-         */
-        public function ErrorCodes() {
-            throw new Error("This is an abstract class.");
+        public function CWError(message:String="", code:String=null) {
+            super(message);
+            this.code = code;
+            this.name = "Cytoscape Web Error";
         }
     }
 }
-       

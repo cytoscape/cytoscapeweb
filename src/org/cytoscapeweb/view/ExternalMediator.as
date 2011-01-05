@@ -136,7 +136,7 @@ package org.cytoscapeweb.view {
                     else
                         return ExternalInterface.call(functionName, argument);
                 } catch (err:Error) {
-                    error(err.message, err.errorID, err.name, err.getStackTrace());
+                    error(err);
                 }
             } else {
                 trace("Error [callExternalInterface]: ExternalInterface is NOT available!");
@@ -374,7 +374,7 @@ package org.cytoscapeweb.view {
 
             } catch (err:Error) {
                 trace("[ERROR]: addNode: " + err.getStackTrace());
-                error(err.message, err.errorID, err.name, err.getStackTrace());
+                error(err);
             }
 
             return o;
@@ -394,7 +394,7 @@ package org.cytoscapeweb.view {
                 
             } catch (err:Error) {
                 trace("[ERROR]: addEdge: " + err.getStackTrace());
-                error(err.message, err.errorID, err.name, err.getStackTrace());
+                error(err);
             }
             
             return o;

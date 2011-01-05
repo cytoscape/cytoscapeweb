@@ -409,7 +409,7 @@ package org.cytoscapeweb.model.converters {
                 name = attribute.name().toString();
                 field = schema.getFieldByName(name);
                 if (field != null)
-                    data[name] = DataUtil.parseValue(attribute[0].toString(), field.type);
+                    data[name] = parseAttValue(attribute[0].toString(), field.type);
             }
             
             // get "att" tags:
@@ -446,14 +446,14 @@ package org.cytoscapeweb.model.converters {
                         parseAtt(innerAtt, schema, innerData);
                     } else {
                         var innerType:int = toCW_Type(innerAtt.@[TYPE].toString());
-                        innerData = DataUtil.parseValue(innerAtt.@[VALUE], innerType);
+                        innerData = parseAttValue(innerAtt.@[VALUE], innerType);
                     }
                     arr.push(innerData);
                 }
                 data[name] = arr;
             } else {
                 // Otherwise, just add the single att data:
-                data[name] = DataUtil.parseValue(att.@[VALUE], type);
+                data[name] = parseAttValue(att.@[VALUE], type);
             }
         }
 
@@ -570,14 +570,14 @@ package org.cytoscapeweb.model.converters {
         private function addAtt(xml:XML, name:String, schema:DataSchema, value:*):void {
             var field:DataField = schema.getFieldByName(name);
             var dataType:int = field != null ? field.type : Utils.dataType(value);
-            var type:String = fromCW_Type(dataType); // XGMML type
+            var type:String = fromCW_Type(dataType, value); // XGMML type
             
             var att:XML = <{ATTRIBUTE}/>;
             att.@[TYPE] = type;
             if (name != null) att.@[NAME] = name;
 
             // Add <att> tags data:
-            if (typeof value === "object") {
+            if (typeof value === "object" && !(value is Date)) {
                 // If it is an object or array, the att value is a list of other att tags:
                 for (var k:String in value) {
                     var entryValue:* = value[k];
@@ -655,14 +655,28 @@ package org.cytoscapeweb.model.converters {
                     vp.vizMapper = dm;
                 }
 
-                value = parseValue(propName, value);
+                value = parseGraphicsValue(propName, value);
                 dm.addEntry(id, value);
             }
         }
         
         // -- static helpers --------------------------------------------------
         
-        internal static function parseValue(propName:String, value:*):* {
+        internal static function parseAttValue(value:String, type:int):* {
+            var val:*;
+            
+            if (type === DataUtil.BOOLEAN) {
+                // XGMML's boolean type is 0 or 1, but Cytoscape uses true/false, so let's
+                // accept both:
+                val = value != null && (value === TRUE || value.toLowerCase() === "true"); 
+            } else {
+                val = DataUtil.parseValue(value, type);
+            }
+            
+            return val;
+        }
+        
+        internal static function parseGraphicsValue(propName:String, value:*):* {
             if (value != null) {
                 switch (propName) {
                     case VisualProperties.EDGE_SOURCE_ARROW_SHAPE:
@@ -713,6 +727,7 @@ package org.cytoscapeweb.model.converters {
             switch (type) {
                 case INTEGER: return DataUtil.INT;
                 case REAL:    return DataUtil.NUMBER;
+                case BOOLEAN: return DataUtil.BOOLEAN;
                 case LIST:    return DataUtil.OBJECT;
                 case STRING:
                 default:      return DataUtil.STRING;
@@ -722,7 +737,9 @@ package org.cytoscapeweb.model.converters {
         /**
          * Converts from Flare data types to XGMML types.
          */
-        private static function fromCW_Type(type:int):String {        	
+        private static function fromCW_Type(type:int, value:*=null):String {        	
+            if (value is Date) return STRING;
+
             switch (type) {
                 case DataUtil.INT:      return INTEGER;
                 case DataUtil.NUMBER:   return REAL;

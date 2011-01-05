@@ -69,7 +69,7 @@ package org.cytoscapeweb.controller {
                 sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
             } catch (err:Error) {
                 trace("[ERROR]: UpdateDataCommand.execute: " + err.getStackTrace());
-                error(err.message, err.errorID, err.name, err.getStackTrace());
+                error(err);
             }
         }
     }

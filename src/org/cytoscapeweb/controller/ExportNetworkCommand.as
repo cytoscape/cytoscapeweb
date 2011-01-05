@@ -62,7 +62,7 @@ package org.cytoscapeweb.controller {
                 graphProxy.export(data, url, window);
                 
             } catch (err:Error) {
-                error(err.message, err.errorID, err.name, err.getStackTrace());
+                error(err);
             }
         }
     }

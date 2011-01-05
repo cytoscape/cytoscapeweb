@@ -31,6 +31,7 @@ package org.cytoscapeweb.controller {
     import flare.data.DataUtil;
     
     import org.cytoscapeweb.ApplicationFacade;
+    import org.cytoscapeweb.model.error.CWError;
     import org.cytoscapeweb.model.methods.error;
     import org.cytoscapeweb.util.Groups;
     import org.puremvc.as3.interfaces.INotification;
@@ -68,7 +69,7 @@ package org.cytoscapeweb.controller {
                 if (added) sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
             } catch (err:Error) {
                 trace("[ERROR]: AddDataFieldCommand.execute: " + err.getStackTrace());
-                error(err.message, err.errorID, err.name, err.getStackTrace());
+                error(err);
             }
         }
     }

@@ -64,7 +64,7 @@ package org.cytoscapeweb.controller {
                 
             } catch (err:Error) {
                 trace("[ERROR]: RemoveItemsCommand.execute: " + err.getStackTrace());
-                error(err.message, err.errorID, err.name, err.getStackTrace());
+                error(err);
             }
         }
     }

@@ -44,10 +44,10 @@ package org.cytoscapeweb.view.render {
     import org.cytoscapeweb.model.data.VisualStyleBypassVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
     import org.cytoscapeweb.model.data.VizMapperVO;
+    import org.cytoscapeweb.model.error.CWError;
     import org.cytoscapeweb.model.methods.error;
     import org.cytoscapeweb.util.ErrorCodes;
     import org.cytoscapeweb.util.VisualProperties;
-    import org.cytoscapeweb.util.methods.$each;
     
     
     public class ImageCache {
@@ -190,7 +190,7 @@ package org.cytoscapeweb.view.render {
                 
                 loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void {trace("ImageCache - Error loading image: " + e);
                     _broken[url] = true;
-                    error("Image cannot be loaded: " + url, ErrorCodes.BROKEN_IMAGE, e.type, e.text);
+                    error(new CWError("Image cannot be loaded: "+url+" ("+e.type+"--"+e.text+")", ErrorCodes.BROKEN_IMAGE));
                     checkOnLoadingEnd();
                 });
                 

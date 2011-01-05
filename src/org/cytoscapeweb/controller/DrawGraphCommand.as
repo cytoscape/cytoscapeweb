@@ -29,9 +29,8 @@
 */
 package org.cytoscapeweb.controller {
     
-    import flash.utils.setTimeout;
-    
     import org.cytoscapeweb.model.data.VisualStyleVO;
+    import org.cytoscapeweb.model.error.CWError;
     import org.cytoscapeweb.model.methods.error;
     import org.cytoscapeweb.view.GraphMediator;
     import org.cytoscapeweb.view.components.GraphView;
@@ -84,10 +83,9 @@ package org.cytoscapeweb.controller {
 	
 	                graphMediator.drawGraph();
 	            }
-                
             } catch (err:Error) {
                 trace("[ERROR]: DrawGraphCommand.execute: " + err.getStackTrace());
-                error(err.message, err.errorID, err.name, err.getStackTrace());
+                error(err);
             }
         }
     }

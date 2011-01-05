@@ -44,6 +44,8 @@ package org.cytoscapeweb.model.converters {
     import flash.utils.IDataInput;
     import flash.utils.IDataOutput;
     
+    import org.cytoscapeweb.model.error.CWError;
+    import org.cytoscapeweb.util.ErrorCodes;
     import org.cytoscapeweb.util.Groups;
     import org.cytoscapeweb.util.Utils;
     
@@ -111,7 +113,7 @@ package org.cytoscapeweb.model.converters {
             var nodes:Array = [], edges:Array = [];
             var id:String, sid:String, tid:String;
             var obj:Object;
-            var f:DataField;
+            var f:DataField, type:int, defValue:*, mandatoryDefValue:*;
             var directed:Boolean = false;
             
             if (network == null) network = {};
@@ -140,7 +142,18 @@ package org.cytoscapeweb.model.converters {
                     } else {
                         f = schema.getFieldByName(name);
                         if (f == null) {
-                            schema.addField(new DataField(name, obj[TYPE], obj[DEF_VALUE], name));
+                            type = toCW_Type(obj[TYPE]);
+                            
+                            // Some types always require a default value, because they don't accept null.
+                            switch(type) {
+                                case DataUtil.INT: mandatoryDefValue = 0; break;
+                                case DataUtil.BOOLEAN: mandatoryDefValue = false; break;
+                                default: mandatoryDefValue = null;
+                            }
+                            
+                            defValue = normalizeDataValue(obj[DEF_VALUE], type, mandatoryDefValue);
+                            
+                            schema.addField(new DataField(name, type, defValue, name));
                         }
                     }
                 }
@@ -157,24 +170,24 @@ package org.cytoscapeweb.model.converters {
             
             // Nodes
             for each (obj in extNodesData) {
-                id = "" + obj[ID]; // always convert IDs to String!
                 normalizeData(obj, nodeSchema)
+                id = obj[ID];
                 lookup[id] = obj;
                 nodes.push(obj);
             }
             
             // Edges
             for each (obj in extEdgesData) {
-                id  = "" + obj[ID];
-                sid = "" + obj[SOURCE];
-                tid = "" + obj[TARGET];
+                normalizeData(obj, edgeSchema);
+                id  = obj[ID];
+                sid = obj[SOURCE];
+                tid = obj[TARGET];
                 
                 if (!lookup.hasOwnProperty(sid))
                     throw new Error("Edge "+id+" references unknown node: "+sid);
                 if (!lookup.hasOwnProperty(tid))
                     throw new Error("Edge "+id+" references unknown node: "+tid);
-                
-                normalizeData(obj, edgeSchema) 
+
                 edges.push(obj);
             }
             
@@ -285,9 +298,7 @@ package org.cytoscapeweb.model.converters {
             return obj;
         }
         
-        // ========[ PRIVATE METHODS ]==============================================================
-        
-        private static function normalizeData(data:Object, schema:DataSchema):void {
+        public static function normalizeData(data:Object, schema:DataSchema):void {
             var name:String, field:DataField, value:*;
             
             // Set default values, if necessary:
@@ -295,7 +306,7 @@ package org.cytoscapeweb.model.converters {
                 field = schema.getFieldAt(i);
                 name = field.name;
                 value = data[name];
-                if (value === undefined) data[name] = field.defaultValue;
+                data[name] = normalizeDataValue(value, field.type, field.defaultValue);
             }
             
             // Look for missing fields:
@@ -306,6 +317,36 @@ package org.cytoscapeweb.model.converters {
                     throw new Error("Cannot convert data object: Missing schema field for '"+name+"'. ");
             }
         }
+        
+        public static function normalizeDataValue(value:*, type:int, defValue:*=undefined):* {
+            // Set default value, if necessary:
+            if (value === undefined) value = defValue !== undefined ? defValue : null;
+
+            // Validate and normalize numeric values:
+            if (type === DataUtil.INT) {
+                if (value == null || isNaN(value))
+                    throw new CWError("Invalid data type ("+(typeof value)+") for field of type 'int': " + value,
+                                      ErrorCodes.INVALID_DATA_CONVERSION);
+            } else if (type === DataUtil.NUMBER) {
+                if (value === undefined) value = null;
+                
+                if (value != null && isNaN(value))
+                    throw new CWError("Invalid data type ("+(typeof value)+") for field of type 'number': " + value,
+                                      ErrorCodes.INVALID_DATA_CONVERSION);
+            } else if (type === DataUtil.BOOLEAN) {
+                if (! (value is Boolean))
+                    throw new CWError("Invalid data type ("+(typeof value)+") for field of type 'boolean': " + value,
+                                      ErrorCodes.INVALID_DATA_CONVERSION);
+            } else if (type === DataUtil.STRING) {
+                if (value != null && !(value is String))
+                    throw new CWError("Invalid data type ("+(typeof value)+") for field of type 'string': " + value,
+                                      ErrorCodes.INVALID_DATA_CONVERSION);
+            }
+            
+            return value
+        }
+        
+        // ========[ PRIVATE METHODS ]==============================================================
         
         // -- static helpers --------------------------------------------------
         
@@ -326,8 +367,8 @@ package org.cytoscapeweb.model.converters {
                 case DataUtil.INT:      return INT;
                 case DataUtil.BOOLEAN:  return BOOLEAN;
                 case DataUtil.NUMBER:   return NUMBER;
-                case DataUtil.DATE:
                 case DataUtil.STRING:   return STRING;
+                case DataUtil.DATE:
                 case DataUtil.OBJECT:
                 default:                return OBJECT;
             }

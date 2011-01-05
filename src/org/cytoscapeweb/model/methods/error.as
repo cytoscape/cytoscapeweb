@@ -29,14 +29,23 @@
 */
 package org.cytoscapeweb.model.methods {
     import org.cytoscapeweb.ApplicationFacade;
+    import org.cytoscapeweb.model.error.CWError;
     import org.puremvc.as3.patterns.observer.Notification;
 
     /**
      * Gets a resource bundle string.
      */
-    public function error(msg:String, id:*=null, name:String=null, stackTrace:String=null):void {
+    public function error(err:Error):void {
+        var id:* = (err is CWError) ? CWError(err).code : err.errorID;
+        id = id != null ? ""+id : null;
+        
+        var msg:String = err.message;
+        var name:String = err.name;
+        var stackTrace:String = err.getStackTrace();
+        
         var b:Object = { msg: msg, id: id, name: name, stackTrace: stackTrace };
         var n:Notification = new Notification(ApplicationFacade.ERROR, b);
+        
         ApplicationFacade.getInstance().notifyObservers(n);
     }
 }

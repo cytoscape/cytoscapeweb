@@ -46,7 +46,7 @@ package org.cytoscapeweb.model.converters {
         public function testConvertToDataSet():void {
             // Empty networks:
             // --------------------------------------------------------------
-            var n:*, ds:DataSet, ns:DataSchema, es:DataSchema, nodes:Array, nd:Array, ed:Array;
+            var network:*, ds:DataSet, ns:DataSchema, es:DataSchema, nodes:Array, nd:Array, ed:Array;
             
             var networks:Array = [ null, 
                                   {},
@@ -54,8 +54,8 @@ package org.cytoscapeweb.model.converters {
                                   { schema: { nodes: [], edges: [] }, data: { nodes: [], edges: [] } } 
                                  ];
             
-            for each (n in networks) {
-                ds = ExternalObjectConverter.convertToDataSet(n);
+            for each (network in networks) {
+                ds = ExternalObjectConverter.convertToDataSet(network);
                 assertMinNodesSchema(ds.nodes.schema);
                 assertMinEdgesSchema(ds.edges.schema);
                 assertEmptyGraph(ds);
@@ -63,11 +63,16 @@ package org.cytoscapeweb.model.converters {
         
             // A simple network:
             // --------------------------------------------------------------
-            n = {
+            var now:Date = new Date();
+            
+            network = {
                 dataSchema: {
                     nodes: [
                         { name: "id", type: "number" }, // WRONG! Should be string and will be ignored
-                        { name: "score", type: "number", defValue: -1 }
+                        { name: "label", type: "string" },
+                        { name: "score", type: "number", defValue: -1 },
+                        { name: "ranking", type: "int" },
+                        { name: "date", type: "object", defValue: now }
                     ],
                     edges: [
                         { name: "source", type: "string", defValue: "1" },    // Should ignore defValue
@@ -77,46 +82,72 @@ package org.cytoscapeweb.model.converters {
                 },
                 data: {
                     nodes: [
-                        { id: 1, score: 1.11 }, // Should convert id to string
-                        { id: "2", score: 2.22 },
-                        { id: "3", score: 3.33 }
+                        { id: "1", label: "Node 1", score: 1.11, date: new Date(2010, 1, 1) },
+                        { id: "2", label: "Node 2", score: 2.22 },
+                        { id: "3", label: "Node 3", score: 3.33 }
                     ],
                     edges: [
                         { id: "e1", source: "1", target: "2", weight: 0.5 },
-                        { id: "e2", source: "2", target: 3, weight: 0.5 }, // Should convert target to string
-                        { id: "e3", source: 3, target: "3", weight: 0.25, directed: false } // Should convert source to string
+                        { id: "e2", source: "2", target: "3", weight: 0.5 },
+                        { id: "e3", source: "3", target: "3", weight: 0.25, directed: false }
                     ]
                 }
             };
             
-            ds = ExternalObjectConverter.convertToDataSet(n);
+            ds = ExternalObjectConverter.convertToDataSet(network);
             
-            // Schema:
+            // Test schema:
+            // --------------------
             ns = ds.nodes.schema;
             es = ds.edges.schema;
             
+            // Nodes Schema:
             assertMinNodesSchema(ns);
+            
             assertEquals(DataUtil.NUMBER, ns.getFieldByName("score").type);
             assertEquals(-1, ns.getFieldByName("score").defaultValue);
             
+            assertEquals(DataUtil.INT, ns.getFieldByName("ranking").type);
+            assertEquals(0, ns.getFieldByName("ranking").defaultValue);
+            
+            assertEquals(DataUtil.STRING, ns.getFieldByName("label").type);
+            assertTrue(null === ns.getFieldByName("label").defaultValue);
+            
+            assertEquals(DataUtil.OBJECT, ns.getFieldByName("date").type);
+            assertTrue(now === ns.getFieldByName("date").defaultValue);
+            
+            // Edges schema
             assertMinEdgesSchema(es, true);
-            assertEquals(undefined, es.getFieldByName(ExternalObjectConverter.SOURCE).defaultValue);
+            
+            assertTrue(null === es.getFieldByName(ExternalObjectConverter.SOURCE).defaultValue);
+            
             assertEquals(DataUtil.NUMBER, es.getFieldByName("weight").type);
+            assertTrue(null === es.getFieldByName("weight").defaultValue);
+            
             assertEquals(DataUtil.BOOLEAN, es.getFieldByName(ExternalObjectConverter.DIRECTED).type);
             
-            // Data
+            // Test Data:
+            // --------------------
             nd = ds.nodes.data;
             ed = ds.edges.data;
             
-            assertEquals(n.data.nodes.length, nd.length);
-            assertEquals(n.data.edges.length, ed.length);
+            assertEquals(network.data.nodes.length, nd.length);
+            assertEquals(network.data.edges.length, ed.length);
             
+            for each (var n:Object in nd) {
+                assertTrue(n.id is String);
+                assertTrue(n.label is String);
+                assertTrue(n.score is Number);
+                assertTrue(n.ranking is int);
+                assertTrue(n.date is Date);
+                assertEquals((n.id !== "1"), (n.date == now));
+            }
             for each (var e:Object in ed) {
+                assertTrue(e.id is String);
+                assertTrue(e.weight is Number);
+                assertTrue(e.directed is Boolean);
                 assertEquals(e.id !== "e3", e.directed);
             }
-            
-                        
-            // TODO: test values!
         }
         
         public function testToExtObject():void {

@@ -48,8 +48,8 @@ package org.cytoscapeweb.model {
 	import mx.utils.StringUtil;
 	
 	import org.cytoscapeweb.ApplicationFacade;
-	import org.cytoscapeweb.model.converters.GraphMLConverter;
 	import org.cytoscapeweb.model.converters.ExternalObjectConverter;
+	import org.cytoscapeweb.model.converters.GraphMLConverter;
 	import org.cytoscapeweb.model.converters.SIFConverter;
 	import org.cytoscapeweb.model.converters.XGMMLConverter;
 	import org.cytoscapeweb.model.data.ConfigVO;
@@ -421,12 +421,10 @@ package org.cytoscapeweb.model {
                         var f:DataField = schema.getFieldByName(k);
                         if (f != null) {
                             var v:* = data[k];
-                            v = DataUtil.parseValue(v, f.type);
-                            
-                            if (isNaN(v) && (f.type === DataUtil.INT || f.type === DataUtil.NUMBER))
-                                throw new Error("Attempt to convert '"+data[k]+"' to NUMBER while updating the '"+k+"' data field");
-                            
+                            v = ExternalObjectConverter.normalizeDataValue(v, f.type, f.defaultValue);
                             ds.data[k] = v;
+                        } else {
+                            throw new Error("Cannot update data: there is no Data Field for '"+k+".");
                         }
                     }
                 }
