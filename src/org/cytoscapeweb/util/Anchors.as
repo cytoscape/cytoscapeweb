@@ -30,6 +30,9 @@
 package org.cytoscapeweb.util {
 	import flare.display.TextSprite;
 	
+	import mx.utils.StringUtil;
+	
+	
     
     /**
      * Abstract utility class defining names of visual attributes.
@@ -60,6 +63,8 @@ package org.cytoscapeweb.util {
         // ========[ PUBLIC METHODS ]===============================================================
         
         public static function toFlareAnchor(value:String):int {
+            //if (value != null) value = StringUtil.trim(value.toLowerCase());
+            
             switch (value) {
             	case TOP:    return TextSprite.TOP;
             	case MIDDLE: return TextSprite.MIDDLE;

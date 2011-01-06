@@ -28,6 +28,8 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.util {
+    import org.cytoscapeweb.model.error.CWError;
+    
 	
 	
     /**
@@ -165,25 +167,38 @@ package org.cytoscapeweb.util {
          * @param value the visual property value to be converted.
          */
         public static function parseValue(name:String, value:*):* {
+        	var val:* = value;
+        	
         	if (value != null) {
                 if (isColor(name)) {
                 	var color:uint = Utils.rgbColorAsUint(value);
+                	
+                	if (isNaN(color))
+                       throw new CWError("Invalid color ('"+value+"') for visual property '"+name+"'",
+                                          ErrorCodes.INVALID_DATA_CONVERSION);
+                	
                 	// Add alpha, which is required by for most of the colors:
                 	if (name != BACKGROUND_COLOR) color += 0xff000000;
-                    value = color;
+                    val = color;
                 } else if (isNumber(name)) {
-                	value = Number(value);
+                	val = Number(value);
+                	
+                	if (isNaN(val))
+                	   throw new CWError("Invalid number ('"+value+"') for visual property '"+name+"'",
+                                          ErrorCodes.INVALID_DATA_CONVERSION);
+                } else if (name == VisualProperties.EDGE_STYLE || name == VisualProperties.EDGE_STYLE_MERGE) {
+                    val = LineStyles.parse(value);
                 } else if (name == VisualProperties.NODE_SHAPE) {
-                    value = NodeShapes.parse(value);
+                    val = NodeShapes.parse(value);
                 } else if (name == VisualProperties.EDGE_SOURCE_ARROW_SHAPE ||
                            name == VisualProperties.EDGE_TARGET_ARROW_SHAPE) {
-                    value = ArrowShapes.parse(value);
+                    val = ArrowShapes.parse(value);
                 } else if (isString(name)) {
-                    if (value == null) value = "";
+                    if (value == null) val = "";
                 }
             }
             
-            return value;
+            return val;
         }
         
         /**

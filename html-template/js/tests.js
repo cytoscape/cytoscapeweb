@@ -1095,7 +1095,7 @@ function runGraphTests(moduleName, vis, options) {
         
         // Test Errors:
         var errId;
-        var onError = function(evt) {console.log(evt.value.id);
+        var onError = function(evt) {
         	errId = evt.value.id;
         }
         vis.addListener("error", onError);

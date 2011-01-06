@@ -99,8 +99,10 @@ package org.cytoscapeweb.model.data {
         // ========[ PUBLIC METHODS ]===============================================================
         
         public override function getValue(data:Object):* {
-        	var attrValue:Number = data[attrName] as Number;
-        	if (dataList == null) return undefined;
+        	var val:* = data[attrName];
+        	if (val == null || isNaN(val) || dataList == null) return undefined;
+        	
+        	var attrValue:Number = val as Number;
         	
         	if (attrValue < _minAttrValue)      attrValue = _minAttrValue;
         	else if (attrValue > _maxAttrValue) attrValue = _maxAttrValue;

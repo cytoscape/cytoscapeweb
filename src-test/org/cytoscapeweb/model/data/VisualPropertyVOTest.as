@@ -31,7 +31,7 @@ package org.cytoscapeweb.model.data {
     
     import flexunit.framework.TestCase;
     
-    import org.cytoscapeweb.util.ArrowShapes;
+    import org.cytoscapeweb.model.error.CWError;
     import org.cytoscapeweb.util.NodeShapes;
     import org.cytoscapeweb.util.VisualProperties;
     
@@ -46,7 +46,7 @@ package org.cytoscapeweb.model.data {
         public function testNew():void {
             var vp:VisualPropertyVO = new VisualPropertyVO(VisualProperties.BACKGROUND_COLOR);
             assertEquals(VisualProperties.BACKGROUND_COLOR, vp.name);
-            assertNotNull(vp.defaultValue);
+            assertUndefined(vp.defaultValue);
             assertNull(vp.vizMapper);
 
             var mapper:PassthroughVizMapperVO = new PassthroughVizMapperVO("attr", VisualProperties.EDGE_CURVATURE);
@@ -58,32 +58,29 @@ package org.cytoscapeweb.model.data {
         }
         
         public function testDefaultValue():void {
-            // Default values should not be null:
             // COLORS:
             var vp:VisualPropertyVO = new VisualPropertyVO(VisualProperties.BACKGROUND_COLOR);
-            assertEquals(0x000000, vp.defaultValue);
+            assertUndefined(vp.defaultValue);
             vp = new VisualPropertyVO(VisualProperties.NODE_COLOR, null);
+            assertNull(vp.defaultValue);
+            vp = new VisualPropertyVO(VisualProperties.NODE_COLOR, 0xff000000);
             assertEquals(0xff000000, vp.defaultValue);
             
             // SHAPES:
             vp = new VisualPropertyVO(VisualProperties.NODE_SHAPE);
-            assertEquals(NodeShapes.ELLIPSE, vp.defaultValue);
-            vp = new VisualPropertyVO(VisualProperties.EDGE_SOURCE_ARROW_SHAPE);
-            assertEquals(ArrowShapes.NONE, vp.defaultValue);
-            vp = new VisualPropertyVO(VisualProperties.EDGE_TARGET_ARROW_SHAPE);
-            assertEquals(ArrowShapes.NONE, vp.defaultValue);
-            
-            // NUMBERS:
-            vp = new VisualPropertyVO(VisualProperties.NODE_SIZE);
-            assertEquals(0, vp.defaultValue);
-            vp = new VisualPropertyVO(VisualProperties.EDGE_ALPHA);
-            assertEquals(0, vp.defaultValue);
+            assertUndefined(vp.defaultValue);
             
             // STRINGS:
             vp = new VisualPropertyVO(VisualProperties.EDGE_LABEL);
+            assertUndefined(vp.defaultValue);
+            vp = new VisualPropertyVO(VisualProperties.NODE_TOOLTIP_TEXT, "");
             assertEquals("", vp.defaultValue);
-            vp = new VisualPropertyVO(VisualProperties.NODE_TOOLTIP_TEXT);
-            assertEquals("", vp.defaultValue);
+            
+            // NUMBERS:
+            vp = new VisualPropertyVO(VisualProperties.NODE_SIZE);
+            assertEquals(null, vp.defaultValue);
+            vp = new VisualPropertyVO(VisualProperties.EDGE_ALPHA, 0);
+            assertEquals(0, vp.defaultValue);
         }
 
         public function testToObject():void {
@@ -124,12 +121,15 @@ package org.cytoscapeweb.model.data {
             var vp:VisualPropertyVO;
             var def:* = "/anImage.png";
             
+            // Simple default value:
             vp = VisualPropertyVO.fromObject(VisualProperties.NODE_IMAGE, def);
             assertEquals(def, vp.defaultValue);
             
+            // Object with defaultValue attribute only:
             vp = VisualPropertyVO.fromObject(VisualProperties.NODE_IMAGE, { defaultValue: def });
             assertEquals(def, vp.defaultValue);
             
+            // continuousMapper with defaultValue:
             vp = VisualPropertyVO.fromObject(VisualProperties.EDGE_WIDTH,
                                              { defaultValue: 3, 
                                                continuousMapper: { attrName: "weight", minValue: 1, maxValue: 4 } });
@@ -138,6 +138,12 @@ package org.cytoscapeweb.model.data {
             assertEquals(1, ContinuousVizMapperVO(vp.vizMapper).minValue);
             assertEquals(4, ContinuousVizMapperVO(vp.vizMapper).maxValue);
             
+            // continuousMapper WITHOUT defaultValue:
+            vp = VisualPropertyVO.fromObject(VisualProperties.EDGE_WIDTH,
+                                             { continuousMapper: { attrName: "weight", minValue: 2, maxValue: 4 } });
+            assertEquals(2, vp.defaultValue); // Should be the minValue
+            
+            // discreteMapper with defaultValue:
             vp = VisualPropertyVO.fromObject(VisualProperties.EDGE_WIDTH,
                                              { defaultValue: 3, 
                                                discreteMapper: { attrName: "type", 
@@ -147,6 +153,13 @@ package org.cytoscapeweb.model.data {
             assertEquals("type", vp.vizMapper.attrName);
             assertEquals(10, vp.vizMapper.getValue({ type: "1" }));
             assertEquals(40, vp.vizMapper.getValue({ type: "2" }));
+            
+            // discreteMapper WITHOUT defaultValue:
+            vp = VisualPropertyVO.fromObject(VisualProperties.EDGE_WIDTH,
+                                             { discreteMapper: { attrName: "type", 
+                                                                 entries: [ { attrValue: "1",  value: 10 }, { attrValue: "2",  value: 40 } ]
+                                              } });
+            assertUndefined(vp.defaultValue);
         }
     }
 }

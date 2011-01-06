@@ -46,14 +46,33 @@ package org.cytoscapeweb.util {
         }
         
         public function testRgbColorAsUint():void {
-        	var color:String = "#ffffff";
-        	assertEquals(0xffffff, Utils.rgbColorAsUint(color));
-        	color = "#f3e5a4"; // Should accept with leading "#"...
-        	assertEquals(0xf3e5a4, Utils.rgbColorAsUint(color));
-        	color = "  00ff00 "; // Should trim...
-        	assertEquals(0x00ff00, Utils.rgbColorAsUint(color));
-        	color = " #000000"; // Both "#" and spaces...
-        	assertEquals(0x000000, Utils.rgbColorAsUint(color));
+        	// Hexadecimal RGB
+        	assertEquals(0xffffff, Utils.rgbColorAsUint("#ffffff"));
+        	// Should accept with leading "#"...
+        	assertEquals(0xf3e5a4, Utils.rgbColorAsUint("#f3e5a4"));
+        	// Should trim...
+        	assertEquals(0x00ff00, Utils.rgbColorAsUint("  00ff00 "));
+        	// Both "#" and spaces...
+        	assertEquals(0x000000, Utils.rgbColorAsUint(" #000000"));
+        	// Should accept 3-digit notation
+        	assertEquals(0xffbb00, Utils.rgbColorAsUint("#fb0"));
+        	// Invalid color == 0
+        	assertEquals(0, Utils.rgbColorAsUint("#fb"));
+        	// Invalid
+        	assertEquals(0, Utils.rgbColorAsUint("rgb(aaa,ccc)"));
+        	// Should accept rgb(r,g,b)
+        	assertEquals(0xff00ff, Utils.rgbColorAsUint("rgb(255,0,255)"));
+        	// Should accept RGB(r,g,b) with spaces
+        	assertEquals(0xff00ff, Utils.rgbColorAsUint("RGB(  255 , 0 , 255  )"));
+        	// RGB<SPACE>(r,g,b) is invalid
+        	assertEquals(0, Utils.rgbColorAsUint("RGB (  255 , 0 , 255  )"));
+        	// Some color keywords:
+        	assertEquals(0x800000, Utils.rgbColorAsUint("maroon"));
+        	assertEquals(0xff0000, Utils.rgbColorAsUint("red"));
+        	assertEquals(0xffffff, Utils.rgbColorAsUint("white"));
+        	assertEquals(0x000000, Utils.rgbColorAsUint("black"));
+        	assertEquals(0xc0c0c0, Utils.rgbColorAsUint(" SILVER  "));
+        	assertEquals(0x808080, Utils.rgbColorAsUint("gray"));
         }
         
         public function testFormat():void {

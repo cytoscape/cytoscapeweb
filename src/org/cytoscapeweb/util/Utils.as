@@ -40,6 +40,28 @@ package org.cytoscapeweb.util {
 	
 	public class Utils {
 
+        // ========[ CONSTANTS ]====================================================================
+
+        private static const _COLORS:Object = {
+            maroon:  "#800000",
+            red:     "#ff0000",
+            orange:  "#ffA500",
+            yellow:  "#ffff00",
+            olive:   "#808000",
+            purple:  "#800080",
+            fuchsia: "#ff00ff",
+            white:   "#ffffff",
+            lime:    "#00ff00",
+            green:   "#008000",
+            navy:    "#000080",
+            blue:    "#0000ff",
+            aqua:    "#00ffff",
+            teal:    "#008080",
+            black:   "#000000",
+            silver:  "#c0c0c0",
+            gray:    "#808080"
+        };
+
         // ========[ CONSTRUCTOR ]==================================================================
         
         /**
@@ -72,19 +94,45 @@ package org.cytoscapeweb.util {
         }
         
 		/**
-		 * @param the color as string - e.g. "#f5f5f5", "f5f5f5" or "255,255,255";
+		 * @param the color as string - e.g. "#f5f5f5", "f5f5f5", "rgb(255,255,255)" or even "#fa0"
 		 * @return the RGB color as uint - e.g. 0xf5f5f5.
 		 */
         public static function rgbColorAsUint(color:String):uint {
-            if (color == null) color = "0";
+            color = StringUtil.trim(""+color).toLowerCase();
             
-            if (color.search(/\d+?,\d+?,\d+?/) === 0) { // e.g. 255,255,255
+            // Is is a keywork (e.g. "white")?
+            var key:String = color;
+            color = _COLORS[key];
+            if (color == null) color = key; // Not a keyword!
+            
+            if (color == null) {
+                color = "0";
+            } else if (color.search(/rgb\(\s*\d+?\s*,\s*\d+?\s*,\s*\d+?\s*\)/i) === 0) { // e.g. rgb(255, 255, 255)
+                // TODO: functional rgb with percent "rgb(100%,100%,100%)"
+                color = color.replace(/rgb/i, "").replace("(", "").replace(")", "");
                 var rgb:Array = color.split(",");
-                var c:uint = Colors.rgba(rgb[0], rgb[1], rgb[2]);
-                color = rgbColorAsString(c);
+                
+                if (rgb.length === 3) {
+                    var c:uint = Colors.rgba( uint(StringUtil.trim(rgb[0])), 
+                                              uint(StringUtil.trim(rgb[1])),
+                                              uint(StringUtil.trim(rgb[2])) );
+                    // Convert to hexadecimal format:
+                    color = rgbColorAsString(c);
+                } else {
+                    color = "0";
+                }
             }
             
+            // Convert the hexadecimal format to a number:
             color = StringUtil.trim(color).replace("#", "");
+            
+            if (color.length === 3) { // Three-digit RGB notation?
+                color = color.charAt(0) + color.charAt(0) + 
+                        color.charAt(1) + color.charAt(1) + 
+                        color.charAt(2) + color.charAt(2);
+            }
+            if (color.length !== 6) color = "0";
+
             
             return uint("0x"+color);
         }

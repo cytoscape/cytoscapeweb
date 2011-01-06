@@ -35,12 +35,15 @@ package org.cytoscapeweb.util {
         // ========[ TESTS ]========================================================================
         
         public function testAbstractClass():void {
+            var failed:Boolean = true;
+            
             try {
                 new VisualProperties();
-                fail("Should not be able to instantiate VisualProperties");
-            } catch (e:Error) {
-                // OK
+            } catch (err:Error) {
+                failed = false;
             }
+            
+            if (failed) fail("Should not be able to instantiate VisualProperties");
         }
         
         public function testParseValue():void {

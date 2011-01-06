@@ -28,8 +28,6 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.model.data {
-	import org.cytoscapeweb.util.ArrowShapes;
-	import org.cytoscapeweb.util.NodeShapes;
 	import org.cytoscapeweb.util.VisualProperties;
 	
 	[Bindable]
@@ -48,24 +46,12 @@ package org.cytoscapeweb.model.data {
 		}
 		
 		public function get defaultValue():* {
-            var value:* = _defaultValue;
+            var val:* = _defaultValue;
             
-            if (value == null) {
-                if (isColor()) {
-                    value = name === VisualProperties.BACKGROUND_COLOR ? 0x000000 : 0xff000000;
-                } else if (isNumber()) {
-                    value = 0;
-                } else if (name === VisualProperties.NODE_SHAPE) {
-                    value = NodeShapes.ELLIPSE;
-                } else if (name === VisualProperties.EDGE_SOURCE_ARROW_SHAPE ||
-                           name === VisualProperties.EDGE_TARGET_ARROW_SHAPE) {
-                    value = ArrowShapes.NONE;
-                } else if (isString()) {
-                    value = "";
-                }
-            }
+            if (val == null && vizMapper is ContinuousVizMapperVO)
+                val = ContinuousVizMapperVO(vizMapper).minValue;
             
-            return value;
+            return val;
 		}
 		
 		public function set defaultValue(value:*):void {

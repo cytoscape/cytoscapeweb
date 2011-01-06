@@ -190,8 +190,10 @@ package org.cytoscapeweb.model.data {
     			var vp:VisualPropertyVO = getVisualProperty(visPropName);
     
     			if (vp != null) {
-                    if (data != null && vp.vizMapper != null)
-                        value = vp.vizMapper.getValue(data);
+    			    var mapper:VizMapperVO = vp.vizMapper;
+    			    
+                    if (data != null && mapper != null)
+                        value = mapper.getValue(data);
                     if (value == null)
                         value = vp.defaultValue;
     			}
