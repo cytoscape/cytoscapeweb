@@ -1,0 +1,145 @@
+<graph label="Cytoscape Web" directed="0" Graphic="1" xmlns:dc="http://purl.org/dc/elements/1.1/" 
+       xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+       xmlns:cy="http://www.cytoscape.org" 
+       xmlns="http://www.cs.rpi.edu/XGMML">
+  <att name="documentVersion" value="0.1"/>
+  <att type="string" name="backgroundColor" value="#ffffff"/>
+  <att type="real" name="GRAPH_VIEW_ZOOM" value="1"/>
+  <att type="real" name="GRAPH_VIEW_CENTER_X" value="163.625"/>
+  <att type="real" name="GRAPH_VIEW_CENTER_Y" value="159.25"/>
+  <node id="a01" label="A01">
+    <att type="real" name="weight" value="0.45"/>
+    <att type="string" name="shape" value="ELLIPSE"/>
+  </node>
+  <node id="a02" label="A02">
+    <att type="real" name="weight" value="0.22"/>
+    <att type="string" name="shape" value="TRIANGLE"/>
+  </node>
+  <node id="a03" label="A03">
+    <att type="real" name="weight" value="0.09"/>
+    <att type="string" name="shape" value="OCTAGON"/>
+  </node>
+  <node id="a04" label="A04">
+    <att type="real" name="weight" value="0.03"/>
+    <att type="string" name="shape" value="DIAMOND"/>
+  </node>
+  <node id="a05" label="A05">
+    <att type="real" name="weight" value="0.1"/>
+    <att type="string" name="shape" value="PARALLELOGRAM"/>
+  </node>
+  <node id="a06" label="A06">
+    <att type="real" name="weight" value="0.12"/>
+    <att type="string" name="shape" value="ROUNDRECT"/>
+  </node>
+  <node id="a07" label="A07">
+    <att type="real" name="weight" value="0.07"/>
+    <att type="string" name="shape" value="RECTANGLE"/>
+  </node>
+  <node id="a08" label="A08">
+    <att type="real" name="weight" value="0.16"/>
+    <att type="string" name="shape" value="HEXAGON"/>
+  </node>
+  <node id="a09" label="A09">
+    <att type="real" name="weight" value="0.45"/>
+    <att type="string" name="shape" value="VEE"/>
+  </node>
+  <edge id="e1" source="a02" target="a01" label="a01 (25) a02">
+    <att type="real" name="weight" value="4"/>
+    <att type="string" name="targetArrowShape" value="diamond"/>
+    <att type="string" name="sourceArrowShape" value="diamond"/>
+    <att type="string" name="network" value="25"/>
+  </edge>
+  <edge id="e2" source="a01" target="a02" label="a02 (14) a01">
+    <att type="real" name="weight" value="6"/>
+    <att type="string" name="targetArrowShape" value="T"/>
+    <att type="string" name="sourceArrowShape" value="delta"/>
+    <att type="string" name="network" value="14"/>
+  </edge>
+  <edge id="e3" source="a01" target="a04" label="a01 (25) a04">
+    <att type="real" name="weight" value="2"/>
+    <att type="string" name="targetArrowShape" value="circle"/>
+    <att type="string" name="sourceArrowShape" value="circle"/>
+    <att type="string" name="network" value="25"/>
+  </edge>
+  <edge id="e4" source="a03" target="a02" label="a02 (15) a03">
+    <att type="real" name="weight" value="8"/>
+    <att type="string" name="targetArrowShape" value="circle"/>
+    <att type="string" name="sourceArrowShape" value="diamond"/>
+    <att type="string" name="network" value="15"/>
+  </edge>
+  <edge id="e5" source="a06" target="a02" label="a02 (2) a06">
+    <att type="real" name="weight" value="2"/>
+    <att type="string" name="targetArrowShape" value="none"/>
+    <att type="string" name="sourceArrowShape" value="none"/>
+    <att type="string" name="network" value="2"/>
+  </edge>
+  <edge id="e6" source="a02" target="a06" label="a06 (2) a02">
+    <att type="real" name="weight" value="2"/>
+    <att type="string" name="targetArrowShape" value="none"/>
+    <att type="string" name="sourceArrowShape" value="none"/>
+    <att type="string" name="network" value="2"/>
+  </edge>
+  <edge id="e7" source="a04" target="a03" label="a03 (24) a04">
+    <att type="real" name="weight" value="1"/>
+    <att type="string" name="targetArrowShape" value="T"/>
+    <att type="string" name="sourceArrowShape" value="diamond"/>
+    <att type="string" name="network" value="15"/>
+  </edge>
+  <edge id="e8" source="a01" target="a05" label="a05 (2) a01">
+    <att type="real" name="weight" value="1"/>
+    <att type="string" name="targetArrowShape" value="delta"/>
+    <att type="string" name="sourceArrowShape" value="circle"/>
+    <att type="string" name="network" value="2"/>
+  </edge>
+  <edge id="e9" source="a01" target="a05" label="a05 (24) a01">
+    <att type="real" name="weight" value="2"/>
+    <att type="string" name="targetArrowShape" value="delta"/>
+    <att type="string" name="sourceArrowShape" value="delta"/>
+    <att type="string" name="network" value="24"/>
+  </edge>
+  <edge id="e10" source="a01" target="a05" label="a05 (14) a01">
+    <att type="real" name="weight" value="4"/>
+    <att type="string" name="targetArrowShape" value="none"/>
+    <att type="string" name="sourceArrowShape" value="none"/>
+    <att type="string" name="network" value="14"/>
+  </edge>
+  <edge id="e11" source="a07" target="a03" label="a03 (2) a07">
+    <att type="real" name="weight" value="0.4"/>
+    <att type="string" name="targetArrowShape" value="delta"/>
+    <att type="string" name="sourceArrowShape" value="T"/>
+    <att type="string" name="network" value="2"/>
+  </edge>
+  <edge id="e12" source="a08" target="a04" label="a04 (14) a08">
+    <att type="real" name="weight" value="2"/>
+    <att type="string" name="targetArrowShape" value="T"/>
+    <att type="string" name="sourceArrowShape" value="T"/>
+    <att type="string" name="network" value="14"/>
+  </edge>
+  
+  <edge id="e12a" source="a08" target="a04" label="a04 (14) a08">
+    <att type="real" name="weight" value="1"/>
+    <att type="string" name="network" value="12"/>
+  </edge>
+  <edge id="e12b" source="a04" target="a08" label="a08 (15) a04">
+    <att type="real" name="weight" value="2"/>
+    <att type="string" name="network" value="15"/>
+  </edge>
+  <edge id="e12c" source="a04" target="a08" label="a08 (16) a04">
+    <att type="real" name="weight" value="3"/>
+    <att type="string" name="network" value="16"/>
+  </edge>
+  
+  <edge id="e13" source="a04" target="a09" label="a09 (2) a04">
+    <att type="real" name="weight" value="8"/>
+    <att type="string" name="targetArrowShape" value="arrow"/>
+    <att type="string" name="sourceArrowShape" value="T"/>
+    <att type="string" name="network" value="2"/>
+  </edge>
+  <edge id="e14" source="a07" target="a07" label="a07 (2) a07">
+    <att type="real" name="weight" value="5"/>
+    <att type="string" name="targetArrowShape" value="none"/>
+    <att type="string" name="sourceArrowShape" value="none"/>
+    <att type="string" name="network" value="2"/>
+  </edge>
+</graph>

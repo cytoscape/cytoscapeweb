@@ -888,7 +888,7 @@
          * <p>You can only update <code>data</code> attributes. Visual properties such as <code>color</code>
          * and <code>width</code> cannot be updated with this method. In order to change visual properties,
          * use {@link org.cytoscapeweb.Visualization#visualStyle} or {@link org.cytoscapeweb.Visualization#visualStyleBypass}.</p>
-         * <p>If you try to change an attribute that has not been previously defined, the request will be ignored.
+         * <p>If you try to change an attribute that has not been previously defined, Cytoscape Web will throw an {@link org.cytoscapeweb.Error}.
          * In this case, you have to add the attribute definition first, by calling {@link org.cytoscapeweb.Visualization#addDataField}.</p>
          * <p>Another important thing to remember is that you cannot directly change merged edges attributes.</p>
          * <p>Finally, all the continuous and custom mappers - defined by the current visual style - will be automatically recomputed after
@@ -2017,7 +2017,10 @@
      * Nodes positioning are done by {@link org.cytoscapeweb.Layout} objects.</p>
      * <p>A NetworkModel object has only two fields:</p>
      * <ul class="options">
-      *     <li><code>dataSchema</code> {{@link org.cytoscapeweb.DataSchema}}: It defines the nodes/edges data fields.</li>
+      *     <li><code>dataSchema</code> {{@link org.cytoscapeweb.DataSchema}}: It defines the nodes/edges data fields.
+      *                                 You do not need to specify these essential fields: 
+      *                                 <code>id</code> (nodes or edges), <code>source</code> (edges), <code>target</code> (edges), <code>directed</code> (edges).
+      *                                 Actually, trying to modify these fields in the schema might throw an {@link org.cytoscapeweb.Error}.</li>
       *     <li><code>data</code> {Object}: The actual nodes/edges data values used to create {@link org.cytoscapeweb.Node} and {@link org.cytoscapeweb.Edge} elements.
       *         It contains two fields (<code>nodes</code> and <code>edges</code>), which are arrays of nodes/edges data objects.</li>
       *</ul>

@@ -236,22 +236,34 @@ package org.cytoscapeweb.model.data {
         }
 		
 		public static function fromObject(obj:Object):VisualStyleVO {
-			var grName:String, pName:String;
+			var grName:String, pName:String, props:Object, dprops:Object, dp:Object, p:Object;
 
 			if (obj != null && obj !== _DEFAULT_OBJ) {
 			    var defObj:Object = Utils.clone(_DEFAULT_OBJ);
 			    
 			    // Merge the given object with the default one:
-			    for (grName in obj) {
-			        var props:Object = obj[grName];
-			        for (pName in props) {
-			            var p:Object = props[pName];
-			            var gr:Object = defObj[grName];
-			            if (gr != null) gr[pName] = p;
+			    for (grName in defObj) {
+			        dprops = defObj[grName];
+			        props = obj[grName];
+			        // The custom style does not have this group:
+			        if (props == null) props = obj[grName] = {};
+			        
+			        for (pName in dprops) {
+			            dp = dprops[pName];
+			            p = obj[grName][pName];
+			            
+			            if (p == null) {
+			                // The custom style does not have this property, so set a default one:
+			                props[pName] = dp;
+			            } else if (typeof p === "object" && p["defaultValue"] == null) {
+			                // The custom style has this property, but not a default value for it,
+			                // so let's set one from the default style:
+			                p["defaultValue"] = (dp != null && typeof dp === "object" && dp.hasOwnProperty("defaultValue")) ?
+			                                    dp["defaultValue"] :
+			                                    dp;
+			            }
 			        }
 			    }
-			    
-			    obj = defObj;
 			}
 			
 			var style:VisualStyleVO = new VisualStyleVO();
@@ -263,9 +275,9 @@ package org.cytoscapeweb.model.data {
                 // Parse the visual properties:
                 for (pName in group) {
                     var propName:String = grName+"."+pName;
-                    var prop:Object = group[pName];
+                    p = group[pName];
                     
-                    var vp:VisualPropertyVO = VisualPropertyVO.fromObject(propName, prop);                   
+                    var vp:VisualPropertyVO = VisualPropertyVO.fromObject(propName, p);                   
                     style.addVisualProperty(vp);
                 }
             }

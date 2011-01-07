@@ -40,6 +40,7 @@ package org.cytoscapeweb.model.data {
     public class VisualStyleVOTest extends TestCase {
         
         private var _style:VisualStyleVO;
+        private var _defStyle:VisualStyleVO;
         private var _defValues:Object;
         private var _mappers:Object;
         private var _dataList:Array;
@@ -52,7 +53,7 @@ package org.cytoscapeweb.model.data {
         };
         private var _complexStyle:Object = {
                 global: {
-                    backgroundColor: "#ffffff",
+                    backgroundColor: "white",
                     tooltipDelay: 1000
                 },
                 nodes: {
@@ -63,26 +64,27 @@ package org.cytoscapeweb.model.data {
                                             { attrValue: "B", value: "#fdfdfa" } ]
                              }
                     },
-                    opacity: 1,
+                    opacity: { continuousMapper: { attrName: "ATTR_2", minValue: 0.2, maxValue: 0.7 }
+                    },
                     size: 6,
-                    borderColor: "#000000",
-                    tooltipFontColor: "#00ff00",
+                    borderColor: "#666",
+                    tooltipFontColor: "rgb(0, 255, 0)",
                     tooltipBackgroundColor: "#fafafa",
                     selectionLineColor: "#cccc00",
                     selectionLineWidth: 2,
-                    hoverGlowColor: "#aae6ff",
+                    hoverGlowColor: "#aef",
                     hoverGlowOpacity: 0.6
                 },
                 edges: {
-                    color: { defaultValue: "#999999",
-                                 discreteMapper: {
-                                    attrName: "ATTR_2",
-                                    entries: [ { attrValue: 10, value: "#9e7ba5" },
-                                               { attrValue: 20, value: "#717cff" },
-                                               { attrValue: 30, value: "#73c6cd" } ]
-                                 }
+                    color: { /*defaultValue: "#999999",*/ // No def. value!!!
+                             discreteMapper: {
+                                attrName: "ATTR_2",
+                                entries: [ { attrValue: 10, value: "#9e7ba5" },
+                                           { attrValue: 20, value: "#717cff" },
+                                           { attrValue: 30, value: "#73c6cd" } ]
+                             }
                     },
-                    width: 3,
+                    width: { defaultValue: null, continuousMapper: { attrName: "ATTR_2", minValue: 4, maxValue: 12 } },
                     mergeWidth: 2,
                     opacity: 1,
                     tooltipFontColor: "#000000",
@@ -91,6 +93,8 @@ package org.cytoscapeweb.model.data {
         };
         
         public override function setUp():void {
+            _defStyle = VisualStyleVO.defaultVisualStyle();
+            
             _defValues = {};
             _defValues[VisualProperties.BACKGROUND_COLOR] = 0xeeffff;
             _defValues[VisualProperties.SELECTION_FILL_ALPHA] = 0.15;
@@ -209,36 +213,46 @@ package org.cytoscapeweb.model.data {
         }
         
         public function testToObject():void {
-            var obj:Object = _style.toObject();
+            var vs:VisualStyleVO = VisualStyleVO.fromObject(_complexStyle);
+            var o:Object = vs.toObject();
+            
+            assertEquals("#ffffff", o.global.backgroundColor); // Colors are always converted to 6-digit hexadecimal format
+            assertEquals(1000, o.global.tooltipDelay);
+            
+            assertEquals("#fbfbfb", o.nodes.color.defaultValue);
+            assertEquals("ATTR_1", o.nodes.color.discreteMapper.attrName);
+            assertEquals(_defStyle.getDefaultValue(VisualProperties.NODE_ALPHA), o.nodes.opacity.defaultValue);
+            assertEquals("ATTR_2", o.nodes.opacity.continuousMapper.attrName);
+            assertEquals("#666666", o.nodes.borderColor);
+            assertEquals("#00ff00", o.nodes.tooltipFontColor);
+            assertEquals("#aaeeff", o.nodes.hoverGlowColor);
+            assertEquals(0.6, o.nodes.hoverGlowOpacity);
+            
+            assertEquals( "Missing default value should be replaced by value from default visual style",
+                          Utils.rgbColorAsString(_defStyle.getDefaultValue(VisualProperties.EDGE_COLOR)),
+                          o.edges.color.defaultValue );
+            assertEquals("ATTR_2", o.edges.color.discreteMapper.attrName);
+            assertEquals(3, o.edges.color.discreteMapper.entries.length);
+            assertEquals( "Missing default value should be replaced by value from default visual style",
+                           _defStyle.getDefaultValue(VisualProperties.EDGE_WIDTH),
+                           o.edges.width.defaultValue );
+            
+            // Number of properties.
+            var arr:Array = vs.getPropertiesAsArray();
+            assertTrue(arr.length > 0);
             
             var grName:String, pName:String;
-            var arr:Array = _style.getPropertiesAsArray();
-            for each (var vp:VisualPropertyVO in arr) {
-                var tokens:Array = vp.name.split(".");
-                grName = tokens[0];
-                pName = tokens[1];
-                var ov:* = obj[grName][pName];
-                var vv:*;
-
-                if (ov is Number || ov is String) {
-                    vv = _style.getDefaultValue(vp.name);
-                    if (VisualProperties.isColor(vp.name)) vv = Utils.rgbColorAsString(vv);
-                    
-                    assertEquals(vv, ov);
-                } else {
-                    // TODO: VIZMAPPER...
-                }
-            }
-            
             var count:int = 0;
-            for (grName in obj) {
-                var props:Object = obj[grName];
+            
+            for (grName in o) {
+                var props:Object = o[grName];
                 for (pName in props) {
                     pName = grName+"."+pName;
-                    assertNotNull(_style.getVisualProperty(pName));
+                    assertNotNull(vs.getVisualProperty(pName));
                     count++;
                 }
             }
+            
             assertEquals(arr.length, count);
         }
 
@@ -246,17 +260,17 @@ package org.cytoscapeweb.model.data {
             // 1. Empty Object:
             var style:VisualStyleVO = VisualStyleVO.fromObject({});
             // There must be some default props (let's test only some important ones):
-            assertTrue(style.getValue(VisualProperties.BACKGROUND_COLOR) > 0);
+            assertEquals(_defStyle.getValue(VisualProperties.BACKGROUND_COLOR), style.getValue(VisualProperties.BACKGROUND_COLOR));
             assertTrue(style.getValue(VisualProperties.NODE_SELECTION_COLOR) === undefined);
             assertTrue(style.getValue(VisualProperties.EDGE_SELECTION_COLOR) === undefined);
             assertTrue(style.getValue(VisualProperties.NODE_SELECTION_GLOW_ALPHA) > 0);
             assertTrue(style.getValue(VisualProperties.EDGE_SELECTION_GLOW_ALPHA) > 0);
             assertTrue(style.getValue(VisualProperties.EDGE_CURVATURE) > 0);
             assertTrue(style.getValue(VisualProperties.SELECTION_LINE_ALPHA) > 0);
-            assertTrue(style.getValue(VisualProperties.NODE_ALPHA) > 0);
-            assertTrue(style.getValue(VisualProperties.NODE_SIZE) > 0);
-            assertTrue(style.getValue(VisualProperties.EDGE_ALPHA) > 0);
-            assertTrue(style.getValue(VisualProperties.EDGE_WIDTH) > 0);
+            assertEquals(_defStyle.getValue(VisualProperties.NODE_ALPHA), style.getValue(VisualProperties.NODE_ALPHA));
+            assertEquals(_defStyle.getValue(VisualProperties.NODE_SIZE), style.getValue(VisualProperties.NODE_SIZE));
+            assertEquals(_defStyle.getValue(VisualProperties.EDGE_ALPHA) , style.getValue(VisualProperties.EDGE_ALPHA));
+            assertEquals(_defStyle.getValue(VisualProperties.EDGE_WIDTH), style.getValue(VisualProperties.EDGE_WIDTH));
             
             // 2. Simple Object:
             style = VisualStyleVO.fromObject(_simpleStyle);
