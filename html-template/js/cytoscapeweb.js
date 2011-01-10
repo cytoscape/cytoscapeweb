@@ -2024,7 +2024,9 @@
       *                                 <code>id</code> (nodes or edges), <code>source</code> (edges), <code>target</code> (edges), <code>directed</code> (edges).
       *                                 Actually, trying to modify these fields in the schema might throw an {@link org.cytoscapeweb.Error}.</li>
       *     <li><code>data</code> {Object}: The actual nodes/edges data values used to create {@link org.cytoscapeweb.Node} and {@link org.cytoscapeweb.Edge} elements.
-      *         It contains two fields (<code>nodes</code> and <code>edges</code>), which are arrays of nodes/edges data objects.</li>
+      *                                     It contains two fields (<code>nodes</code> and <code>edges</code>), which are arrays of nodes/edges data objects.
+      *                                     Note: data attributes of type <code>int</code> or <code>boolean</code> (see {@link org.cytoscapeweb.DataField}) 
+      *                                     do NOT accept <code>null</code> values.</li>
       *</ul>
      * @example
      * var network = {

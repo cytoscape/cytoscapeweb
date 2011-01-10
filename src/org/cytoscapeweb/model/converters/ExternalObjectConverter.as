@@ -324,7 +324,7 @@ package org.cytoscapeweb.model.converters {
 
             // Validate and normalize numeric values:
             if (type === DataUtil.INT) {
-                if (value == null || isNaN(value))
+                if (value == null || value is String || isNaN(value))
                     throw new CWError("Invalid data type ("+(typeof value)+") for field of type 'int': " + value,
                                       ErrorCodes.INVALID_DATA_CONVERSION);
             } else if (type === DataUtil.NUMBER) {
