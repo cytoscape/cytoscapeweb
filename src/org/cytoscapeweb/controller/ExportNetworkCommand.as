@@ -50,7 +50,7 @@ package org.cytoscapeweb.controller {
                 }
                 if (window == null) window = "_self";
 
-                if (format === "pdf" || format === "png") {
+                if (format === "pdf" || format === "png" || format === "svg") {
                     // Get the image bytes from the graph mediator class:
                     data = appMediator.getGraphImage(format, w, h);
                 } else {

@@ -1309,6 +1309,8 @@
          *         header('Content-type: image/png');
          *     } elseif (&#36;type == 'pdf') {
          *         header('Content-type: application/pdf');
+         *     } elseif (&#36;type == 'svg') {
+         *        header('Content-type: image/svg+xml');
          *     } elseif (&#36;type == 'xml') {
          *         header('Content-type: text/xml');
          *     }
