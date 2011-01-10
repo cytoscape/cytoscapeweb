@@ -43,6 +43,7 @@ package org.cytoscapeweb.model.converters {
     import org.cytoscapeweb.model.data.VisualStyleVO;
     import org.cytoscapeweb.util.ArrowShapes;
     import org.cytoscapeweb.util.Fonts;
+    import org.cytoscapeweb.util.LineStyles;
     import org.cytoscapeweb.util.NodeShapes;
     import org.cytoscapeweb.util.VisualProperties;
     
@@ -131,6 +132,13 @@ package org.cytoscapeweb.model.converters {
                 { prop: VisualProperties.NODE_LABEL_FONT_SIZE, value: F8, res: 24 },
                 { prop: VisualProperties.NODE_LABEL_FONT_SIZE, value: F9, res: 12 },
                 { prop: VisualProperties.NODE_LABEL_FONT_SIZE, value: F10, res: 8 },
+                // EDGE STYLES:
+                { prop: VisualProperties.EDGE_STYLE, value: "SOLID", res: LineStyles.SOLID },
+                { prop: VisualProperties.EDGE_STYLE, value: "any_other_value", res: LineStyles.SOLID }, // default
+                { prop: VisualProperties.EDGE_STYLE, value: "DOT", res: LineStyles.DOT },
+                { prop: VisualProperties.EDGE_STYLE, value: "equal_dash", res: LineStyles.EQUAL_DASH },
+                { prop: VisualProperties.EDGE_STYLE, value: "LONG_DASH", res: LineStyles.LONG_DASH },
+                { prop: VisualProperties.EDGE_STYLE, value: "DASH_DOT", res: LineStyles.LONG_DASH },
                 // ARROW SHAPES:
                 { prop: VisualProperties.EDGE_SOURCE_ARROW_SHAPE, value: 0, res: ArrowShapes.NONE },
                 { prop: VisualProperties.EDGE_SOURCE_ARROW_SHAPE, value: 3, res: ArrowShapes.DELTA },

@@ -52,6 +52,7 @@ package org.cytoscapeweb.model.converters {
     import org.cytoscapeweb.model.data.VisualStyleVO;
     import org.cytoscapeweb.util.ArrowShapes;
     import org.cytoscapeweb.util.Fonts;
+    import org.cytoscapeweb.util.LineStyles;
     import org.cytoscapeweb.util.NodeShapes;
     import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.VisualProperties;
@@ -128,6 +129,7 @@ package org.cytoscapeweb.model.converters {
         private static const EDGE_GRAPHICS_ATTR:Object = {
             width: [VisualProperties.EDGE_WIDTH], 
             fill: [VisualProperties.EDGE_COLOR],
+            'cy:edgeLineType': [VisualProperties.EDGE_STYLE],
             'cy:sourceArrow': [VisualProperties.EDGE_SOURCE_ARROW_SHAPE],
             'cy:targetArrow': [VisualProperties.EDGE_TARGET_ARROW_SHAPE],
             'cy:sourceArrowColor': [VisualProperties.EDGE_SOURCE_ARROW_COLOR],
@@ -685,6 +687,9 @@ package org.cytoscapeweb.model.converters {
         internal static function parseGraphicsValue(propName:String, value:*):* {
             if (value != null) {
                 switch (propName) {
+                    case VisualProperties.EDGE_STYLE:
+                        value = toCW_EdgeStyle(value);
+                        break;
                     case VisualProperties.EDGE_SOURCE_ARROW_SHAPE:
                     case VisualProperties.EDGE_TARGET_ARROW_SHAPE:
                         value = toCW_ArrowShape(value);
@@ -755,6 +760,10 @@ package org.cytoscapeweb.model.converters {
                 case DataUtil.STRING:
                 default:                return STRING;
             }
+        }
+        
+        private static function toCW_EdgeStyle(line:String):String {
+            return LineStyles.parse(line);
         }
         
         private static function fromCW_ArrowShape(shape:String):String {
