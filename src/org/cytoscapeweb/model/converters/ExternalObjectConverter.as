@@ -324,21 +324,22 @@ package org.cytoscapeweb.model.converters {
 
             // Validate and normalize numeric values:
             if (type === DataUtil.INT) {
-                if (value == null || value is String || isNaN(value))
+                if ( value == null || !(typeof value === "number") || isNaN(value) )
                     throw new CWError("Invalid data type ("+(typeof value)+") for field of type 'int': " + value,
                                       ErrorCodes.INVALID_DATA_CONVERSION);
+                value = int(value);
             } else if (type === DataUtil.NUMBER) {
                 if (value === undefined) value = null;
                 
-                if (value != null && isNaN(value))
+                if ( value != null && (!(typeof value === "number") || isNaN(value)) )
                     throw new CWError("Invalid data type ("+(typeof value)+") for field of type 'number': " + value,
                                       ErrorCodes.INVALID_DATA_CONVERSION);
             } else if (type === DataUtil.BOOLEAN) {
-                if (! (value is Boolean))
+                if ( !(value is Boolean) )
                     throw new CWError("Invalid data type ("+(typeof value)+") for field of type 'boolean': " + value,
                                       ErrorCodes.INVALID_DATA_CONVERSION);
             } else if (type === DataUtil.STRING) {
-                if (value != null && !(value is String))
+                if ( value != null && !(value is String) )
                     throw new CWError("Invalid data type ("+(typeof value)+") for field of type 'string': " + value,
                                       ErrorCodes.INVALID_DATA_CONVERSION);
             }

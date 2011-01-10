@@ -39,9 +39,120 @@ package org.cytoscapeweb.model.converters {
     import flexunit.framework.TestCase;
     
     import org.cytoscapeweb.fixtures.Fixtures;
+    import org.cytoscapeweb.model.error.CWError;
     import org.cytoscapeweb.util.Groups;
     
     public class ExternalObjectConverterTest extends TestCase {
+
+        public function testNormalizeDataValue():void {
+            /*
+            if (value === undefined) value = defValue !== undefined ? defValue : null;
+
+            // Validate and normalize numeric values:
+            if (type === DataUtil.INT) {
+                if (value == null || value is String || isNaN(value))
+                    throw new CWError("Invalid data type ("+(typeof value)+") for field of type 'int': " + value,
+                                      ErrorCodes.INVALID_DATA_CONVERSION);
+            } else if (type === DataUtil.NUMBER) {
+                if (value === undefined) value = null;
+                
+                if (value != null && isNaN(value))
+                    throw new CWError("Invalid data type ("+(typeof value)+") for field of type 'number': " + value,
+                                      ErrorCodes.INVALID_DATA_CONVERSION);
+            } else if (type === DataUtil.BOOLEAN) {
+                if (! (value is Boolean))
+                    throw new CWError("Invalid data type ("+(typeof value)+") for field of type 'boolean': " + value,
+                                      ErrorCodes.INVALID_DATA_CONVERSION);
+            } else if (type === DataUtil.STRING) {
+                if (value != null && !(value is String))
+                    throw new CWError("Invalid data type ("+(typeof value)+") for field of type 'string': " + value,
+                                      ErrorCodes.INVALID_DATA_CONVERSION);
+            }
+            */
+            
+            // Valid values:
+            assertEquals(3, ExternalObjectConverter.normalizeDataValue(3, DataUtil.INT));
+            assertEquals(3.33, ExternalObjectConverter.normalizeDataValue(3.33, DataUtil.NUMBER));
+            assertEquals(false, ExternalObjectConverter.normalizeDataValue(false, DataUtil.BOOLEAN));
+            assertEquals(true, ExternalObjectConverter.normalizeDataValue(true, DataUtil.BOOLEAN));
+            assertEquals("A_VAL", ExternalObjectConverter.normalizeDataValue("A_VAL", DataUtil.STRING));
+            
+            // OBJECT should accept anything
+            var now:Date = new Date();
+            assertEquals(now, ExternalObjectConverter.normalizeDataValue(now, DataUtil.OBJECT));
+            assertEquals("A_VAL", ExternalObjectConverter.normalizeDataValue("A_VAL", DataUtil.OBJECT));
+            assertEquals(10, ExternalObjectConverter.normalizeDataValue(10, DataUtil.OBJECT));
+            assertEquals(10.4, ExternalObjectConverter.normalizeDataValue(10.4, DataUtil.OBJECT));
+            assertEquals(true, ExternalObjectConverter.normalizeDataValue(true, DataUtil.OBJECT));
+            
+            // Truncate a Number to int:
+            assertEquals(2, ExternalObjectConverter.normalizeDataValue(2.95, DataUtil.INT));
+            
+            // This types accept NULL:
+            assertNull(ExternalObjectConverter.normalizeDataValue(undefined, DataUtil.STRING));
+            assertNull(ExternalObjectConverter.normalizeDataValue(undefined, DataUtil.OBJECT));
+            assertNull(ExternalObjectConverter.normalizeDataValue(undefined, DataUtil.NUMBER));
+            
+            // Test invalid values:
+            
+            // INT
+            try {
+                ExternalObjectConverter.normalizeDataValue(null, DataUtil.INT);
+                fail("Should throw Error when setting null to 'int' field!");
+            } catch (err:CWError) { }
+            try {
+                ExternalObjectConverter.normalizeDataValue('', DataUtil.INT);
+                fail("Should throw Error when setting empty string to 'int' field!");
+            } catch (err:CWError) { }
+            try {
+                ExternalObjectConverter.normalizeDataValue('0', DataUtil.INT);
+                fail("Should throw Error when setting string to 'int' field!");
+            } catch (err:CWError) { }
+            try {
+                ExternalObjectConverter.normalizeDataValue(false, DataUtil.INT);
+                fail("Should throw Error when setting boolean to 'int' field!");
+            } catch (err:CWError) { }
+            try {
+                ExternalObjectConverter.normalizeDataValue({}, DataUtil.INT);
+                fail("Should throw Error when setting object to 'int' field!");
+            } catch (err:CWError) { }
+            
+            // BOOLEAN
+            try {
+                ExternalObjectConverter.normalizeDataValue(null, DataUtil.BOOLEAN);
+                fail("Should throw Error when setting null to 'boolean' field!");
+            } catch (err:CWError) { }
+            try {
+                ExternalObjectConverter.normalizeDataValue('', DataUtil.BOOLEAN);
+                fail("Should throw Error when setting empty string to 'boolean' field!");
+            } catch (err:CWError) { }
+            try {
+                ExternalObjectConverter.normalizeDataValue('false', DataUtil.BOOLEAN);
+                fail("Should throw Error when setting string to 'boolean' field!");
+            } catch (err:CWError) { }
+            try {
+                ExternalObjectConverter.normalizeDataValue(0, DataUtil.BOOLEAN);
+                fail("Should throw Error when setting number to 'boolean' field!");
+            } catch (err:CWError) { }
+            try {
+                ExternalObjectConverter.normalizeDataValue({}, DataUtil.BOOLEAN);
+                fail("Should throw Error when setting object to 'boolean' field!");
+            } catch (err:CWError) { }
+            
+            // NUMBER
+            try {
+                ExternalObjectConverter.normalizeDataValue('0', DataUtil.NUMBER);
+                fail("Should throw Error when setting string to 'number' field!");
+            } catch (err:CWError) { }
+            try {
+                ExternalObjectConverter.normalizeDataValue(false, DataUtil.NUMBER);
+                fail("Should throw Error when setting boolean to 'number' field!");
+            } catch (err:CWError) { }
+            try {
+                ExternalObjectConverter.normalizeDataValue({}, DataUtil.NUMBER);
+                fail("Should throw Error when setting object to 'number' field!");
+            } catch (err:CWError) { }
+        }
 
         public function testConvertToDataSet():void {
             // Empty networks:

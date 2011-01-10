@@ -570,29 +570,35 @@ package org.cytoscapeweb.model.converters {
         private function addAtt(xml:XML, name:String, schema:DataSchema, value:*):void {
             var field:DataField = schema.getFieldByName(name);
             var dataType:int = field != null ? field.type : Utils.dataType(value);
-            var type:String = fromCW_Type(dataType, value); // XGMML type
             
             var att:XML = <{ATTRIBUTE}/>;
-            att.@[TYPE] = type;
             if (name != null) att.@[NAME] = name;
 
             // Add <att> tags data:
-            if (typeof value === "object" && !(value is Date)) {
-                // If it is an object or array, the att value is a list of other att tags:
-                for (var k:String in value) {
-                    var entryValue:* = value[k];
-                    var entryName:String = value is Array ? null : k;
-
-                    if (entryName == null && typeof entryValue === "object") {
-                        for (var kk:String in entryValue) {
-                            addAtt(att, kk, schema, entryValue[kk]);
+            if (dataType === DataUtil.OBJECT) {
+                att.@[TYPE] = LIST;
+                
+                if (typeof value === "object" && !(value is Date)) {
+                    // If it is an object or array, the att value is a list of other att tags:
+                    for (var k:String in value) {
+                        var entryValue:* = value[k];
+                        var entryName:String = value is Array ? null : k;
+    
+                        if (entryName == null && typeof entryValue === "object") {
+                            for (var kk:String in entryValue) {
+                                addAtt(att, kk, schema, entryValue[kk]);
+                            }
+                        } else {
+                            addAtt(att, entryName, schema, entryValue); 
                         }
-                    } else {
-                        addAtt(att, entryName, schema, entryValue); 
                     }
+                } else {
+                    // It could be an OBJECT-type field, but be a date or string value, for example... 
+                    addAtt(att, null, schema, toString(value, dataType));
                 }
             } else {
                 // Otherwise, just add the att value:
+                att.@[TYPE] = fromCW_Type(dataType, value)
                 att.@[VALUE] = toString(value, dataType);
             }
       
