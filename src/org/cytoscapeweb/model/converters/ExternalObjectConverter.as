@@ -244,8 +244,7 @@ package org.cytoscapeweb.model.converters {
                     obj.borderWidth = ds.lineWidth;
                     
                     // Global coordinates:
-                    var p:Point = new Point(ds.x, ds.y);
-                    if (ds.parent) p = ds.parent.localToGlobal(p);
+                    var p:Point = getGlobalCoordinate(ds as NodeSprite);
                     obj.x = p.x;
                     obj.y = p.y;
                 } else {
@@ -270,6 +269,12 @@ package org.cytoscapeweb.model.converters {
             }
            
             return obj;
+        }
+        
+        public static function getGlobalCoordinate(n:NodeSprite):Point {
+            var p:Point = new Point(n.x, n.y);
+            if (n.parent) p = n.parent.localToGlobal(p);
+            return p;
         }
         
         public static function toExtSchema(nodesSchema:DataSchema, edgesSchema:DataSchema):Object {

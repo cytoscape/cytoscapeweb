@@ -46,6 +46,8 @@ package org.cytoscapeweb.model.converters {
     import mx.formatters.DateFormatter;
     import mx.utils.StringUtil;
     
+    import org.cytoscapeweb.ApplicationFacade;
+    import org.cytoscapeweb.model.GraphProxy;
     import org.cytoscapeweb.model.data.DiscreteVizMapperVO;
     import org.cytoscapeweb.model.data.GraphicsDataTable;
     import org.cytoscapeweb.model.data.VisualPropertyVO;
@@ -77,15 +79,15 @@ package org.cytoscapeweb.model.converters {
      *   GRAPH attributes:
      * 
      *     directed - Boolean value. Graph is directed if this attribute is 1 (true) otherwise is undirected. The default value is 0 (false).
-     *     Vendor - Unsafe GML key to show the application that created the XGMML file.
-     *     Scale - Unsafe numeric value to scale the size of the displayed graph.
-     *     Rootnode - Unsafe id number to identify the root node of the graph. Useful for tree drawing.
-     *     Layout - Unsafe string that represent the layout that can be applied to display the graph. The layout name is the name of the algorithm to assign position to the nodes of the graph. For example: circular.
+     *     Vendor - Unsafe GML key to show the application that created the XGMML file [ NOT IMPLEMENTED ].
+     *     Scale - Unsafe numeric value to scale the size of the displayed graph [ NOT IMPLEMENTED ].
+     *     Rootnode - Unsafe id number to identify the root node of the graph. Useful for tree drawing [ NOT IMPLEMENTED ].
+     *     Layout - Unsafe string that represent the layout that can be applied to display the graph. The layout name is the name of the algorithm to assign position to the nodes of the graph. For example: circular [ NOT IMPLEMENTED ].
      *     Graphic - Unsafe boolean value. If this value is 1 (true), the XGMML file includes graphical representation of the graph. False means that the XGMML file includes only topological structure of the graph and the application program is free to display the graph using any layout.
      * 
      *   NODE attributes:
      * 
-     *     edgeanchor - GML key to position the edges related to the node
+     *     edgeanchor - GML key to position the edges related to the node [ NOT IMPLEMENTED ]
      *     weight - value (usually numerical) to show the node weight -Useful for weight graphs
      * 
      *   EDGE attributes:
@@ -198,12 +200,15 @@ package org.cytoscapeweb.model.converters {
         private var _minY:Number = Number.POSITIVE_INFINITY;
         private var _maxX:Number = Number.NEGATIVE_INFINITY
         private var _maxY:Number = Number.NEGATIVE_INFINITY;
+        private var _scale:Number = 1;
         
         private function get dateFormatter():DateFormatter {
             var dtf:DateFormatter = new DateFormatter();
             dtf.formatString = "YYYY-MM-DD JJ:NN:SS"; //e.g. "2009-01-26 00:43:57"
             return dtf;
         }
+        
+        private var graphProxy:GraphProxy = ApplicationFacade.getInstance().retrieveProxy(GraphProxy.NAME) as GraphProxy;
         
         // ========[ PUBLIC PROPERTIES ]============================================================
    
@@ -342,6 +347,7 @@ package org.cytoscapeweb.model.converters {
         /** @inheritDoc */
         public function write(dtset:DataSet, output:IDataOutput=null):IDataOutput {
         	var bgColor:uint = style.getValue(VisualProperties.BACKGROUND_COLOR) as uint;
+        	_scale = graphProxy.zoom;
         	
             // Init XGMML:
             var xgmml:XML = 
@@ -380,12 +386,12 @@ package org.cytoscapeweb.model.converters {
             addTags(xgmml, dtset, EDGE);
             
             // To center the view:
-            var w:Number = _maxX - _minX;
-            var h:Number = _maxY - _minY;
+            var w:Number = (_minX + (_maxX - _minX)/2)/_scale;
+            var h:Number = (_minY + (_maxY - _minY)/2)/_scale;
             if (w != Infinity && w != -Infinity)
-                xgmml.att.(@name == "GRAPH_VIEW_CENTER_X").@value = w/2;
+                xgmml.att.(@name == "GRAPH_VIEW_CENTER_X").@value = w;
             if (h != Infinity && h != -Infinity)
-                xgmml.att.(@name == "GRAPH_VIEW_CENTER_Y").@value = h/2;
+                xgmml.att.(@name == "GRAPH_VIEW_CENTER_Y").@value = h;
             
             // Return output:
             if (output == null) output = new ByteArray();
@@ -506,7 +512,7 @@ package org.cytoscapeweb.model.converters {
             	attrs = EDGE_ATTR;
             	graphAttrs = EDGE_GRAPHICS_ATTR;
             }
-            
+
             var schema:DataSchema = table.schema;
             var tuples:Object = (table is GraphicsDataTable) ? GraphicsDataTable(table).dataSprites : table.data;
             
@@ -539,22 +545,17 @@ package org.cytoscapeweb.model.converters {
                     
                     // Node position:
                     if (ds is NodeSprite) {
-                        var n:NodeSprite = NodeSprite(ds);
-                        
-                        if (n.parent != null)
-                            p = n.parent.localToGlobal(new Point(n.x, n.y))
-                        else
-                            p = new Point(0, 0);
-                        
-                        graphics.@x = p.x;
-                        graphics.@y = p.y;
+                        var n:NodeSprite = ds as NodeSprite;
+                        p = ExternalObjectConverter.getGlobalCoordinate(n);
+                        graphics.@x = p.x / _scale;
+                        graphics.@y = p.y / _scale;
                         
                         // For centering the network view:
                         var ns:Number = n.height;
-                        _minX = Math.min(_minX, (n.x - ns/2));
-                        _minY = Math.min(_minY, (n.y - ns/2));
-                        _maxX = Math.max(_maxX, (n.x + ns/2));
-                        _maxY = Math.max(_maxY, (n.y + ns/2));
+                        _minX = Math.min(_minX, (p.x - ns/2));
+                        _minY = Math.min(_minY, (p.y - ns/2));
+                        _maxX = Math.max(_maxX, (p.x + ns/2));
+                        _maxY = Math.max(_maxY, (p.y + ns/2));
                     }
                     
                     // Styles (color, width...):
