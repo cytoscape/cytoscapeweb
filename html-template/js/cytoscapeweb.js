@@ -1774,7 +1774,10 @@
          */
         _dispatch: function (functionName, jsonArg) {
             var arg = null;
-            if (jsonArg != null) { arg = JSON.parse(jsonArg); }
+            if (jsonArg != null) {
+            	jsonArg = jsonArg.replace(/\n/g, '\\n');
+            	arg = JSON.parse(jsonArg);
+            }
             var ret = this[functionName](arg);
             return ret;
         },
