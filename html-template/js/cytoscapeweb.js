@@ -34,16 +34,16 @@
 (function () {
     "use strict";
 
-    if (!this.org) {
-        this.org = {};
+    if (typeof(window['org']) === 'undefined') {
+    	window['org'] = {};
     }
-    if (!this.org.cytoscapeweb) {
-        /** @namespace */
-        this.org.cytoscapeweb = {};
+    if (typeof(window.org['cytoscapeweb']) === 'undefined') {
+    	/** @namespace */
+    	window.org['cytoscapeweb'] = {};
     }
 
     // Create a global map to store all instances of Cytoscape Web:
-    this._cytoscapeWebInstances = { index: 0 };
+    window._cytoscapeWebInstances = { index: 0 };
 
     // ===[ Visualization ]=========================================================================
     
@@ -126,7 +126,7 @@
      * @see org.cytoscapeweb.Visualization#draw
      * @see org.cytoscapeweb.Visualization#ready
      */
-    this.org.cytoscapeweb.Visualization = function (containerId, options) {
+    window.org.cytoscapeweb.Visualization = function (containerId, options) {
         this.containerId = containerId;
 
         if (!options) { options = {}; }
