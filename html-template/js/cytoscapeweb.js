@@ -1973,7 +1973,7 @@
      * @see org.cytoscapeweb.Visualization#hasListener
      * @see org.cytoscapeweb.Visualization#removeListener
      */
-    this.org.cytoscapeweb.Event = function (options) {
+    window.org.cytoscapeweb.Event = function (options) {
         /**
          * The event type name.
          * @type org.cytoscapeweb.EventType
