@@ -124,9 +124,9 @@ package org.cytoscapeweb.view.layout {
                         var o:Object = _t.$(n);
                         // collapse to inner radius
                         o.radius = o.h = o.v = radiusIncrement / 2;
-                        o.alpha = 0;
+//                        o.alpha = 0;
                         o.mouseEnabled = false;
-                        if (_tree.parentEdge(n) != null) _t.$(_tree.parentEdge(n)).alpha = false;
+//                        if (_tree.parentEdge(n) != null) _t.$(_tree.parentEdge(n)).alpha = false;
                     }
                 });
             }
@@ -299,7 +299,7 @@ package org.cytoscapeweb.view.layout {
         }
         
         protected function update(n:NodeSprite, r:Number, a:Number, aw:Number, v:Boolean):void {
-            var o:Object = _t.$(n), alpha:Number = v ? 1 : 0;
+            var o:Object = _t.$(n);//, alpha:Number = v ? 1 : 0;
             o.radius = r;
             o.angle = a;
             if (aw == 0) {
@@ -310,9 +310,9 @@ package org.cytoscapeweb.view.layout {
             }
             o.w = aw;
             o.u = a - aw/2;
-            o.alpha = alpha;
+//            o.alpha = alpha;
             o.mouseEnabled = v;
-            if (_tree.parentEdge(n) != null) _t.$(_tree.parentEdge(n)).alpha = alpha;
+//            if (_tree.parentEdge(n) != null) _t.$(_tree.parentEdge(n)).alpha = alpha;
         }
                 
         protected function params(n:NodeSprite):Params {

@@ -320,11 +320,11 @@ package org.cytoscapeweb.view.layout {
         }
         
         private function setVisibility(n:NodeSprite, o:Object, visible:Boolean):void {
-            o.alpha = visible ? 1.0 : 0.0;
+//            o.alpha = visible ? 1.0 : 0.0;
             o.mouseEnabled = visible;
             if (_tree.parentEdge(n) != null) {
                 o = _t.$(_tree.parentEdge(n));
-                o.alpha = visible ? 1.0 : 0.0;
+//                o.alpha = visible ? 1.0 : 0.0;
                 o.mouseEnabled = visible;
             }
 
