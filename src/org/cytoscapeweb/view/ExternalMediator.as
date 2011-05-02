@@ -443,7 +443,7 @@ package org.cytoscapeweb.view {
         
         private function getNetworkAsImage(format:String="pdf", options:Object=null):String {
             if (options == null) options = {};
-            // TODO: Refactor - proxy should NOT use a mediator!!!
+            
             var appMediator:ApplicationMediator = facade.retrieveMediator(ApplicationMediator.NAME) as ApplicationMediator;
             var img:* = appMediator.getGraphImage(format, options.width, options.height);
             

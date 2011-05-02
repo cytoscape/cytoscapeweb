@@ -272,9 +272,10 @@ package org.cytoscapeweb.view.components {
                     // Create one layout for each disconnected component:
                     for (var i:uint = 0; i < _dataList.length; i++) {
                         var d:Data = _dataList[i];
+                        
                         if (d.nodes.length > 1) {
                             var rect:Rectangle = GraphUtils.calculateGraphDimension(d.nodes, _layoutName, _style); 
-                            var root:NodeSprite = Layouts.rootNode(data);
+                            var root:NodeSprite = Layouts.rootNode(d);
                             
                             layout = createLayout(layoutObj, d, rect, root);
                             _appliedLayouts.push(layout);
