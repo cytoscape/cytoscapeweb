@@ -1628,11 +1628,11 @@
          */
         embedSWF: function () {
             //Major version of Flash required
-            var requiredMajorVersion = 9;
+            var requiredMajorVersion = 10;
             //Minor version of Flash required
             var requiredMinorVersion = 0;
             //Minor version of Flash required
-            var requiredRevision = 24;
+            var requiredRevision = 0;
 
             var containerId = this.containerId;
 

@@ -36,7 +36,6 @@ package org.cytoscapeweb.view {
 	import flash.geom.Rectangle;
 	import flash.ui.Keyboard;
 	import flash.ui.Mouse;
-	import flash.utils.ByteArray;
 	
 	import mx.controls.Alert;
 	import mx.controls.Button;
@@ -212,14 +211,35 @@ package org.cytoscapeweb.view {
 
             if (type === "png") {
                 var bounds:Rectangle = graphView.vis.getRealBounds();
+                
                 // At least 1 pixel:
-                bounds.width = bounds.width > 0 ? bounds.width : 1;
-                bounds.height = bounds.height > 0 ? bounds.height : 1;
+                var w:int = Math.max(bounds.width, 1);
+                var h:int = Math.max(bounds.height, 1);
                 
+                // Maximum pixel count (http://kb2.adobe.com/cps/496/cpsid_49662.html)
+                var pcount:int = w * h;
+                const MAX_PCOUNT:Number = 0xFFFFFF;
+                const MAX_PSIDE:Number = 8191;
+                var f:Number = 1;
+                
+                if (pcount > MAX_PCOUNT)
+                    f = f * MAX_PCOUNT/pcount;
+                
+                var maxSide:int = Math.max(w, h);
+                
+                if (maxSide > MAX_PSIDE)
+                    f = f * MAX_PSIDE/maxSide;
+                
+                if (f < 1) {
+                    w *= f;
+                    h *= f;
+                }
+                
+                // Draw the image:
                 var color:uint = configProxy.config.visualStyle.getValue(VisualProperties.BACKGROUND_COLOR);
-                
-                var source:BitmapData = new BitmapData(bounds.width, bounds.height, false, color);
+                var source:BitmapData = new BitmapData(w, h, false, color);
                 var matrix:Matrix = new Matrix(1, 0, 0, 1, -bounds.x, -bounds.y);
+                matrix.scale(f, f);
                 source.draw(graphView.vis, matrix);
 
                 var encoder:PNGEncoder = new PNGEncoder();

@@ -252,6 +252,9 @@ package org.cytoscapeweb.view.render {
                 if (_imgCounter[url] === 0) {
                     delete _imgCounter[url];
                     delete _broken[url];
+                    
+                    var bd:BitmapData = _images[url];
+                    if (bd != null) bd.dispose();
                     delete _images[url];
                 }
             }
