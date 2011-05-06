@@ -130,6 +130,7 @@ package org.cytoscapeweb.view {
                 }
                 
                 functionName = "_cytoscapeWebInstances." + configProxy.id + "." + functionName;
+                
                 try {
                     if (desigFunction != null)
                         return ExternalInterface.call(functionName, desigFunction, argument);

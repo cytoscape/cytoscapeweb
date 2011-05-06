@@ -193,6 +193,7 @@ package org.cytoscapeweb.util {
             var boundsList:Array = [];
             var lookup:Dictionary = new Dictionary();
             var data:Data;
+            var area:Number = 0;
            
             for each (data in dataList) {
                 // The real subgraph bounds:
@@ -205,11 +206,16 @@ package org.cytoscapeweb.util {
                 // If there is a subgraph that is wider than the whole canvas,
                 // use its width in the packing bounds:
                 if (b.width > width) width = b.width;
+                area += b.width * b.height;
             }
             
             boundsList.sort(function(a:Rectangle, b:Rectangle):int {
                 return a.width < b.width ? -1 : (a.width > b.width ? 1 : 0);
             }, Array.DESCENDING);
+            
+            // Adjust the bounds width:
+            if (dataList.length > 50)
+                width = Math.max(width, 1.4 * Math.sqrt(area));
             
             // More than 8 subgraphs decreases performance when using "fill by stripes":
             if (boundsList.length <= 7)

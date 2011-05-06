@@ -30,6 +30,8 @@
 package org.cytoscapeweb.view.render {
 	import flare.util.Shapes;
 	import flare.vis.data.DataSprite;
+	import flare.vis.data.EdgeSprite;
+	import flare.vis.data.NodeSprite;
 	import flare.vis.data.render.ShapeRenderer;
 	
 	import flash.display.BitmapData;
@@ -87,6 +89,9 @@ package org.cytoscapeweb.view.render {
             var g:Graphics = d.graphics;
             g.clear();
             
+            // Just to prevent rendering issues when drawing large bitmaps on small nodes:
+            d.cacheAsBitmap = d.props.imageUrl != null;
+            
             if (lineAlpha > 0 && d.lineWidth > 0) {
                 var pixelHinting:Boolean = d.shape === NodeShapes.ROUND_RECTANGLE;
                 g.lineStyle(d.lineWidth, d.lineColor, lineAlpha, pixelHinting);
@@ -103,6 +108,13 @@ package org.cytoscapeweb.view.render {
                 // 2. Draw an image on top:
                 drawImage(d, size);
             }
+            
+            // To prevent gaps between the node and its edges when the node has the
+            // border width changed on mouseover or selection
+            NodeSprite(d).visitEdges(function(e:EdgeSprite):Boolean {
+               e.dirty();
+               return false; 
+            }, NodeSprite.GRAPH_LINKS);
         }
         
         // ========[ PRIVATE METHODS ]==============================================================

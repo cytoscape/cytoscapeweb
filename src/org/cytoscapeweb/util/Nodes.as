@@ -34,8 +34,8 @@ package org.cytoscapeweb.util {
     
     import org.cytoscapeweb.ApplicationFacade;
     import org.cytoscapeweb.model.ConfigProxy;
-    import org.cytoscapeweb.model.data.VisualStyleVO;
     import org.cytoscapeweb.model.data.VisualStyleBypassVO;
+    import org.cytoscapeweb.model.data.VisualStyleVO;
     import org.cytoscapeweb.view.render.NodeRenderer;
     
     
@@ -160,7 +160,6 @@ package org.cytoscapeweb.util {
 
         public static function imageUrl(n:NodeSprite):String {
             var propName:String = VisualProperties.NODE_IMAGE;
-            // TODO: selected/mouseover images
             return style.getValue(propName, n.data);
         }
         
@@ -179,8 +178,8 @@ package org.cytoscapeweb.util {
         
         public static function filters(n:NodeSprite, selectNow:Boolean=false):Array {
             var filters:Array = [];
-
             var glow:GlowFilter = null;
+
             if (!selectNow && n.props.$hover)
                 glow = hoverGlow(n);
             if (glow == null && n.props.$selected)
