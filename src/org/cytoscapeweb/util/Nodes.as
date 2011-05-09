@@ -193,12 +193,13 @@ package org.cytoscapeweb.util {
         
         public static function selectionGlow(n:NodeSprite):GlowFilter {
             var filter:GlowFilter = null;
-            var alpha:Number = style.getDefaultValue(VisualProperties.NODE_SELECTION_GLOW_ALPHA);
-            var blur:Number = style.getDefaultValue(VisualProperties.NODE_SELECTION_GLOW_BLUR);
-            var strength:Number = style.getDefaultValue(VisualProperties.NODE_SELECTION_GLOW_STRENGTH);
+            var data:Object = n.data;
+            var alpha:Number = style.getValue(VisualProperties.NODE_SELECTION_GLOW_ALPHA, data);
+            var blur:Number = style.getValue(VisualProperties.NODE_SELECTION_GLOW_BLUR, data);
+            var strength:Number = style.getValue(VisualProperties.NODE_SELECTION_GLOW_STRENGTH, data);
             
             if (alpha > 0 && blur > 0 && strength > 0) {
-                var color:uint = style.getDefaultValue(VisualProperties.NODE_SELECTION_GLOW_COLOR);           
+                var color:uint = style.getValue(VisualProperties.NODE_SELECTION_GLOW_COLOR, data);           
                 filter = new GlowFilter(color, alpha, blur, blur, strength);
             }
             
@@ -207,12 +208,13 @@ package org.cytoscapeweb.util {
         
         public static function hoverGlow(n:NodeSprite):GlowFilter {
             var filter:GlowFilter = null;
-            var alpha:Number = style.getDefaultValue(VisualProperties.NODE_HOVER_GLOW_ALPHA);
-            var blur:Number = style.getDefaultValue(VisualProperties.NODE_HOVER_GLOW_BLUR);
-            var strength:Number = style.getDefaultValue(VisualProperties.NODE_HOVER_GLOW_STRENGTH);
+            var data:Object = n.data;
+            var alpha:Number = style.getValue(VisualProperties.NODE_HOVER_GLOW_ALPHA, data);
+            var blur:Number = style.getValue(VisualProperties.NODE_HOVER_GLOW_BLUR, data);
+            var strength:Number = style.getValue(VisualProperties.NODE_HOVER_GLOW_STRENGTH, data);
             
             if (alpha > 0 && blur > 0 && strength > 0) {
-                var color:uint = style.getDefaultValue(VisualProperties.NODE_HOVER_GLOW_COLOR);
+                var color:uint = style.getValue(VisualProperties.NODE_HOVER_GLOW_COLOR, data);
                 filter = new GlowFilter(color, alpha, blur, blur, strength);
             }
             

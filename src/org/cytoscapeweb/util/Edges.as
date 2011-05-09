@@ -176,18 +176,18 @@ package org.cytoscapeweb.util {
         }
         
         public static function curvature(e:EdgeSprite):Number {
-            var curvature:Number = style.getDefaultValue(VisualProperties.EDGE_CURVATURE) as Number;
+            var curvature:Number = style.getValue(VisualProperties.EDGE_CURVATURE, e.data) as Number;
             return e.props.$curvatureFactor * curvature;
         }
         
         public static function selectionGlow(e:EdgeSprite):GlowFilter {
             var filter:GlowFilter = null;
-            var alpha:Number = style.getDefaultValue(VisualProperties.EDGE_SELECTION_GLOW_ALPHA) as Number;
-            var blur:Number = style.getDefaultValue(VisualProperties.EDGE_SELECTION_GLOW_BLUR) as Number;
-            var strength:Number = style.getDefaultValue(VisualProperties.EDGE_SELECTION_GLOW_STRENGTH) as Number;
+            var alpha:Number = style.getValue(VisualProperties.EDGE_SELECTION_GLOW_ALPHA, e.data) as Number;
+            var blur:Number = style.getValue(VisualProperties.EDGE_SELECTION_GLOW_BLUR, e.data) as Number;
+            var strength:Number = style.getValue(VisualProperties.EDGE_SELECTION_GLOW_STRENGTH, e.data) as Number;
             
             if (alpha > 0 && blur > 0 && strength > 0) {
-                var color:uint = style.getDefaultValue(VisualProperties.EDGE_SELECTION_GLOW_COLOR) as uint;
+                var color:uint = style.getValue(VisualProperties.EDGE_SELECTION_GLOW_COLOR, e.data) as uint;
                 filter = new GlowFilter(color, alpha, blur, blur, strength);
             }
             

@@ -171,14 +171,6 @@ package org.cytoscapeweb.model.data {
 			delete properties[visPropName];
 		}
 		
-		public function getDefaultValue(visPropName:String):* {
-			var value:* = null;
-			var vp:VisualPropertyVO = getVisualProperty(visPropName);
-			if (vp != null) value = vp.defaultValue;
-			
-			return value;
-		}
-		
 		public function getValue(visPropName:String, data:Object=null):* {
 			var value:*;
 			

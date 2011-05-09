@@ -172,12 +172,6 @@ package org.cytoscapeweb.model.data {
             assertEquals(vp, style.getVisualProperty(VisualProperties.NODE_SELECTION_COLOR));
         }
         
-        public function testGetDefaultValue():void {
-            for (var p:* in _defValues) {
-                assertEquals(_defValues[p], _style.getDefaultValue(p));
-            }
-        }
-        
         public function testGetValue():void {
             for (var p:* in _defValues) {
                 for each (var data:Object in _dataList) {
@@ -221,7 +215,7 @@ package org.cytoscapeweb.model.data {
             
             assertEquals("#fbfbfb", o.nodes.color.defaultValue);
             assertEquals("ATTR_1", o.nodes.color.discreteMapper.attrName);
-            assertEquals(_defStyle.getDefaultValue(VisualProperties.NODE_ALPHA), o.nodes.opacity.defaultValue);
+            assertEquals(_defStyle.getValue(VisualProperties.NODE_ALPHA), o.nodes.opacity.defaultValue);
             assertEquals("ATTR_2", o.nodes.opacity.continuousMapper.attrName);
             assertEquals("#666666", o.nodes.borderColor);
             assertEquals("#00ff00", o.nodes.tooltipFontColor);
@@ -229,12 +223,12 @@ package org.cytoscapeweb.model.data {
             assertEquals(0.6, o.nodes.hoverGlowOpacity);
             
             assertEquals( "Missing default value should be replaced by value from default visual style",
-                          Utils.rgbColorAsString(_defStyle.getDefaultValue(VisualProperties.EDGE_COLOR)),
+                          Utils.rgbColorAsString(_defStyle.getValue(VisualProperties.EDGE_COLOR)),
                           o.edges.color.defaultValue );
             assertEquals("ATTR_2", o.edges.color.discreteMapper.attrName);
             assertEquals(3, o.edges.color.discreteMapper.entries.length);
             assertEquals( "Missing default value should be replaced by value from default visual style",
-                           _defStyle.getDefaultValue(VisualProperties.EDGE_WIDTH),
+                           _defStyle.getValue(VisualProperties.EDGE_WIDTH),
                            o.edges.width.defaultValue );
             
             // Number of properties.

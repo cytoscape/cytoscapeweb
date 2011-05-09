@@ -28,7 +28,6 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.util {
-    import flare.vis.data.Data;
     import flare.vis.data.DataSprite;
     import flare.vis.data.EdgeSprite;
     
@@ -121,10 +120,11 @@ package org.cytoscapeweb.util {
         }
         
         public static function filters(d:DataSprite):Array {
-            var glowColor:uint = style.getDefaultValue(_$(VisualProperties.NODE_LABEL_GLOW_COLOR, d));
-            var glowAlpha:Number = style.getDefaultValue(_$(VisualProperties.NODE_LABEL_GLOW_ALPHA, d));
-            var glowBlur:Number = style.getDefaultValue(_$(VisualProperties.NODE_LABEL_GLOW_BLUR, d));
-            var glowStrength:Number = style.getDefaultValue(_$(VisualProperties.NODE_LABEL_GLOW_STRENGTH, d));
+            var data:Object = d.data;
+            var glowColor:uint = style.getValue(_$(VisualProperties.NODE_LABEL_GLOW_COLOR, d), data);
+            var glowAlpha:Number = style.getValue(_$(VisualProperties.NODE_LABEL_GLOW_ALPHA, d), data);
+            var glowBlur:Number = style.getValue(_$(VisualProperties.NODE_LABEL_GLOW_BLUR, d), data);
+            var glowStrength:Number = style.getValue(_$(VisualProperties.NODE_LABEL_GLOW_STRENGTH, d), data);
             
             return [new GlowFilter(glowColor, glowAlpha, glowBlur, glowBlur, glowStrength)];
         }

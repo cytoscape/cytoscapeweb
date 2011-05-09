@@ -787,15 +787,15 @@ package org.cytoscapeweb.view {
             
             // Set visual properties according to current style:
             if (style.hasVisualProperty(VisualProperties.SELECTION_FILL_COLOR))
-                _selectionControl.fillColor = style.getDefaultValue(VisualProperties.SELECTION_FILL_COLOR) as uint;
+                _selectionControl.fillColor = style.getValue(VisualProperties.SELECTION_FILL_COLOR) as uint;
             if (style.hasVisualProperty(VisualProperties.SELECTION_FILL_ALPHA))
-                _selectionControl.fillAlpha = style.getDefaultValue(VisualProperties.SELECTION_FILL_ALPHA) as Number;
+                _selectionControl.fillAlpha = style.getValue(VisualProperties.SELECTION_FILL_ALPHA) as Number;
             if (style.hasVisualProperty(VisualProperties.SELECTION_LINE_COLOR))
-                _selectionControl.lineColor = style.getDefaultValue(VisualProperties.SELECTION_LINE_COLOR) as uint;
+                _selectionControl.lineColor = style.getValue(VisualProperties.SELECTION_LINE_COLOR) as uint;
             if (style.hasVisualProperty(VisualProperties.SELECTION_LINE_ALPHA))
-                _selectionControl.lineAlpha = style.getDefaultValue(VisualProperties.SELECTION_LINE_ALPHA) as Number;
+                _selectionControl.lineAlpha = style.getValue(VisualProperties.SELECTION_LINE_ALPHA) as Number;
             if (style.hasVisualProperty(VisualProperties.SELECTION_LINE_WIDTH))
-                _selectionControl.lineWidth = style.getDefaultValue(VisualProperties.SELECTION_LINE_WIDTH) as Number;
+                _selectionControl.lineWidth = style.getValue(VisualProperties.SELECTION_LINE_WIDTH) as Number;
         }
         
         private function disposeDataSprite(ds:DataSprite):void {
