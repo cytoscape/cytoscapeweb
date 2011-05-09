@@ -424,7 +424,7 @@ package org.cytoscapeweb.model {
                             v = ExternalObjectConverter.normalizeDataValue(v, f.type, f.defaultValue);
                             ds.data[k] = v;
                         } else {
-                            throw new Error("Cannot update data: there is no Data Field for '"+k+".");
+                            throw new Error("Cannot update data: there is no Data Field for '"+k+"'.");
                         }
                     }
                 }

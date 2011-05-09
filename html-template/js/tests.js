@@ -1339,9 +1339,9 @@ function runGraphTests(moduleName, vis, options) {
 
     	same(svg.find(".cw-background").length, 1, "Background rectangle");
     	same(svg.find(".cw-node").length, nodes.length, "Number of SVG nodes");
-    	same(svg.find(".cw-node .cw-node-shape").length, nodes.length, "Number of SVG node shapes");
+    	same(svg.find(".cw-node-shape").length, nodes.length, "Number of SVG node shapes");
     	same(svg.find(".cw-edge").length, edges.length, "Number of SVG edges");
-    	same(svg.find(".cw-edge .cw-edge-line").length, edges.length, "Number of SVG edge lines");
+    	same(svg.find(".cw-edge-line").length, edges.length, "Number of SVG edge lines");
     	
     	// TODO: test node images
     	// TODO: test edge arrows
