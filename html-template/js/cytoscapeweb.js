@@ -32,16 +32,22 @@
 
 // Create namespaces if not already defined:
 (function () {
-    "use strict";
-
+	
     if (typeof(window['org']) === 'undefined') {
+    	/**
+    	 * @namespace
+    	 * @name org
+    	 */
     	window['org'] = {};
     }
     if (typeof(window.org['cytoscapeweb']) === 'undefined') {
-    	/** @namespace */
-    	window.org['cytoscapeweb'] = {};
+    	/**
+    	 * @namespace
+    	 * @name org.cytoscapeweb
+    	 */
+    	org['cytoscapeweb'] = {};
     }
-
+    
     // Create a global map to store all instances of Cytoscape Web:
     window._cytoscapeWebInstances = { index: 0 };
 
@@ -126,7 +132,7 @@
      * @see org.cytoscapeweb.Visualization#draw
      * @see org.cytoscapeweb.Visualization#ready
      */
-    window.org.cytoscapeweb.Visualization = function (containerId, options) {
+    org.cytoscapeweb.Visualization = function (containerId, options) {
         this.containerId = containerId;
 
         if (!options) { options = {}; }
@@ -1973,7 +1979,7 @@
      * @see org.cytoscapeweb.Visualization#hasListener
      * @see org.cytoscapeweb.Visualization#removeListener
      */
-    window.org.cytoscapeweb.Event = function (options) {
+    org.cytoscapeweb.Event = function (options) {
         /**
          * The event type name.
          * @type org.cytoscapeweb.EventType
