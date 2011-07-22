@@ -100,11 +100,7 @@ package org.cytoscapeweb.view.layout {
         public function set maxWeight(max:Number):void { _maxWeight = max; }
         
         public function get edges():DataList {
-            // The layout is optimized for merged edges only if it is not weighted,
-            // because it needs to get the weight attribute from regular edges!
-            var gr:String = weighted ? Groups.REGULAR_EDGES : Groups.MERGED_EDGES;
-            
-            return visualization.data.group(gr);
+            return visualization.data.group(Groups.MERGED_EDGES);
         }
 
         // ========[ CONSTRUCTOR ]==================================================================

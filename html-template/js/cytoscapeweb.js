@@ -896,7 +896,7 @@
          * use {@link org.cytoscapeweb.Visualization#visualStyle} or {@link org.cytoscapeweb.Visualization#visualStyleBypass}.</p>
          * <p>If you try to change an attribute that has not been previously defined, Cytoscape Web will throw an {@link org.cytoscapeweb.Error}.
          * In this case, you have to add the attribute definition first, by calling {@link org.cytoscapeweb.Visualization#addDataField}.</p>
-         * <p>Another important thing to remember is that you cannot directly change merged edges attributes.</p>
+         * <p>Another important thing to remember is that you cannot update merged edges data, since they are derived attributes.</p>
          * <p>Finally, all the continuous and custom mappers - defined by the current visual style - will be automatically recomputed after
          * updating the data.</p>
          * 

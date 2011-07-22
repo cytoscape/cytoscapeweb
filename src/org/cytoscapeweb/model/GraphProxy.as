@@ -56,6 +56,8 @@ package org.cytoscapeweb.model {
 	import org.cytoscapeweb.model.data.GraphicsDataTable;
 	import org.cytoscapeweb.model.data.InteractionVO;
 	import org.cytoscapeweb.model.data.VisualStyleVO;
+	import org.cytoscapeweb.model.error.CWError;
+	import org.cytoscapeweb.util.ErrorCodes;
 	import org.cytoscapeweb.util.Groups;
 	import org.cytoscapeweb.util.Layouts;
 	import org.puremvc.as3.patterns.proxy.Proxy;
@@ -230,7 +232,7 @@ package org.cytoscapeweb.model {
 	        
 	        for (var key:String in _interactions) {
     	        var inter:InteractionVO = _interactions[key];
-    	        inter.update();
+    	        inter.update(edgesSchema);
             }
             
             if (value == null) graphData.removeGroup(Groups.FILTERED_EDGES);
@@ -414,19 +416,40 @@ package org.cytoscapeweb.model {
         
         public function updateData(ds:DataSprite, data:Object):void {
             if (ds != null && data != null) {
+                if (ds is EdgeSprite && ds.props.$merged) {
+                    throw new Error("It is not allowed to update a merged edge data: " + ds.data.id);
+                }
+                
                 var schema:DataSchema = ds is NodeSprite ? _nodesSchema : _edgesSchema;
+                var updated:Boolean = false;
                 
                 for (var k:String in data) {
                     if ( k !== "id" && !(ds is EdgeSprite && (k === "source" || k === "target")) ) {
                         var f:DataField = schema.getFieldByName(k);
+                        
                         if (f != null) {
                             var v:* = data[k];
-                            v = ExternalObjectConverter.normalizeDataValue(v, f.type, f.defaultValue);
+                            
+                            try {
+                                v = ExternalObjectConverter.normalizeDataValue(v, f.type, f.defaultValue);
+                            } catch (err:Error) {
+                                throw new CWError("Cannot update data for '"+k+"':" + err.message,
+                                                  ErrorCodes.INVALID_DATA_CONVERSION);
+                            }
+                            
                             ds.data[k] = v;
+                            updated = true;
                         } else {
-                            throw new Error("Cannot update data: there is no Data Field for '"+k+"'.");
+                            throw new CWError("Cannot update data: there is no Data Field for '"+k+"'.");
                         }
                     }
+                }
+                
+                if (ds is EdgeSprite && updated) {
+                    // Update the merged edge data
+                    var edge:EdgeSprite = EdgeSprite(ds);
+                    var interaction:InteractionVO = getInteraction(edge.source, edge.target);
+                    interaction.update(edgesSchema);
                 }
             }
         }
@@ -537,7 +560,8 @@ package org.cytoscapeweb.model {
                     }
                 }
 
-                for (var key:String in interactions) interactions[key].update();
+                for (var key:String in interactions)
+                    interactions[key].update(edgesSchema, false);
             }
             
             return changed;
@@ -594,7 +618,7 @@ package org.cytoscapeweb.model {
             if (inter == null) {
                 inter = createInteraction(e.source, e.target);
             } else {
-                inter.update();
+                inter.update(edgesSchema);
             }
             
             return e;
@@ -656,7 +680,7 @@ package org.cytoscapeweb.model {
                     var edgeCount:int = inter.edges.length;
                     
                     if (edgeCount > 0) {
-                        inter.update();
+                        inter.update(edgesSchema);
                     } else {
                         delete _interactions[inter.key];
                         removeEdge(inter.mergedEdge);
@@ -852,7 +876,7 @@ package org.cytoscapeweb.model {
             var inter:InteractionVO;
             
             if (getInteraction(source, target) == null) {
-                inter = new InteractionVO(source, target);
+                inter = new InteractionVO(source, target, edgesSchema);
                 _interactions[inter.key] = inter;
                 
                 var me:EdgeSprite = inter.mergedEdge;

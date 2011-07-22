@@ -28,6 +28,9 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.model.data {
+	import flare.data.DataField;
+	import flare.data.DataSchema;
+	import flare.data.DataUtil;
 	import flare.vis.data.EdgeSprite;
 	import flare.vis.data.NodeSprite;
 	
@@ -40,7 +43,7 @@ package org.cytoscapeweb.model.data {
 		
         // =========================================================================================
 		
-		public function InteractionVO(node1:NodeSprite, node2:NodeSprite) {
+		public function InteractionVO(node1:NodeSprite, node2:NodeSprite, edgesSchema:DataSchema) {
 		    _key = InteractionVO.createKey(node1, node2);
 			
 			_node1 = node1;
@@ -50,13 +53,8 @@ package org.cytoscapeweb.model.data {
 			_mergedEdge = new EdgeSprite(node1, node2, false);
 			node1.addOutEdge(_mergedEdge);
             node2.addInEdge(_mergedEdge);
-			
-			if (_mergedEdge.data != null) _mergedEdge.data = {};
-            
-            _mergedEdge.data.source = node1.data.id;
-            _mergedEdge.data.target = node2.data.id;
-            _mergedEdge.data.directed = false;
 
+            // props attributes and functions
             _mergedEdge.props.$merged = true;
             
             mergedEdge.props.$getDataList = function():Array {
@@ -75,7 +73,7 @@ package org.cytoscapeweb.model.data {
                 return filteredList;
             }
 			
-			update();
+			update(edgesSchema);
 		}
 		
         // ========[ PUBLIC METHODS ]===============================================================
@@ -114,7 +112,10 @@ package org.cytoscapeweb.model.data {
 			return (_node1 == node1 && _node2 == node2) || (_node1 == node2 && _node2 == node1);
 		}
 		
-		public function update():void {
+		public function update(edgesSchema:DataSchema, updateData:Boolean=true):void {
+		    // Merged edge data:
+		    if (updateData) recreateDataFields(edgesSchema);
+		    
             // Update merged edge cached data:
             mergedEdge.props.$selected = false;
             mergedEdge.props.$edges = edges;
@@ -133,11 +134,10 @@ package org.cytoscapeweb.model.data {
             }
             
             var src:NodeSprite;
-            // This will be the summed merged edge's weight:
-            var weight:Number = 0;
 
-            // Update the each edge index:
             for (var i:int = 0; i < length; i++) {
+                // Update each edge index:
+                
                 // Calculate the curvature coefficient that will give the
                 // direction and distance of each curve:
                 e = edgesList[i];
@@ -155,14 +155,34 @@ package org.cytoscapeweb.model.data {
                 // Merged edge selection state:
                 if (e.props.$selected) mergedEdge.props.$selected = true;
                 
-                // Summed weight:
-                var w:Number = Number(e.data.weight);
-                if (!isNaN(w)) weight += w;
+                // Merged edge data:
+                if (updateData) {
+                    for each (var df:DataField in edgesSchema.fields) {
+                        if (isMergeable(df)) {
+                            var mv:* = mergedEdge.data[df.name];
+                            var v:* = e.data[df.name];
+                            
+                            switch (df.type) {
+                                case DataUtil.INT:
+                                case DataUtil.NUMBER:
+                                    mv += (isNaN(v) ? 0 : v);
+                                    break;
+                                case DataUtil.BOOLEAN:
+                                    mv |= v;
+                                    break;
+                                default:
+                                    mv.push(v !== undefined ? v : null);
+                            }
+                            
+                            _mergedEdge.data[df.name] = mv;
+                        }
+                    }
+                }
+
                 e.dirty();
             }
 
             // Other cached data:
-            mergedEdge.data.weight = weight;
             mergedEdge.props.$filteredOut = edgesList.length === 0;
             mergedEdge.dirty();
 		}
@@ -177,5 +197,31 @@ package org.cytoscapeweb.model.data {
 
         // ========[ PRIVATE METHODS ]==============================================================
         
+        private function recreateDataFields(edgesSchema:DataSchema):void {
+            _mergedEdge.data = {};
+            _mergedEdge.data.source = node1.data.id;
+            _mergedEdge.data.target = node2.data.id;
+            _mergedEdge.data.directed = false;
+            
+            var v:*;
+            
+            for each (var df:DataField in edgesSchema.fields) {
+                if (isMergeable(df)) {
+                    switch (df.type) {
+                        case DataUtil.INT: v = 0; break;
+                        case DataUtil.NUMBER: v = 0.0; break;
+                        case DataUtil.BOOLEAN: v = false; break;
+                        default: v = [];
+                    }
+                
+                    _mergedEdge.data[df.name] = v;
+                }
+            }
+        }
+        
+        private static function isMergeable(df:DataField):Boolean {
+            var n:String = df.name;
+            return (n != "id" && n != "source" && n !== "target" &&n !== "directed");
+        }
 	}
 }

@@ -151,7 +151,12 @@ package org.cytoscapeweb.model.converters {
                                 default: mandatoryDefValue = null;
                             }
                             
-                            defValue = normalizeDataValue(obj[DEF_VALUE], type, mandatoryDefValue);
+                            try {
+                                defValue = normalizeDataValue(obj[DEF_VALUE], type, mandatoryDefValue);
+                            } catch (err:Error) {
+                                throw new CWError("Invalid default value of '" + name + "'--" + err.message,
+                                                  ErrorCodes.INVALID_DATA_CONVERSION);
+                            }
                             
                             schema.addField(new DataField(name, type, defValue, name));
                         }
@@ -311,7 +316,13 @@ package org.cytoscapeweb.model.converters {
                 field = schema.getFieldAt(i);
                 name = field.name;
                 value = data[name];
-                data[name] = normalizeDataValue(value, field.type, field.defaultValue);
+                
+                try {
+                    data[name] = normalizeDataValue(value, field.type, field.defaultValue);
+                } catch (err:Error) {
+                    throw new CWError("Invalid value of '" + field.name + "'--" + err.message,
+                                      ErrorCodes.INVALID_DATA_CONVERSION);
+                }
             }
             
             // Look for missing fields:
