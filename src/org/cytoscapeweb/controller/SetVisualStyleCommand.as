@@ -39,6 +39,7 @@ package org.cytoscapeweb.controller {
         
         override public function execute(notification:INotification):void {
             var style:VisualStyleVO = notification.getBody() as VisualStyleVO;
+            style.visualStyleBypass = configProxy.visualStyleBypass;
             
             if (style != null) {
                 // Set the new style:
