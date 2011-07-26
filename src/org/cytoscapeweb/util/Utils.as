@@ -289,6 +289,114 @@ package org.cytoscapeweb.util {
         }
         
         /**
+         * Adapted from: http://www.baconandgames.com/2010/02/22/intersection-of-an-ellipse-and-a-line-in-as3/
+         * @param p1 The start point of the line.
+         * @param p2 The end point of the line.
+         * @param ep: The ellipse position.
+         * @param width: Width of the ellipse at its widest horizontal point.
+         * @param height: Height of the ellipse at its tallest point.
+         * @return The intersection point. Returns null if there is no intersection.
+         */
+        public static function lineIntersectEllipse(p1:Point, p2:Point, ep:Point, width:Number, height:Number):Point {
+            var arr:Array = [];
+            
+            var sort:Boolean=false;
+            
+            var a:Number = width/2; // radius x
+            var b:Number = height/2; // radius y
+            
+            var x:Number = ep.x; // horizontal position of the ellipse.
+            var y:Number = ep.y; // vertical position of the ellipse
+            var center:Point = new Point(x + width * 0.5, y + height * 0.5);
+            
+             // normailze points (ie, make everything relative to (0,0))
+            var p1Norm:Point = new Point(p1.x-center.x,-(p1.y-center.y));
+            var p2Norm:Point = new Point(p2.x-center.x,-(p2.y-center.y));           
+            // get the slope - y = mx+b
+            var m:Number = (p2Norm.y-p1Norm.y)/(p2Norm.x-p1Norm.x);
+            // get the slope intercept
+            var si:Number = p2Norm.y-(m*p2Norm.x);
+            // get the coefficients
+            var A:Number = (b*b)+(a*a*m*m);
+            var B:Number = 2*a*a*si*m;
+            var C:Number = a*a*si*si-a*a*b*b; 
+            // vars to hold the new points
+            var p3:Point = new Point();
+            var p4:Point = new Point();
+            // we're going to use the quadratic equation to find x, so let's see what's going to be under the radicand first
+            // depending on this value, we can potentially skip a few calculations
+            var radicand:Number = (B*B)-(4*A*C);
+            
+            // returns true if pt is between anchor1 and anchor2
+            var isBetweenPoints:Function = function(anchor1:Point, anchor2:Point, pt:Point):Boolean {
+                var xMin:Number;
+                var xMax:Number;
+                var yMin:Number;
+                var yMax:Number;
+                // determine the x bounds
+                if (anchor1.x < anchor2.x) {
+                    xMin = anchor1.x;
+                    xMax = anchor2.x;
+                } else {
+                    xMin = anchor2.x;
+                    xMax = anchor1.x;
+                }
+                // determine the y bounds
+                if (anchor1.y < anchor2.y) {
+                    yMin = anchor1.y;
+                    yMax = anchor2.y;
+                } else {
+                    yMin = anchor2.y;
+                    yMax = anchor1.y;
+                }
+                // if between those values, point is between the anchors
+                return (pt.x <= xMax && pt.x >= xMin && pt.y <= yMax && pt.y >= yMin) ? true : false;
+            };
+            
+            var distanceBetweenPoints:Function = function(p1:Point, p2:Point):Number {
+                var dx:Number = p2.x - p1.x, dy:Number = p2.y - p1.y;
+                return Math.pow(dx * dx + dy * dy, .5);
+            }
+
+            if (radicand >= 0) {
+                // solve for x values - using the quadratic equation
+                p3.x = (-B-Math.sqrt(radicand))/(2*A);
+                p4.x = (-B+Math.sqrt(radicand))/(2*A);
+                // calculate y, since we know it's on the line at that point (otherwise there would be no intersection)
+                p3.y = m*p3.x+si;
+                p4.y = m*p4.x+si;               
+                // revert to flash coordinate system
+                p3.x += center.x;
+                p3.y = -p3.y+center.y;
+                p4.x += center.x;
+                p4.y = -p4.y+center.y;
+                
+                // add to array of points   
+                // only return points of the intersection that exist on the line between p1 and p2
+                if (isBetweenPoints(p1,p2,p3)) arr.push(p3);
+                if (isBetweenPoints(p1,p2,p4)) arr.push(p4);
+             
+                if (sort && arr.length > 1) {
+                    // make sure that index 0 contains the closer point
+                    if (distanceBetweenPoints(p1,arr[0]) > distanceBetweenPoints(p1,arr[1])) {
+                        arr.reverse();
+                    }
+                }
+            } else if (radicand == 0) {
+                // in this case both points will result in the same, so we only need to calculate one point
+                p3.x = (-B-Math.sqrt(radicand))/(2*A);  
+                p3.y = m*p3.x+si;               
+                // revert to flash coordinate system
+                p3.x += center.x;
+                p3.y = -p3.y+center.y;
+                // add to array of points               
+                if (isBetweenPoints(p1,p2,p3)) arr.push(p3);
+            }
+            
+            return arr[0];
+        }
+        
+        /**
          * Calculates a point along a quadratic bezier curve.
          * 
          * @param a The start point of the curve.

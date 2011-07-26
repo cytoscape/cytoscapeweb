@@ -119,8 +119,8 @@ package org.cytoscapeweb.model.converters {
         };
         private static const NODE_GRAPHICS_ATTR:Object = {
             type: [VisualProperties.NODE_SHAPE],
-            h: [VisualProperties.NODE_SIZE],
-            w: [VisualProperties.NODE_SIZE],
+            w: [VisualProperties.NODE_WIDTH],
+            h: [VisualProperties.NODE_HEIGHT],
             fill: [VisualProperties.NODE_COLOR],
             width: [VisualProperties.NODE_LINE_WIDTH],
             outline: [VisualProperties.NODE_LINE_COLOR],
@@ -615,6 +615,12 @@ package org.cytoscapeweb.model.converters {
                 value = Utils.rgbColorAsString(value);
             } else {
                 switch (propNames[0]) {
+                    case VisualProperties.NODE_WIDTH:
+                    case VisualProperties.NODE_HEIGHT:
+                        // if width/height not set, use size instead:
+                        if (value == null || value < 0)
+                            value = style.getValue(VisualProperties.NODE_SIZE, data);
+                        break;
                     case VisualProperties.NODE_SHAPE:
                         if (value != null) value = value.toUpperCase();
                         if (!NodeShapes.isValid(value)) value = NodeShapes.ELLIPSE;

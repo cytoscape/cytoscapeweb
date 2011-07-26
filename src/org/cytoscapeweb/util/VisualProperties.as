@@ -54,6 +54,8 @@ package org.cytoscapeweb.util {
         // Nodes properties:
         //------------------------------
         public static const NODE_SHAPE:String = "nodes.shape";
+        public static const NODE_WIDTH:String = "nodes.width";
+        public static const NODE_HEIGHT:String = "nodes.height";
         public static const NODE_SIZE:String = "nodes.size";
         public static const NODE_COLOR:String = "nodes.color";
         public static const NODE_ALPHA:String = "nodes.opacity";
@@ -171,15 +173,19 @@ package org.cytoscapeweb.util {
         	
         	if (value != null) {
                 if (isColor(name)) {
-                	var color:uint = Utils.rgbColorAsUint(value);
-                	
-                	if (isNaN(color))
-                       throw new CWError("Invalid color ('"+value+"') for visual property '"+name+"'",
-                                          ErrorCodes.INVALID_DATA_CONVERSION);
-                	
-                	// Add alpha, which is required by for most of the colors:
-                	if (name != BACKGROUND_COLOR) color += 0xff000000;
-                    val = color;
+                    val = -1;
+                    
+                    if (value != "transparent") {
+                    	var color:uint = Utils.rgbColorAsUint(value);
+                    	
+                    	if (isNaN(color))
+                           throw new CWError("Invalid color ('"+value+"') for visual property '"+name+"'",
+                                              ErrorCodes.INVALID_DATA_CONVERSION);
+                    	
+                    	// Add alpha, which is required by for most of the colors:
+                    	if (name != BACKGROUND_COLOR) color += 0xff000000;
+                        val = color;
+                    }
                 } else if (isNumber(name)) {
                 	val = Number(value);
                 	

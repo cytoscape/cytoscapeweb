@@ -109,7 +109,7 @@ package org.cytoscapeweb.view.render {
                 var taH:Number = targetArrowStyle != null ? targetArrowStyle.height : 0;
 			    
 			    if (loop) {
-			        h += Math.max(s.width, saH*2, taH*2, w*4);
+			        h += Math.max(s.width, s.height, saH*2, taH*2, w*4);
 			        op1 = new Point(s.x, s.y - s.height/2 - h);
 			        op2 = new Point(s.x - s.width/2 - h, s.y);
 			    } else {
@@ -134,8 +134,8 @@ package org.cytoscapeweb.view.render {
             // ----------------------------------------------------
 
             // get arrow tip point as intersection of edge with bounding box
-            intersectNode(s, op2, np1, _intS);
-            intersectNode(t, op1, np2, _intT);
+            intersectNode(g, s, op2, np1, _intS);
+            intersectNode(g, t, op1, np2, _intT);
 
             var start:Point = _intS, end:Point = _intT;
             //var c:Point = (curve ? op1 : null);
@@ -449,15 +449,15 @@ package org.cytoscapeweb.view.render {
             return [start.clone(), int1.clone(), e1.clone(), e2.clone(), int2.clone()];
         }
 
-        private function intersectNode(n:NodeSprite, start:Point, end:Point, int:Point):void {
+        private function intersectNode(g:Graphics, n:NodeSprite, start:Point, end:Point, int:Point):void {
         	var r:Rectangle = n.getBounds(n.parent);
         	
         	switch (n.shape) {
                 case NodeShapes.ELLIPSE:
-                    intersectCircle(n.height/2, start, end, int);
+                    intersectEllipse(r.topLeft, n.width, n.height, start, end, int);
                     break;
                 case NodeShapes.ROUND_RECTANGLE:
-                    intersectRoundRectangle(r, start, end, int);
+                    intersectRoundRectangle(g, r, start, end, int);
                     break;
                 default:
                     var points:Array = NodeShapes.getDrawPoints(r, n.shape);
@@ -467,13 +467,23 @@ package org.cytoscapeweb.view.render {
         
         private function intersectCircle(radius:Number, start:Point, end:Point, ip:Point):void {
             var obj:Object = Utils.lineIntersectCircle(start, end, end, radius);
+            
             if (obj.enter != null) {
                 ip.x = obj.enter.x;
                 ip.y = obj.enter.y;
             }
         }
         
-        private function intersectRoundRectangle(r:Rectangle, start:Point, end:Point, ip:Point):void {
+        private function intersectEllipse(ep:Point, width:Number, height:Number, start:Point, end:Point, ip:Point):void {
+            var p:Point = Utils.lineIntersectEllipse(start, end, ep, width, height);
+            
+            if (p != null) {
+                ip.x = p.x;
+                ip.y = p.y;
+            }
+        }
+        
+        private function intersectRoundRectangle(g:Graphics, r:Rectangle, start:Point, end:Point, ip:Point):void {
             var points:Array = NodeShapes.getDrawPoints(r, NodeShapes.ROUND_RECTANGLE);
             var res:int = Geometry.NO_INTERSECTION;
             var length:int = points.length;
@@ -486,10 +496,11 @@ package org.cytoscapeweb.view.render {
                 res = Geometry.intersectLines(x1, y1, x2, y2, start.x, start.y, end.x, end.y, ip);
                 if (res > 0) break;
             }
+            
             if (res <= 0) {
                 // Verify if the edge intersects one of the rounded courners,
                 // which are described by four circles.
-                var radius:Number = r.width/4;
+                var radius:Number = NodeShapes.getRoundRectCornerRadius(r.width, r.height);
                 // Calculate the center of the circles:
                 var xR:Number = r.right, yB:Number = r.bottom;
                 var xL:Number = r.left,  yT:Number = r.top;
@@ -500,6 +511,7 @@ package org.cytoscapeweb.view.render {
                 
                 for each (var c:Point in points) {
                     var obj:Object = Utils.lineIntersectCircle(start, end, c, radius);
+                    
                     if (obj.enter != null) {
                         ip.x = obj.enter.x;
                         ip.y = obj.enter.y;

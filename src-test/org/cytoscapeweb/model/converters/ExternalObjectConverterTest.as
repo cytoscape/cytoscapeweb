@@ -265,7 +265,9 @@ package org.cytoscapeweb.model.converters {
             var data:Data = Fixtures.getData(Fixtures.GRAPHML_SIMPLE);
             var o:Object, k:*;
             
-            var props:Array = ["data","shape","borderColor","borderWidth","opacity","visible","color","x","y"];
+            // NODES
+            var props:Array = ["data","shape","borderColor","borderWidth","opacity","visible","color",
+                               "x","y"/*, "degree", "indegree", "outdegree"*/];
             var attrs:Array = ["id"];
             
             for each (var n:NodeSprite in data.nodes) {
@@ -278,6 +280,7 @@ package org.cytoscapeweb.model.converters {
                 assertEquals(n.data.id, o.data.id);
             }
             
+            // EDGES
             props = ["data","color","width","opacity","visible","sourceArrowShape","targetArrowShape",
                      "sourceArrowColor","targetArrowColor","curvature","merged"];
             attrs = ["id","source","target","directed"];

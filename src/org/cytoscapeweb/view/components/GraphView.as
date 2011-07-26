@@ -254,7 +254,8 @@ package org.cytoscapeweb.view.components {
                 n.fillColor = Nodes.fillColor(n);
                 n.lineWidth = Nodes.lineWidth(n);
                 n.lineColor = Nodes.lineColor(n);
-                n.alpha = Nodes.alpha(n);  
+                n.alpha = Nodes.alpha(n);
+                n.props.transparent = Nodes.transparent(n);
                 n.shape = Nodes.shape(n);
                 n.filters = Nodes.filters(n);
                 if (n.props.label != null) n.props.label.alpha = n.alpha;
@@ -333,6 +334,7 @@ package org.cytoscapeweb.view.components {
                 n.lineWidth = Nodes.selectionLineWidth(n);
                 n.lineColor = Nodes.lineColor(n);
                 n.alpha = Nodes.selectionAlpha(n);
+                n.props.transparent = Nodes.transparent(n);
                 n.filters = Nodes.filters(n, true);
                 if (n.props.label != null) n.props.label.alpha = n.alpha;
             }

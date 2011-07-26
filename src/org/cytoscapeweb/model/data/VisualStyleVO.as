@@ -56,6 +56,8 @@ package org.cytoscapeweb.model.data {
                 nodes: {
                     shape: NodeShapes.ELLIPSE,
                     size: 24,
+//                    width: -1,
+//                    height: -1,
                     color: "#f5f5f5",
                     opacity: 0.8,
                     borderColor: "#666666",

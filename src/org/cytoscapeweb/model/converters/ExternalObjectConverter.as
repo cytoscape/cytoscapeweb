@@ -241,12 +241,16 @@ package org.cytoscapeweb.model.converters {
                 obj.visible = ds.visible;
                 
                 if (ds is NodeSprite) {
+                    var n:NodeSprite = NodeSprite(ds);
                     obj.group = Groups.NODES;
-                    obj.shape = ds.shape;
-                    obj.size = ds.height;
-                    obj.color = Utils.rgbColorAsString(ds.fillColor);
-                    obj.borderColor = Utils.rgbColorAsString(ds.lineColor);
-                    obj.borderWidth = ds.lineWidth;
+                    obj.shape = n.shape;
+                    obj.size = n.height;
+                    obj.color = Utils.rgbColorAsString(n.fillColor);
+                    obj.borderColor = Utils.rgbColorAsString(n.lineColor);
+                    obj.borderWidth = n.lineWidth;
+//                    obj.degree = n.degree;
+//                    obj.indegree = n.inDegree;
+//                    obj.outdegree = n.outDegree;
                     
                     // Global coordinates:
                     var p:Point = getGlobalCoordinate(ds as NodeSprite);

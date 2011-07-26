@@ -85,6 +85,11 @@ package org.cytoscapeweb.view.render {
             var lineAlpha:Number = d.lineAlpha;
             var fillAlpha:Number = d.fillAlpha;
             var size:Number = d.size * defaultSize;
+            var w:Number = d.w;
+            var h:Number = d.h;
+            
+            if (isNaN(w) || w < 0) w = size;
+            if (isNaN(h) || h < 0) h = size;
             
             var g:Graphics = d.graphics;
             g.clear();
@@ -101,12 +106,12 @@ package org.cytoscapeweb.view.render {
                 // 1. Draw the background color:
                 // Using a bit mask to avoid transparent mdes when fillcolor=0xffffffff.
                 // See https://sourceforge.net/forum/message.php?msg_id=7393265
-                g.beginFill(0xffffff & d.fillColor, fillAlpha);
-                drawShape(d, d.shape, size);
-                g.endFill();
+                if (!d.props.transparent) g.beginFill(0xffffff & d.fillColor, fillAlpha);
+                drawShape(d, d.shape, w, h);
+                if (!d.props.transparent) g.endFill();
                 
                 // 2. Draw an image on top:
-                drawImage(d, size);
+                drawImage(d, w, h);
             }
             
             // To prevent gaps between the node and its edges when the node has the
@@ -119,14 +124,14 @@ package org.cytoscapeweb.view.render {
         
         // ========[ PRIVATE METHODS ]==============================================================
         
-        private function drawShape(s:Sprite, shape:String, size:Number):void {
+        private function drawShape(s:Sprite, shape:String, width:Number, height:Number):void {
             var g:Graphics = s.graphics;
             
             switch (shape) {
                 case null:
                     break;
                 case NodeShapes.RECTANGLE:
-                    g.drawRect(-size/2, -size/2, size, size);
+                    g.drawRect(-width/2, -height/2, width, height);
                     break;
                 case NodeShapes.TRIANGLE:
                 case NodeShapes.DIAMOND:
@@ -134,23 +139,27 @@ package org.cytoscapeweb.view.render {
                 case NodeShapes.OCTAGON:
                 case NodeShapes.PARALLELOGRAM:
                 case NodeShapes.V:
-                    var r:Rectangle = new Rectangle(-size/2, -size/2, size, size);
+                    var r:Rectangle = new Rectangle(-width/2, -height/2, width, height);
                     var points:Array = NodeShapes.getDrawPoints(r, shape);
                     Shapes.drawPolygon(g, points);
                     break;
                 case NodeShapes.ROUND_RECTANGLE:
-                    g.drawRoundRect(-size/2, -size/2, size, size, size/2, size/2);
+                    var eh:Number = NodeShapes.getRoundRectCornerRadius(width, height) * 2;
+                    g.drawRoundRect(-width/2, -height/2, width, height, eh, eh);
                     break;
                 case NodeShapes.ELLIPSE:
                 default:
-                    Shapes.drawCircle(g, size/2);
+                    if (width == height)
+                        Shapes.drawCircle(g, width/2);
+                    else
+                        g.drawEllipse(-width/2, -height/2, width, height);
             }
         }
         
-        private function drawImage(d:DataSprite, size:Number):void {
+        private function drawImage(d:DataSprite, w:Number, h:Number):void {
             var url:String = d.props.imageUrl;
             
-            if (size > 0 && url != null && StringUtil.trim(url).length > 0) {
+            if (w > 0 && h > 0 && url != null && StringUtil.trim(url).length > 0) {
                 // Load the image into the cache first?
                 if (!_imgCache.contains(url)) {trace("Will load IMAGE...");
                     _imgCache.loadImage(url);
@@ -174,14 +183,14 @@ package org.cytoscapeweb.view.render {
                     
                     if (bd != null) {
                         var bmpSize:Number = Math.min(bd.height, bd.width);
-                        var scale:Number = size/bmpSize;
+                        var scale:Number = Math.max(w, h)/bmpSize;
 
                         var m:Matrix = new Matrix();
                         m.scale(scale, scale);
                         m.translate(-(bd.width*scale)/2, -(bd.height*scale)/2);
                         
                         d.graphics.beginBitmapFill(bd, m, false, true);
-                        drawShape(d, d.shape, size);
+                        drawShape(d, d.shape, w, h);
                         d.graphics.endFill();
                     }
                 }

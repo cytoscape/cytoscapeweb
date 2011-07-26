@@ -446,7 +446,8 @@ package org.cytoscapeweb.model.converters {
                     var x3:Number = x2,      y3:Number = y + h/2;
                     var x4:Number = x1,      y4:Number = y3;
                     // rounded corner width/height:
-                    var w4:Number = w/4, h4:Number = h/4;
+                    var w4:Number = NodeShapes.getRoundRectCornerRadius(w, h);
+                    var h4:Number = w4;
                     
                     svg += '<path d="M'+(x1+w4)+','+(y1) +
                                    ' L'+(x2-w4)+','+(y2) +

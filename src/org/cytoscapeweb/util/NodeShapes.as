@@ -108,7 +108,8 @@ package org.cytoscapeweb.util {
                                    xL+w3, yB ];
                         break;
                     case NodeShapes.ROUND_RECTANGLE:
-                        var h4:Number = h/4, w4:Number = w/4;
+                        var h4:Number = getRoundRectCornerRadius(w, h);
+                        var w4:Number = h4;
                         // The round corners are not included:
                         points = [ xL,    yB-h4,
                                    xL,    yT+h4,
@@ -135,6 +136,10 @@ package org.cytoscapeweb.util {
             }
             
             return points;
+        }
+        
+        public static function getRoundRectCornerRadius(width:Number, height:Number):Number {
+            return Math.min(width, height)/4;
         }
         
         public static function isValid(shape:String):Boolean {
