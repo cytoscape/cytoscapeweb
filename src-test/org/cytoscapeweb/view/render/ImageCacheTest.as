@@ -101,7 +101,7 @@ package org.cytoscapeweb.view.render {
         }
         
         public function testDispose():void {
-            function runTest():void {trace(_cache.size)
+            function runTest():void {
                 // Initial state:
                 assertTrue(_cache.size > 0);
                 assertFalse(_cache.isLoading());

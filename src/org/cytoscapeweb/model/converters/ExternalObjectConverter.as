@@ -245,7 +245,7 @@ package org.cytoscapeweb.model.converters {
                     obj.group = Groups.NODES;
                     obj.shape = n.shape;
                     obj.size = n.height;
-                    obj.color = Utils.rgbColorAsString(n.fillColor);
+                    obj.color = n.props.transparent ? "transparent" : Utils.rgbColorAsString(n.fillColor);
                     obj.borderColor = Utils.rgbColorAsString(n.lineColor);
                     obj.borderWidth = n.lineWidth;
 //                    obj.degree = n.degree;

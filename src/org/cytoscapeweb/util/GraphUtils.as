@@ -96,12 +96,15 @@ package org.cytoscapeweb.util {
                 $each(data.nodes, function(i:uint, n:NodeSprite):void {
                     if (!isFilteredOut(n)) {
                         // The node size (its shape must have the same height and width; e.g. a circle)
-                        var ns:Number = n.height;
+                        var w:Number = n.width;
+                        var h:Number = n.height;
+                        var w2:Number = w/2, h2:Number = h/2;
+                        
                         // Verify MIN and MAX x/y again:
-                        minX = Math.min(minX, (n.x - ns/2));
-                        minY = Math.min(minY, (n.y - ns/2));
-                        maxX = Math.max(maxX, (n.x + ns/2));
-                        maxY = Math.max(maxY, (n.y + ns/2));
+                        minX = Math.min(minX, (n.x - w2));
+                        minY = Math.min(minY, (n.y - h2));
+                        maxX = Math.max(maxX, (n.x + w2));
+                        maxY = Math.max(maxY, (n.y + h2));
                         
                         // Consider the LABELS bounds, too:
                         var lbl:TextSprite = n.props.label;
@@ -116,6 +119,7 @@ package org.cytoscapeweb.util {
                     }
                 });
                 
+                // Also mesure edge bounds:
                 $each(data.edges, function(i:uint, e:EdgeSprite):void {
                     if (!isFilteredOut(e)) {
                         // Edge LABELS first, to avoid checking edges that are already inside the bounds:
@@ -138,7 +142,7 @@ package org.cytoscapeweb.util {
                                 var p2:Point = e.props.$points.end;
                                 // Alwasys check a few points along the bezier curve to see
                                 // if any of them is out of the bounds:
-                                var fractions:Array, mp:Point, f:Number;
+                                var mp:Point, f:Number;
                                 
                                 if (e.source === e.target) {
                                     // Loop...
@@ -148,9 +152,7 @@ package org.cytoscapeweb.util {
                                     mp = new Point();
                                     var w:Number = e.lineWidth/2;
                                     
-                                    fractions = [0.1, 0.2, 0.4, 0.6, 0.8, 0.9];
-                                    
-                                    for each (f in fractions) {
+                                    for (f = 0.1; f < 1.0; f += 0.1) {
                                         Geometry.cubicCoeff(p1, c2, c1, p2, cc1, cc2, cc3);
                                         mp = Geometry.cubic(f, p1, cc1, cc2, cc3, mp);
                                         minX = Math.min(minX, mp.x - w);
@@ -159,9 +161,7 @@ package org.cytoscapeweb.util {
                                         maxY = Math.max(maxY, mp.y + w);
                                     }
                                 } else {
-                                    fractions = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
-                                    
-                                    for each (f in fractions) {
+                                    for (f = 0.1; f < 1.0; f += 0.1) {
                                         mp = Utils.bezierPoint(p1, p2, c1, f);
                                         minX = Math.min(minX, mp.x);
                                         maxX = Math.max(maxX, mp.x);

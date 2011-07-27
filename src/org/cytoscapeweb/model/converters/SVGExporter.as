@@ -308,7 +308,7 @@ package org.cytoscapeweb.model.converters {
                         // The current version of AlivePDF does not support glows, gradients, etc.
                         // So we just draw a bigger shape behind the node:
                         svg += '<g fill="none" stroke="'+lc+'" stroke-linejoin="round" stroke-width="'+lw+'" stroke-linecap="butt" stroke-opacity="'+a+'">';
-                        svg += drawNodeShape(n.shape, np.x, np.y, w, h);
+                        svg += drawNodeShape(n.shape, np.x, np.y, w, h, true);
                         svg += '</g>';
                     }
                 }
@@ -321,10 +321,10 @@ package org.cytoscapeweb.model.converters {
                 w = (n.width - n.lineWidth) * _scale;
                 h = (n.height - n.lineWidth) * _scale;
  
-                svg += '<g class="'+NODE_SHAPE_CLASS+'" fill="'+c+'" fill-opacity="'+a+'" stroke="'+lc+'" stroke-linejoin="round" stroke-width="'+lw+'" stroke-linecap="butt" stroke-opacity="'+a+'">';
+                svg += '<g class="'+NODE_SHAPE_CLASS+'" fill="'+c+'" opacity="'+a+'" stroke="'+lc+'" stroke-linejoin="round" stroke-width="'+lw+'" stroke-linecap="butt" stroke-opacity="'+a+'">';
                 
                 // Basic node shape
-                svg += (nodeSvgShape = drawNodeShape(n.shape, np.x, np.y, w, h));
+                svg += (nodeSvgShape = drawNodeShape(n.shape, np.x, np.y, w, h, n.props.transparent));
                 
                 // Node image, if any:
                 img = _imgCache.getImage(n.props.imageUrl);
@@ -428,16 +428,17 @@ package org.cytoscapeweb.model.converters {
             return svg;
         }
         
-        private function drawNodeShape(shape:String, x:Number, y:Number, w:Number, h:Number):String {
+        private function drawNodeShape(shape:String, x:Number, y:Number, w:Number, h:Number, transparent:Boolean):String {
             var svg:String = '';
             var r:Rectangle = new Rectangle(x-w/2, y-h/2, w, h);
+            var fillOpacity:String = transparent ?  ' fill-opacity="0"' : '';
             
             switch (shape) {
                 case NodeShapes.ELLIPSE:
-                    svg += '<circle cx="'+x+'" cy="'+y+'" r="'+(h/2)+'"/>';
+                    svg += '<circle cx="'+x+'" cy="'+y+'" r="'+(h/2)+'"'+fillOpacity+'/>';
                     break;
                 case NodeShapes.RECTANGLE:
-                    svg += '<rect x="'+(x-w/2)+'" y="'+(y-h/2)+'" width="'+w+'" height="'+h+'"/>';
+                    svg += '<rect x="'+(x-w/2)+'" y="'+(y-h/2)+'" width="'+w+'" height="'+h+'"'+fillOpacity+'/>';
                     break;
                 case NodeShapes.ROUND_RECTANGLE:
                     // corners (and control points), clockwise:
@@ -457,13 +458,14 @@ package org.cytoscapeweb.model.converters {
                                    ' L'+(x4+w4)+','+(y4) +
                                    ' Q'+(x4)+','+(y4)+' '+(x4)+','+(y4-h4) +
                                    ' L'+(x1)+','+(y1+h4) +
-                                   ' Q'+(x1)+','+(y1)+' '+(x1+w4)+','+(y1)+'"/>';
+                                   ' Q'+(x1)+','+(y1)+' '+(x1+w4)+','+(y1)+'"'+
+                                   fillOpacity+'/>';
                     break;
                 default:
                     var points:Array = NodeShapes.getDrawPoints(r, shape);
                     var pp:String = '';
                     for (var i:int = 0; i < points.length; i += 2) pp += (points[i]+','+points[i+1]+' ');
-                    svg += '<polygon points="'+pp+'"/>';
+                    svg += '<polygon points="'+pp+'"'+fillOpacity+'/>';
             }
             
             return svg;

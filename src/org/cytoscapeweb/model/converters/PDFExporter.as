@@ -141,7 +141,7 @@ package org.cytoscapeweb.model.converters {
             var orientation:String = Orientation.PORTRAIT;
             
             // Create the PFD document with 1 page:
-            var pdf:PDF = new PDF(orientation, Unit.POINT, true, size);
+            var pdf:PDF = new PDF(orientation, Unit.POINT, size);
             pdf.setDisplayMode(Display.FULL_PAGE, Layout.SINGLE_PAGE);
             var page:Page = new Page(orientation, Unit.POINT, size);
             pdf.addPage(page);
@@ -304,7 +304,7 @@ package org.cytoscapeweb.model.converters {
                         // So we just draw a bigger shape behind the node:
                         pdf.lineStyle(gc, gw, 0, Math.min(glow.alpha, n.alpha),
                                       WindingRule.NON_ZERO, Blend.NORMAL, null, Caps.ROUND, Joint.ROUND);
-                        drawNode(pdf, n.shape, np.x, np.y, nw, nh);
+                        drawNodeShape(pdf, n.shape, np.x, np.y, nw, nh);
                     }
                 }
                 
@@ -314,9 +314,10 @@ package org.cytoscapeweb.model.converters {
                 
                 pdf.lineStyle(new RGBColor(n.lineColor), n.lineWidth*_scale, 0, n.alpha,
                               WindingRule.NON_ZERO, Blend.NORMAL, null, Caps.ROUND, Joint.ROUND);
-                pdf.beginFill(new RGBColor(n.fillColor));
-                drawNode(pdf, n.shape, np.x, np.y, nw, nh);
-                pdf.endFill();
+                
+                if (!n.props.transparent) pdf.beginFill(new RGBColor(n.fillColor));
+                drawNodeShape(pdf, n.shape, np.x, np.y, nw, nh);
+                if (!n.props.transparent) pdf.endFill();
             }
         }
         
@@ -391,15 +392,16 @@ package org.cytoscapeweb.model.converters {
             }
         }
         
-        private function drawNode(pdf:PDF, shape:String, x:Number, y:Number, w:Number, h:Number):void {
+        private function drawNodeShape(pdf:PDF, shape:String, x:Number, y:Number, w:Number, h:Number):void {
                 var r:Rectangle = new Rectangle(x-w/2, y-h/2, w, h);
                 
                 switch (shape) {
                     case NodeShapes.ELLIPSE:
-                        pdf.drawCircle(x, y, h/2);
+                        pdf.drawEllipse(x, y, w/2, h/2);
                         break;
                     case NodeShapes.ROUND_RECTANGLE:
-                        pdf.drawRoundRect(r, w/4);
+                        var ew:Number = NodeShapes.getRoundRectCornerRadius(w, h);
+                        pdf.drawRoundRect(r, ew);
                         break;
                     default:
                         var points:Array = NodeShapes.getDrawPoints(r, shape);
@@ -444,7 +446,7 @@ package org.cytoscapeweb.model.converters {
                 if (shape === ArrowShapes.CIRCLE) {
                     var center:Point = points[0];
                     pdf.drawCircle(center.x, center.y, diameter/2);
-                    pdf.end(false);
+                    pdf.end();
                 } else if (shape === ArrowShapes.ARROW) {
                     var p1:Point = points[0];
                     var c1:Point = points[1];

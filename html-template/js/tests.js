@@ -502,7 +502,7 @@ function runGraphTests(moduleName, vis, options) {
     
     test("Visual Style", function() {
 		vis.visualStyle(style);
-    	var nodes = vis.nodes, edges = vis.edges();
+    	var nodes = vis.nodes(), edges = vis.edges();
     	var s = vis.visualStyle();
     	
     	same(s.global.backgroundColor, style.global.backgroundColor);
@@ -529,6 +529,28 @@ function runGraphTests(moduleName, vis, options) {
 			same(e.color, s.edges.color, "Edge color");
 		});
 
+    });
+    
+    test("Visual Style--transparent nodes", function() {
+    	vis.visualStyle({ 
+    		global: { backgroundColor: "transparent" },
+    		nodes: { color: "transparent" },
+    		edges: { color: "transparent" }
+    	});
+    	same(vis.visualStyle().global.backgroundColor, "#ffffff", "Visual Style backgroundColor color");
+    	same(vis.visualStyle().nodes.color, "transparent", "Visual Style nodes color");
+    	same(vis.visualStyle().edges.color, "#ffffff", "Visual Style edges color");
+    	
+    	var nodes = vis.nodes(), edges = vis.edges();
+    	
+    	$.each(nodes, function(i, n) {
+    		same(n.color, "transparent", "Node color");
+    	});
+    	$.each(edges, function(i, e) {
+    		same(e.color, "#ffffff", "Edge color");
+    	});
+    	
+    	vis.visualStyle(style);
     });
     
     test("Get empty Visual Style Bypass", function() {

@@ -185,6 +185,9 @@ package org.cytoscapeweb.util {
                     	// Add alpha, which is required by for most of the colors:
                     	if (name != BACKGROUND_COLOR) color += 0xff000000;
                         val = color;
+                    } else if (name === BACKGROUND_COLOR) {
+                        // background cannot be transparent; will be white instead
+                        val = 0xffffff;
                     }
                 } else if (isNumber(name)) {
                 	val = Number(value);
@@ -215,7 +218,7 @@ package org.cytoscapeweb.util {
             if (value === undefined) value = null;
             
             if (isColor(name)) {
-                value = Utils.rgbColorAsString(uint(value));
+                value = name === NODE_COLOR && value < 0 ? "transparent" : Utils.rgbColorAsString(uint(value));
             } else if (isNumber(name)) {
                 value = Number(value);
             } else if (isString(name)) {

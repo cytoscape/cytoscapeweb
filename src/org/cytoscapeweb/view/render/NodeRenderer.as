@@ -82,9 +82,16 @@ package org.cytoscapeweb.view.render {
         
         /** @inheritDoc */
         public override function render(d:DataSprite):void {trace("RENDER NODE: " + d.data.id);
-            var lineAlpha:Number = d.lineAlpha;
+            // Using a bit mask to avoid transparent mdes when fillcolor=0xffffffff.
+            // See https://sourceforge.net/forum/message.php?msg_id=7393265
+            var fillColor:uint = 0xffffff & d.fillColor;
             var fillAlpha:Number = d.fillAlpha;
             var size:Number = d.size * defaultSize;
+            
+            var lineColor:uint = d.lineColor;
+            var lineAlpha:Number = d.lineAlpha;
+            var lineWidth:Number = d.lineWidth;
+            
             var w:Number = d.w;
             var h:Number = d.h;
             
@@ -97,22 +104,21 @@ package org.cytoscapeweb.view.render {
             // Just to prevent rendering issues when drawing large bitmaps on small nodes:
             d.cacheAsBitmap = d.props.imageUrl != null;
             
-            if (lineAlpha > 0 && d.lineWidth > 0) {
+            if (lineAlpha > 0 && lineWidth > 0) {
                 var pixelHinting:Boolean = d.shape === NodeShapes.ROUND_RECTANGLE;
-                g.lineStyle(d.lineWidth, d.lineColor, lineAlpha, pixelHinting);
+                g.lineStyle(lineWidth, lineColor, lineAlpha, pixelHinting);
             }
             
-            if (fillAlpha > 0) {
-                // 1. Draw the background color:
-                // Using a bit mask to avoid transparent mdes when fillcolor=0xffffffff.
-                // See https://sourceforge.net/forum/message.php?msg_id=7393265
-                if (!d.props.transparent) g.beginFill(0xffffff & d.fillColor, fillAlpha);
-                drawShape(d, d.shape, w, h);
-                if (!d.props.transparent) g.endFill();
-                
-                // 2. Draw an image on top:
-                drawImage(d, w, h);
-            }
+            // 1. Draw the background color:
+            // Even if "transparent", we still need to draw a shape,
+            // or the node will not receive mouse events
+            if (d.props.transparent) fillAlpha = 0;
+            g.beginFill(fillColor, fillAlpha);
+            drawShape(d, d.shape, w, h);
+            g.endFill();
+            
+            // 2. Draw an image on top:
+            drawImage(d, w, h);
             
             // To prevent gaps between the node and its edges when the node has the
             // border width changed on mouseover or selection
