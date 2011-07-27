@@ -631,6 +631,23 @@ function runGraphTests(moduleName, vis, options) {
 		ok(count === 0, "No more edges bypass props");
     });
     
+    test("Bypass--transparent nodes", function() {
+    	var n = vis.nodes()[0];
+    	var e = vis.edges()[0];
+    	var bypass = { nodes: {}, edges: {} };
+    	bypass.nodes[n.data.id] = { color: "transparent" };
+    	bypass.edges[e.data.id] = { color: "transparent" }; // should be converted to white!
+    	
+    	vis.visualStyleBypass(bypass);
+    	
+    	same(vis.visualStyleBypass().nodes[n.data.id].color, "transparent", "Visual Style nodes color");
+    	same(vis.visualStyleBypass().edges[e.data.id].color, "#ffffff", "Visual Style edges color");
+    	same(vis.node(n.data.id).color, "transparent", "Node color");
+    	same(vis.edge(e.data.id).color, "#ffffff", "Edge color");
+    	
+    	vis.visualStyleBypass({});
+    });
+    
     asyncTest("Preset Layout", function() {
     	expect(4);
     	var points = [ { id: "1", x: 10, y: -20 },
