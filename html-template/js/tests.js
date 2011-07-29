@@ -151,6 +151,12 @@ function runJSTests(vis) {
 function runGraphTests(moduleName, vis, options) {
 	module(moduleName);
 
+	var _errId;
+    var _onError = function(evt) {
+    	_errId = evt.value.id;
+    }
+    vis.addListener("error", _onError);
+	
 	test("Initialization Parameters", function() {
         same(vis.panZoomControlVisible(), options.panZoomControlVisible, "Pan-zoom control visible?");
         same(vis.nodeLabelsVisible(),     options.nodeLabelsVisible,     "Node Labels visible?");
@@ -1037,13 +1043,12 @@ function runGraphTests(moduleName, vis, options) {
     	var ids = [];
     	
     	// 1: Update all nodes and edges (same data):
-        var data = { weight: 1/*, new_attr: "ignore it!"*/ };
+        var data = { weight: 1 };
         vis.updateData(data);
     	
         all = vis.nodes().concat(vis.edges());
         $.each(all, function(i, el) {
     		same(el.data.weight, 1, "weight updated ("+el.data.id+")");
-//    		same(el.data.new_attr, undefined, "New attribute ignored ("+el.data.id+")");
     	});
         
         // 2: Update more than one node and edge at once (by ID - ALL groups - same data):
@@ -1133,23 +1138,16 @@ function runGraphTests(moduleName, vis, options) {
         ok(vis.node(id).data.weight === null, "Node weight should be null");
         
         // Test Errors:
-        var errId;
-        var onError = function(evt) {
-        	errId = evt.value.id;
-        }
-        vis.addListener("error", onError);
         
-        // 7: Update a field with type 'int' to null (should set 0 as default):
+        // 7: Update a field with type 'int' to null => ERROR:
         vis.updateData("nodes", [id], { ranking: null });
-        same(errId, "dat001", "node.data.ranking (error: int type with null value)");
-        errId = null;
+        same(_errId, "dat001", "node.data.ranking (error: int type with null value)");
+        _errId = null;
         
-        // 8: Update a field with type 'boolean' to null (should set false as default):
+        // 8: Update a field with type 'boolean' to null => ERROR:
         vis.updateData("nodes", [id], { special: null });
-        same(errId, "dat001", "node.data.special (error: boolean type with null value)");
-        errId = null;
-        
-        vis.removeListener("error", onError);
+        same(_errId, "dat001", "node.data.special (error: boolean type with null value)");
+        _errId = null;
     });
     
     test("Get Data Schema", function() {
@@ -1367,7 +1365,7 @@ function runGraphTests(moduleName, vis, options) {
     	var base64 = vis.pdf();
     	var beginning = "JVBERi0xLjUKMSAwIG9iago8PC9UeXBlIC9QYWdlcwovS2lkcyBbMyAwIFJdCi9Db3VudCAxPj4K";
 
-    	ok(base64.length > 13000, "PDF string has compatible length ("+base64.length+")");
+    	ok(base64.length > 9000, "PDF string has compatible length ("+base64.length+")");
     	same(base64.indexOf(beginning), 0, "PDF begins with correct chars");
     });
     

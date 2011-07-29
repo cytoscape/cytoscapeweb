@@ -43,6 +43,7 @@ package org.cytoscapeweb.model.converters {
     import flash.geom.Point;
     import flash.geom.Rectangle;
     import flash.text.TextField;
+    import flash.text.TextFormatAlign;
     import flash.utils.ByteArray;
     
     import mx.graphics.codec.PNGEncoder;
@@ -368,14 +369,17 @@ package org.cytoscapeweb.model.converters {
                     var lblSize:int = Math.round(lbl.size*_scale);
                     
                     if (text == null || text === "" || lblSize < 1) continue;
+                    
                     var field:TextField = lbl.textField;
+                    var lines:Array = text.split("\r");
 
                     // ATTENTION!!!
                     // It seems that Flash does not convert points to pixels correctly. 
                     // See: - http://alarmingdevelopment.org/?p=66
                     //      - http://www.actionscript.org/forums/showthread.php3?p=821842
                     // I found out that the text height is usually 28% smaller than the label size.
-                    var textHeight:Number = lbl.size * 0.72;
+                    var textHeight:Number = lbl.size * 0.72 * _scale;
+                    textHeight *= 1.5; // vertical spacing between lines
                     var textWidth:Number = field.textWidth;
 
                     // Get the Global label point (relative to the stage):
@@ -390,23 +394,27 @@ package org.cytoscapeweb.model.converters {
 
                     var hpad:Number = 2;
                     switch (hAnchor) {
-                        case Anchors.LEFT:   p.x += hpad * _scale; break;
-                        case Anchors.CENTER: p.x -= (textWidth/2)*_scale; break;
-                        case Anchors.RIGHT:  p.x -= (textWidth + hpad)*_scale; break;
+                        case Anchors.LEFT:   p.x += (hpad * _scale); break;
+                        case Anchors.RIGHT:  p.x -= (hpad * _scale); break;
                     }
                     // Vertical anchor:
                     // The label height is different from the real text height, because
                     // there is a margin between the text and the text field border:
                     var vpad:Number = 2;
-                    switch (vAnchor) {
-                        case Anchors.TOP:    p.y += (field.height - textHeight)/2 * _scale; break;
-                        case Anchors.MIDDLE: p.y -= textHeight/2 * _scale; break;
-                        case Anchors.BOTTOM: p.y -= (vpad + textHeight) * _scale; break;
-                    }
                     
-                    // Flare's label cordinates is relative to the label's upper-left corner (x,y)=(0,0),
-                    // but AlivePDF uses the bottom-left corner instead (x,y)=(0,fonSize):
-                    p.y += textHeight*_scale;
+                    switch (vAnchor) {
+                        case Anchors.TOP:
+                            p.y -= textHeight/2;
+                            p.y += ( textHeight/4 + vpad );
+                            break;
+                        case Anchors.MIDDLE:
+                            p.y -= ( (textHeight/2) * lines.length );
+                            p.y -= textHeight/6;
+                            break;
+                        case Anchors.BOTTOM:
+                            p.y -= ( (textHeight * lines.length) + vpad );
+                            break;
+                    }
 
                     var style:String = lbl.italic ? 'italic': 'normal';
                     var weight:String = lbl.bold ? 'bold' : 'normal';
@@ -418,10 +426,22 @@ package org.cytoscapeweb.model.converters {
                     else if (family == Fonts.TYPEWRITER) family = 'courier';
                     
                     var c:String = Utils.rgbColorAsString(lbl.color);
-                    var a:Number = lbl.alpha;
-                    
+                    var a:Number = d.alpha;
+                    var ta:String = getTextAnchor(lbl);
+
                     svg += '<text font-family="'+family+'" font-style="'+style+'" font-weight="'+weight+'" stroke="none" fill="'+c+'"' +
-                                ' fill-opacity="'+a+'" font-size="'+lblSize+'" x="'+p.x+'" y="'+p.y+'">' + text+ '</text>';
+                                ' fill-opacity="'+a+'" font-size="'+lblSize+'" x="'+p.x+'" y="'+p.y+'" style="text-anchor:'+ta+';">';
+                    
+                    if (lines.length > 0) {
+                        for (var i:int = 0; i < lines.length; i++) {
+                            var ln:String = lines[i];
+                            svg += '<tspan style="text-anchor:'+ta+';" x="'+p.x+'" dy="'+textHeight+'">'+ln+'</tspan>';
+                        }
+                    } else {
+                        svg += text;
+                    }
+                    
+                    svg += '</text>';
                 }
             }
             
@@ -609,6 +629,15 @@ package org.cytoscapeweb.model.converters {
             }
      
             return pageEdge / graphEdge;
+        }
+        
+        private function getTextAnchor(lbl:TextSprite):String {
+            var ta:String = 'middle';
+     
+            if (lbl.textFormat.align === TextFormatAlign.LEFT) ta = 'start';
+            else if (lbl.textFormat.align === TextFormatAlign.RIGHT) ta = 'end';
+     
+            return ta;
         }
     }
 }

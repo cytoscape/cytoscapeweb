@@ -43,6 +43,7 @@ package org.cytoscapeweb.view.render {
     import flash.events.Event;
     import flash.geom.Point;
     import flash.text.TextFormat;
+    import flash.text.TextFormatAlign;
     
     import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.methods.$each;
@@ -138,8 +139,7 @@ package org.cytoscapeweb.view.render {
                 label.text = getLabelText(d);
                 label.visible = visible;
 
-                updateTextFormat(d);
-                label.applyFormat(textFormat);
+                updateLabel(d, label);
                 _access.setValue(d, label);
                 
                 if (_policy == LAYER) {
@@ -158,17 +158,8 @@ package org.cytoscapeweb.view.render {
                 }
             } else if (label && !cacheText) {
                 label.text = getLabelText(d);
-                
-                updateTextFormat(d);
-                label.applyFormat(textFormat);
+                updateLabel(d, label);
             }
-            
-            label.textMode = textMode;
-            label.horizontalAnchor = horizontalAnchor;
-            label.verticalAnchor = verticalAnchor;           
-
-            if (hAnchor != null) label.horizontalAnchor = hAnchor(d);
-            if (vAnchor != null) label.verticalAnchor = vAnchor(d);
             
             return label;
         }
@@ -226,12 +217,28 @@ package org.cytoscapeweb.view.render {
             label.render();
         }
 
-        protected function updateTextFormat(d:DataSprite):void {
+        protected function updateLabel(d:DataSprite, label:TextSprite):void {
+            label.textMode = textMode;
+            label.horizontalAnchor = horizontalAnchor;
+            label.verticalAnchor = verticalAnchor;           
+
+            if (hAnchor != null) label.horizontalAnchor = hAnchor(d);
+            if (vAnchor != null) label.verticalAnchor = vAnchor(d);
+
             if (fontName != null) textFormat.font = fontName(d);
             if (fontColor != null) textFormat.color = fontColor(d);
             if (fontSize != null) textFormat.size = fontSize(d);
             if (fontWeight != null) textFormat.bold = (fontWeight(d) === "bold");
             if (fontStyle != null) textFormat.italic = (fontStyle(d) === "italic");
+            
+            if (label.horizontalAnchor === TextSprite.CENTER)
+                textFormat.align = TextFormatAlign.CENTER;
+            if (label.horizontalAnchor === TextSprite.RIGHT)
+                textFormat.align = TextFormatAlign.RIGHT;
+            if (label.horizontalAnchor === TextSprite.LEFT)
+                textFormat.align = TextFormatAlign.LEFT;
+                
+            label.applyFormat(textFormat);
         }
         
         // ========[ PRIVATE METHODS ]==============================================================
