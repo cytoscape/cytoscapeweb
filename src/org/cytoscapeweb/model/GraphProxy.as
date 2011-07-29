@@ -570,15 +570,10 @@ package org.cytoscapeweb.model {
         public function addNode(data:Object):NodeSprite {
             if (data == null) data = {};
             
+            normalizeData(data, Groups.EDGES);
+            
             if (data.id == null) data.id = nextId(Groups.NODES);
             else if (hasId(Groups.NODES, data.id)) throw new Error("Duplicate node id ('"+data.id+"')");
-            
-            addMissingDataFields(Groups.NODES, data);
-            
-            // Set default values :
-            for each (var f:DataField in _nodesSchema.fields) {
-                if (data[f.name] == null) data[f.name] = f.defaultValue;
-            }
 
             var n:NodeSprite = graphData.addNode(data);
             createCache(n);
@@ -589,6 +584,9 @@ package org.cytoscapeweb.model {
         public function addEdge(data:Object):EdgeSprite {
             if (data == null) throw new Error("The 'data' argument is mandatory");
             trace("add edge: " + data.id);
+            
+            normalizeData(data, Groups.EDGES);
+            
             var src:NodeSprite = getNode(data.source);
             var tgt:NodeSprite = getNode(data.target);
             
@@ -598,12 +596,6 @@ package org.cytoscapeweb.model {
             if (data.id == null) data.id = nextId(Groups.EDGES);
             else if (hasId(Groups.EDGES, data.id)) throw new Error("Duplicate edge id ('"+data.id+"')");
             
-            addMissingDataFields(Groups.EDGES, data);
-            
-            // Set default values :
-            for each (var f:DataField in _edgesSchema.fields) {
-                if (data[f.name] == null) data[f.name] = f.defaultValue;
-            }
 
             // Create edge:
             var e:EdgeSprite = graphData.addEdgeFor(src, tgt, data.directed, data);
@@ -888,21 +880,29 @@ package org.cytoscapeweb.model {
             return inter;
         }
         
-        private function addMissingDataFields(group:String, data:Object):void {
-            for (var k:String in data) {
-                var schema:DataSchema = group === Groups.NODES ? nodesSchema : edgesSchema;
-                var f:DataField = schema.getFieldById(k);
+        private function normalizeData(data:Object, gr:String):void {
+            var schema:DataSchema = gr === Data.NODES ? nodesSchema : edgesSchema;
+            var f:DataField;
+            var k:String, v:*;
+            
+            // Check data types:
+            for (k in data) {
+                v = data[k];
+                f = schema.getFieldById(k);
                 
-                if (f == null) {
-                    var v:* = data[k];
-                    var type:int = DataUtil.OBJECT;
-                    
-                    if (v is Boolean)      type = DataUtil.BOOLEAN;
-                    else if (v is Number)  type = DataUtil.NUMBER;
-                    else if (v is String)  type = DataUtil.STRING;
-
-                    addDataField(group, k, type);
+                try {
+                    v = ExternalObjectConverter.normalizeDataValue(v, f.type);
+                } catch (err:Error) {
+                    throw new CWError("Invalid data value ('"+k+"'): "+err.message,
+                                      ErrorCodes.INVALID_DATA_CONVERSION);
                 }
+                
+                data[k] == v;
+            }
+            
+            // Set default values :
+            for each (f in schema.fields) {
+                if (data[f.name] == null) data[f.name] = f.defaultValue;
             }
         }
     }
