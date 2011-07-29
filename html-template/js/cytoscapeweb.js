@@ -401,7 +401,7 @@
             	return this;
             } else {
             	json = swf.getVisualStyleBypass();
-            	return JSON.parse(json);
+            	return this._parseJSON(json);
             }
         },
 
@@ -584,7 +584,7 @@
          */
         node: function (id) {
             var str = this.swf().getNodeById(id);
-            return JSON.parse(str);
+            return this._parseJSON(str);
         },
         
         /**
@@ -595,7 +595,7 @@
          */
         nodes: function () {
             var str = this.swf().getNodes();
-            return JSON.parse(str);
+            return this._parseJSON(str);
         },
 
         /**
@@ -610,7 +610,7 @@
          */
         edge: function (id) {
             var str = this.swf().getEdgeById(id);
-            return JSON.parse(str);
+            return this._parseJSON(str);
         },
         
         /**
@@ -623,7 +623,7 @@
          */
         edges: function () {
             var str = this.swf().getEdges();
-            return JSON.parse(str);
+            return this._parseJSON(str);
         },
         
         /**
@@ -634,7 +634,7 @@
          */
         mergedEdges: function () {
             var str = this.swf().getMergedEdges();
-            return JSON.parse(str);
+            return this._parseJSON(str);
         },
         
         /**
@@ -1177,7 +1177,7 @@
          */
         firstNeighbors: function (nodes, ignoreFilteredOut) {
             var str = this.swf().firstNeighbors(nodes, ignoreFilteredOut);
-            return JSON.parse(str);
+            return this._parseJSON(str);
         },
 
         /**
@@ -1781,8 +1781,7 @@
         _dispatch: function (functionName, jsonArg) {
             var arg = null;
             if (jsonArg != null) {
-            	jsonArg = jsonArg.replace(/\n/g, '\\n');
-            	arg = JSON.parse(jsonArg);
+            	arg = this._parseJSON(jsonArg);
             }
             var ret = this[functionName](arg);
             return ret;
@@ -1849,11 +1848,11 @@
             var list = [];
             gr = this._normalizeGroup(gr);
             if (gr === "nodes" || gr === "none") {
-                var nodes = JSON.parse(this.swf()[fnNodes]());
+                var nodes = this._parseJSON(this.swf()[fnNodes]());
                 list = list.concat(nodes);
             }
             if (gr === "edges" || gr === "none") {
-                var edges = JSON.parse(this.swf()[fnEdges]());
+                var edges = this._parseJSON(this.swf()[fnEdges]());
                 list = list.concat(edges);
             }
             return list;
@@ -1868,6 +1867,11 @@
                 return "object";
             }
             return typeof(v);
+        },
+        
+        _parseJSON: function(s) {
+        	if (s != null) { s = s.replace(/\n/g, '\\n').replace(/\t/g, '\\t'); }
+        	return JSON.parse(s);
         }
     };
 
