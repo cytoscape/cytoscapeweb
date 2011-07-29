@@ -417,7 +417,7 @@ package org.cytoscapeweb.model {
         public function updateData(ds:DataSprite, data:Object):void {
             if (ds != null && data != null) {
                 if (ds is EdgeSprite && ds.props.$merged) {
-                    throw new Error("It is not allowed to update a merged edge data: " + ds.data.id);
+                    throw new CWError("It is not allowed to update a merged edge data: " + ds.data.id);
                 }
                 
                 var schema:DataSchema = ds is NodeSprite ? _nodesSchema : _edgesSchema;
@@ -440,7 +440,8 @@ package org.cytoscapeweb.model {
                             ds.data[k] = v;
                             updated = true;
                         } else {
-                            throw new CWError("Cannot update data: there is no Data Field for '"+k+"'.");
+                            throw new CWError("Cannot update data: there is no Data Field for '"+k+"'.",
+                                              ErrorCodes.MISSING_DATA_FIELD);
                         }
                     }
                 }
@@ -570,7 +571,7 @@ package org.cytoscapeweb.model {
         public function addNode(data:Object):NodeSprite {
             if (data == null) data = {};
             
-            normalizeData(data, Groups.EDGES);
+            normalizeData(data, Groups.NODES);
             
             if (data.id == null) data.id = nextId(Groups.NODES);
             else if (hasId(Groups.NODES, data.id)) throw new Error("Duplicate node id ('"+data.id+"')");
@@ -582,7 +583,8 @@ package org.cytoscapeweb.model {
         }
         
         public function addEdge(data:Object):EdgeSprite {
-            if (data == null) throw new Error("The 'data' argument is mandatory");
+            if (data == null) throw new CWError("The 'data' argument is mandatory",
+                                                ErrorCodes.INVALID_DATA_CONVERSION);
             trace("add edge: " + data.id);
             
             normalizeData(data, Groups.EDGES);
@@ -595,7 +597,6 @@ package org.cytoscapeweb.model {
             
             if (data.id == null) data.id = nextId(Groups.EDGES);
             else if (hasId(Groups.EDGES, data.id)) throw new Error("Duplicate edge id ('"+data.id+"')");
-            
 
             // Create edge:
             var e:EdgeSprite = graphData.addEdgeFor(src, tgt, data.directed, data);
