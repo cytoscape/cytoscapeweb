@@ -379,8 +379,8 @@ package org.cytoscapeweb.model.converters {
                     //      - http://www.actionscript.org/forums/showthread.php3?p=821842
                     // I found out that the text height is usually 28% smaller than the label size.
                     var textHeight:Number = lbl.size * 0.72 * _scale;
-                    textHeight *= 1.5; // vertical spacing between lines
-                    var textWidth:Number = field.textWidth;
+                    textHeight *= 1.25; // vertical spacing between lines
+                    var textWidth:Number = field.textWidth * _scale;
 
                     // Get the Global label point (relative to the stage):
                     var p:Point = toImagePoint(new Point(lbl.x, lbl.y), lbl);
@@ -392,16 +392,16 @@ package org.cytoscapeweb.model.converters {
                         vAnchor = _style.getValue(VisualProperties.NODE_LABEL_VANCHOR, d.data);
                     }
 
-                    var hpad:Number = 2;
+                    var hpad:Number = 2 * _scale;
                     switch (hAnchor) {
-                        case Anchors.LEFT:   p.x += (hpad * _scale); break;
-                        case Anchors.RIGHT:  p.x -= (hpad * _scale); break;
+                        case Anchors.LEFT:   p.x += hpad; break;
+                        case Anchors.RIGHT:  p.x -= hpad; break;
                     }
+                    
                     // Vertical anchor:
                     // The label height is different from the real text height, because
                     // there is a margin between the text and the text field border:
-                    var vpad:Number = 2;
-                    
+                    var vpad:Number = 2 * _scale;
                     switch (vAnchor) {
                         case Anchors.TOP:
                             p.y -= textHeight/2;
