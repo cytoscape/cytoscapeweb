@@ -455,7 +455,7 @@ package org.cytoscapeweb.model.converters {
             
             switch (shape) {
                 case NodeShapes.ELLIPSE:
-                    svg += '<circle cx="'+x+'" cy="'+y+'" r="'+(h/2)+'"'+fillOpacity+'/>';
+                    svg += '<ellipse cx="'+x+'" cy="'+y+'" rx="'+(w/2)+'" ry="'+(h/2)+'"'+fillOpacity+'/>';
                     break;
                 case NodeShapes.RECTANGLE:
                     svg += '<rect x="'+(x-w/2)+'" y="'+(y-h/2)+'" width="'+w+'" height="'+h+'"'+fillOpacity+'/>';

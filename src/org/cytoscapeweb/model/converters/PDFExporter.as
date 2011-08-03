@@ -364,22 +364,29 @@ package org.cytoscapeweb.model.converters {
                         p = toImagePoint(new Point(d.x, d.y), d);
                         // Flare's label cordinates is relative to the label's upper-left corner (x,y)=(0,0),
                         // but AlivePDF uses the bottom-left corner instead (x,y)=(0,fonSize):
-                        p.y += textHeight;
+                        p.y += (textHeight + yOffset);
+                        p.x += xOffset;
                         
                         switch (hAnchor) {
-                            case Anchors.LEFT:   p.x += (HPAD + xOffset); break;
-                            case Anchors.CENTER: p.x -= (xOffset + textWidth/2); break;
-                            case Anchors.RIGHT:  p.x -= (HPAD + xOffset + textWidth); break;
+                            case Anchors.LEFT:
+                                p.x += (HPAD + d.width/2);
+                                break;
+                            case Anchors.CENTER:
+                                p.x -= (textWidth/2);
+                                break;
+                            case Anchors.RIGHT:
+                                p.x -= (HPAD + textWidth +  + d.width/2);
+                                break;
                         }
                         switch (vAnchor) {
                             case Anchors.TOP:
-                                p.y += (VPAD + yOffset + d.height/2);
+                                p.y += (VPAD + d.height/2);
                                 break;
                             case Anchors.MIDDLE:
-                                p.y -= (VPAD + yOffset + (textHeight*lines.length)/2);
+                                p.y -= (VPAD + (textHeight*lines.length)/2);
                                 break;
                             case Anchors.BOTTOM:
-                                p.y -= (VPAD + yOffset + d.height/2 + textHeight*lines.length);
+                                p.y -= (VPAD + d.height/2 + textHeight*lines.length);
                                 break;
                         }
                     } else {
