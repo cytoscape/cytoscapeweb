@@ -244,7 +244,9 @@ package org.cytoscapeweb.model.converters {
                     var n:NodeSprite = NodeSprite(ds);
                     obj.group = Groups.NODES;
                     obj.shape = n.shape;
-                    obj.size = n.height;
+                    obj.size = Math.max(n.width, n.height);
+                    obj.width = n.width;
+                    obj.height = n.height;
                     obj.color = n.props.transparent ? "transparent" : Utils.rgbColorAsString(n.fillColor);
                     obj.borderColor = Utils.rgbColorAsString(n.lineColor);
                     obj.borderWidth = n.lineWidth;
