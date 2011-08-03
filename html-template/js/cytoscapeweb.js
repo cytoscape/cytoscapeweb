@@ -166,6 +166,7 @@
          * vis.draw({ network: '&lt;graphml&gt;...&lt;/graphml&gt;',
          *            edgeLabelsVisible: false,
          *            layout: 'Circle',
+         *            panZoomControlPosition: 'bottomLeft',
          *            visualStyle: {
          *                global: {
          *                    backgroundColor: "#000033",
@@ -230,6 +231,18 @@
          *                                                            will be visible. The default value is <code>true</code>.
          *                                                            The visibility of the control can be changed later with
          *                                                            {@link org.cytoscapeweb.Visualization#panZoomControlVisible}.</li>
+         *                    <li><code>panZoomControlPosition</code>: String value that sets the initial position of the built-in control.
+         *                                                             The allowed values are:
+         *                                                             <ul><li><code>topLeft</code></li>
+         *                                                                 <li><code>topCenter</code></li>
+         *                                                                 <li><code>topRight</code></li>
+         *                                                                 <li><code>middleLeft</code></li>
+         *                                                                 <li><code>middleCenter</code></li>
+         *                                                                 <li><code>middleRight</code></li>
+         *                                                                 <li><code>bottomLeft</code></li>
+         *                                                                 <li><code>bottomCenter</code></li>
+         *                                                                 <li><code>bottomRight</code></li></ul>
+         *                                                             The default value is <code>"bottomRight"</code>.</li>
          *                    <li><code>preloadImages</code>: Boolean that defines whether or not to load all images before rendering the network.
          *                                                    If <code>true</code>, all images from a 
          *                                                    {@link org.cytoscapeweb.VisualStyle} or {@link org.cytoscapeweb.VisualStyleBypass}
@@ -2148,12 +2161,29 @@
      * @memberOf org.cytoscapeweb.Node#
      */ 
     /**
-     * The absolute node height and width (in pixels), when the zoom level is 100%.
-     * In Cytoscape Web, a node has the same value for both width and height.
-     * Notice that this value is not scaled, so if you want its real visualized size, you need to multiply
+     * The absolute node size (in pixels), when the zoom level is 100%. It is the highest value of height and width.
+     * Notice that this value is not scaled, so if you want the real visualized size, you need to multiply
      * this value by the current network scale, which is provided by {@link org.cytoscapeweb.Visualization#zoom}.
      * @property
      * @name size
+     * @type Number
+     * @memberOf org.cytoscapeweb.Node#
+     */
+    /**
+     * The absolute node width (in pixels), when the zoom level is 100%.
+     * This value is not scaled, so if you want the real rendered width, you need to multiply
+     * this value by the current network scale, which is provided by {@link org.cytoscapeweb.Visualization#zoom}.
+     * @property
+     * @name width
+     * @type Number
+     * @memberOf org.cytoscapeweb.Node#
+     */
+    /**
+     * The absolute node height (in pixels), when the zoom level is 100%.
+     * This value is not scaled, so if you want the real rendered height, you need to multiply
+     * this value by the current network scale, which is provided by {@link org.cytoscapeweb.Visualization#zoom}.
+     * @property
+     * @name height
      * @type Number
      * @memberOf org.cytoscapeweb.Node#
      */
@@ -2509,7 +2539,13 @@
      * <p>An object that defines visual styles for nodes.</p>
      * <p>The possible node properties are:</p>
      * <ul class="options"><li><code>shape</code> {{@link org.cytoscapeweb.NodeShape}}: Node shape name. The default value is "ELLIPSE".</li>
-     *     <li><code>size</code> {Number}: Node size, in pixels. The default value is 24.</li>
+     *     <li><code>size</code> {Number}: Node size, in pixels.
+     *                                     It has the same effect of setting the same value (or mapper) to both <code>width</code> and <code>height</code>.
+     *                                     The default value is 24.</li>
+     *     <li><code>width</code> {Number}: Node width, in pixels. It is not set by default.
+     *                                      If set, it overrides the value returned by <code>size</code>.</li>
+     *     <li><code>height</code> {Number}: Node height, in pixels. It is not set by default.
+     *                                       If set, it overrides the value returned by <code>size</code>.</li>
      *     <li><code>color</code> {String}: Fill color code of nodes. The default value is "#f5f5f5".</li>
      *     <li><code>image</code> {String}: The URL of the image to be used as the node background. No image is used by default.
      *                                      If you specify a cross-domain address, then the image might not be loaded by Flash, unless
