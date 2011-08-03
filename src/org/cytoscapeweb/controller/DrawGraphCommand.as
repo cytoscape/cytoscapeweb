@@ -30,8 +30,8 @@
 package org.cytoscapeweb.controller {
     
     import org.cytoscapeweb.model.data.VisualStyleVO;
-    import org.cytoscapeweb.model.error.CWError;
     import org.cytoscapeweb.model.methods.error;
+    import org.cytoscapeweb.util.BoxPositions;
     import org.cytoscapeweb.view.GraphMediator;
     import org.cytoscapeweb.view.components.GraphView;
     import org.cytoscapeweb.view.render.ImageCache;
@@ -45,6 +45,8 @@ package org.cytoscapeweb.controller {
         override public function execute(notification:INotification):void {
             try {
                 var options:Object = notification.getBody();
+    
+                configProxy.panZoomControlPosition = BoxPositions.parse(options.panZoomControlPosition);
     
                 if (options.visualStyle != null)
                     configProxy.visualStyle = VisualStyleVO.fromObject(options.visualStyle);

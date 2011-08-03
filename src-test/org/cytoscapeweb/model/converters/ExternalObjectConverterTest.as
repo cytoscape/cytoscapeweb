@@ -267,7 +267,7 @@ package org.cytoscapeweb.model.converters {
             
             // NODES
             var props:Array = ["data","shape","borderColor","borderWidth","opacity","visible","color",
-                               "x","y"/*, "degree", "indegree", "outdegree"*/];
+                               "x","y","size","width","height"/*, "degree", "indegree", "outdegree"*/];
             var attrs:Array = ["id"];
             
             for each (var n:NodeSprite in data.nodes) {

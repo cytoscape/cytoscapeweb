@@ -53,6 +53,7 @@ package org.cytoscapeweb.view {
 	import org.cytoscapeweb.model.converters.SVGExporter;
 	import org.cytoscapeweb.model.data.VisualStyleVO;
 	import org.cytoscapeweb.model.methods.$;
+	import org.cytoscapeweb.util.BoxPositions;
 	import org.cytoscapeweb.util.ExternalFunctions;
 	import org.cytoscapeweb.util.Utils;
 	import org.cytoscapeweb.util.VisualProperties;
@@ -180,6 +181,8 @@ package org.cytoscapeweb.view {
                     sendNotification(ApplicationFacade.CALL_EXTERNAL_INTERFACE, { functionName: ExternalFunctions.READY });
                 case ApplicationFacade.CONFIG_CHANGED:
                     panZoomBox.visible = configProxy.panZoomControlVisible;
+                    panZoomBox.x = calculatePanZoomBoxX();
+                    panZoomBox.y = calculatePanZoomBoxY();
                     break;
                 case ApplicationFacade.UPDATE_CURSOR:
                     _cursorOptions = n.getBody();
@@ -429,8 +432,28 @@ package org.cytoscapeweb.view {
 	    }
 	    
 	    private function calculatePanZoomBoxX():Number {
-	        // Initially anchored on the right side of the canvas:
-	        var x:Number = application.width - panZoomBox.width - 6;
+	        // Initially anchored on one edge of the canvas:
+	        var x:Number;
+	        const HPAD:int = 6;
+	        var position:String = configProxy.panZoomControlPosition;
+	        
+	        switch (position) {
+	            case BoxPositions.TOP_LEFT:
+	            case BoxPositions.MIDDLE_LEFT:
+	            case BoxPositions.BOTTOM_LEFT:
+	                x = HPAD;
+	                break;
+                case BoxPositions.TOP_CENTER:
+                case BoxPositions.MIDDLE_CENTER:
+                case BoxPositions.BOTTOM_CENTER:
+                    x = application.width/2 - panZoomBox.width/2;
+                    break;
+                case BoxPositions.TOP_RIGHT:
+                case BoxPositions.MIDDLE_RIGHT:
+                case BoxPositions.BOTTOM_RIGHT:
+                default:
+                    x = application.width - panZoomBox.width - HPAD;
+	        }
 	        
 	        if (_panZoomMoved) {
 	            const MIN_DIST_TO_ANCHOR:Number = Math.min(20, application.width/10);
@@ -459,8 +482,28 @@ package org.cytoscapeweb.view {
 	    }
 	    
 	    private function calculatePanZoomBoxY():Number {
-	        // Initially anchored on the bottom side of the canvas:
-	        var y:Number = application.height - panZoomBox.height - 6;
+	        // Initially anchored on one edge of the canvas:
+	        var y:Number;
+            const VPAD:int = 6;
+            var position:String = configProxy.panZoomControlPosition;
+            
+            switch (position) {
+                case BoxPositions.TOP_LEFT:
+                case BoxPositions.TOP_CENTER:
+                case BoxPositions.TOP_RIGHT:
+                    y = VPAD;
+                    break;
+                case BoxPositions.MIDDLE_LEFT:
+                case BoxPositions.MIDDLE_CENTER:
+                case BoxPositions.MIDDLE_RIGHT:
+                    y = application.height/2 - panZoomBox.height/2;
+                    break;
+                case BoxPositions.BOTTOM_LEFT:
+                case BoxPositions.BOTTOM_CENTER:
+                case BoxPositions.BOTTOM_RIGHT:
+                default:
+                    y = application.height - panZoomBox.height - VPAD;
+            }
 	        
 	        if (_panZoomMoved) {
 	            const MIN_DIST_TO_ANCHOR:Number = Math.min(20, application.height/10);

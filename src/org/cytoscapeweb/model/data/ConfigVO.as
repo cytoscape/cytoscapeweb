@@ -29,6 +29,7 @@
 */
 package org.cytoscapeweb.model.data {
 
+    import org.cytoscapeweb.util.BoxPositions;
     import org.cytoscapeweb.util.Layouts;
 
 
@@ -43,6 +44,7 @@ package org.cytoscapeweb.model.data {
         // ========[ PUBLIC PROPERTIES ]============================================================
         
         public var panZoomControlVisible:Boolean = true;
+        public var panZoomControlPosition:String = BoxPositions.BOTTOM_RIGHT;
         public var grabToPanEnabled:Boolean;
         public var edgesMerged:Boolean;
         public var nodeLabelsVisible:Boolean = true;

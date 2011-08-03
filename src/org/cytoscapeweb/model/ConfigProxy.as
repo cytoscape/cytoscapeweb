@@ -76,6 +76,14 @@ package org.cytoscapeweb.model {
             config.panZoomControlVisible = visible;
         }
         
+        public function get panZoomControlPosition():String {
+            return config.panZoomControlPosition;
+        }
+        
+        public function set panZoomControlPosition(position:String):void {
+            config.panZoomControlPosition = position;
+        }
+        
         public function set grabToPanEnabled(enable:Boolean):void {
             config.grabToPanEnabled = enable;
         }
