@@ -77,8 +77,8 @@ package org.cytoscapeweb.util {
             if (_properties == null) {
                 _properties = {
                     shape: shape,
-                    w: width,
-                    h: height,
+                    "props.width": width,
+                    "props.height": height,
                     size: size,
                     fillColor: fillColor,
                     lineColor: lineColor, 

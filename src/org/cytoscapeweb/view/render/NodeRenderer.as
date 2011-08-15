@@ -92,8 +92,8 @@ package org.cytoscapeweb.view.render {
             var lineAlpha:Number = d.lineAlpha;
             var lineWidth:Number = d.lineWidth;
             
-            var w:Number = d.w;
-            var h:Number = d.h;
+            var w:Number = d.props.width;
+            var h:Number = d.props.height;
             
             if (isNaN(w) || w < 0) w = size;
             if (isNaN(h) || h < 0) h = size;
