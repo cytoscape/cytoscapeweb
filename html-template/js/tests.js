@@ -902,8 +902,16 @@ function runGraphTests(moduleName, vis, options) {
     	same(Math.round(n.y), 45, "New node - y");
     	ok(n.size > style.nodes.size.continuousMapper.minValue + n.borderWidth, "Node size updated");
     	same(vis.nodes().length, ++count, "New nodes length");
+    });
+    
+    test("Add Node: accepts null number attribute", function() {
+    	vis.addDataField("nodes", { name: "null_number_attr", type: "number" }); 
     	
-    	// TODO: test duplicate ID (FireFox does not catch Flash exceptions...)
+    	var n = vis.addNode({ label: "New Node - null number", null_number_attr: null });
+    	same(n.data.null_number_attr, null, "New node added: 'null_number_attr' still null");
+    	
+    	vis.removeElements([n], true);
+    	vis.removeDataField("nodes", "null_number_attr");
     });
     
     test("Add Edge", function() {
@@ -928,6 +936,18 @@ function runGraphTests(moduleName, vis, options) {
     	same(e.data.source, src.data.id, "New edge target ID");
     	same(e.data.target, tgt.data.id, "New edge target ID");
     	same(vis.edges().length, ++count, "New edges length");
+    });
+    
+    test("Add Edge: accepts null number attribute", function() {
+    	vis.addDataField("edges", { name: "null_number_attr", type: "number" }); 
+    	
+    	var nodes = vis.nodes();
+    	var src = nodes[0], tgt = nodes[3];
+    	var e = vis.addEdge({ source: src.data.id, target: tgt.data.id, null_number_attr: null });
+    	same(e.data.null_number_attr, null, "New edge added: 'null_number_attr' still null");
+    	
+    	vis.removeElements([e], true);
+    	vis.removeDataField("edges", "null_number_attr");
     });
     
     test("Remove Edges", function() {
@@ -1180,15 +1200,23 @@ function runGraphTests(moduleName, vis, options) {
     	});
         
         // 2: Add new field to nodes only:
-        vis.addDataField("nodes", { name: "new_node_attr_1", type: "number", defValue: " 0.234" /*Should convert string to number*/ }) 
-           .addDataField("nodes", { name: "new_node_attr_2", type: "boolean" })
-           .addDataField("nodes", { name: "new_node_attr_3", type: "int" });
+        vis.addDataField("nodes", { name: "new_node_attr_1", type: "number", defValue: 0.234 }) 
+           .addDataField("nodes", { name: "new_node_attr_2", type: "number"  })
+           .addDataField("nodes", { name: "new_node_attr_3", type: "boolean", defValue: true })
+           .addDataField("nodes", { name: "new_node_attr_4", type: "boolean", defValue: null  })
+           .addDataField("nodes", { name: "new_node_attr_5", type: "int" })
+           .addDataField("nodes", { name: "new_node_attr_6", type: "string", defValue: "DEF_VAL" })
+           .addDataField("nodes", { name: "new_node_attr_7", type: "string" });
 
         nodes = vis.nodes();
         $.each(nodes, function(i, el) {
     		same(el.data["new_node_attr_1"], 0.234, "New field [number] added to nodes ("+el.data.id+")");
-    		same(el.data["new_node_attr_2"], false, "New field [boolean] added to nodes ("+el.data.id+")");
-    		same(el.data["new_node_attr_3"], 0, "New field [int] added to nodes ("+el.data.id+")");
+    		same(el.data["new_node_attr_2"], null, "New field [number] added to nodes ("+el.data.id+")");
+    		same(el.data["new_node_attr_3"], true, "New field [boolean] added to nodes ("+el.data.id+")");
+    		same(el.data["new_node_attr_4"], false, "New field [boolean] added to nodes ("+el.data.id+")");
+    		same(el.data["new_node_attr_5"], 0, "New field [int] added to nodes ("+el.data.id+")");
+    		same(el.data["new_node_attr_6"], "DEF_VAL", "New field [string] added to nodes ("+el.data.id+")");
+    		same(el.data["new_node_attr_7"], null, "New field [string] added to nodes ("+el.data.id+")");
     	});
         edges = vis.edges();
         $.each(edges, function(i, el) {

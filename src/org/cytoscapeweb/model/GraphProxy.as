@@ -345,15 +345,22 @@ package org.cytoscapeweb.model {
                 
                 if (schema.getFieldById(name) == null) {
                     // This field is not duplicated...
-                    var v:*;
+                    if (defValue == null) {
+                    	switch (type) {
+                    		case DataUtil.BOOLEAN: defValue = false; break;
+                    		case DataUtil.INT: defValue = 0; break;
+                            default: defValue = null;
+                        }
+                    } else {
+	                    try {
+	                        defValue = ExternalObjectConverter.normalizeDataValue(defValue, type, null);
+	                    } catch (err:Error) {
+	                        throw new CWError("Cannot add data field '"+name+"':" + err.message,
+	                                          ErrorCodes.INVALID_DATA_CONVERSION);
+	                    }
+	                }
                     
-                    if (!(defValue == null && type === DataUtil.STRING))
-                        v = DataUtil.parseValue(defValue, type);
-                    
-                    if (isNaN(v) && (type === DataUtil.INT || type === DataUtil.NUMBER))
-                        throw new Error("Attempt to convert default value '"+defValue+"' to NUMBER while creating data field");
-                    
-                    var field:DataField = new DataField(name, type, v);
+                    var field:DataField = new DataField(name, type, defValue);
                     schema.addField(field);
                     added = true;
                     
@@ -362,6 +369,9 @@ package org.cytoscapeweb.model {
                     for each (var ds:DataSprite in items) {
                         ds.data[field.name] = field.defaultValue;
                     }
+                } else {
+                	throw new CWError("Cannot add data field '"+name+"': data field name already existis",
+                                      ErrorCodes.INVALID_DATA_CONVERSION);
                 }
             }
             
@@ -891,8 +901,13 @@ package org.cytoscapeweb.model {
                 v = data[k];
                 f = schema.getFieldById(k);
                 
+                if (f == null) {
+                	throw new CWError("Undefined data field: '"+k+"'",
+                                      ErrorCodes.INVALID_DATA_CONVERSION);
+                }
+                
                 try {
-                    v = ExternalObjectConverter.normalizeDataValue(v, f.type);
+                    v = ExternalObjectConverter.normalizeDataValue(v, f.type, f.defaultValue);
                 } catch (err:Error) {
                     throw new CWError("Invalid data value ('"+k+"'): "+err.message,
                                       ErrorCodes.INVALID_DATA_CONVERSION);
