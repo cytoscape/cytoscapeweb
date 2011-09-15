@@ -32,6 +32,8 @@ package org.cytoscapeweb.util {
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
     
+    import mx.utils.StringUtil;
+    
     
     
     /**
@@ -68,6 +70,14 @@ package org.cytoscapeweb.util {
             if (ds is NodeSprite) gr = NODES;
             else if (ds is EdgeSprite) gr = EDGES;
             return gr;
+        }
+        
+        public static function parse(gr:String):String {
+            if (gr != null) gr = StringUtil.trim(gr.toLowerCase());
+            if (gr === NODES) return NODES;
+            if (gr === EDGES) return EDGES;
+            
+            return null;
         }
         
         // ========[ PRIVATE METHODS ]==============================================================

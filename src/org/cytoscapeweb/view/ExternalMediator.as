@@ -32,6 +32,7 @@ package org.cytoscapeweb.view {
     
     import flare.data.DataSchema;
     import flare.data.DataSet;
+    import flare.vis.data.DataSprite;
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
     
@@ -47,6 +48,7 @@ package org.cytoscapeweb.view {
     import org.cytoscapeweb.model.data.GraphicsDataTable;
     import org.cytoscapeweb.model.data.VisualStyleBypassVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
+    import org.cytoscapeweb.model.error.CWError;
     import org.cytoscapeweb.model.methods.error;
     import org.cytoscapeweb.util.ExternalFunctions;
     import org.cytoscapeweb.util.Groups;
@@ -355,6 +357,70 @@ package org.cytoscapeweb.view {
             return JSON.encode(obj);
         }
         
+        private function addElements(items:Array, updateVisualMappers:Boolean=false):Array {
+        	var newAll:Array = [], newNodes:Array = [], newEdges:Array = [], ret:Array = [];
+        	var edgesToAdd:Array = [];
+        	var gr:String, newElement:DataSprite, o:Object;
+        	
+        	try {                
+                // Create element:
+                for each (o in items) {
+                	gr = Groups.parse(o.group);
+                	
+                	if (gr == null)
+                	   throw new CWError("The 'group' field of the new element  must be either '" + 
+                	                     Groups.NODES + "' or '" + Groups.EDGES + "'.");
+                	
+	                if (gr === Groups.NODES) {
+	                	// Create nodes first!
+	                    newElement = graphProxy.addNode(o.data);
+		                // Position it:
+		                var p:Point = new Point(o.x, o.y);
+		                p = graphMediator.vis.globalToLocal(p);
+		                newElement.x = p.x;
+		                newElement.y = p.y;
+		                
+		                newNodes.push(newElement);
+		            } else {
+		            	// Just store the edge,
+		            	// so it can be added after all new nodes have been created first:
+		            	edgesToAdd.push(o);
+		            }
+                }
+                
+                // Now it is safe to add the edges:
+                for each (o in edgesToAdd) {
+	                newElement = graphProxy.addEdge(o.data);
+	                newEdges.push(newElement);
+                }
+                
+                // Set listeners, styles, etc:
+                graphMediator.initialize(Groups.NODES, newNodes);
+                graphMediator.initialize(Groups.EDGES, newEdges);
+                
+                // Add the edges to the array of all new elements:
+                newAll = newNodes.concat(newEdges);
+                
+                // Do it before converting the Nodes/Edges to plain objects,
+                // in order to get the rendered visual properties:
+                if (updateVisualMappers) sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
+                
+                // Finally convert the items to a plain objects that can be returned:
+                for each (newElement in newAll) {
+                    o = ExternalObjectConverter.toExtElement(newElement);
+                    ret.push(o);
+                }
+            } catch (err:Error) {
+                trace("[ERROR]: addElements: " + err.getStackTrace());
+                error(err);
+            } finally {
+            	// Rollback--delete any new item:
+            	// TODO: 
+            }
+        	
+        	return ret;
+        }
+        
         private function addNode(x:Number, y:Number, 
                                  data:Object, updateVisualMappers:Boolean=false):Object {
             var o:Object;
@@ -485,7 +551,7 @@ package org.cytoscapeweb.view {
                                         "getLayout", "applyLayout", 
                                         "setVisualStyle", "getVisualStyle", 
                                         "getVisualStyleBypass", "setVisualStyleBypass",
-                                        "addNode", "addEdge", "removeElements",
+                                        "addElements", "addNode", "addEdge", "removeElements",
                                         "getDataSchema", "addDataField", "removeDataField", "updateData",
                                         "getNetworkModel", "getNetworkAsText", "getNetworkAsImage", 
                                         "exportNetwork" ];

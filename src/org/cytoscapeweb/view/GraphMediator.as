@@ -50,6 +50,7 @@ package org.cytoscapeweb.view {
     import org.cytoscapeweb.events.GraphViewEvent;
     import org.cytoscapeweb.model.data.VisualStyleBypassVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
+    import org.cytoscapeweb.model.error.CWError;
     import org.cytoscapeweb.util.Edges;
     import org.cytoscapeweb.util.ExternalFunctions;
     import org.cytoscapeweb.util.Groups;
@@ -273,8 +274,11 @@ package org.cytoscapeweb.view {
             else if (ds is EdgeSprite) graphView.resetEdge(EdgeSprite(ds));
         }
         
-        public function initialize(gr:String, items:Array):void { 
+        public function initialize(gr:String, items:Array):void {
             // Set properties:
+            if (gr !== Groups.NODES && gr !== Groups.EDGES)
+                throw new CWError("'gr' must be '" + Groups.NODES + "' or '" + Groups.EDGES + "' only.");
+            
             var props:Object = gr === Groups.NODES ? Nodes.properties : Edges.properties;
             
             for (var name:String in props) {

@@ -651,6 +651,33 @@
         },
         
         /**
+         * TODO: DOCUMENT ME
+         * 
+         * @example
+         * // 1. Add two nodes with no data (IDs will be created automatically):
+         * var nodesArray = [ { group: "nodes", x: 10, y: 35 },
+         *                    { group: "nodes", x: 20, y: 70 } ];
+         * var nodes = vis.addElements(nodesArray, true);
+         * 
+         * // 2. Add edges and nodes altogether:
+         * var array = [ { group: "nodes", x: 10, y: 35, data: { id: "n01" } },
+         *               { group: "nodes", x: 20, y: 70, data: { id: "n02" } },
+         *               { group: "edges", data: { source: "n01", target: "n02" } } ];
+         * vis.addElements(array, true);
+         */
+        addElements: function(/*items, updateVisualMappers*/) {
+            var items, updateVisualMappers = false;
+            if (arguments.length > 0 && this._typeof(arguments[0]) === "array") {
+            	items = arguments[0];
+            }
+        	if (items == null) { throw("The 'items' object is mandatory."); }
+            if (arguments.length > 1 && typeof arguments[1] === "boolean") {
+            	updateVisualMappers = arguments[1];
+            }
+            return this.swf().addElements(items, updateVisualMappers);
+        },
+        
+        /**
          * <p>Create a new node and add it to the network view.<p>
          * <p>If the node <code>id</code> is not specified, Cytoscape Web creates a new one automatically.</p>
          * <p>If you try to add data attributes that have not been previously defined,
