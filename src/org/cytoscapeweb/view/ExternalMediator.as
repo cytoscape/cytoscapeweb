@@ -381,6 +381,7 @@ package org.cytoscapeweb.view {
 		                newElement.y = p.y;
 		                
 		                newNodes.push(newElement);
+		                newAll.push(newElement);
 		            } else {
 		            	// Just store the edge,
 		            	// so it can be added after all new nodes have been created first:
@@ -392,14 +393,12 @@ package org.cytoscapeweb.view {
                 for each (o in edgesToAdd) {
 	                newElement = graphProxy.addEdge(o.data);
 	                newEdges.push(newElement);
+	                newAll.push(newElement);
                 }
                 
                 // Set listeners, styles, etc:
                 graphMediator.initialize(Groups.NODES, newNodes);
                 graphMediator.initialize(Groups.EDGES, newEdges);
-                
-                // Add the edges to the array of all new elements:
-                newAll = newNodes.concat(newEdges);
                 
                 // Do it before converting the Nodes/Edges to plain objects,
                 // in order to get the rendered visual properties:
@@ -412,10 +411,12 @@ package org.cytoscapeweb.view {
                 }
             } catch (err:Error) {
                 trace("[ERROR]: addElements: " + err.getStackTrace());
+                
+                // Rollback--delete any new item:
+                removeElements(Groups.NONE, newAll, updateVisualMappers);
+                ret = [];
+                
                 error(err);
-            } finally {
-            	// Rollback--delete any new item:
-            	// TODO: 
             }
         	
         	return ret;
