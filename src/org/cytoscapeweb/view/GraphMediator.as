@@ -811,7 +811,8 @@ package org.cytoscapeweb.view {
         
         private function disposeDataSprite(ds:DataSprite):void {
             // Force a roll-out, to keep things in a good state:
-            ds.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OUT));
+            if (graphProxy.rolledOverNode === ds || graphProxy.rolledOverEdge === ds)
+                ds.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OUT));
             
             // Remove event listeners:
             if (ds is NodeSprite) {

@@ -143,25 +143,28 @@ package org.cytoscapeweb.view.controls {
         protected function layout(tip:DisplayObject, obj:DisplayObject):void
         {
             var s:Stage = tip.stage;
-            tip.x = s.mouseX + xOffset;
-            tip.y = s.mouseY + yOffset;
             
-            var b:Rectangle = tipBounds ? tipBounds : getStageBounds(s);
-            var r:Rectangle = tip.getBounds(s);
-            
-            if (r.width > b.width) {
-                tip.x = b.left;
-            } else if (r.left < b.left + 5) {
+            if (s != null) {
                 tip.x = s.mouseX + xOffset;
-            } else if (r.right > b.right - 5) {
-                tip.x = s.mouseX - 2 - r.width;
-            }
-            if (r.height > b.height) {
-                tip.y = b.top;
-            } if (r.top < b.top + 5) {
-                tip.y = s.mouseY - yOffset;
-            } else if (r.bottom > b.bottom - 5) {
-                tip.y = s.mouseY - 7 - r.height;
+                tip.y = s.mouseY + yOffset;
+                
+                var b:Rectangle = tipBounds ? tipBounds : getStageBounds(s);
+                var r:Rectangle = tip.getBounds(s);
+                
+                if (r.width > b.width) {
+                    tip.x = b.left;
+                } else if (r.left < b.left + 5) {
+                    tip.x = s.mouseX + xOffset;
+                } else if (r.right > b.right - 5) {
+                    tip.x = s.mouseX - 2 - r.width;
+                }
+                if (r.height > b.height) {
+                    tip.y = b.top;
+                } if (r.top < b.top + 5) {
+                    tip.y = s.mouseY - yOffset;
+                } else if (r.bottom > b.bottom - 5) {
+                    tip.y = s.mouseY - 7 - r.height;
+                }
             }
         }
         
