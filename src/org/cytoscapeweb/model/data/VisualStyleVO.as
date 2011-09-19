@@ -32,6 +32,7 @@ package org.cytoscapeweb.model.data {
     import org.cytoscapeweb.util.LineStyles;
     import org.cytoscapeweb.util.NodeShapes;
     import org.cytoscapeweb.util.Utils;
+    import org.cytoscapeweb.util.VisualProperties;
 
 	
 	public class VisualStyleVO {
@@ -186,8 +187,10 @@ package org.cytoscapeweb.model.data {
     			if (vp != null) {
     			    var mapper:VizMapperVO = vp.vizMapper;
     			    
-                    if (data != null && mapper != null)
+                    if (data != null && mapper != null) {
                         value = mapper.getValue(data);
+                        if (isNaN(value)) value = null;
+                    }
                     if (value == null)
                         value = vp.defaultValue;
     			}

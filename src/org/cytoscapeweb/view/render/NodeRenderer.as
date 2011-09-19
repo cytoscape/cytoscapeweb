@@ -46,6 +46,9 @@ package org.cytoscapeweb.view.render {
 	import org.cytoscapeweb.ApplicationFacade;
 	import org.cytoscapeweb.model.ConfigProxy;
 	import org.cytoscapeweb.model.GraphProxy;
+	import org.cytoscapeweb.model.error.CWError;
+	import org.cytoscapeweb.model.methods.error;
+	import org.cytoscapeweb.util.ErrorCodes;
 	import org.cytoscapeweb.util.NodeShapes;
 	
 
@@ -82,50 +85,57 @@ package org.cytoscapeweb.view.render {
         
         /** @inheritDoc */
         public override function render(d:DataSprite):void {trace("RENDER NODE: " + d.data.id);
-            // Using a bit mask to avoid transparent mdes when fillcolor=0xffffffff.
-            // See https://sourceforge.net/forum/message.php?msg_id=7393265
-            var fillColor:uint = 0xffffff & d.fillColor;
-            var fillAlpha:Number = d.fillAlpha;
-            var size:Number = d.size * defaultSize;
-            
-            var lineColor:uint = d.lineColor;
-            var lineAlpha:Number = d.lineAlpha;
-            var lineWidth:Number = d.lineWidth;
-            
-            var w:Number = d.props.width;
-            var h:Number = d.props.height;
-            
-            if (isNaN(w) || w < 0) w = size;
-            if (isNaN(h) || h < 0) h = size;
-            
-            var g:Graphics = d.graphics;
-            g.clear();
-            
-            // Just to prevent rendering issues when drawing large bitmaps on small nodes:
-            d.cacheAsBitmap = d.props.imageUrl != null;
-            
-            if (lineAlpha > 0 && lineWidth > 0) {
-                var pixelHinting:Boolean = d.shape === NodeShapes.ROUND_RECTANGLE;
-                g.lineStyle(lineWidth, lineColor, lineAlpha, pixelHinting);
+            try {
+                // Using a bit mask to avoid transparent mdes when fillcolor=0xffffffff.
+                // See https://sourceforge.net/forum/message.php?msg_id=7393265
+                var fillColor:uint = 0xffffff & d.fillColor;
+                var fillAlpha:Number = d.fillAlpha;
+                var size:Number = d.size * defaultSize;
+                
+                var lineColor:uint = d.lineColor;
+                var lineAlpha:Number = d.lineAlpha;
+                var lineWidth:Number = d.lineWidth;
+                
+                var w:Number = d.props.width;
+                var h:Number = d.props.height;
+                
+                if (isNaN(w) || w < 0) w = size;
+                if (isNaN(h) || h < 0) h = size;
+                
+                var g:Graphics = d.graphics;
+                g.clear();
+                
+                // Just to prevent rendering issues when drawing large bitmaps on small nodes:
+                d.cacheAsBitmap = d.props.imageUrl != null;
+                
+                if (isNaN(w) || isNaN(h) || w <= 0 || h <= 0) return;
+                
+                if (lineAlpha > 0 && lineWidth > 0) {
+                    var pixelHinting:Boolean = d.shape === NodeShapes.ROUND_RECTANGLE;
+                    g.lineStyle(lineWidth, lineColor, lineAlpha, pixelHinting);
+                }
+                
+                // 1. Draw the background color:
+                // Even if "transparent", we still need to draw a shape,
+                // or the node will not receive mouse events
+                if (d.props.transparent) fillAlpha = 0;
+                g.beginFill(fillColor, fillAlpha);
+                drawShape(d, d.shape, w, h);
+                g.endFill();
+                
+                // 2. Draw an image on top:
+                drawImage(d, w, h);
+                
+                // To prevent gaps between the node and its edges when the node has the
+                // border width changed on mouseover or selection
+                NodeSprite(d).visitEdges(function(e:EdgeSprite):Boolean {
+                   e.dirty();
+                   return false; 
+                }, NodeSprite.GRAPH_LINKS);
+            } catch (err:Error) {
+                error(new CWError("Error rendering Node '" + d.data.id +"': " + err.message,
+                                  ErrorCodes.RENDERING_ERROR));
             }
-            
-            // 1. Draw the background color:
-            // Even if "transparent", we still need to draw a shape,
-            // or the node will not receive mouse events
-            if (d.props.transparent) fillAlpha = 0;
-            g.beginFill(fillColor, fillAlpha);
-            drawShape(d, d.shape, w, h);
-            g.endFill();
-            
-            // 2. Draw an image on top:
-            drawImage(d, w, h);
-            
-            // To prevent gaps between the node and its edges when the node has the
-            // border width changed on mouseover or selection
-            NodeSprite(d).visitEdges(function(e:EdgeSprite):Boolean {
-               e.dirty();
-               return false; 
-            }, NodeSprite.GRAPH_LINKS);
         }
         
         // ========[ PRIVATE METHODS ]==============================================================

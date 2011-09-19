@@ -307,7 +307,7 @@ package org.cytoscapeweb.util {
             
             var x:Number = ep.x; // horizontal position of the ellipse.
             var y:Number = ep.y; // vertical position of the ellipse
-            var center:Point = new Point(x + width * 0.5, y + height * 0.5);
+            var center:Point = new Point(x+a, y+b);
             
              // normailze points (ie, make everything relative to (0,0))
             var p1Norm:Point = new Point(p1.x-center.x,-(p1.y-center.y));

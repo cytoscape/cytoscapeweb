@@ -103,6 +103,9 @@ package org.cytoscapeweb.model {
             return data as Data;
         }
         
+        /**
+         * @param data It has to be a flare.vis.data.Data instance.
+         */
         public override function setData(data:Object):void {
             super.setData(data);
 

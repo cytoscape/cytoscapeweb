@@ -134,11 +134,17 @@ package org.cytoscapeweb.view.render {
             // ----------------------------------------------------
 
             // get arrow tip point as intersection of edge with bounding box
-            intersectNode(g, s, op2, np1, _intS);
-            intersectNode(g, t, op1, np2, _intT);
+            if (loop && s.shape === NodeShapes.ELLIPSE) {
+                // TODO: find out why ellipse intersection does not work with loop and remove this workaround
+                var r:Rectangle = s.getBounds(s.parent);
+                intersectLines([r.topLeft.x, r.topLeft.y, r.topLeft.x, r.topLeft.y + r.height], op2, np1, _intS);
+                intersectLines([r.topLeft.x, r.topLeft.y, r.topLeft.x + r.width, r.topLeft.y], op1, np2, _intT);
+            } else {
+                intersectNode(s, op2, np1, _intS);
+                intersectNode(t, op1, np2, _intT);
+            }
 
-            var start:Point = _intS, end:Point = _intT;
-            //var c:Point = (curve ? op1 : null);
+            var start:Point = _intS.clone(), end:Point = _intT.clone();
         
             // Using a bit mask to avoid transparent edges when fillcolor=0xffffffff.
             // See https://sourceforge.net/forum/message.php?msg_id=7393265
@@ -449,15 +455,18 @@ package org.cytoscapeweb.view.render {
             return [start.clone(), int1.clone(), e1.clone(), e2.clone(), int2.clone()];
         }
 
-        private function intersectNode(g:Graphics, n:NodeSprite, start:Point, end:Point, int:Point):void {
+        private function intersectNode(n:NodeSprite, start:Point, end:Point, int:Point):void {
         	var r:Rectangle = n.getBounds(n.parent);
         	
         	switch (n.shape) {
                 case NodeShapes.ELLIPSE:
-                    intersectEllipse(r.topLeft, n.width, n.height, start, end, int);
+                    if (n.width == n.height)
+                        intersectCircle(n.width/2, start, end, int);
+                    else
+                        intersectEllipse(r.topLeft, r.width, r.height, start, end, int);
                     break;
                 case NodeShapes.ROUND_RECTANGLE:
-                    intersectRoundRectangle(g, r, start, end, int);
+                    intersectRoundRectangle(r, start, end, int);
                     break;
                 default:
                     var points:Array = NodeShapes.getDrawPoints(r, n.shape);
@@ -483,7 +492,7 @@ package org.cytoscapeweb.view.render {
             }
         }
         
-        private function intersectRoundRectangle(g:Graphics, r:Rectangle, start:Point, end:Point, ip:Point):void {
+        private function intersectRoundRectangle(r:Rectangle, start:Point, end:Point, ip:Point):void {
             var points:Array = NodeShapes.getDrawPoints(r, NodeShapes.ROUND_RECTANGLE);
             var res:int = Geometry.NO_INTERSECTION;
             var length:int = points.length;
