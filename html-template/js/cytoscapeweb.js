@@ -1138,16 +1138,22 @@
         /**
          * <p>Filter nodes or edges. The filtered out elements will be hidden.</p>
          * @example
-         * // Hide all edges that have a weight that is lower than 0.4:
+         * // 1. Hide all edges that have a weight that is lower than 0.4:
          * vis.filter("edges", function(edge) {
          *     return edge.data.weight >= 0.4;
          * });
          *
+         * // 2. Hide all nodes, except two of them, by id:
+         * vis.filter("nodes", ['n01', 'n02']);
+         *
          * @param {org.cytoscapeweb.Group} [gr] The group of network elements to filter.
          *                                       If <code>null</code>, filter both nodes and edges.
-         * @param {Function} fn The filter function. It will receive a node or edge as argument and must
-         *                      return a boolean value indicating the visibility of that element.
-         *                      So, if it returns false, that node or edge will be hidden.
+         * @param {Object} filter A filter function or an array of elements to be filtered.
+         *                        If a function is passed, it will receive a node or edge as argument and must
+         *                        return a boolean value indicating the visibility of that element.
+         *                        So, if it returns false, that node or edge will be hidden.
+         *                        If the argument is an array, it must contain the IDs or the Node/Edge objects
+         *                        you want to make visible.
          * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply the visual mappers
          *                                        to the network view after the filtering action is done.
          *                                        Remember that continuous mappers ignore filtered out elements
@@ -1157,30 +1163,37 @@
          * @see org.cytoscapeweb.Visualization#removeFilter
          * @see org.cytoscapeweb.ContinuousMapper
          */
-        filter: function (/*gr, */fn/*, updateVisualMappers*/) {
-            var gr, updateVisualMappers = false;
+        filter: function (/*gr, filter, updateVisualMappers*/) {
+            var gr, filter, arr = [], updateVisualMappers = false;
             if (arguments.length > 2) {
                 gr = arguments[0];
-                fn = arguments[1];
+                filter = arguments[1];
                 updateVisualMappers = arguments[2];
             } else if (arguments.length === 2) {
                 if (typeof arguments[0] === 'string') {
                     gr = arguments[0];
-                    fn = arguments[1];
+                    filter = arguments[1];
                 } else {
-                    fn = arguments[0];
+                    filter = arguments[0];
                     updateVisualMappers = arguments[1];
                 }
+            } else if (arguments.length === 1) {
+            	filter = arguments[0];
             }
             gr = this._normalizeGroup(gr);
-            var list = this._nodesAndEdges(gr, "getNodes", "getEdges");
-            if (list.length > 0 && fn) {
-                var filtered = [];
-                for (var i = 0; i < list.length; i++) {
-                    var obj = list[i];
-                    if (fn(obj)) { filtered.push(obj); }
+            if (typeof filter === "function") {
+            	var list = this._nodesAndEdges(gr, "getNodes", "getEdges");
+            	if (list.length > 0) {
+	                for (var i = 0; i < list.length; i++) {
+	                    var obj = list[i];
+	                	if (filter(obj)) { arr.push(obj); }
+	                }
                 }
-                this.swf().filter(gr, filtered, updateVisualMappers);
+            } else if (this._typeof(filter) === "array") {
+            	arr = filter;
+            }
+            if (arr != null && arr.length > 0) {
+            	this.swf().filter(gr, arr, updateVisualMappers);
             }
             return this;
         },
