@@ -1409,7 +1409,9 @@
          *        header('Content-type: image/svg+xml');
          *     } elseif (&#36;type == 'xml') {
          *         header('Content-type: text/xml');
-         *     }
+         *     } elseif (&#36;type == 'txt') {
+    	 *         header('Content-type: text/plain');
+    	 *     }
          * 
          *     # To force the browser to download the file:
          *     header('Content-disposition: attachment; filename="network.' . &#36;type . '"');
@@ -1420,16 +1422,19 @@
          * @param {String} format One of: <code>"png"</code>, <code>"svg"</code>, <code>"pdf"</code>, <code>"xgmml"</code>, <code>"graphml"</code>, <code>"sif"</code>.
          * @param {String} url The url that will receive the exported image (bytes) or xml (text).
          * @param {Object} [options] Additional options:
-         *                              <ul class="options"><li><code>width</code>:</strong> The desired width of the image in pixels (only for 'pdf' format).</li>
+         *                              <ul class="options">
+         *                                  <li><code>width</code>:</strong> The desired width of the image in pixels (only for 'pdf' format).</li>
          *                                  <li><code>height</code>:</strong> The desired height of the image in pixels (only for 'pdf' format).</li>
+         *                                  <li><code>nodeAttr</code>:</strong> Optional node attribute name to be used as the exported SIF node (only for 'sif' format).</li>
+         *                                  <li><code>interactionAttr</code>:</strong> Optional edge attribute name to be used as the exported SIF interaction (only for 'sif' format).</li>
          *                                  <li><code>window</code>:</strong> The browser window or HTML frame in which to display the exported image or xml.
          *                                                  You can enter the name of a specific window or use one of the following values:
          *                                                  <ul><li><code>_self</code>: the current frame in the current window.</li>
          *                                                      <li><code>_blank</code>: a new window.</li>
          *                                                      <li><code>_parent</code>: the parent of the current frame.</li>
          *                                                      <li><code>_top</code>: the top-level frame in the current window.</li></ul>
-         *                                                  The default is <code>_self</code>.
-         *                                                  
+         *                                                  The default is <code>_self</code>.</li>
+         *                              </ul>
          * @return {org.cytoscapeweb.Visualization} The Visualization instance.
          * @see org.cytoscapeweb.Visualization#png
          * @see org.cytoscapeweb.Visualization#pdf

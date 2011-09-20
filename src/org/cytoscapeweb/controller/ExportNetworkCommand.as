@@ -54,7 +54,7 @@ package org.cytoscapeweb.controller {
                     // Get the image bytes from the graph mediator class:
                     data = appMediator.getGraphImage(format, w, h);
                 } else {
-                    // Get the XML:
+                    // Get the text:
                     data = graphProxy.getDataAsText(format, options);
                 }
                 
