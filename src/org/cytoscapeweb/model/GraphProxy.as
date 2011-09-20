@@ -765,8 +765,7 @@ package org.cytoscapeweb.model {
                 if (format === "graphml") {
                     out = new GraphMLConverter().write(dtSet);
                 } else {
-                    var interaction:String =  options != null ? options.interactionAttr : null;
-                    out = new SIFConverter(interaction).write(dtSet);
+                    out = new SIFConverter(options).write(dtSet);
                 }
             }
 

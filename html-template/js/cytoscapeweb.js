@@ -196,20 +196,20 @@
          *               <ul class="options">
          *                    <li><code>network</code>: The model that describes the network. Only this option is mandatory. It can be one of the following formats:
          *                                              <ul><li>{@link org.cytoscapeweb.NetworkModel}: A simple JavaScript object that defines the raw data from which to build a network.</li>
-         *                                                  <li><a href="http://graphml.graphdrawing.org/primer/graphml-primer.html" target="_blank">GraphML</a>: An XML format for graphs.</li>
-         *                                                  <li><a href="http://www.cs.rpi.edu/~puninj/XGMML/" target="_blank">XGMML</a>: This XML format allows you to define
+         *                                                  <li><a href="http://graphml.graphdrawing.org/primer/graphml-primer.html" rel="external">GraphML</a>: An XML format for graphs.</li>
+         *                                                  <li><a href="http://www.cs.rpi.edu/~puninj/XGMML/" rel="external">XGMML</a>: This XML format allows you to define
          *                                                      visual properties (e.g. colors and shapes) and nodes positioning, if you want to,
          *                                                      although using the <code>visualStyle</code> and <code>layout</code> options is usually better.</li>
-         *                                                  <li><a href="http://cytoscape.wodaklab.org/wiki/Cytoscape_User_Manual/Network_Formats/" target="_blank">SIF</a>: A simpler text format
+         *                                                  <li><a href="http://cytoscape.wodaklab.org/wiki/Cytoscape_User_Manual/Network_Formats/" rel="external">SIF</a>: A simpler text format
          *                                                      that can be very useful if you do not need to set custom nodes/edges attributes.</li>
          *                                              </ul></li>
          *                    <li><code>visualStyle</code>: an optional {@link org.cytoscapeweb.VisualStyle} object to be applied on this network.</li>
          *                    <li><code>layout</code>: an optional {@link org.cytoscapeweb.Layout} object, or just the layout name.
          *                                             The default is "ForceDirected", unless the network data is an 
-         *                                             <a href="http://www.cs.rpi.edu/~puninj/XGMML/" target="_blank">XGMML</a>, whose 
-         *                                             <code><a href="http://www.cs.rpi.edu/~puninj/XGMML/draft-xgmml-20010628.html#NodeE" target="_blank">node</a></code>
+         *                                             <a href="http://www.cs.rpi.edu/~puninj/XGMML/" rel="external">XGMML</a>, whose 
+         *                                             <code><a href="http://www.cs.rpi.edu/research/groups/pb/punin/public_html/XGMML/draft-xgmml-20010628.html#NodeE" rel="external">node</a></code>
          *                                             elements contain
-         *                                             <code><a href="http://www.cs.rpi.edu/~puninj/XGMML/draft-xgmml-20010628.html#GraphicsA" target="_blank">graphics</a></code>
+         *                                             <code><a href="http://www.cs.rpi.edu/research/groups/pb/punin/public_html/XGMML/draft-xgmml-20010628.html#GLCPE" rel="external">graphics</a></code>
          *                                             tags with defined <code>x</code> and <code>y</code> attributes. In that case, the "Preset" layout is applied by default.</li>
          *                    <li><code>nodeLabelsVisible</code>: Boolean that defines whether or not the node labels will be visible.
          *                                                        The default value is <code>true</code>.
@@ -651,8 +651,18 @@
         },
         
         /**
-         * TODO: DOCUMENT ME
-         * 
+         * <p>Add new nodes and/or edges to the network.</p>
+         * <p>The rules described in {@link org.cytoscapeweb.Visualization#addNode} and {@link org.cytoscapeweb.Visualization#addEdge}
+         * are still valid here.</p>
+         * <p>You can add nodes and edges together and, when doing so, the order of the elements in
+         * the array do not matter, because Cytoscape Web will first add all the nodes, and then
+         * the edges.</p>
+         * <p>The new element must have a <code>group</code> field set to either <code>"nodes"</code> or <code>"edges"</code>,
+         * because {@link org.cytoscapeweb.Node} and {@link org.cytoscapeweb.Edge} objects are untype objects and Cytoscape Web
+         * has no other safe way of making the distinction between the two types.</p>
+         * <p>If the new elements contain visual properties (e.g. color, opacity), they are simply ignored and Cytoscape Web applies
+         * new visual property values according to the current {@link org.cytoscapeweb.VisualStyle} and {@link org.cytoscapeweb.VisualStyleBypass}.
+         * The node positions (x, y), if specified, are respected, though.</p>
          * @example
          * // 1. Add two nodes with no data (IDs will be created automatically):
          * var nodesArray = [ { group: "nodes", x: 10, y: 35 },
@@ -663,7 +673,15 @@
          * var array = [ { group: "nodes", x: 10, y: 35, data: { id: "n01" } },
          *               { group: "nodes", x: 20, y: 70, data: { id: "n02" } },
          *               { group: "edges", data: { source: "n01", target: "n02" } } ];
-         * vis.addElements(array, true);
+         * var elements = vis.addElements(array, true);
+         * @param {Array} [items] The nodes and edges to be added to the network.
+         *                        The array must contain {@link org.cytoscapeweb.Node} and/or {@link org.cytoscapeweb.Edge} objects.
+         * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to reapply the visual mappers
+         *                                        to the network view after removing the elements.
+         * @return {Array} The new created elements ({@link org.cytoscapeweb.Node} and {@link org.cytoscapeweb.Edge} objects).
+         * @see org.cytoscapeweb.Visualization#removeElements
+         * @see org.cytoscapeweb.Visualization#addNode
+         * @see org.cytoscapeweb.Visualization#addEdge
          */
         addElements: function(/*items, updateVisualMappers*/) {
             var items, updateVisualMappers = false;
@@ -680,9 +698,11 @@
         /**
          * <p>Create a new node and add it to the network view.<p>
          * <p>If the node <code>id</code> is not specified, Cytoscape Web creates a new one automatically.</p>
-         * <p>If you try to add data attributes that have not been previously defined,
-         * Cytoscape Web will automatically add the necessary field definitions, although it might be safer to always add the
-         * fields to the schema first, by calling {@link org.cytoscapeweb.Visualization#addDataField}.</p>
+         * <p>If the data contains attributes that have not been previously defined in the {@link org.cytoscapeweb.DataSchema},
+         * Cytoscape Web will throw an error. To prevent that, you simply add the new fields to the schema first, 
+         * by calling {@link org.cytoscapeweb.Visualization#addDataField}.</p>
+         * <p>Keep in mind that {@link org.cytoscapeweb.Visualization#addElements} is much faster if you have to
+         * add more than one element at once.</p>
          * @example
          * var data = { id: "n4",
          *              label: "MYO2 (Yeast)",
@@ -698,6 +718,7 @@
          *                                        The default value is <code>false</code>.
          * @return {org.cytoscapeweb.Node} The new created node object.
          * @see org.cytoscapeweb.Visualization#addEdge
+         * @see org.cytoscapeweb.Visualization#addElements
          * @see org.cytoscapeweb.Visualization#removeElements
          */
         addNode: function (x, y/*, data, updateVisualMappers*/) {
@@ -710,10 +731,13 @@
         /**
          * <p>Create a new edge linking two nodes and add it to the network view.<p>
          * <p>If the edge <code>id</code> is not specified, Cytoscape Web creates a new one automatically.</p>
-         * <p>Throws exception if missing <code>source</code> or <code>target</code>.</p>
-         * <p>If you try to add data attributes that have not been previously defined,
-         * Cytoscape Web will automatically add the necessary field definitions, although it might be safer to always add the
-         * fields to the schema first, by calling {@link org.cytoscapeweb.Visualization#addDataField}.</p>
+         * <p>However the <code>source</code> and <code>target</code> data fields are mandatory, and Cytoscape Web 
+         * throws an error if any of them is missing.</p>
+         * <p>If the data contains attributes that have not been previously defined in the {@link org.cytoscapeweb.DataSchema},
+         * Cytoscape Web will throw an error. To prevent that, just add the new fields to the schema first, 
+         * by calling {@link org.cytoscapeweb.Visualization#addDataField}.</p>
+         * <p>You might also want to take a look at {@link org.cytoscapeweb.Visualization#addElements}, which is much faster
+         * when adding more than one element at once.</p>
          * @example
          * var data = { id: "e10",
          *              source: "n1",
@@ -729,6 +753,7 @@
          *                                        to the network view after adding the edge.
          * @return {org.cytoscapeweb.Edge} The new created edge object.
          * @see org.cytoscapeweb.Visualization#addNode
+         * @see org.cytoscapeweb.Visualization#addElements
          * @see org.cytoscapeweb.Visualization#removeElements
          */
         addEdge: function (data/*, updateVisualMappers*/) {
@@ -1153,7 +1178,7 @@
          *                        return a boolean value indicating the visibility of that element.
          *                        So, if it returns false, that node or edge will be hidden.
          *                        If the argument is an array, it must contain the IDs or the Node/Edge objects
-         *                        you want to make visible.
+         *                        you want to make or keep visible.
          * @param {Boolean} [updateVisualMappers] It tells Cytoscape Web to update and reapply the visual mappers
          *                                        to the network view after the filtering action is done.
          *                                        Remember that continuous mappers ignore filtered out elements
@@ -1245,7 +1270,7 @@
         },
         
         /**
-         * <p>Return the network data as <a href="http://graphml.graphdrawing.org/primer/graphml-primer.html" target="_blank">GraphML</a>.</p>
+         * <p>Return the network data as <a href="http://graphml.graphdrawing.org/primer/graphml-primer.html" rel="external">GraphML</a>.</p>
          * @return {String} The XML text.
          * @see org.cytoscapeweb.Visualization#xgmml
          * @see org.cytoscapeweb.Visualization#sif
@@ -1256,7 +1281,7 @@
         },
 
         /**
-         * <p>Return the network data as <a href="http://www.cs.rpi.edu/~puninj/XGMML/" target="_blank">XGMML</a>.</p>
+         * <p>Return the network data as <a href="http://www.cs.rpi.edu/~puninj/XGMML/" rel="external">XGMML</a>.</p>
          * @return {String} The XML text.
          * @see org.cytoscapeweb.Visualization#graphml
          * @see org.cytoscapeweb.Visualization#sif
@@ -1267,19 +1292,27 @@
         },
         
         /**
-         * <p>Return the network data as <a href="http://cytoscape.wodaklab.org/wiki/Cytoscape_User_Manual/Network_Formats/" target="_blank">Simple Interaction Format (SIF)</a>.</p>
+         * <p>Return the network data as <a href="http://cytoscape.wodaklab.org/wiki/Cytoscape_User_Manual/Network_Formats/" rel="external">Simple Interaction Format (SIF)</a>.</p>
          * <p>Cytoscape Web uses tab characters to delimit the fields, because the node and interaction names may contain spaces.</p>
-         * <p>The node name in the SIF text is taken from the node's <code>data.id</code> attribute.</p>
+         * <p>By default, the node name in the SIF text is taken from the node's <code>data.id</code> attribute.
+         * You can choose any other node attribute to be the node name by passing the <code>nodeAttr</code> option. 
+         * Of course the custom node field should have unique values.</p>
          * <p>Cytoscape Web tries to get the interaction name from the edge's <code>data.interaction</code> attribute.
-         * You can choose any other edge attribute to be the interaction name by passing an <code>interactionAttr</code> parameter.
+         * You can choose any other edge attribute to be the interaction name by passing the <code>interactionAttr</code> option.
          * If the edge data does not have the defined interaction field, Cytoscape Web just uses the edge <code>id</code>.</p>
          * @example
          * var xml = '&lt;graphml&gt;' +
-         *               // Create a custom "type" attribute:
+         *               // Create a custom node "label" attribute:
+         *               '&lt;key id="label" for="node" attr.name="label" attr.type="string"/&gt;' +
+         *               // Create a custom  edge "type" attribute:
          *               '&lt;key id="type" for="edge" attr.name="type" attr.type="string"/&gt;' +
          *               '&lt;graph&gt;' +
-         *                   '&lt;node id="1"/&gt;' +
-         *                   '&lt;node id="2"/&gt;' +
+         *                   '&lt;node id="1"&gt;' +
+         *                       '&lt;data key="label"&gt;Node 1&lt;/data&gt;' +
+         *                   '&lt;/node&gt;' +
+         *                   '&lt;node id="2"&gt;' +
+         *                       '&lt;data key="label"&gt;Node 2&lt;/data&gt;' +
+         *                   '&lt;/node&gt;' +
          *                   '&lt;edge source="1" target="2"&gt;' +
          *                       '&lt;data key="type"&gt;co-expression&lt;/data&gt;' +
          *                   '&lt;/edge&gt;' +
@@ -1292,23 +1325,27 @@
          * var vis = new org.cytoscapeweb.Visualization("container_id");
          * 
          * vis.ready(function() {
-         *     // Export to SIF, using the "type" attribute as edge interaction:
-         *     var text = vis.sif('type');
+         *     // Export to SIF, using the "label" as node ID and edge "type" as edge interaction:
+         *     var text = vis.sif({ nodeAttr: 'label', interactionAttr: 'type'});
          *     
-         *     // text ==  '1\tco-expression\t2\n' +
-         *     //          '2\tco-localization\t1\n'
+         *     // text ==  'Node 1\tco-expression\tNode 2\n' +
+         *     //          'Node 2\tco-localization\Node 1\n'
          * });
          * 
          * vis.draw({ network: xml });
          * 
-         * @param {String} [interactionAttr] Optional edge attribute name to be used as the SIF interaction name.
+         * @param {Object} [options] Non-mandatory settings:
+         *                           <ul class="options">
+         *                               <li><code>nodeAttr</code>:</strong> Optional node attribute name to be used as node name.</li>
+         *                               <li><code>interactionAttr</code>:</strong> Optional edge attribute name to be used as interaction name.</li>
+         *                           </ul>
          * @return {String} The SIF text.
          * @see org.cytoscapeweb.Visualization#graphml
          * @see org.cytoscapeweb.Visualization#xgmml
          * @see org.cytoscapeweb.Visualization#networkModel
          */
-        sif: function (interactionAttr) {
-            return this.swf().getNetworkAsText("sif", { interactionAttr: interactionAttr });
+        sif: function (options) {
+            return this.swf().getNetworkAsText("sif", options);
         },
 
         /**
@@ -1552,6 +1589,8 @@
          * the new one and only one menu item will be displayed.</p>
          * <p>It is possible to add more than one menu item with the same label, but only if they are added to
          * different groups.</p>
+         * <p><b>Important:</b> Since the context menu is rendered by Flash, be aware of these 
+         * <a href="http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/ui/ContextMenuItem.html" rel="external">restrictions</a>.</p>
          * 
          * @example
          * // We will use the context menu to select the first neighbors of the
@@ -1681,7 +1720,7 @@
         /**
          * <p>Redefine this function if you want to use another method to detect the Flash Player version
          * and embed the SWF file (e.g. SWFObject).</p>
-         * <p>By default, Adobe's <a href="http://www.adobe.com/products/flashplayer/download/detection_kit/" target="_blank">Flash Player Detection Kit</a>
+         * <p>By default, Adobe's <a href="http://www.adobe.com/products/flashplayer/download/detection_kit/" rel="external">Flash Player Detection Kit</a>
          * is used.</p>
          * @requires <code>AC_OETags.js</code> and <code>playerProductInstall.swf</code>
          */

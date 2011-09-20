@@ -95,13 +95,15 @@ package org.cytoscapeweb.model.converters {
 
         // ========[ PRIVATE PROPERTIES ]===========================================================
 
-        private var _interaction:String;
+        private var _nodeAttr:String;
+        private var _interactionAttr:String;
 
         // ========[ CONSTRUCTOR ]==================================================================
 
-        public function SIFConverter(interactionAttr:String=null) {
+        public function SIFConverter(options:Object=null) {
             super();
-            _interaction = interactionAttr != null ? interactionAttr : INTERACTION;
+            _nodeAttr = options != null ? options.nodeAttr : ID;
+            _interactionAttr = options != null ? options.interactionAttr : INTERACTION;
         }
 
         // ========[ PUBLIC PROPERTIES ]============================================================
@@ -117,23 +119,34 @@ package org.cytoscapeweb.model.converters {
             var sif:String = "";
             
             if (ds != null) {
-                var lookup:Object = {};
+                var nodeIds:Object = {/*id -> sif_id*/};
+                var writtenNodes:Object = {/*id -> boolean*/};
                 var nodes:Array = ds.nodes.data;
                 var edges:Array = ds.edges.data;
-           
-                for each (var e:Object in edges) {
-                    var src:String = e[SOURCE];
-                    var tgt:String = e[TARGET];
-                    var inter:String = e.hasOwnProperty(_interaction) ? e[_interaction] : e.id;
+                var n:Object, e:Object;
+                var id:*, src:String, tgt:String, inter:String;
+                
+                for each (n in nodes) {
+                    id = n.hasOwnProperty(_nodeAttr) ? n[_nodeAttr] : n.id;
+                    nodeIds[n.id] = id;
+                }
+                
+                for each (e in edges) {
+                    src = nodeIds[e[SOURCE]];
+                    tgt = nodeIds[e[TARGET]];
+                    inter = e.hasOwnProperty(_interactionAttr) ? e[_interactionAttr] : e.id;
                     
                     sif += (src + "\t" + inter + "\t" + tgt + "\n");
-                    lookup[src] = true;
-                    lookup[tgt] = true;
+                    writtenNodes[src] = true;
+                    writtenNodes[tgt] = true;
                 }
-                for each (var n:Object in nodes) {
-                    if (!lookup[n.id]) {
-                        sif += n.id + "\n";
-                        lookup[n.id] = true;
+                
+                for each (n in nodes) {
+                    id = nodeIds[n.id];
+                    
+                    if (!writtenNodes[id]) {
+                        sif += id + "\n";
+                        writtenNodes[id] = true;
                     }
                 }
            
@@ -158,7 +171,7 @@ package org.cytoscapeweb.model.converters {
 
             edgeSchema.addField(new DataField(ID, DataUtil.STRING));
             edgeSchema.addField(new DataField(LABEL, DataUtil.STRING));
-            edgeSchema.addField(new DataField(_interaction, DataUtil.STRING));
+            edgeSchema.addField(new DataField(_interactionAttr, DataUtil.STRING));
             edgeSchema.addField(new DataField(SOURCE, DataUtil.STRING));
             edgeSchema.addField(new DataField(TARGET, DataUtil.STRING));
             edgeSchema.addField(new DataField(DIRECTED, DataUtil.BOOLEAN, false));
@@ -230,7 +243,7 @@ package org.cytoscapeweb.model.converters {
         protected function createEdgeData(interaction:String, source:String, target:String):Object {
             var data:Object = {};
             data[ID] = source + " (" + interaction + ") " + target;
-            data[_interaction] = data[LABEL] = interaction;
+            data[_interactionAttr] = data[LABEL] = interaction;
             data[SOURCE] = source;
             data[TARGET] = target;
             data[DIRECTED] = false;

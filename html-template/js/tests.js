@@ -1344,16 +1344,19 @@ function runGraphTests(moduleName, vis, options) {
     test("SIF", function() {
     	var sif = vis.sif();
     	var edges = vis.edges();
+    	// Default fields:
     	$.each(edges, function(i, e) {
     		var inter = e.data.interaction ? e.data.interaction : e.data.id;
     		var line = e.data.source + "\t" + inter + "\t" + e.data.target; 
     		ok(sif.indexOf(line) > -1, "SIF text should have the line: '"+line+"'");
     	});
-    	// Now replace the default interaction field:
-    	var sif = vis.sif("type");
+    	// Now replace the default node and interaction fields:
+    	var sif = vis.sif({ nodeAttr: "name", interactionAttr: "type" });
     	var edges = vis.edges();
     	$.each(edges, function(i, e) {
-    		var line = e.data.source + "\t" + e.data.type + "\t" + e.data.target; 
+    		var src = vis.node(e.data.source).data.name;
+    		var tgt = vis.node(e.data.target).data.name;
+    		var line = src + "\t" + e.data.type + "\t" + tgt; 
     		ok(sif.indexOf(line) > -1, "SIF text should have the line: '"+line+"'");
     	});
     });

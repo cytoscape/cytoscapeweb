@@ -99,7 +99,7 @@ package org.cytoscapeweb.model.converters {
             }
         }
         
-        public function testWrite():void {
+        public function testWriteWithDefaultFields():void {
             var ds:DataSet = Fixtures.getDataSet(Fixtures.GRAPHML_SIMPLE);
             var data:Data = Data.fromDataSet(ds);
             var nodes:Array = data.nodes.toDataArray();
@@ -115,7 +115,8 @@ package org.cytoscapeweb.model.converters {
             }
             for each (e in edges) {
                 var inter:String = e.hasOwnProperty("interaction") ? e.interaction : e.id;
-                assertTrue("Missing interaction: " + inter, sif.indexOf(inter) > -1);
+                var line:String = e.source + "\t" + inter + "\t" + e.target;
+                assertTrue("Missing line: " + line, sif.indexOf(line) > -1);
             }
             
             // If we parse the SIF file again, will it generate the same graph?
@@ -126,14 +127,31 @@ package org.cytoscapeweb.model.converters {
             
             assertEquals(nodes.length, nodes2.length);
             assertEquals(edges.length, edges2.length);
-            
-            // Test again, this time replacing the default "interaction" field:
-            out = new SIFConverter("label").write(ds);
-            sif = "" + out;
+        }
+        
+        public function testWriteWithCustomFields():void {
+            var ds:DataSet = Fixtures.getDataSet(Fixtures.GRAPHML_SIMPLE);
+            var data:Data = Data.fromDataSet(ds);
+            var nodes:Array = data.nodes.toDataArray();
+            var edges:Array = data.edges.toDataArray();
+            var n:Object, e:Object;
 
-            for each (e in edges) {
-                assertTrue("Missing interaction: " + e.label, sif.indexOf(e.label) > -1);
+            var out:IDataOutput = new SIFConverter().write(ds);
+            var sif:String = "" + out;
+            
+            // Does the generated SIF contain all nodes and edges?
+            for each (n in nodes) {
+                assertTrue("Missing node: " + n.id, sif.indexOf(n.id) > -1);
             }
+            
+            // If we parse the SIF file again, will it generate the same graph?
+            var ds2:DataSet = new SIFConverter().parse(sif);
+            var data2:Data = Data.fromDataSet(ds2);
+            var nodes2:Array = data2.nodes.toDataArray();
+            var edges2:Array = data2.edges.toDataArray();
+            
+            assertEquals(nodes.length, nodes2.length);
+            assertEquals(edges.length, edges2.length);
         }
         
         // ========[ PRIVATE METHODS ]==============================================================
