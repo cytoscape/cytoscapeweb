@@ -212,6 +212,10 @@ package org.cytoscapeweb.model.converters {
         
         // ========[ PUBLIC PROPERTIES ]============================================================
    
+        public function get zoom():Number {
+            return _scale;
+        }
+   
         public function get style():VisualStyleVO {
             return _style;
         }
@@ -279,12 +283,16 @@ package org.cytoscapeweb.model.converters {
 
             // Parse Global
             // ------------------------------------------------------
-            var bc:* = xgmml.att.(@name == "backgroundColor").@value;
-            if (bc[0] != null) {
-                bc = VisualProperties.parseValue(VisualProperties.BACKGROUND_COLOR, bc[0].toString());
+            var bc:* = xgmml.att.(@name == "backgroundColor").@value[0];
+            if (bc != null) {
+                bc = VisualProperties.parseValue(VisualProperties.BACKGROUND_COLOR, bc.toString());
                 style.addVisualProperty(new VisualPropertyVO(VisualProperties.BACKGROUND_COLOR, bc));
             }
-              
+            
+            var scale:* = xgmml.att.(@name == "GRAPH_VIEW_ZOOM").@value[0];
+            _scale = scale != null ? new Number(scale.toString()) : 1.0;
+            if (isNaN(_scale)) _scale = 1.0;
+            
             // Parse nodes
             // ------------------------------------------------------
             var nodesList:XMLList = xgmml.node;
@@ -376,7 +384,7 @@ package org.cytoscapeweb.model.converters {
                     </att>
 -->
 					<att type="string" name="backgroundColor" value={Utils.rgbColorAsString(bgColor)}/>
-					<att type="real" name="GRAPH_VIEW_ZOOM" value="1"/>
+					<att type="real" name="GRAPH_VIEW_ZOOM" value={_scale}/>
 					<att type="real" name="GRAPH_VIEW_CENTER_X" value="0"/>
 					<att type="real" name="GRAPH_VIEW_CENTER_Y" value="0"/>
                 </graph>;
@@ -433,6 +441,7 @@ package org.cytoscapeweb.model.converters {
         private function parseAtt(att:XML, schema:DataSchema, data:Object):void {
             var field:DataField, value:Object;
             var name:String = att.@[NAME].toString();
+            var def:* = null;
             
             if (name == null) return;
             
@@ -440,7 +449,12 @@ package org.cytoscapeweb.model.converters {
             
             // Add the attribute definition to the schema:
             if (schema.getFieldById(name) == null) {
-                schema.addField(new DataField(name, type));
+            	switch (type) {
+            		case DataUtil.BOOLEAN: def = false; break;
+            		case DataUtil.INT:     def = 0;     break;
+            	}
+            	
+                schema.addField(new DataField(name, type, def));
             }
             
             // Add <att> tags data:

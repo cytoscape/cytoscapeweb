@@ -175,7 +175,10 @@ package org.cytoscapeweb.view {
         }
         
         public function drawGraph():void {
-            graphView.draw(graphProxy.graphData, configProxy.config, configProxy.visualStyle);
+            graphView.draw(graphProxy.graphData,
+                           configProxy.config,
+                           configProxy.visualStyle, 
+                           graphProxy.zoom);
         }
         
         public function applyVisualStyle(style:VisualStyleVO):void {

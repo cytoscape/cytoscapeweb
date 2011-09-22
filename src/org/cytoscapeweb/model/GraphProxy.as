@@ -716,6 +716,8 @@ package org.cytoscapeweb.model {
                             var xgmmlConverter:XGMMLConverter = new XGMMLConverter(style);
                             ds = xgmmlConverter.parse(xml);
                             
+                            this.zoom = xgmmlConverter.zoom;
+                            
                             var points:Object = xgmmlConverter.points;
                             if (points != null) {
                                 if (layout == null) layout = {};

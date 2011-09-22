@@ -81,7 +81,7 @@ package org.cytoscapeweb.view.components {
 		
 		// ========[ PUBLIC METHODS ]===============================================================
 
-        public function draw(data:Data, config:ConfigVO, style:VisualStyleVO):void {
+        public function draw(data:Data, config:ConfigVO, style:VisualStyleVO, zoom:Number):void {
             this._config = config;
             this._style = style;
         	hitArea = Sprite(parent);
@@ -90,6 +90,7 @@ package org.cytoscapeweb.view.components {
             resize();
 
             createVisualization(data, config.currentLayout.name);
+            if (zoom != 1.0) zoomTo(zoom);
 
             // -----------------------------
             var par:Parallel = applyLayout(config.currentLayout);
@@ -104,7 +105,6 @@ package org.cytoscapeweb.view.components {
 
         public function applyLayout(layout:Object):Parallel {
             dispatchEvent(new GraphViewEvent(GraphViewEvent.LAYOUT_INITIALIZE));
-            
             resize();
             
             var par:Parallel = new Parallel();

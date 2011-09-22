@@ -175,16 +175,19 @@ package org.cytoscapeweb.model.converters {
                 attrName = key.@[ATTRNAME].toString();
                 type     = toCW_Type(key.@[ATTRTYPE].toString());
                 def = key[DEFAULT].toString();
-                def = def != null && def.length > 0
-                    ? DataUtil.parseValue(def, type) : null;
-                    
-                // Patch: accept "all" for node and edge schemas:
-                // ############################################
+                def = def != null && def.length > 0 ? DataUtil.parseValue(def, type) : null;
+                
+                if (def == null) {
+                	switch (type) {
+	                    case DataUtil.BOOLEAN: def = false; break;
+	                    case DataUtil.INT:     def = 0;     break;
+                    }
+                }
+                
                 if (group === NODE || group === ALL)
                     nodeSchema.addField(new DataField(attrName, type, def, id));
                 if (group === EDGE || group === ALL)
                     edgeSchema.addField(new DataField(attrName, type, def, id));
-                // ############################################
             }
             
             // parse nodes
