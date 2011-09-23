@@ -39,6 +39,8 @@ package org.cytoscapeweb.model {
 	import flare.vis.data.EdgeSprite;
 	import flare.vis.data.NodeSprite;
 	
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
@@ -58,6 +60,7 @@ package org.cytoscapeweb.model {
 	import org.cytoscapeweb.model.data.VisualStyleVO;
 	import org.cytoscapeweb.model.error.CWError;
 	import org.cytoscapeweb.util.ErrorCodes;
+	import org.cytoscapeweb.util.GraphUtils;
 	import org.cytoscapeweb.util.Groups;
 	import org.cytoscapeweb.util.Layouts;
 	import org.puremvc.as3.patterns.proxy.Proxy;
@@ -84,6 +87,8 @@ package org.cytoscapeweb.model {
         
         /** Scale factor, between 0 and 1 */
         private var _zoom:Number = 1;
+        /** The viewport center */
+        private var _viewCenter:Point;
 
         private var _configProxy:ConfigProxy;
         
@@ -300,6 +305,14 @@ package org.cytoscapeweb.model {
  
         public function set zoom(value:Number):void {
             _zoom = value;
+        }
+        
+        public function get viewCenter():Point {
+            return _viewCenter;
+        }
+ 
+        public function set viewCenter(value:Point):void {
+            _viewCenter = value;
         }
 
         // ========[ CONSTRUCTOR ]==================================================================
@@ -717,6 +730,7 @@ package org.cytoscapeweb.model {
                             ds = xgmmlConverter.parse(xml);
                             
                             this.zoom = xgmmlConverter.zoom;
+                            this.viewCenter = xgmmlConverter.viewCenter;
                             
                             var points:Object = xgmmlConverter.points;
                             if (points != null) {
@@ -750,7 +764,9 @@ package org.cytoscapeweb.model {
             }
         }
         
-        public function getDataAsText(format:String="xgmml", options:Object=null):String {
+        public function getDataAsText(format:String="xgmml",
+                                      viewCenter:Point=null,
+                                      options:Object=null):String {
             var out:IDataOutput, nodesTable:DataTable, edgesTable:DataTable, dtSet:DataSet;
             format = StringUtil.trim(format.toLowerCase());
                         
@@ -758,7 +774,10 @@ package org.cytoscapeweb.model {
                 nodesTable = new GraphicsDataTable(graphData.nodes, nodesSchema);
                 edgesTable = new GraphicsDataTable(graphData.group(Groups.REGULAR_EDGES), edgesSchema);
                 dtSet = new DataSet(nodesTable, edgesTable);
-                out = new XGMMLConverter(configProxy.visualStyle).write(dtSet);
+                var bounds:Rectangle = GraphUtils.getBounds(nodes, edges,
+                                                            !configProxy.nodeLabelsVisible,
+                                                            !configProxy.edgeLabelsVisible);
+                out = new XGMMLConverter(configProxy.visualStyle, zoom, viewCenter, bounds).write(dtSet);
             } else {
                 nodesTable = new DataTable(graphData.nodes.toDataArray(), nodesSchema);
                 edgesTable = new DataTable(graphData.group(Groups.REGULAR_EDGES).toDataArray(), edgesSchema);

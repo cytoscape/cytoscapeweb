@@ -80,20 +80,20 @@ package org.cytoscapeweb.util {
             return b;
         }
         
-        public static function getBounds(data:Data, 
+        public static function getBounds(nodes:*, edges:*, 
                                          ignoreNodeLabels:Boolean,
                                          ignoreEdgeLabels:Boolean):Rectangle {
-
             var bounds:Rectangle = new Rectangle();
             
-            if (data != null && data.nodes.length > 0) {
-                var minX:Number = Number.POSITIVE_INFINITY, minY:Number = Number.POSITIVE_INFINITY;
-                var maxX:Number = Number.NEGATIVE_INFINITY, maxY:Number = Number.NEGATIVE_INFINITY;
-                var lbl:TextSprite;
-                var fld:TextField;
-    
+            const PAD:Number = 2;
+            var minX:Number = Number.POSITIVE_INFINITY, minY:Number = Number.POSITIVE_INFINITY;
+            var maxX:Number = Number.NEGATIVE_INFINITY, maxY:Number = Number.NEGATIVE_INFINITY;
+            var lbl:TextSprite;
+            var fld:TextField;
+
+            if (nodes != null && nodes.length > 0) {
                 // First, consider the NODES bounds:
-                $each(data.nodes, function(i:uint, n:NodeSprite):void {
+                $each(nodes, function(i:uint, n:NodeSprite):void {
                     if (!isFilteredOut(n)) {
                         // The node size (its shape must have the same height and width; e.g. a circle)
                         var w:Number = n.width;
@@ -118,9 +118,11 @@ package org.cytoscapeweb.util {
                         }
                     }
                 });
-                
+            }
+            
+            if (edges != null && edges.length > 0) {
                 // Also mesure edge bounds:
-                $each(data.edges, function(i:uint, e:EdgeSprite):void {
+                $each(edges, function(i:uint, e:EdgeSprite):void {
                     if (!isFilteredOut(e)) {
                         // Edge LABELS first, to avoid checking edges that are already inside the bounds:
                         lbl = e.props.label;
@@ -173,13 +175,17 @@ package org.cytoscapeweb.util {
                         }
                     }
                 });
-                
-                const PAD:Number = 2;
-                bounds.x = minX - PAD;
-                bounds.y = minY - PAD;
-                bounds.width = maxX - bounds.x + PAD;
-                bounds.height = maxY - bounds.y + PAD;
             }
+            
+            if (minX === Number.POSITIVE_INFINITY) minX = 0;
+            if (minY === Number.POSITIVE_INFINITY) minY = 0;
+            if (maxX === Number.NEGATIVE_INFINITY) maxX = 0;
+            if (maxY === Number.NEGATIVE_INFINITY) maxY = 0;
+            
+            bounds.x = minX - PAD;
+            bounds.y = minY - PAD;
+            bounds.width = maxX - bounds.x + PAD;
+            bounds.height = maxY - bounds.y + PAD;
             
             return bounds;
         }
@@ -197,7 +203,8 @@ package org.cytoscapeweb.util {
            
             for each (data in dataList) {
                 // The real subgraph bounds:
-                var b:Rectangle = getBounds(data, ignoreNodeLabels, ignoreEdgeLabels);
+                var b:Rectangle = getBounds(data.nodes, data.edges,
+                                            ignoreNodeLabels, ignoreEdgeLabels);
                 boundsList.push(b);
 
                 // Just to get the correct subgraph later:

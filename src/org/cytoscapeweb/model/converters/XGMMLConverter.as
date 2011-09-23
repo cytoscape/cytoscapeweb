@@ -39,6 +39,7 @@ package org.cytoscapeweb.model.converters {
     import flare.vis.data.NodeSprite;
     
     import flash.geom.Point;
+    import flash.geom.Rectangle;
     import flash.utils.ByteArray;
     import flash.utils.IDataInput;
     import flash.utils.IDataOutput;
@@ -46,8 +47,6 @@ package org.cytoscapeweb.model.converters {
     import mx.formatters.DateFormatter;
     import mx.utils.StringUtil;
     
-    import org.cytoscapeweb.ApplicationFacade;
-    import org.cytoscapeweb.model.GraphProxy;
     import org.cytoscapeweb.model.data.DiscreteVizMapperVO;
     import org.cytoscapeweb.model.data.GraphicsDataTable;
     import org.cytoscapeweb.model.data.VisualPropertyVO;
@@ -195,12 +194,10 @@ package org.cytoscapeweb.model.converters {
         
         private var _noGraphicInfo:Boolean = false;
         private var _style:VisualStyleVO;
+        private var _zoom:Number;
+        private var _viewCenter:Point;
+        private var _bounds:Rectangle;
         private var _points:Array;
-        private var _minX:Number = Number.POSITIVE_INFINITY;
-        private var _minY:Number = Number.POSITIVE_INFINITY;
-        private var _maxX:Number = Number.NEGATIVE_INFINITY
-        private var _maxY:Number = Number.NEGATIVE_INFINITY;
-        private var _scale:Number = 1;
         
         private function get dateFormatter():DateFormatter {
             var dtf:DateFormatter = new DateFormatter();
@@ -208,16 +205,18 @@ package org.cytoscapeweb.model.converters {
             return dtf;
         }
         
-        private var graphProxy:GraphProxy = ApplicationFacade.getInstance().retrieveProxy(GraphProxy.NAME) as GraphProxy;
-        
         // ========[ PUBLIC PROPERTIES ]============================================================
    
         public function get zoom():Number {
-            return _scale;
+            return _zoom;
         }
    
         public function get style():VisualStyleVO {
             return _style;
+        }
+        
+        public function get viewCenter():Point {
+            return _viewCenter;
         }
         
         public function get points():Array {
@@ -226,8 +225,12 @@ package org.cytoscapeweb.model.converters {
    
         // ========[ CONSTRUCTOR ]==================================================================
         
-        public function XGMMLConverter(style:VisualStyleVO) {
+        public function XGMMLConverter(style:VisualStyleVO, zoom:Number=1,
+                                       viewCenter:Point=null, bounds:Rectangle= null) {
         	_style = style;
+        	_zoom = zoom;
+        	_viewCenter = viewCenter;
+        	_bounds = bounds;
         }
         
         // ========[ PUBLIC METHODS ]===============================================================
@@ -290,8 +293,20 @@ package org.cytoscapeweb.model.converters {
             }
             
             var scale:* = xgmml.att.(@name == "GRAPH_VIEW_ZOOM").@value[0];
-            _scale = scale != null ? new Number(scale.toString()) : 1.0;
-            if (isNaN(_scale)) _scale = 1.0;
+            _zoom = scale != null ? new Number(scale.toString()) : 1.0;
+            if (isNaN(_zoom)) _zoom = 1.0;
+            
+            var vx:* = xgmml.att.(@name == "GRAPH_VIEW_CENTER_X").@value[0];
+            var vy:* = xgmml.att.(@name == "GRAPH_VIEW_CENTER_Y").@value[0];
+            
+            if (vx != null && vy != null) {
+                vx = new Number(vx.toString());
+                vy = new Number(vy.toString());
+                
+                if (!isNaN(vx) && !isNaN(vy)) {
+                    _viewCenter = new Point(vx, vy);
+                }
+            }
             
             // Parse nodes
             // ------------------------------------------------------
@@ -355,7 +370,6 @@ package org.cytoscapeweb.model.converters {
         /** @inheritDoc */
         public function write(dtset:DataSet, output:IDataOutput=null):IDataOutput {
         	var bgColor:uint = style.getValue(VisualProperties.BACKGROUND_COLOR) as uint;
-        	_scale = graphProxy.zoom;
         	
             // Init XGMML:
             var xgmml:XML = 
@@ -384,22 +398,18 @@ package org.cytoscapeweb.model.converters {
                     </att>
 -->
 					<att type="string" name="backgroundColor" value={Utils.rgbColorAsString(bgColor)}/>
-					<att type="real" name="GRAPH_VIEW_ZOOM" value={_scale}/>
-					<att type="real" name="GRAPH_VIEW_CENTER_X" value="0"/>
-					<att type="real" name="GRAPH_VIEW_CENTER_Y" value="0"/>
+					<att type="real" name="GRAPH_VIEW_ZOOM" value={zoom}/>
                 </graph>;
+            
+            // View center:
+            if (viewCenter != null) {
+                xgmml.appendChild(<att type="real" name="GRAPH_VIEW_CENTER_X" value={viewCenter.x}/>);
+                xgmml.appendChild(<att type="real" name="GRAPH_VIEW_CENTER_Y" value={viewCenter.y}/>);
+            }
             
             // Add edge and node tags:
             addTags(xgmml, dtset, NODE);
             addTags(xgmml, dtset, EDGE);
-            
-            // To center the view:
-            var w:Number = (_minX + (_maxX - _minX)/2)/_scale;
-            var h:Number = (_minY + (_maxY - _minY)/2)/_scale;
-            if (w != Infinity && w != -Infinity)
-                xgmml.att.(@name == "GRAPH_VIEW_CENTER_X").@value = w;
-            if (h != Infinity && h != -Infinity)
-                xgmml.att.(@name == "GRAPH_VIEW_CENTER_Y").@value = h;
             
             // Return output:
             if (output == null) output = new ByteArray();
@@ -432,8 +442,6 @@ package org.cytoscapeweb.model.converters {
             for each (var att:XML in tag.att) {
             	parseAtt(att, schema, data);
             }
-            
-            // TODO: get RDF (Resource Description Framework) ???
             
             return data;
         }
@@ -516,6 +524,7 @@ package org.cytoscapeweb.model.converters {
             var attrs:Object;
             var graphAttrs:Object;
             var table:DataTable;
+            var nx:Number, ny:Number;
             
             if (tagName == NODE) {
             	table = dtset.nodes;
@@ -560,16 +569,16 @@ package org.cytoscapeweb.model.converters {
                     // Node position:
                     if (ds is NodeSprite) {
                         var n:NodeSprite = ds as NodeSprite;
-                        p = ExternalObjectConverter.getGlobalCoordinate(n);
-                        graphics.@x = p.x / _scale;
-                        graphics.@y = p.y / _scale;
+                        nx = n.x;
+                        ny = n.y;
                         
-                        // For centering the network view:
-                        var ns:Number = n.height;
-                        _minX = Math.min(_minX, (p.x - ns/2));
-                        _minY = Math.min(_minY, (p.y - ns/2));
-                        _maxX = Math.max(_maxX, (p.x + ns/2));
-                        _maxY = Math.max(_maxY, (p.y + ns/2));
+                        if (_bounds != null) {
+                            nx -= _bounds.x;
+                            ny -= _bounds.y;
+                        }
+                        
+                        graphics.@x = nx;
+                        graphics.@y = ny;
                     }
                     
                     // Styles (color, width...):

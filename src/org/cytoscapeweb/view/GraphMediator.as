@@ -42,6 +42,7 @@ package org.cytoscapeweb.view {
     import flash.events.KeyboardEvent;
     import flash.events.MouseEvent;
     import flash.events.TimerEvent;
+    import flash.geom.Point;
     import flash.ui.Keyboard;
     import flash.utils.Timer;
     
@@ -178,7 +179,8 @@ package org.cytoscapeweb.view {
             graphView.draw(graphProxy.graphData,
                            configProxy.config,
                            configProxy.visualStyle, 
-                           graphProxy.zoom);
+                           graphProxy.zoom,
+                           graphProxy.viewCenter);
         }
         
         public function applyVisualStyle(style:VisualStyleVO):void {
@@ -329,6 +331,10 @@ package org.cytoscapeweb.view {
                 // its label size may be wrong, so let's reset it:
                 rescaleNodeLabel(graphProxy.rolledOverNode, true);
             }
+        }
+        
+        public function getViewCenter():Point {
+            return graphView.viewCenter;
         }
         
         // ========[ PRIVATE METHODS ]==============================================================

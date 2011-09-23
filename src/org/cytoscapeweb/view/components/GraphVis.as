@@ -389,7 +389,10 @@ package org.cytoscapeweb.view.components {
             });
             if (_config.edgeLabelsVisible) edgeLabeler.operate();
 
-            var bounds:Rectangle = GraphUtils.getBounds(d, !_config.nodeLabelsVisible, !_config.edgeLabelsVisible);
+            var bounds:Rectangle = GraphUtils.getBounds(d.nodes,
+                                                        d.edges,
+                                                        !_config.nodeLabelsVisible,
+                                                        !_config.edgeLabelsVisible);
             
             return bounds;
         }

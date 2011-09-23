@@ -150,13 +150,13 @@ package org.cytoscapeweb.model.data {
             return _map[n] === false;
         }
         
-        public function toObject():Object {
+        public function toObject(zoom:Number):Object {
             var obj:Object = {};
             
-            obj.rootNodes = ExternalObjectConverter.toExtElementsArray(rootNodes);
-            obj.neighbors = ExternalObjectConverter.toExtElementsArray(neighbors);
-            obj.edges = ExternalObjectConverter.toExtElementsArray(edges);
-            obj.mergedEdges = ExternalObjectConverter.toExtElementsArray(mergedEdges);
+            obj.rootNodes = ExternalObjectConverter.toExtElementsArray(rootNodes, zoom);
+            obj.neighbors = ExternalObjectConverter.toExtElementsArray(neighbors, zoom);
+            obj.edges = ExternalObjectConverter.toExtElementsArray(edges, zoom);
+            obj.mergedEdges = ExternalObjectConverter.toExtElementsArray(mergedEdges, zoom);
             
             return obj;
         }

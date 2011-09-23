@@ -151,7 +151,7 @@ package org.cytoscapeweb.view {
                 menuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,
                     function(evt:ContextMenuEvent):void {
                         var target:* = _rolledOverNode ? _rolledOverNode : _rolledOverEdge;
-                        target = ExternalObjectConverter.toExtElement(target);
+                        target = ExternalObjectConverter.toExtElement(target, graphProxy.zoom);
                         
                         var body:Object = { functionName: ExternalFunctions.INVOKE_CONTEXT_MENU_CALLBACK, 
                                             argument: { type: "contextmenu",

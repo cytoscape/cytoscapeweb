@@ -1266,7 +1266,8 @@
          * @see org.cytoscapeweb.Visualization#sif
          */
         networkModel: function () {
-            return this.swf().getNetworkModel();
+        	var json = this.swf().getNetworkModel();
+            return this._parseJSON(json);
         },
         
         /**

@@ -216,21 +216,24 @@ package org.cytoscapeweb.model.converters {
             return obj;
         }
         
-        public static function toExtElementsArray(dataSprites:*):Array {
+        public static function toExtElementsArray(dataSprites:*, zoom:Number):Array {
             var arr:Array = null;
                      
             if (dataSprites is DataList || dataSprites is Array) {
                 arr = [];
                 for each (var ds:DataSprite in dataSprites) {
-                    arr.push(toExtElement(ds));
+                    arr.push(toExtElement(ds, zoom));
                 }
             }
 
             return arr;
         }
         
-        public static function toExtElement(ds:DataSprite):Object {
+        public static function toExtElement(ds:DataSprite, zoom:Number):Object {
             var obj:Object = null;
+            var p:Point;
+            var n:NodeSprite, e:EdgeSprite;
+            var scale:Number;
 
             if (ds != null) {
                 // Data (attributes):
@@ -241,7 +244,8 @@ package org.cytoscapeweb.model.converters {
                 obj.visible = ds.visible;
                 
                 if (ds is NodeSprite) {
-                    var n:NodeSprite = NodeSprite(ds);
+                    n = ds as NodeSprite;
+                    
                     obj.group = Groups.NODES;
                     obj.shape = n.shape;
                     obj.size = Math.max(n.width, n.height);
@@ -255,13 +259,16 @@ package org.cytoscapeweb.model.converters {
 //                    obj.outdegree = n.outDegree;
                     
                     // Global coordinates:
-                    var p:Point = getGlobalCoordinate(ds as NodeSprite);
+                    p = getGlobalCoordinate(n);
                     obj.x = p.x;
                     obj.y = p.y;
+                    
+                    obj.rawX = p.x / zoom;
+                    obj.rawY = p.y / zoom;
                 } else {
                     obj.group = Groups.EDGES;
 
-                    var e:EdgeSprite = EdgeSprite(ds);
+                    e = EdgeSprite(ds);
                     obj.color = Utils.rgbColorAsString(e.lineColor);
                     obj.width = ds.lineWidth;
                     obj.sourceArrowShape = e.props.sourceArrowShape;
@@ -273,7 +280,7 @@ package org.cytoscapeweb.model.converters {
                     
                     if (e.props.$merged) {
                         var ee:Array = e.props.$edges;
-                        ee = toExtElementsArray(ee);
+                        ee = toExtElementsArray(ee, zoom);
                         obj.edges = ee;
                     }
                 }
@@ -285,6 +292,7 @@ package org.cytoscapeweb.model.converters {
         public static function getGlobalCoordinate(n:NodeSprite):Point {
             var p:Point = new Point(n.x, n.y);
             if (n.parent) p = n.parent.localToGlobal(p);
+            
             return p;
         }
         

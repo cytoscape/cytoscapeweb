@@ -79,7 +79,7 @@ package org.cytoscapeweb.controller {
                     var objs:Array, body:Object, type:String = "filter";
                 
                     if (nodes != null && extMediator.hasListener(type, Groups.NODES)) {
-                        objs = ExternalObjectConverter.toExtElementsArray(nodes);
+                        objs = ExternalObjectConverter.toExtElementsArray(nodes, graphProxy.zoom);
                         body = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
                                  argument: { type: type, group: Groups.NODES, target: objs } };
                         
@@ -87,7 +87,7 @@ package org.cytoscapeweb.controller {
                     }
                     
                     if (edges != null && extMediator.hasListener(type, Groups.EDGES)) {
-                        objs = ExternalObjectConverter.toExtElementsArray(edges);
+                        objs = ExternalObjectConverter.toExtElementsArray(edges, graphProxy.zoom);
                         body = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
                                  argument: { type: type, group: Groups.EDGES, target: objs } };
     
@@ -95,7 +95,7 @@ package org.cytoscapeweb.controller {
                     }
                     
                     if ((nodes != null || edges != null) && extMediator.hasListener(type, Groups.NONE)) {
-                        objs = ExternalObjectConverter.toExtElementsArray(arr);
+                        objs = ExternalObjectConverter.toExtElementsArray(arr, graphProxy.zoom);
                         body = { functionName: ExternalFunctions.INVOKE_LISTENERS, 
                                  argument: { type: type, group: Groups.NONE, target: objs } };
     

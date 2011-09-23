@@ -1036,7 +1036,7 @@ function runGraphTests(moduleName, vis, options) {
     	
     	// Exporting data/image should not throw errors:
     	ok(vis.pdf().indexOf("JVBERi0xLjUKMSAwIG9iago8PC9UeXBlIC9QYWd") === 0, "PDF image");
-    	ok(vis.png().indexOf("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAA") === 0, "PNG image");
+    	ok(vis.png().indexOf("iVBORw0KGgoAAAANSUhEUgAAAA") === 0, "PNG image");
     	
     	same(vis.sif(), "", "SIF is empty");
     	
