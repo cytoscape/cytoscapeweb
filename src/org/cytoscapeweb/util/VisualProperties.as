@@ -190,11 +190,16 @@ package org.cytoscapeweb.util {
                         val = 0xffffff;
                     }
                 } else if (isNumber(name)) {
-                	val = Number(value);
-                	
-                	if (isNaN(val))
-                	   throw new CWError("Invalid number ('"+value+"') for visual property '"+name+"'",
-                                          ErrorCodes.INVALID_DATA_CONVERSION);
+                    if (name === NODE_SIZE && (val is String) && 
+                        String(val).toLowerCase() === "wraptext") {
+                        val = -1;
+                    } else {
+                        val = Number(value);
+                        
+                        if (isNaN(val))
+                            throw new CWError("Invalid number ('"+value+"') for visual property '"+name+"'",
+                                               ErrorCodes.INVALID_DATA_CONVERSION);
+                	}
                 } else if (name == VisualProperties.EDGE_STYLE || name == VisualProperties.EDGE_STYLE_MERGE) {
                     val = LineStyles.parse(value);
                 } else if (name == VisualProperties.NODE_SHAPE) {

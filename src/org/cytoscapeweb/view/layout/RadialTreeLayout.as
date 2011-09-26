@@ -200,10 +200,12 @@ package org.cytoscapeweb.view.layout {
          */
         protected function calcAngularWidth(n:NodeSprite, d:int):Number {
             if (d > _maxDepth) _maxDepth = d;       
-            var aw:Number = 0, diameter:Number = 0;
+            var aw:Number = 0, diameter:Number = 0, size:Number;
+            
             if (useNodeSize && d > 0) {
                 //diameter = 1;
-                diameter = n.expanded && _tree.childDegree(n) > 0 ? 0 : _t.$(n).size;
+                size = Math.max(n.width, n.height);
+                diameter = n.expanded && _tree.childDegree(n) > 0 ? 0 : size;
             } else if (d > 0) {
                 var w:Number = n.width, h:Number = n.height;
                 diameter = Math.sqrt(w*w+h*h)/d;

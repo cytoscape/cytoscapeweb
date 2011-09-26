@@ -28,8 +28,10 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.util {
+    import flare.display.TextSprite;
     import flare.vis.data.DataSprite;
     import flare.vis.data.EdgeSprite;
+    import flare.vis.data.NodeSprite;
     
     import flash.filters.GlowFilter;
     
@@ -104,10 +106,12 @@ package org.cytoscapeweb.util {
         }
         
         public static function labelHAnchor(d:DataSprite):int {
+            if (d is NodeSprite && d.props.wrapText) return TextSprite.CENTER;
             return Anchors.toFlareAnchor(style.getValue(VisualProperties.NODE_LABEL_HANCHOR, d.data));
         }
         
         public static function labelVAnchor(d:DataSprite):int {
+            if (d is NodeSprite && d.props.wrapText) return TextSprite.MIDDLE;
             return Anchors.toFlareAnchor(style.getValue(VisualProperties.NODE_LABEL_VANCHOR, d.data));
         }
         

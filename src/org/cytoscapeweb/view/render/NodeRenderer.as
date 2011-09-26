@@ -28,6 +28,7 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.view.render {
+	import flare.display.TextSprite;
 	import flare.util.Shapes;
 	import flare.vis.data.DataSprite;
 	import flare.vis.data.EdgeSprite;
@@ -53,6 +54,8 @@ package org.cytoscapeweb.view.render {
 	
 
     public class NodeRenderer extends ShapeRenderer {
+    	
+    	private static const WRAP_PAD:Number = 10;
     	
         private static var _instance:NodeRenderer = new NodeRenderer();
         public static function get instance():NodeRenderer { return _instance; }
@@ -99,8 +102,18 @@ package org.cytoscapeweb.view.render {
                 var w:Number = d.props.width;
                 var h:Number = d.props.height;
                 
-                if (isNaN(w) || w < 0) w = size;
-                if (isNaN(h) || h < 0) h = size;
+                if (d.props.wrapText) {
+                    w = h = WRAP_PAD;
+                    
+                    if (d.props.label) {
+                        var lbl:TextSprite = d.props.label;
+                        w += isNaN(lbl.width) ? 0 : lbl.width;
+                        h += isNaN(lbl.height) ? 0 : lbl.height;
+                    }
+                } else {
+                    if (isNaN(w) || w < 0) w = size;
+                    if (isNaN(h) || h < 0) h = size;
+                }
                 
                 var g:Graphics = d.graphics;
                 g.clear();

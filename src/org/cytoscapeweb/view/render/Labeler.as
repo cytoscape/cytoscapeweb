@@ -209,6 +209,8 @@ package org.cytoscapeweb.view.render {
                 else if (label.horizontalAnchor == TextSprite.RIGHT) myXOffset -= d.width/2;
                 if      (label.verticalAnchor == TextSprite.TOP)     myYOffset += d.height/2;
                 else if (label.verticalAnchor == TextSprite.BOTTOM)  myYOffset -= d.height/2;
+                
+                if (d.props.wrapText) d.dirty();
             }
             
             label.x = x + myXOffset;

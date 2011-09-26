@@ -79,6 +79,7 @@ package org.cytoscapeweb.util {
                     shape: shape,
                     "props.width": width,
                     "props.height": height,
+                    "props.wrapText": wrapText,
                     size: size,
                     fillColor: fillColor,
                     lineColor: lineColor, 
@@ -103,9 +104,9 @@ package org.cytoscapeweb.util {
         }
         
         public static function size(n:NodeSprite):Number {
-            var size:Number = style.getValue(VisualProperties.NODE_SIZE, n.data);
+            var size:* = style.getValue(VisualProperties.NODE_SIZE, n.data);
             // Flare size is a relative value:
-            return size / _properties.renderer.defaultSize;
+            return size < 0 ? -1 : size/_properties.renderer.defaultSize;
         }
         
         public static function width(n:NodeSprite):Number {
@@ -116,6 +117,13 @@ package org.cytoscapeweb.util {
         public static function height(n:NodeSprite):Number {
             var h:Number = style.getValue(VisualProperties.NODE_HEIGHT, n.data);
             return h;
+        }
+        
+        public static function wrapText(n:NodeSprite):Boolean {
+            var size:Number = style.getValue(VisualProperties.NODE_SIZE, n.data);
+            var wrap:Boolean = size === -1;
+            
+            return wrap;
         }
         
         public static function fillColor(n:NodeSprite):uint {
