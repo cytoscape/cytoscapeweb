@@ -316,21 +316,11 @@ package org.cytoscapeweb.view {
         
         public function zoomGraphTo(scale:Number):void {
             graphView.zoomTo(scale);
-            if (graphProxy.rolledOverNode != null) {
-                // If zooming while mouse still over a node (e.g. using the keyboard to zoom),
-                // its label size may be wrong, so let's reset it:
-                rescaleNodeLabel(graphProxy.rolledOverNode, true);
-            }
         }
         
         public function zoomGraphToFit():void {
             graphView.zoomToFit();
             graphView.centerGraph();
-            if (graphProxy.rolledOverNode != null) {
-                // If zooming while mouse still over a node (e.g. using the keyboard to zoom),
-                // its label size may be wrong, so let's reset it:
-                rescaleNodeLabel(graphProxy.rolledOverNode, true);
-            }
         }
         
         public function getViewCenter():Point {
@@ -544,9 +534,6 @@ package org.cytoscapeweb.view {
             
             sendNotification(ApplicationFacade.ROLLOVER_EVENT, n);
             updateCursor();
-            
-            // When zoom < 100%, increase the label size to make it readable:
-            if (_graphScale < 1) rescaleNodeLabel(n);
         }
         
         private function onRollOutNode(evt:MouseEvent):void {
@@ -558,8 +545,6 @@ package org.cytoscapeweb.view {
             n.removeEventListener(MouseEvent.ROLL_OUT, onRollOutNode);
             updateCursor();
             evt.stopImmediatePropagation();
-
-            rescaleNodeLabel(n, true);
         }
         
         private function onMouseDownNode(evt:MouseEvent):void { trace("** Mouse DOWN [node]");
@@ -783,21 +768,6 @@ package org.cytoscapeweb.view {
             selectionControl.enabled = false;
             vis.startDrag();
             graphView.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUpToStopPanning, false, 0, true);
-        }
-        
-        private function rescaleNodeLabel(n:NodeSprite, reset:Boolean=false):void {
-            if (n != null && configProxy.config.nodeLabelsVisible) {
-                var label:TextSprite = n.props.label as TextSprite;
-                if (label != null) {
-                    var fsize:Number = configProxy.visualStyle.getValue(VisualProperties.NODE_LABEL_FONT_SIZE, n.data) as Number;
-                    if (reset)
-                        label.size = fsize;
-                    else if (_graphScale < 1)
-                        label.size = fsize / _graphScale;
-                    
-                    vis.nodeLabeler.operate();
-                }
-            }
         }
         
         private function setStyleToSelectionControl(style:VisualStyleVO):void {
