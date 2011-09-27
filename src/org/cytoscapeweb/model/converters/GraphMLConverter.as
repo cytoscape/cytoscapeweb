@@ -313,7 +313,8 @@ package org.cytoscapeweb.model.converters {
 		// -- static helpers --------------------------------------------------
 		
 		private static function toString(o:Object, type:int):String {
-			return o.toString(); // TODO: formatting control?
+			if (o is Array) return (o as Array).join(",");
+			return o != null ? o.toString() : ""; // TODO: formatting control?
 		}
 		
 		private static function toCW_Type(type:String):int {
