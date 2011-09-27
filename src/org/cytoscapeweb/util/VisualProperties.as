@@ -191,7 +191,7 @@ package org.cytoscapeweb.util {
                     }
                 } else if (isNumber(name)) {
                     if (name === NODE_SIZE && (val is String) && 
-                        String(val).toLowerCase() === "wraptext") {
+                        String(val).toLowerCase() === "auto") {
                         val = -1;
                     } else {
                         val = Number(value);
@@ -226,6 +226,9 @@ package org.cytoscapeweb.util {
                 value = name === NODE_COLOR && value < 0 ? "transparent" : Utils.rgbColorAsString(uint(value));
             } else if (isNumber(name)) {
                 value = Number(value);
+                
+                if (name === NODE_SIZE && value < 0)
+                    value = "auto";
             } else if (isString(name)) {
                 if (value == null) value = "";
                 else value = value.toString();

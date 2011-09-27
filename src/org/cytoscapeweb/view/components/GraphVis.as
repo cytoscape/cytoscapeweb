@@ -225,7 +225,6 @@ package org.cytoscapeweb.view.components {
                 if (_config.nodeLabelsVisible) updateLabels(Data.NODES);
                 if (_config.edgeLabelsVisible) updateLabels(Data.EDGES);
             }
-
             // Tooltips:
             // ---------------------------------------------------------
             tooltipControl.showDelay = _style.getValue(VisualProperties.TOOLTIP_DELAY) as Number;
@@ -274,7 +273,7 @@ package org.cytoscapeweb.view.components {
                         var d:Data = _dataList[i];
                         
                         if (d.nodes.length > 1) {
-                            var rect:Rectangle = GraphUtils.calculateGraphDimension(d.nodes, _layoutName, _style); 
+                            var rect:Rectangle = GraphUtils.calculateGraphDimension(d.nodes, _layoutName); 
                             var root:NodeSprite = Layouts.rootNode(d);
                             
                             layout = createLayout(layoutObj, d, rect, root);
@@ -360,6 +359,7 @@ package org.cytoscapeweb.view.components {
             data.visit(function(ds:DataSprite):Boolean {
                 var lb:TextSprite = labels.getValue(ds);
                 if (lb != null) lb.visible = visible && ds.visible;
+                if (ds is NodeSprite && ds.props.autoSize) ds.dirty();
                 return false;
             }, group);
         }

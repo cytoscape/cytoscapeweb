@@ -2249,6 +2249,7 @@
      * The absolute node size (in pixels), when the zoom level is 100%. It is the highest value of height and width.
      * Notice that this value is not scaled, so if you want the real visualized size, you need to multiply
      * this value by the current network scale, which is provided by {@link org.cytoscapeweb.Visualization#zoom}.
+     * If you set the size to <code>"auto"</code>, the node will be automatically resized to enclose its label text.
      * @property
      * @name size
      * @type Number

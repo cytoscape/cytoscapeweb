@@ -55,7 +55,7 @@ package org.cytoscapeweb.view.render {
 
     public class NodeRenderer extends ShapeRenderer {
     	
-    	private static const WRAP_PAD:Number = 10;
+    	private static const WRAP_PAD:Number = 5;
     	
         private static var _instance:NodeRenderer = new NodeRenderer();
         public static function get instance():NodeRenderer { return _instance; }
@@ -102,14 +102,33 @@ package org.cytoscapeweb.view.render {
                 var w:Number = d.props.width;
                 var h:Number = d.props.height;
                 
-                if (d.props.wrapText) {
-                    w = h = WRAP_PAD;
+                if (d.props.autoSize) {
+                    var lbl:TextSprite = d.props.label;
+                    var hf:Number = 1, wf:Number = 1;
                     
-                    if (d.props.label) {
-                        var lbl:TextSprite = d.props.label;
-                        w += isNaN(lbl.width) ? 0 : lbl.width;
-                        h += isNaN(lbl.height) ? 0 : lbl.height;
+                    if (lbl != null && lbl.visible) {
+                        w = isNaN(lbl.width) ? 0 : lbl.width;
+                        h = isNaN(lbl.height) ? 0 : lbl.height;
+                        
+                        // TODO: it is just an approximation--calculate more size accurately
+                        switch (d.shape) {
+                            case NodeShapes.TRIANGLE:      hf = wf = 2.0; break;
+                            case NodeShapes.V:             hf = wf = 3.2; break;
+                            case NodeShapes.OCTAGON:       hf = wf = 1.4; break;
+                            case NodeShapes.HEXAGON:       hf = wf = 1.6; break;
+                            case NodeShapes.PARALLELOGRAM: wf = 2.6;      break;
+                            case NodeShapes.DIAMOND:       hf = wf = 2.0; break;
+                            case NodeShapes.ELLIPSE:       hf = wf = 1.4; break;
+                        }
+                        
+                        w *= wf;
+                        h *= hf;
+                    } else {
+                        w = h = 3 * WRAP_PAD;
                     }
+                    
+                    w += 2 * WRAP_PAD;
+                    h += 2 * WRAP_PAD;
                 } else {
                     if (isNaN(w) || w < 0) w = size;
                     if (isNaN(h) || h < 0) h = size;

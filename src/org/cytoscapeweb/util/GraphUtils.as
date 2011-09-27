@@ -43,7 +43,6 @@ package org.cytoscapeweb.util {
 	import flash.text.TextField;
 	import flash.utils.Dictionary;
 	
-	import org.cytoscapeweb.model.data.VisualStyleVO;
 	import org.cytoscapeweb.util.methods.$each;
 	import org.cytoscapeweb.view.layout.PackingAlgorithms;
 	
@@ -302,7 +301,7 @@ package org.cytoscapeweb.util {
             }
         }
         
-        public static function calculateGraphDimension(nodes:DataList, layout:String, style:VisualStyleVO):Rectangle {            
+        public static function calculateGraphDimension(nodes:DataList, layout:String):Rectangle {            
             // The minimum square edge when we have only one node:
             var side:Number = 40;
             var numNodes:Number = nodes.length;
@@ -314,34 +313,34 @@ package org.cytoscapeweb.util {
             
             if (numNodes > 1) {
                 if (layout === Layouts.CIRCLE || layout === Layouts.RADIAL) {
-                    if (numNodes === 2) {
-                        side *= 1.5;
-                    } else {
-                        // Based on the desired distance between the adjacent nodes, imagine an inscribed 
-                        // regular polygon that has N sides, and then calculate the circle radius:
-                        // 1. number of sides = number of nodes:
-                        var N:Number = nodes.length;
-                        // 2. Each side should have a desired size (distance between the adjacent nodes):
-                        var S:Number = 0;
-                        for each (n in nodes) {
-                            if (!GraphUtils.isFilteredOut(n))
-                                S = Math.max(S, style.getValue(VisualProperties.NODE_SIZE, n.data));
+                    // Based on the desired distance between the adjacent nodes, imagine an inscribed 
+                    // regular polygon that has N sides, and then calculate the circle radius:
+                    // 1. number of sides = number of nodes:
+                    var N:Number = nodes.length;
+                    // 2. Each side should have a desired size (distance between the adjacent nodes):
+                    var S:Number = 0;
+                    for each (n in nodes) {
+                        if (!GraphUtils.isFilteredOut(n)) {
+                            S = Math.max(n.width, n.height);
                         }
-                        S /= 2;
+                    }
+                    if (isNaN(S)) S = 40;
+                    
+                    if (numNodes === 2) {
+                        side = 2.1 * S;
+                    } else {
                         // 3. If we connect two adjacent vertices to the center, the angle between these two 
                         // lines is 360/N degrees, or 2*pi/N radians:
                         var theta:Number = 2 * Math.PI / N;
-                        // 4. To find the circle radius, using Trigonometry:
+                        // 4. To find the circle diameter, using Trigonometry:
                         // sin(theta/2) = opposite/hypotenuse
-                        var r:Number = S / Math.sin(theta/2) * 2;
-                        // 5. Finally, the square side should be the circle diameter (2r):
-                        side = 2 * r;
+                        side = (2 * S) / Math.sin(theta/2);
                     }
                 } else if (layout === Layouts.FORCE_DIRECTED) {
                     var area:Number = 0;
                     for each (n in nodes) {
                         if (!GraphUtils.isFilteredOut(n)) {
-                            var s:Number = style.getValue(VisualProperties.NODE_SIZE, n.data);
+                            var s:Number = Math.max(n.width, n.height);
                             area += 9 * s * s;
                         }
                     }

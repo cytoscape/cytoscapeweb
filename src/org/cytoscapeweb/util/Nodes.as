@@ -79,7 +79,7 @@ package org.cytoscapeweb.util {
                     shape: shape,
                     "props.width": width,
                     "props.height": height,
-                    "props.wrapText": wrapText,
+                    "props.autoSize": autoSize,
                     size: size,
                     fillColor: fillColor,
                     lineColor: lineColor, 
@@ -119,7 +119,7 @@ package org.cytoscapeweb.util {
             return h;
         }
         
-        public static function wrapText(n:NodeSprite):Boolean {
+        public static function autoSize(n:NodeSprite):Boolean {
             var size:Number = style.getValue(VisualProperties.NODE_SIZE, n.data);
             var wrap:Boolean = size === -1;
             

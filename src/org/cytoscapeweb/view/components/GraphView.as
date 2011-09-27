@@ -142,7 +142,7 @@ package org.cytoscapeweb.view.components {
             resize();
             
             var par:Parallel = new Parallel();
-            vis.bounds = GraphUtils.calculateGraphDimension(vis.data.nodes, name, _style);
+            vis.bounds = GraphUtils.calculateGraphDimension(vis.data.nodes, name);
             var t:Transition = vis.applyLayout(layout);
             par.add(t);
           
@@ -406,11 +406,10 @@ package org.cytoscapeweb.view.components {
 		
 		private function createVisualization(data:Data, layoutName:String):GraphVis {
 		    vis = new GraphVis(data, _config);
-		    var b:Rectangle = GraphUtils.calculateGraphDimension(data.nodes, layoutName, _style);
-            vis.bounds = b;
-
             addChild(vis);
+            
             vis.refreshVisualProperties(_style);
+            vis.bounds = GraphUtils.calculateGraphDimension(data.nodes, layoutName);
             
             return vis;
 		}

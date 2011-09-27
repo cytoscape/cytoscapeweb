@@ -45,6 +45,7 @@ package org.cytoscapeweb.view.render {
     import flash.text.TextFormat;
     import flash.text.TextFormatAlign;
     
+    import org.cytoscapeweb.util.NodeShapes;
     import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.methods.$each;
     
@@ -210,7 +211,10 @@ package org.cytoscapeweb.view.render {
                 if      (label.verticalAnchor == TextSprite.TOP)     myYOffset += d.height/2;
                 else if (label.verticalAnchor == TextSprite.BOTTOM)  myYOffset -= d.height/2;
                 
-                if (d.props.wrapText) d.dirty();
+                if (d.props.autoSize) {
+                    d.render();
+                    if (d.shape == NodeShapes.TRIANGLE) myYOffset += d.height/4;
+                }
             }
             
             label.x = x + myXOffset;
