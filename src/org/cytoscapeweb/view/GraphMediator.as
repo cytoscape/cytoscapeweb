@@ -90,7 +90,7 @@ package org.cytoscapeweb.view {
             if (_dragControl == null) {
                 _dragControl = new EventDragControl(NodeSprite);
 	            _dragControl.addEventListener(DragEvent.START, onDragNodeStart);
-	            _dragControl.addEventListener(DragEvent.STOP, onDragNodeEnd);
+	            _dragControl.addEventListener(DragEvent.STOP, onDragNodeStop);
 	            _dragControl.addEventListener(DragEvent.DRAG, onDragNode);
             }
             
@@ -639,10 +639,12 @@ package org.cytoscapeweb.view {
                 _draggingNode = true;
                 updateCursor();
             }
+            
             evt.node.removeEventListener(MouseEvent.CLICK, onClickNode);
+            sendNotification(ApplicationFacade.DRAG_START_EVENT, { target: evt.node });
         }
         
-        private function onDragNodeEnd(evt:DragEvent):void { trace("== END Drag Node");
+        private function onDragNodeStop(evt:DragEvent):void { trace("== STOP Drag Node");
             if (_draggingComponent) vis.hideDragRectangle();
             _draggingNode = false;
             _draggingComponent = false;
@@ -653,6 +655,8 @@ package org.cytoscapeweb.view {
             if (evt.node.hasEventListener(MouseEvent.MOUSE_UP)) {
                 evt.node.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_UP));
             }
+            
+            sendNotification(ApplicationFacade.DRAG_STOP_EVENT, { target: evt.node });
         }
         
         private function onDragNode(evt:DragEvent):void {

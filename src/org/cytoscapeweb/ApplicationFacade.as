@@ -106,6 +106,9 @@ package org.cytoscapeweb {
         public static const ROLLOUT_EVENT:String = "rollout_event";
         public static const ACTIVATE_EVENT:String = "activate_event";
         public static const DEACTIVATE_EVENT:String = "deactivate_event";
+        public static const DRAG_START_EVENT:String = "drag_start_event";
+        public static const DRAG_EVENT:String = "drag_event";
+        public static const DRAG_STOP_EVENT:String = "drag_stop_event";
         
         public static const GRAPH_DRAWN:String = "graph_drawn";
         public static const GRAPH_DATA_CHANGED:String = "graph_data_changed";
@@ -152,6 +155,9 @@ package org.cytoscapeweb {
             registerCommand(ROLLOUT_EVENT, HandleHoverCommand);
             registerCommand(CLICK_EVENT, HandleClickCommand);
             registerCommand(DOUBLE_CLICK_EVENT, HandleClickCommand);
+            registerCommand(DRAG_START_EVENT, HandleDragCommand);
+            registerCommand(DRAG_EVENT, HandleDragCommand);
+            registerCommand(DRAG_STOP_EVENT, HandleDragCommand);
             registerCommand(SELECT, SelectCommand);
             registerCommand(SELECT_ALL, SelectAllCommand);
             registerCommand(DESELECT, DeselectCommand);
