@@ -117,7 +117,7 @@ package org.cytoscapeweb.view.components {
                 dispatchEvent(new GraphViewEvent(GraphViewEvent.RENDER_COMPLETE));
                 
                 // Set the view center:
-                if (viewCenter != null) {
+                if (viewCenter != null && config.currentLayout.options.fitToScreen == false) {
                     var cc:Point = new Point(stage.stageWidth/2, stage.stageHeight/2); // canvas center
                     cc = vis.globalToLocal(cc); // in case vis is not positioned in (0,0)
                     
