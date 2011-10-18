@@ -1,0 +1,114 @@
+<graphml xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd" xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <key id="name" for="all" attr.name="name" attr.type="string"/>
+  <key id="label" for="all" attr.name="label" attr.type="string"/>
+  <key id="weight" for="all" attr.name="weight" attr.type="double"/>
+  <key id="ranking" for="node" attr.name="ranking" attr.type="int"/>
+  <key id="type" for="node" attr.name="type" attr.type="string"/>
+  <key id="shape" for="node" attr.name="shape" attr.type="string"/>
+  <key id="special" for="node" attr.name="special" attr.type="boolean"/>
+  <key id="type" for="edge" attr.name="type" attr.type="string"/>
+  <key id="interaction" for="edge" attr.name="interaction" attr.type="string">
+    <default>pp</default>
+  </key>
+  <key id="weight" for="edge" attr.name="weight" attr.type="double"/>
+  <key id="sourceArrowShape" for="edge" attr.name="sourceArrowShape" attr.type="string"/>
+  <key id="targetArrowShape" for="edge" attr.name="targetArrowShape" attr.type="string"/>
+  <graph edgedefault="undirected">
+    <node id="3">
+      <data key="special">true</data>
+      <data key="label">n3</data>
+      <data key="name">Node 3</data>
+      <data key="shape">OCTAGON</data>
+      <data key="weight">0.6</data>
+      <data key="ranking">3</data>
+      <data key="type">1</data>
+    </node>
+    <node id="1">
+      <data key="special">true</data>
+      <data key="label">n1</data>
+      <data key="name">Node 1</data>
+      <data key="shape">RECTANGLE</data>
+      <data key="weight">0.3</data>
+      <data key="ranking">1</data>
+      <data key="type">1</data>
+      <graph edgedefault="undirected">
+        <node id="4">
+          <data key="special">true</data>
+          <data key="label">n4</data>
+          <data key="name">Node 4</data>
+          <data key="shape">ELLIPSE</data>
+          <data key="weight">0.34</data>
+          <data key="ranking">4</data>
+          <data key="type">1</data>
+        </node>
+        <node id="2">
+          <data key="special">true</data>
+          <data key="label">n2</data>
+          <data key="name">Node 2</data>
+          <data key="shape">RECTANGLE</data>
+          <data key="weight">0.2</data>
+          <data key="ranking">2</data>
+          <data key="type">1</data>
+          <graph edgedefault="undirected">
+            <node id="5">
+              <data key="special">true</data>
+              <data key="label">n5</data>
+              <data key="name">Node 5</data>
+              <data key="shape">ELLIPSE</data>
+              <data key="weight">0.01</data>
+              <data key="ranking">5</data>
+              <data key="type">1</data>
+            </node>
+          </graph>
+        </node>
+        <edge directed="true" target="2" source="4">
+          <data key="interaction">pg</data>
+          <data key="type">1</data>
+          <data key="targetArrowShape">delta</data>
+          <data key="weight">0.1</data>
+          <data key="sourceArrowShape">T</data>
+        </edge>
+      </graph>
+    </node>
+    <edge directed="true" target="1" source="3">
+      <data key="interaction">pg</data>
+      <data key="type">1</data>
+      <data key="targetArrowShape">T</data>
+      <data key="weight">0.6</data>
+      <data key="sourceArrowShape">delta</data>
+    </edge>
+    <edge directed="true" target="1" source="3">
+      <data key="type">2</data>
+      <data key="targetArrowShape">T</data>
+      <data key="weight">0.6</data>
+      <data key="sourceArrowShape">delta</data>
+    </edge>
+    <edge directed="true" target="3" source="1">
+      <data key="interaction">gg</data>
+      <data key="type">3</data>
+      <data key="targetArrowShape">T</data>
+      <data key="weight">0.1</data>
+      <data key="sourceArrowShape">diamond</data>
+    </edge>
+    <edge target="3" source="5">
+      <data key="targetArrowShape">diamond</data>
+      <data key="weight">0.5</data>
+      <data key="type">1</data>
+      <data key="interaction">gg</data>
+      <data key="sourceArrowShape">circle</data>
+    </edge>
+    <edge target="4" source="5">
+      <data key="targetArrowShape">none</data>
+      <data key="weight">0.6</data>
+      <data key="type">1</data>
+      <data key="sourceArrowShape">none</data>
+    </edge>
+    <edge target="3" source="4">
+      <data key="targetArrowShape">circle</data>
+      <data key="weight">0.8</data>
+      <data key="type">2</data>
+      <data key="interaction">pg</data>
+      <data key="sourceArrowShape">diamond</data>
+    </edge>
+  </graph>
+</graphml>

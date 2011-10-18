@@ -34,12 +34,15 @@ package org.cytoscapeweb.model.converters {
     import flare.data.DataTable;
     import flare.data.DataUtil;
     import flare.data.converters.IDataConverter;
+    import flare.vis.data.NodeSprite;
     
     import flash.utils.ByteArray;
     import flash.utils.IDataInput;
     import flash.utils.IDataOutput;
     
     import mx.utils.StringUtil;
+    
+    import org.cytoscapeweb.util.DataSchemaUtils;
 
     /**
      * Converts data between the Simple Interaction Format and flare DataSet instances.
@@ -86,12 +89,8 @@ package org.cytoscapeweb.model.converters {
         
         // ========[ CONSTANTS ]====================================================================
 
-        private static const ID:String          = "id";
         private static const LABEL:String       = "label";
         private static const INTERACTION:String = "interaction";
-        private static const DIRECTED:String    = "directed";
-        private static const SOURCE:String      = "source";
-        private static const TARGET:String      = "target";        
 
         // ========[ PRIVATE PROPERTIES ]===========================================================
 
@@ -102,7 +101,7 @@ package org.cytoscapeweb.model.converters {
 
         public function SIFConverter(options:Object=null) {
             super();
-            _nodeAttr = options != null ? options.nodeAttr : ID;
+            _nodeAttr = options != null ? options.nodeAttr : DataSchemaUtils.ID;
             _interactionAttr = options != null ? options.interactionAttr : INTERACTION;
         }
 
@@ -127,13 +126,14 @@ package org.cytoscapeweb.model.converters {
                 var id:*, src:String, tgt:String, inter:String;
                 
                 for each (n in nodes) {
+                    if (n is NodeSprite) n = n.data;
                     id = n.hasOwnProperty(_nodeAttr) ? n[_nodeAttr] : n.id;
                     nodeIds[n.id] = id;
                 }
                 
                 for each (e in edges) {
-                    src = nodeIds[e[SOURCE]];
-                    tgt = nodeIds[e[TARGET]];
+                    src = nodeIds[e[DataSchemaUtils.SOURCE]];
+                    tgt = nodeIds[e[DataSchemaUtils.TARGET]];
                     inter = e.hasOwnProperty(_interactionAttr) ? e[_interactionAttr] : e.id;
                     
                     sif += (src + "\t" + inter + "\t" + tgt + "\n");
@@ -142,6 +142,7 @@ package org.cytoscapeweb.model.converters {
                 }
                 
                 for each (n in nodes) {
+                    if (n is NodeSprite) n = n.data;
                     id = nodeIds[n.id];
                     
                     if (!writtenNodes[id]) {
@@ -162,19 +163,14 @@ package org.cytoscapeweb.model.converters {
             var nodes:Array = [], edges:Array = [];
             var n:Object, e:Object;
             
-            var nodeSchema:DataSchema = new DataSchema();
-            var edgeSchema:DataSchema = new DataSchema();
+            var nodeSchema:DataSchema = DataSchemaUtils.minimumNodeSchema();
+            var edgeSchema:DataSchema = DataSchemaUtils.minimumEdgeSchema(false);
             
             // set schema defaults
-            nodeSchema.addField(new DataField(ID, DataUtil.STRING));
             nodeSchema.addField(new DataField(LABEL, DataUtil.STRING));
 
-            edgeSchema.addField(new DataField(ID, DataUtil.STRING));
             edgeSchema.addField(new DataField(LABEL, DataUtil.STRING));
             edgeSchema.addField(new DataField(_interactionAttr, DataUtil.STRING));
-            edgeSchema.addField(new DataField(SOURCE, DataUtil.STRING));
-            edgeSchema.addField(new DataField(TARGET, DataUtil.STRING));
-            edgeSchema.addField(new DataField(DIRECTED, DataUtil.BOOLEAN, false));
             
             var delimiter:String = " ";
             if (sif.indexOf("\t") >= 0) delimiter = "\t";
@@ -235,18 +231,18 @@ package org.cytoscapeweb.model.converters {
 
         protected function createNodeData(name:String):Object {
             var data:Object = {};
-            data[ID] = data[LABEL] = name;
+            data[DataSchemaUtils.ID] = data[LABEL] = name;
 
             return data;
         }
         
         protected function createEdgeData(interaction:String, source:String, target:String):Object {
             var data:Object = {};
-            data[ID] = source + " (" + interaction + ") " + target;
+            data[DataSchemaUtils.ID] = source + " (" + interaction + ") " + target;
             data[_interactionAttr] = data[LABEL] = interaction;
-            data[SOURCE] = source;
-            data[TARGET] = target;
-            data[DIRECTED] = false;
+            data[DataSchemaUtils.SOURCE] = source;
+            data[DataSchemaUtils.TARGET] = target;
+            data[DataSchemaUtils.DIRECTED] = false;
 
             return data;
         }

@@ -33,18 +33,18 @@ package org.cytoscapeweb.model.data {
     import org.cytoscapeweb.util.NodeShapes;
     import org.cytoscapeweb.util.Utils;
 
-	
-	public class VisualStyleVO {
-		
-		// ========[ CONSTANTS ]====================================================================
-		
+    
+    public class VisualStyleVO {
+        
+        // ========[ CONSTANTS ]====================================================================
+        
         // ========[ PRIVATE PROPERTIES ]===========================================================
-		
-		private var _properties:Object;
+        
+        private var _properties:Object;
         private var _visualStyleBypass:VisualStyleBypassVO;
-		
-		internal static const _DEFAULT_OBJ:Object = {
-		      global: {
+        
+        internal static const _DEFAULT_OBJ:Object = {
+              global: {
                     backgroundColor: "#ffffff",
                     tooltipDelay: 800,
                     selectionLineColor: "#8888ff",
@@ -54,6 +54,7 @@ package org.cytoscapeweb.model.data {
                     selectionFillOpacity: 0.1
                 },
                 nodes: {
+                    // regular nodes
                     shape: NodeShapes.ELLIPSE,
                     size: 24,
 //                    width: -1,
@@ -88,7 +89,46 @@ package org.cytoscapeweb.model.data {
                     hoverGlowColor: "#aae6ff",
                     hoverGlowOpacity: 0,
                     hoverGlowBlur: 8,
-                    hoverGlowStrength: 6
+                    hoverGlowStrength: 6,
+                    
+                    // compound nodes
+                    compoundPaddingLeft: 10,
+                    compoundPaddingRight: 10,
+                    compoundPaddingTop: 10,
+                    compoundPaddingBottom: 10,
+                    compoundShape: NodeShapes.RECTANGLE,
+                    compoundSize: 48,
+                    compoundColor: "#f5f5f5",
+                    compoundOpacity: 0.8,
+                    compoundBorderColor: "#666666",
+                    compoundBorderWidth: 1,
+                    compoundLabel: { passthroughMapper: { attrName: "label" } },
+                    compoundLabelHorizontalAnchor: "center",
+                    compoundLabelVerticalAnchor: "top",
+                    compoundLabelXOffset: 0,
+                    compoundLabelYOffset: 0,
+                    compoundLabelFontName: "Arial",
+                    compoundLabelFontSize: 11,
+                    compoundLabelFontColor: "#000000",
+                    compoundLabelFontWeight: "normal",
+                    compoundLabelFontStyle: "normal",
+                    compoundLabelGlowColor: "#ffffff",
+                    compoundLabelGlowOpacity: 0,
+                    compoundLabelGlowBlur: 2,
+                    compoundLabelGlowStrength: 20,
+                    compoundTooltipFont: "Arial",
+                    compoundTooltipFontSize: 11,
+                    compoundTooltipFontColor: "#000000",
+                    compoundTooltipBackgroundColor: "#f5f5cc",
+                    compoundTooltipBorderColor: "#000000",
+                    compoundSelectionGlowColor: "#ffff33",
+                    compoundSelectionGlowOpacity: 0.6,
+                    compoundSelectionGlowBlur: 8,
+                    compoundSelectionGlowStrength: 6,
+                    compoundHoverGlowColor: "#aae6ff",
+                    compoundHoverGlowOpacity: 0,
+                    compoundHoverGlowBlur: 8,
+                    compoundHoverGlowStrength: 6
                 },
                 edges: {
                     color: "#999999",
@@ -132,11 +172,11 @@ package org.cytoscapeweb.model.data {
                     selectionGlowStrength: 10,
                     curvature: 18
                 }
-		};
-		
-		// ========[ PUBLIC PROPERTIES ]============================================================
-		
-		/** A mapping of VisualPropertyVO objects that has the property name as keys. */
+        };
+        
+        // ========[ PUBLIC PROPERTIES ]============================================================
+        
+        /** A mapping of VisualPropertyVO objects that has the property name as keys. */
         public function get properties():Object {
             return _properties;
         }
@@ -152,40 +192,40 @@ package org.cytoscapeweb.model.data {
         }
 
         // ========[ CONSTRUCTOR ]==================================================================
-		
-		public function VisualStyleVO() {
-			properties = {};
-			visualStyleBypass = new VisualStyleBypassVO();
-		}
-		
-		// ========[ PUBLIC METHODS ]===============================================================
-		
-		public function getVisualProperty(visPropName:String):VisualPropertyVO {
-			return properties[visPropName] as VisualPropertyVO;
-		}
-		
-		public function addVisualProperty(visProp:VisualPropertyVO):void {
-			if (visProp != null)
+        
+        public function VisualStyleVO() {
+            properties = {};
+            visualStyleBypass = new VisualStyleBypassVO();
+        }
+        
+        // ========[ PUBLIC METHODS ]===============================================================
+        
+        public function getVisualProperty(visPropName:String):VisualPropertyVO {
+            return properties[visPropName] as VisualPropertyVO;
+        }
+        
+        public function addVisualProperty(visProp:VisualPropertyVO):void {
+            if (visProp != null)
                 properties[visProp.name] = visProp;
-		}
-		
-		public function removeVisualProperty(visPropName:String):void {
-			delete properties[visPropName];
-		}
-		
-		public function getValue(visPropName:String, data:Object=null):* {
-			var value:*;
-			
-			// First, check if there is a bypass value:
-			if (visualStyleBypass != null && data != null) {
-			    value = visualStyleBypass.getValue(visPropName, data.id);
-			}
-			if (value === undefined) {
-    			var vp:VisualPropertyVO = getVisualProperty(visPropName);
+        }
+        
+        public function removeVisualProperty(visPropName:String):void {
+            delete properties[visPropName];
+        }
+        
+        public function getValue(visPropName:String, data:Object=null):* {
+            var value:*;
+            
+            // First, check if there is a bypass value:
+            if (visualStyleBypass != null && data != null) {
+                value = visualStyleBypass.getValue(visPropName, data.id);
+            }
+            if (value === undefined) {
+                var vp:VisualPropertyVO = getVisualProperty(visPropName);
     
-    			if (vp != null) {
-    			    var mapper:VizMapperVO = vp.vizMapper;
-    			    
+                if (vp != null) {
+                    var mapper:VizMapperVO = vp.vizMapper;
+                    
                     if (data != null && mapper != null) {
                         value = mapper.getValue(data);
                         
@@ -195,31 +235,31 @@ package org.cytoscapeweb.model.data {
                     
                     if (value == null)
                         value = vp.defaultValue;
-    			}
+                }
             }
-			
-			return value;
-		}
-		
-		public function hasVisualProperty(visPropName:String):Boolean {
-			var vp:VisualPropertyVO = getVisualProperty(visPropName);
-			return vp != null;
-		}
-		
-		public function hasVizMapper(visPropName:String):Boolean {
-			var vp:VisualPropertyVO = getVisualProperty(visPropName);
-			return vp != null && vp.vizMapper != null;
-		}
-		
+            
+            return value;
+        }
+        
+        public function hasVisualProperty(visPropName:String):Boolean {
+            var vp:VisualPropertyVO = getVisualProperty(visPropName);
+            return vp != null;
+        }
+        
+        public function hasVizMapper(visPropName:String):Boolean {
+            var vp:VisualPropertyVO = getVisualProperty(visPropName);
+            return vp != null && vp.vizMapper != null;
+        }
+        
         public function getPropertiesAsArray():Array {
             var arr:Array = [];
             
             for (var key:* in properties)
-            	arr.push(properties[key]);
+                arr.push(properties[key]);
             
             return arr;
         }
-		
+        
         public function toObject():Object {
             var obj:Object = {};
 
@@ -233,39 +273,39 @@ package org.cytoscapeweb.model.data {
             
             return obj;
         }
-		
-		public static function fromObject(obj:Object):VisualStyleVO {
-			var grName:String, pName:String, props:Object, dprops:Object, dp:Object, p:Object;
+        
+        public static function fromObject(obj:Object):VisualStyleVO {
+            var grName:String, pName:String, props:Object, dprops:Object, dp:Object, p:Object;
 
-			if (obj != null && obj !== _DEFAULT_OBJ) {
-			    var defObj:Object = Utils.clone(_DEFAULT_OBJ);
-			    
-			    // Merge the given object with the default one:
-			    for (grName in defObj) {
-			        dprops = defObj[grName];
-			        props = obj[grName];
-			        // The custom style does not have this group:
-			        if (props == null) props = obj[grName] = {};
-			        
-			        for (pName in dprops) {
-			            dp = dprops[pName];
-			            p = obj[grName][pName];
-			            
-			            if (p == null) {
-			                // The custom style does not have this property, so set a default one:
-			                props[pName] = dp;
-			            } else if (typeof p === "object" && p["defaultValue"] == null) {
-			                // The custom style has this property, but not a default value for it,
-			                // so let's set one from the default style:
-			                p["defaultValue"] = (dp != null && typeof dp === "object" && dp.hasOwnProperty("defaultValue")) ?
-			                                    dp["defaultValue"] :
-			                                    dp;
-			            }
-			        }
-			    }
-			}
-			
-			var style:VisualStyleVO = new VisualStyleVO();
+            if (obj != null && obj !== _DEFAULT_OBJ) {
+                var defObj:Object = Utils.clone(_DEFAULT_OBJ);
+                
+                // Merge the given object with the default one:
+                for (grName in defObj) {
+                    dprops = defObj[grName];
+                    props = obj[grName];
+                    // The custom style does not have this group:
+                    if (props == null) props = obj[grName] = {};
+                    
+                    for (pName in dprops) {
+                        dp = dprops[pName];
+                        p = obj[grName][pName];
+                        
+                        if (p == null) {
+                            // The custom style does not have this property, so set a default one:
+                            props[pName] = dp;
+                        } else if (typeof p === "object" && p["defaultValue"] == null) {
+                            // The custom style has this property, but not a default value for it,
+                            // so let's set one from the default style:
+                            p["defaultValue"] = (dp != null && typeof dp === "object" && dp.hasOwnProperty("defaultValue")) ?
+                                                dp["defaultValue"] :
+                                                dp;
+                        }
+                    }
+                }
+            }
+            
+            var style:VisualStyleVO = new VisualStyleVO();
 
             // global | nodes | edges
             for (grName in obj) {
@@ -280,12 +320,12 @@ package org.cytoscapeweb.model.data {
                     style.addVisualProperty(vp);
                 }
             }
-			
-			return style;
-		}
-		
-		public static function defaultVisualStyle():VisualStyleVO {
-	        return VisualStyleVO.fromObject(_DEFAULT_OBJ);
-		}
-	}
+            
+            return style;
+        }
+        
+        public static function defaultVisualStyle():VisualStyleVO {
+            return VisualStyleVO.fromObject(_DEFAULT_OBJ);
+        }
+    }
 }

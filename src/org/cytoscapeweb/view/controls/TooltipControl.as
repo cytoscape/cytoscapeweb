@@ -99,8 +99,7 @@ package org.cytoscapeweb.view.controls {
          */
         public function TooltipControl(filter:*=null,
             tooltip:DisplayObject=null, show:Function=null,
-            update:Function=null, hide:Function=null, delay:Number=500)
-        {
+            update:Function=null, hide:Function=null, delay:Number=500) {
             this.filter = filter;
             _showTimer = new Timer(delay);
             _showTimer.addEventListener(TimerEvent.TIMER, onShow);
@@ -118,8 +117,7 @@ package org.cytoscapeweb.view.controls {
          * Generates a default TextSprite tooltip 
          * @return a new default tooltip object
          */
-        public static function createDefaultTooltip():TextSprite
-        {
+        public static function createDefaultTooltip():TextSprite {
             var fmt:TextFormat = new TextFormat("Arial", 14);
             fmt.leftMargin = 2;
             fmt.rightMargin = 2;
@@ -140,8 +138,7 @@ package org.cytoscapeweb.view.controls {
          * @param tip the tooltip object
          * @param obj the currently moused-over object
          */
-        protected function layout(tip:DisplayObject, obj:DisplayObject):void
-        {
+        protected function layout(tip:DisplayObject, obj:DisplayObject):void {
             var s:Stage = tip.stage;
             
             if (s != null) {
@@ -169,8 +166,7 @@ package org.cytoscapeweb.view.controls {
         }
         
         /** @private */
-        protected function fireEvent(type:String):void
-        {
+        protected function fireEvent(type:String):void {
             if (hasEventListener(type)) {
                 dispatchEvent(new TooltipEvent(type, _cur, tooltip));
             }
@@ -179,8 +175,7 @@ package org.cytoscapeweb.view.controls {
         // --------------------------------------------------------------------
         
         /** @inheritDoc */
-        public override function attach(obj:InteractiveObject):void
-        {
+        public override function attach(obj:InteractiveObject):void {
             if (!(obj is DisplayObjectContainer)) {
                 throw new Error("TooltipControls can only be " +
                     "attached to DisplayObjectContainers.");
@@ -193,8 +188,7 @@ package org.cytoscapeweb.view.controls {
         }
         
         /** @inheritDoc */
-        public override function detach():InteractiveObject
-        {
+        public override function detach():InteractiveObject {
             if (_object != null) {
                 _object.removeEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
                 _object.removeEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
@@ -202,8 +196,7 @@ package org.cytoscapeweb.view.controls {
             return super.detach();
         }
         
-        private function onMouseOver(evt:MouseEvent):void
-        {
+        private function onMouseOver(evt:MouseEvent):void {
             var n:DisplayObject = evt.target as DisplayObject;
             if (n==null || (_filter!=null && !_filter(n))) return;
 
@@ -216,8 +209,7 @@ package org.cytoscapeweb.view.controls {
             }
         }
         
-        private function onMouseMove(evt:MouseEvent):void
-        {
+        private function onMouseMove(evt:MouseEvent):void {
             if (!followMouse) {
                 _object.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
                 return;
@@ -226,8 +218,7 @@ package org.cytoscapeweb.view.controls {
             layout(tooltip, _cur);
         }
         
-        private function onShow(evt:TimerEvent=null):void
-        {
+        private function onShow(evt:TimerEvent=null):void {
             if (_t && _t.running) _t.stop();
             _showTimer.stop();
             _show = true;
@@ -246,8 +237,7 @@ package org.cytoscapeweb.view.controls {
                 _object.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
         }
         
-        private function onHide(evt:TimerEvent=null):void
-        {
+        private function onHide(evt:TimerEvent=null):void {
             _hideTimer.stop();
             fireEvent(TooltipEvent.HIDE);
             if (fadeDuration <= 0) {
@@ -264,8 +254,7 @@ package org.cytoscapeweb.view.controls {
             _cur = null;
         }
         
-        private function onMouseOut(evt:MouseEvent):void
-        {
+        private function onMouseOut(evt:MouseEvent):void {
             _showTimer.stop();
             if (_cur == null) return;
             _object.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
@@ -274,10 +263,8 @@ package org.cytoscapeweb.view.controls {
         
         // --------------------------------------------------------------------
         
-        private static function getStageBounds(stage:Stage):Rectangle 
-        {
+        private static function getStageBounds(stage:Stage):Rectangle {
             return new Rectangle(0, 0, stage.stageWidth, stage.stageHeight);
         }
-        
     }
 }

@@ -28,12 +28,15 @@
                     },
                     nodes: {
                         shape: "ELLIPSE",
-                        color: { defaultValue: "#cccccc", continuousMapper: { attrName: "weight", minValue: "#ffffff", maxValue: "#0b94b1" } },
+                        compoundShape: "ROUND_RECTANGLE",
+                        //color: "transparent",//{ defaultValue: "#cccccc", continuousMapper: { attrName: "weight", minValue: "#ffffff", maxValue: "#0b94b1" } },
+                        compoundColor: "transparent",//{ defaultValue: "#cccccc", continuousMapper: { attrName: "weight", minValue: "#ff00ff", maxValue: "#00ff00" } },
                         opacity: 0.9,
                         size: { defaultValue: 20, continuousMapper: { attrName: "weight",  minValue: 20, maxValue: 40 } },
                         borderWidth: 2,
                         borderColor: "#707070",
-                        image: "http://chart.apis.google.com/chart?chs=300x300&cht=p&chd=e0:U-gh..bR",
+                        //image: "http://chart.apis.google.com/chart?chs=300x300&cht=p&chd=e0:U-gh..bR",
+                        //compoundImage: "http://chart.apis.google.com/chart?chxr=0,0,160&chxt=x&chbh=a&chs=440x220&cht=bhs&chco=4D89F9,C6D9FD&chd=s:GflxYlS,fl9YSYS",
                         labelFontSize: { defaultValue: 12, continuousMapper: { attrName: "weight",  minValue: 10, maxValue: 24 } },
                         tooltipText: { customMapper: { functionName: "onNodeTooltip" } },
                         selectionGlowOpacity: 0,
@@ -110,10 +113,11 @@
                 $("input").attr("disabled", true);
 
                 // init and draw
-                vis = new org.cytoscapeweb.Visualization(div_id, options);
+                vis = new org.cytoscapeweb.Visualization(div_id);
                 
                 vis.ready(function() {
                     showElapsedTime();
+
                     var layout = vis.layout();
                     $("#layouts").val(layout.name);
                     $("input, select").attr("disabled", false);
@@ -129,7 +133,19 @@
                         vis.removeEdge(evt.target.data.id, true);
                     })
                     .addContextMenuItem("Add new node", function(evt) {
-                        var n = vis.addNode(evt.mouseX, evt.mouseY, { weight: Math.random() }, true);
+                        var x = evt.mouseX;
+                        var y = evt.mouseY;
+                        var parentId;
+                        if (evt.target != null && evt.target.group == "nodes") {
+                            parentId = evt.target.data.id;
+                            x = evt.target.x;
+                            y = evt.target.y;
+                            x += Math.random() * (evt.target.width/2) * (Math.round(x)%2==0 ? 1 : -1);
+                            y += Math.random() * (evt.target.height/2) * (Math.round(y)%2==0 ? 1 : -1);
+                        }
+                        var n = vis.addNode(x, y, { weight: Math.random(), parent: parentId }, true);
+                        n.data.label = n.data.id;
+                        vis.updateData([n]);
                     })
                     .addContextMenuItem("Add new edge", "nodes", function(evt) {
                     	_srcId = evt.target.data.id;
@@ -278,7 +294,7 @@
                             <label>Networks:</label>
                             <select id="graphs" size="1">
                                 <option value="sample1.xml" selected="selected">Sample 1</option>
-                                <option value="weighted1.graphml" selected="selected">Weighted 1</option>
+                                <option value="weighted1.graphml">Weighted 1</option>
                                 <option value="galFiltered.xgmml">Gal Filtered</option>
                                 <option value="cpath_cytoscape.xgmml">CPath</option>
                                 <option value="node_label_anchor.xgmml">Nodes Label Anchor (XGMML)</option>
@@ -315,6 +331,7 @@
                             <select id="layouts">
                                 <option value="ForceDirected" selected="selected">Force Directed</option>
                                 <option value="Circle">Circle</option>
+                                <option value="CompoundSpringEmbedder">CoSE</option>
                                 <option value="Radial">Radial</option>
                                 <option value="Tree">Tree</option>
                                 <option value="Preset">Preset</option>

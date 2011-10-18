@@ -123,31 +123,31 @@ package org.cytoscapeweb.view.render {
                 releasePrevious(_styleUrl);
                 var vs:VisualStyleVO = VisualStyleVO(style);
                 
-	            for each (pname in IMG_PROPS) {
-	                if (vs.hasVisualProperty(pname)) {
-	                    var vp:VisualPropertyVO = vs.getVisualProperty(pname);
-	                    // Default value:
-	                    url = vp.defaultValue;
-	                    loadIfNew(url, _styleUrl);
-	                    
-	                    // Discrete Mapper values:
-	                    var mapper:VizMapperVO= vp.vizMapper;
-	                    
-	                    if (mapper is DiscreteVizMapperVO) {
-	                        var dm:DiscreteVizMapperVO = DiscreteVizMapperVO(mapper);
-	                        values = dm.distinctValues;
-	                        
-	                        for each (url in values) {
+                for each (pname in IMG_PROPS) {
+                    if (vs.hasVisualProperty(pname)) {
+                        var vp:VisualPropertyVO = vs.getVisualProperty(pname);
+                        // Default value:
+                        url = vp.defaultValue;
+                        loadIfNew(url, _styleUrl);
+                        
+                        // Discrete Mapper values:
+                        var mapper:VizMapperVO= vp.vizMapper;
+                        
+                        if (mapper is DiscreteVizMapperVO) {
+                            var dm:DiscreteVizMapperVO = DiscreteVizMapperVO(mapper);
+                            values = dm.distinctValues;
+                            
+                            for each (url in values) {
                                 loadIfNew(url, _styleUrl);
-	                        }
-	                    } else if (mapper != null && nodes != null) {
-	                        for each (var n:NodeSprite in nodes) {
-	                           url = mapper.getValue(n.data);
-	                           loadIfNew(url, _styleUrl);
-	                        }
-	                    }
-	                }
-	            }
+                            }
+                        } else if (mapper != null && nodes != null) {
+                            for each (var n:NodeSprite in nodes) {
+                               url = mapper.getValue(n.data);
+                               loadIfNew(url, _styleUrl);
+                            }
+                        }
+                    }
+                }
             } else if (style is VisualStyleBypassVO) {
                 releasePrevious(_bypassUrl);
 
@@ -222,14 +222,14 @@ package org.cytoscapeweb.view.render {
         }
         
         private function checkOnLoadingEnd():void {
-        	if (_onLoadingEnd != null) {
-        		if (!isLoading()) {
-        		    // Execute the callback function only once!
+            if (_onLoadingEnd != null) {
+                if (!isLoading()) {
+                    // Execute the callback function only once!
                     var fn:Function = _onLoadingEnd;
                     _onLoadingEnd = null;
                     fn(undefined);
-        		}
-        	}
+                }
+            }
         }
         
         private function retain(url:String):void {

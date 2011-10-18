@@ -139,7 +139,7 @@ package org.cytoscapeweb.util {
         }
         
         public static function getRoundRectCornerRadius(width:Number, height:Number):Number {
-            return Math.min(width, height)/4;
+            return Math.min(width, height)/8;
         }
         
         public static function isValid(shape:String):Boolean {

@@ -61,6 +61,7 @@ package org.cytoscapeweb.model.converters {
     import org.cytoscapeweb.util.VisualProperties;
     import org.cytoscapeweb.view.components.GraphView;
     import org.cytoscapeweb.view.render.ImageCache;
+    import org.cytoscapeweb.vis.data.CompoundNodeSprite;
         
     /**
      * Class that generates an SGV image from the network.
@@ -148,10 +149,10 @@ package org.cytoscapeweb.model.converters {
             _shiftY = sp.y - margin;
             
             // Draw edges and nodes:
-            svg += drawEdges(graphData.edges);
-            if (config.edgeLabelsVisible) svg += drawLabels(graphData.edges);
             svg += drawNodes(graphData.nodes);
             if (config.nodeLabelsVisible) svg += drawLabels(graphData.nodes);
+            svg += drawEdges(graphData.edges);
+            if (config.edgeLabelsVisible) svg += drawLabels(graphData.edges);
     
             // Close the root element:
             svg += '</svg>';
@@ -387,7 +388,11 @@ package org.cytoscapeweb.model.converters {
                     var hAnchor:String = Anchors.CENTER;
                     var vAnchor:String = Anchors.MIDDLE;
                     
-                    if (d is NodeSprite) {
+                    if (d is CompoundNodeSprite
+                        && (d as CompoundNodeSprite).isInitialized()) {
+                        hAnchor = _style.getValue(VisualProperties.C_NODE_LABEL_HANCHOR, d.data);
+                        vAnchor = _style.getValue(VisualProperties.C_NODE_LABEL_VANCHOR, d.data);
+                    } else if (d is NodeSprite) {
                         hAnchor = _style.getValue(VisualProperties.NODE_LABEL_HANCHOR, d.data);
                         vAnchor = _style.getValue(VisualProperties.NODE_LABEL_VANCHOR, d.data);
                     }

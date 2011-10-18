@@ -72,8 +72,8 @@ package org.cytoscapeweb.model.data {
         
         public static function getDefault():ConfigVO {
             if (_defaultCfg == null) {
-				_defaultCfg = new ConfigVO();
-	            _defaultCfg.visualStyle = VisualStyleVO.defaultVisualStyle();
+                _defaultCfg = new ConfigVO();
+                _defaultCfg.visualStyle = VisualStyleVO.defaultVisualStyle();
             }
             
             return _defaultCfg;

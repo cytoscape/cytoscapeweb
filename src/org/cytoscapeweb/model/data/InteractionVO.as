@@ -28,30 +28,30 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.model.data {
-	import flare.data.DataField;
-	import flare.data.DataSchema;
-	import flare.data.DataUtil;
-	import flare.vis.data.EdgeSprite;
-	import flare.vis.data.NodeSprite;
-	
-	public class InteractionVO {
-		
-		private var _key:String;
-		private var _node1:NodeSprite;
-		private var _node2:NodeSprite;
-		private var _mergedEdge:EdgeSprite;
-		
+    import flare.data.DataField;
+    import flare.data.DataSchema;
+    import flare.data.DataUtil;
+    import flare.vis.data.EdgeSprite;
+    import flare.vis.data.NodeSprite;
+    
+    public class InteractionVO {
+        
+        private var _key:String;
+        private var _node1:NodeSprite;
+        private var _node2:NodeSprite;
+        private var _mergedEdge:EdgeSprite;
+        
         // =========================================================================================
-		
-		public function InteractionVO(node1:NodeSprite, node2:NodeSprite, edgesSchema:DataSchema) {
-		    _key = InteractionVO.createKey(node1, node2);
-			
-			_node1 = node1;
-			_node2 = node2;
-			
-			// Create merged edge:
-			_mergedEdge = new EdgeSprite(node1, node2, false);
-			node1.addOutEdge(_mergedEdge);
+        
+        public function InteractionVO(node1:NodeSprite, node2:NodeSprite, edgesSchema:DataSchema) {
+            _key = InteractionVO.createKey(node1, node2);
+            
+            _node1 = node1;
+            _node2 = node2;
+            
+            // Create merged edge:
+            _mergedEdge = new EdgeSprite(node1, node2, false);
+            node1.addOutEdge(_mergedEdge);
             node2.addInEdge(_mergedEdge);
 
             // props attributes and functions
@@ -72,50 +72,50 @@ package org.cytoscapeweb.model.data {
                 }
                 return filteredList;
             }
-			
-			update(edgesSchema);
-		}
-		
+            
+            update(edgesSchema);
+        }
+        
         // ========[ PUBLIC METHODS ]===============================================================
-		
-		public function get key():String {
-			return _key;
-		}
-		
-		public function get node1():NodeSprite {
-			return _node1;
-		}
-		
-		public function get node2():NodeSprite {
-			return _node2;
-		}
-		
-		public function get edges():Array {
-		    var edges:Array = [];
+        
+        public function get key():String {
+            return _key;
+        }
+        
+        public function get node1():NodeSprite {
+            return _node1;
+        }
+        
+        public function get node2():NodeSprite {
+            return _node2;
+        }
+        
+        public function get edges():Array {
+            var edges:Array = [];
             node1.visitEdges(function(e:EdgeSprite):Boolean {
                 if (!e.props.$merged && hasNodes(e.source, e.target)) edges.push(e);
                 return false;
             }, loop ? NodeSprite.IN_LINKS : NodeSprite.GRAPH_LINKS);
-		    
-			return edges;
-		}
-		
-		public function get mergedEdge():EdgeSprite {          
+            
+            return edges;
+        }
+        
+        public function get mergedEdge():EdgeSprite {          
             return _mergedEdge;
-		}
-		
-		public function get loop():Boolean {          
+        }
+        
+        public function get loop():Boolean {          
             return mergedEdge.source === mergedEdge.target;
-		}
-		
-		public function hasNodes(node1:NodeSprite, node2:NodeSprite):Boolean {
-			return (_node1 == node1 && _node2 == node2) || (_node1 == node2 && _node2 == node1);
-		}
-		
-		public function update(edgesSchema:DataSchema, updateData:Boolean=true):void {
-		    // Merged edge data:
-		    if (updateData) recreateDataFields(edgesSchema);
-		    
+        }
+        
+        public function hasNodes(node1:NodeSprite, node2:NodeSprite):Boolean {
+            return (_node1 == node1 && _node2 == node2) || (_node1 == node2 && _node2 == node1);
+        }
+        
+        public function update(edgesSchema:DataSchema, updateData:Boolean=true):void {
+            // Merged edge data:
+            if (updateData) recreateDataFields(edgesSchema);
+            
             // Update merged edge cached data:
             mergedEdge.props.$selected = false;
             mergedEdge.props.$edges = edges;
@@ -149,8 +149,8 @@ package org.cytoscapeweb.model.data {
                     if (i === 0) src = e.source; // get the first edge as reference
                     e.props.$curvatureFactor = e.source === src ? f : -f; // to correctly invert the curve
                 } else {
-                	e.props.$curvatureFactor = f;
-				}
+                    e.props.$curvatureFactor = f;
+                }
                 
                 // Merged edge selection state:
                 if (e.props.$selected) mergedEdge.props.$selected = true;
@@ -185,15 +185,15 @@ package org.cytoscapeweb.model.data {
             // Other cached data:
             mergedEdge.props.$filteredOut = edgesList.length === 0;
             mergedEdge.dirty();
-		}
-		
-		public static function createKey(node1:NodeSprite, node2:NodeSprite):String {
-		    var id1:* = node1.data.id;
-		    var id2:* = node2.data.id;
-		    var key:String = id1 < id2 ? id1+"::"+id2 : id2+"::"+id1;
-		    
-		    return key;
-	    }
+        }
+        
+        public static function createKey(node1:NodeSprite, node2:NodeSprite):String {
+            var id1:* = node1.data.id;
+            var id2:* = node2.data.id;
+            var key:String = id1 < id2 ? id1+"::"+id2 : id2+"::"+id1;
+            
+            return key;
+        }
 
         // ========[ PRIVATE METHODS ]==============================================================
         
@@ -223,5 +223,5 @@ package org.cytoscapeweb.model.data {
             var n:String = df.name;
             return (n != "id" && n != "source" && n !== "target" &&n !== "directed");
         }
-	}
+    }
 }

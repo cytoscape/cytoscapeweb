@@ -37,6 +37,8 @@ package org.cytoscapeweb.model.data {
     
     import flexunit.framework.TestCase;
     
+    import org.cytoscapeweb.util.DataSchemaUtils;
+    
     
     public class InteractionVOTest extends TestCase {
         
@@ -64,12 +66,7 @@ package org.cytoscapeweb.model.data {
                                                        s: "b", i: 2, n: 1.5, b: true });
             edge3 = data.addEdgeFor(tgt, src, true, { id: "e3", source: "n2", target: "n1", directed: true });
             
-            edgesSchema = new DataSchema();
-            edgesSchema.addField(new DataField("id", DataUtil.STRING));
-            edgesSchema.addField(new DataField("source", DataUtil.STRING));
-            edgesSchema.addField(new DataField("target", DataUtil.STRING));
-            edgesSchema.addField(new DataField("id", DataUtil.STRING));
-            edgesSchema.addField(new DataField("directed", DataUtil.BOOLEAN));
+            edgesSchema = DataSchemaUtils.minimumEdgeSchema();
             edgesSchema.addField(new DataField("s", DataUtil.STRING));
             edgesSchema.addField(new DataField("i", DataUtil.INT));
             edgesSchema.addField(new DataField("n", DataUtil.NUMBER));

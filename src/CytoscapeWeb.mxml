@@ -46,6 +46,8 @@
     public var graphView:GraphView;
 
     private function onInit():void {
+        Security.allowDomain("*");
+        
         // Create and add the View that contains the GRAPH:
         graphView = new GraphView();
         graphBox.addChild(graphView);

@@ -30,9 +30,9 @@
 package org.cytoscapeweb.view {
     import flare.animate.Parallel;
     import flare.display.DirtySprite;
-    import flare.display.TextSprite;
     import flare.util.Arrays;
     import flare.vis.data.Data;
+    import flare.vis.data.DataList;
     import flare.vis.data.DataSprite;
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
@@ -51,7 +51,7 @@ package org.cytoscapeweb.view {
     import org.cytoscapeweb.events.GraphViewEvent;
     import org.cytoscapeweb.model.data.VisualStyleBypassVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
-    import org.cytoscapeweb.model.error.CWError;
+    import org.cytoscapeweb.util.CompoundNodes;
     import org.cytoscapeweb.util.Edges;
     import org.cytoscapeweb.util.ExternalFunctions;
     import org.cytoscapeweb.util.Groups;
@@ -63,6 +63,7 @@ package org.cytoscapeweb.view {
     import org.cytoscapeweb.view.components.GraphVis;
     import org.cytoscapeweb.view.controls.EnclosingSelectionControl;
     import org.cytoscapeweb.view.controls.EventDragControl;
+    import org.cytoscapeweb.vis.data.CompoundNodeSprite;
     import org.puremvc.as3.interfaces.INotification;
 
 
@@ -89,9 +90,9 @@ package org.cytoscapeweb.view {
         private function get dragControl():EventDragControl {
             if (_dragControl == null) {
                 _dragControl = new EventDragControl(NodeSprite);
-	            _dragControl.addEventListener(DragEvent.START, onDragNodeStart);
-	            _dragControl.addEventListener(DragEvent.STOP, onDragNodeStop);
-	            _dragControl.addEventListener(DragEvent.DRAG, onDragNode);
+                _dragControl.addEventListener(DragEvent.START, onDragNodeStart);
+                _dragControl.addEventListener(DragEvent.STOP, onDragNodeStop);
+                _dragControl.addEventListener(DragEvent.DRAG, onDragNode);
             }
             
             return _dragControl;
@@ -240,7 +241,9 @@ package org.cytoscapeweb.view {
         public function updateView():void {
             vis.data.nodes.setProperties(Nodes.properties);
             vis.data.edges.setProperties(Edges.properties);
+            vis.data.group(Groups.COMPOUND_NODES).setProperties(CompoundNodes.properties);
             vis.updateLabels(Groups.NODES);
+            vis.updateLabels(Groups.COMPOUND_NODES);
             vis.updateLabels(Groups.EDGES);
             separateDisconnected();
         }
@@ -250,12 +253,14 @@ package org.cytoscapeweb.view {
             if (updateNodes) {
                 if (updateAllProperties) {
                     vis.data.nodes.setProperties(Nodes.properties);
+                    vis.data.group(Groups.COMPOUND_NODES).setProperties(CompoundNodes.properties);
                 } else {
                     for each (var n:NodeSprite in graphProxy.graphData.nodes) {
                         n.visible = Nodes.visible(n);
                     }
                 }
                 vis.updateLabels(Groups.NODES);
+                vis.updateLabels(Groups.COMPOUND_NODES);
             }
             // When filtering nodes, it may be necessary to show/hide related edges as well:
             if (updateNodes || updateEdges) {
@@ -272,27 +277,28 @@ package org.cytoscapeweb.view {
                 vis.updateLabels(Groups.EDGES);
             }
             separateDisconnected();
+            
+            // it is required to update compound bounds after filtering in order
+            // to keep compound bounds valid with respect to its children
+            vis.updateAllCompoundBounds();
+            
+            // it is also required to operate compound node labeler, to update
+            // compound node labels
+            vis.compoundNodeLabeler.operate();
         }
 
-        public function resetDataSprite(ds:DataSprite):void {
-            if (ds is NodeSprite) graphView.resetNode(NodeSprite(ds));
-            else if (ds is EdgeSprite) graphView.resetEdge(EdgeSprite(ds));
+        public function resetDataSprite(ds:DataSprite):void {            
+            if (ds is NodeSprite) {
+                graphView.resetNode(NodeSprite(ds));
+            } else if (ds is EdgeSprite) {
+                graphView.resetEdge(EdgeSprite(ds));
+            }
         }
         
         public function initialize(gr:String, items:Array):void {
-            // Set properties:
-            if (gr !== Groups.NODES && gr !== Groups.EDGES)
-                throw new CWError("'gr' must be '" + Groups.NODES + "' or '" + Groups.EDGES + "' only.");
-            
-            var props:Object = gr === Groups.NODES ? Nodes.properties : Edges.properties;
-            
-            for (var name:String in props) {
-                Arrays.setProperty(items, name, props[name], null);
-            }
-            
-            vis.updateLabels(gr);
             addListeners(items);
-            separateDisconnected();
+            updateDataSprites(gr, items);
+            vis.updateLabels(gr);
         }
         
         public function separateDisconnected():void {
@@ -327,7 +333,68 @@ package org.cytoscapeweb.view {
             return graphView.viewCenter;
         }
         
+        /**
+         * This function adds the given node sprite into target compound node's
+         * child list and updates the bounds of the target compound node in case
+         * of a new node added to the target compound node. Bounds updating
+         * process continues up to the root parent if necessary.
+         * 
+         * @param eventTarget   parent parent compound node
+         * @param ns            newly added node sprite 
+         */
+        public function updateCompoundNode(parent:CompoundNodeSprite, ns:NodeSprite):void {
+            if (parent != null) {
+                // initialize visual properties
+                this.updateDataSprites(Groups.COMPOUND_NODES, [parent]);
+                
+                // update bounds of the target compound node up to  the root
+                while (parent != null) {
+                    // update the bounds of the compound node
+                    this.vis.updateCompoundBounds(parent);
+                    // render the compound node with new bounds
+                    parent.render();
+                    // advance to the next parent node
+                    parent = this.graphProxy.getNode(parent.data.parent);
+                }
+                
+                if (configProxy.nodeLabelsVisible) {
+                    graphView.updateLabels(Groups.NODES);
+                }
+            }
+        }
+        
+        public function shrinkCompounds():void {
+            // get all compound nodes in the graph data 
+            var nodes:DataList = this.graphProxy.graphData.group(Groups.COMPOUND_NODES);
+            var cns:CompoundNodeSprite;
+            
+            for each (cns in nodes) {
+                // consider only compounds at the top level; compounds which
+                // are inside another compound node is handled recursively
+                // by the shrinkCompundNode method
+                this.shrinkCompoundNode(cns);
+            }
+        }
+        
         // ========[ PRIVATE METHODS ]==============================================================
+
+        private function updateDataSprites(gr:String, items:Array):void {
+            var props:Object; 
+            
+            if (gr === Groups.NODES) {
+                props = Nodes.properties;
+            } else if (gr === Groups.COMPOUND_NODES) {
+                props = CompoundNodes.properties;
+            } else {
+                props = Edges.properties;
+            }
+            
+            for (var name:String in props) {
+                Arrays.setProperty(items, name, props[name], null);
+            }
+            
+            separateDisconnected();
+        }
 
         private function onRenderInitialize(evt:GraphViewEvent):void {
             graphView.addEventListener(GraphViewEvent.LAYOUT_INITIALIZE, onLayoutInitialize, false, 0, true);
@@ -450,22 +517,22 @@ package org.cytoscapeweb.view {
                 
                 // DRAG-SELECTION...
                 updateCursor();
-            	// Add the SELECTION CONTROL again:
+                // Add the SELECTION CONTROL again:
                 selectionControl.enabled = !dragging;
-	
-            	if (_shiftDown) {
-            		// If SHIFT is pressed, add selected nodes to the selection group, thus
-            		// ignoring the previously selected ones in order to avoid deselecting them
-            		// "accidentally" when the selection rectangle encloses an already selected node:
-            		selectionControl.filter = function(d:DisplayObject):Boolean {
-            		    // TODO: filter edges OR nodes based on config param
-            			return d is DataSprite && !DataSprite(d).props.$selected;
-            		}
-            	} else if (!dragging && graphProxy.rolledOverEdge == null) {
-            		// TODO: edges OR nodes based on config param
-            		selectionControl.filter = DataSprite;
-            		graphView.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUpToDeselect, false, 0, true);
-            	}
+    
+                if (_shiftDown) {
+                    // If SHIFT is pressed, add selected nodes to the selection group, thus
+                    // ignoring the previously selected ones in order to avoid deselecting them
+                    // "accidentally" when the selection rectangle encloses an already selected node:
+                    selectionControl.filter = function(d:DisplayObject):Boolean {
+                        // TODO: filter edges OR nodes based on config param
+                        return d is DataSprite && !DataSprite(d).props.$selected;
+                    }
+                } else if (!dragging && graphProxy.rolledOverEdge == null) {
+                    // TODO: edges OR nodes based on config param
+                    selectionControl.filter = DataSprite;
+                    graphView.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUpToDeselect, false, 0, true);
+                }
 
                 graphView.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUpToClick, false, 0, true);
                 graphView.stage.addEventListener(MouseEvent.MOUSE_MOVE, onDragSelectionStart, false, 0, true);
@@ -623,6 +690,7 @@ package org.cytoscapeweb.view {
                 if (_dragAllTimer != null && _dragAllTimer.running) _dragAllTimer.stop();
                 _draggingNode = true;
                 updateCursor();
+                this.graphProxy.resetMissingChildren();
             }
             
             evt.node.removeEventListener(MouseEvent.CLICK, onClickNode);
@@ -647,15 +715,26 @@ package org.cytoscapeweb.view {
         private function onDragNode(evt:DragEvent):void {
             var target:NodeSprite = evt.node;
             var nodes:*;
-
+            var children:Array = new Array();
+            
             if (_draggingComponent) {
                 var data:Data = vis.getDisconnectedData(target);
                 nodes = data.nodes;
             } else if (target.props.$selected) {
-	            // Drag the other selected nodes as well:
-	            nodes = graphProxy.selectedNodes;
+                // Drag the other selected nodes as well:
+                children = children.concat(this.graphProxy.missingChildren);
+                children = children.concat(this.graphProxy.selectedNodes);
+                
+                nodes = children;
             } else {
-                nodes = [target];
+                if (target is CompoundNodeSprite) {
+                    children = children.concat(
+                        CompoundNodes.getChildren(
+                            target as CompoundNodeSprite));
+                }
+                
+                children = children.concat([target]);
+                nodes = children;
             }
             
             updateCursor();
@@ -663,19 +742,69 @@ package org.cytoscapeweb.view {
             var amountX:Number = evt.amountX;
             var amountY:Number = evt.amountY;
             
-            for each (var n:NodeSprite in nodes) {
+            var ns:CompoundNodeSprite;
+            var n:CompoundNodeSprite;
+            
+            // drag all necessary nodes
+            
+            for each (n in nodes) {
                 if (n != target) {
                     n.x += amountX;
                     n.y += amountY;
                 }
+
                 // Move node labels as well, bacause they have "LAYER" policy:
                 // It is faster than labeler.operate() or vis.update()!
                 if (configProxy.nodeLabelsVisible && n.props.label) {
                     n.props.label.x += amountX;
                     n.props.label.y += amountY;
                 }
+                
+                var parentId:String;
+                
+                // update parent compound node(s) bounds if necessary
+                // if n is target node, then its parents may need to be updated.
+                // if n is a selected node, then other selected nodes' parents
+                // also need to be updated. (it causes problems to update bounds
+                // of a compound node which is also being dragged, therefore
+                // bounds updating should only be applied on the compound nodes
+                // which are not being dragged)
+                if (n == target || n.props.$selected) {
+                    ns = n;
+                    parentId = ns.data.parent
+                    
+                    while (parentId != null) {
+                        ns = this.graphProxy.getNode(parentId);
+                        
+                        if (ns != null) {
+                            // only update if the parent is not also being
+                            // dragged
+                            if (!ns.props.$selected || (n == target && !n.props.$selected)) {
+                                // update the bounds of the compound node
+                                this.vis.updateCompoundBounds(ns);
+                                
+                                // render the compound node with the new bounds
+                                ns.render();
+                            }
+                            
+                            parentId = ns.data.parent;
+                        } else {
+                            // reached top, no more parent
+                            parentId = null;
+                        }
+                    }
+                }
+                
+                // update bound coordinates of dragged compound nodes
+                if (n is CompoundNodeSprite) {
+                    if ((n as CompoundNodeSprite).bounds != null)
+                    {
+                        (n as CompoundNodeSprite).bounds.x += amountX;
+                        (n as CompoundNodeSprite).bounds.y += amountY;
+                    }
+                }
             }
-
+            
             // Necessary for Flash 10.1:
             DirtySprite.renderDirty();
             
@@ -771,8 +900,8 @@ package org.cytoscapeweb.view {
         }
         
         private function setStyleToSelectionControl(style:VisualStyleVO):void {
-        	if (_selectionControl == null) return;
-        	
+            if (_selectionControl == null) return;
+            
             _selectionControl.fillColor = 0x8888ff;
             _selectionControl.fillAlpha = 0.2;
             _selectionControl.lineColor = 0x8888ff;
@@ -831,6 +960,31 @@ package org.cytoscapeweb.view {
                                                                 draggingGraph: _draggingGraph,
                                                                 draggingComponent: _draggingComponent,
                                                                 shiftDown: _shiftDown });
+        }
+        
+        /**
+         * In a bottom-up manner, recursively updates the bounds of all inner 
+         * compound nodes of the given compound node and also the bounds of
+         * the given compound node itself.
+         * 
+         * @param cns   compound node sprite to be resized 
+         */
+        private function shrinkCompoundNode(cns:CompoundNodeSprite) : void
+        {
+            // first, shrink inner compound nodes if any
+            for each (var ns:NodeSprite in cns.getNodes())
+            {
+                if (ns is CompoundNodeSprite)
+                {
+                    this.shrinkCompoundNode(ns as CompoundNodeSprite);
+                }
+            }
+            
+            // then, update bounds of the compound node
+            this.vis.updateCompoundBounds(cns);
+            
+            // render the node with the new bounds
+            cns.render();
         }
     }
 }

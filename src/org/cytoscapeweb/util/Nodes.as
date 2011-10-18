@@ -37,6 +37,7 @@ package org.cytoscapeweb.util {
     import org.cytoscapeweb.model.data.VisualStyleBypassVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
     import org.cytoscapeweb.view.render.NodeRenderer;
+    import org.cytoscapeweb.vis.data.CompoundNodeSprite;
     
     
     public class Nodes {
@@ -203,7 +204,7 @@ package org.cytoscapeweb.util {
         }
         
         public static function visible(n:NodeSprite):Boolean {
-            return !n.props.$filteredOut;
+            return !GraphUtils.isFilteredOut(n);
         }
         
         public static function filters(n:NodeSprite, selectNow:Boolean=false):Array {

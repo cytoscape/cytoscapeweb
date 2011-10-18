@@ -36,7 +36,7 @@ package org.cytoscapeweb.util.methods {
     /**
      * Tells whether or not there is an external (JavaScript) event listener.
      */
-    public function $hasListener(type:String, group:String=Groups.NONE):Boolean {
+    public function $hasListener(type:String, group:String="none"):Boolean {
         var ext:ExternalMediator = ApplicationFacade.getInstance()
                                    .retrieveMediator(ExternalMediator.NAME) as ExternalMediator;
         

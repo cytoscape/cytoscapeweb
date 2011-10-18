@@ -44,6 +44,7 @@ package org.cytoscapeweb.util {
         // ========[ CONSTANTS ]====================================================================
         
         public static const NODES:String = "nodes";
+		public static const COMPOUND_NODES:String = "compoundNodes";
         public static const EDGES:String = "edges";
         public static const NONE:String = "none";
         

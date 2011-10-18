@@ -9,19 +9,19 @@
   <graph edgedefault="undirected">  
     <node id="a01">
       <data key="weight">0.45</data>
-      <data key="label">A01</data>
+      <data key="label">A01Lorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit amet&#xA;Donec in purus&#xA;Lorem ipsum dolor&#xA;A01Lorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit amet</data>
     </node>
     <node id="a02">
       <data key="weight">0.25</data>
-      <data key="label">A02</data>
+      <data key="label">A02&#xA;Lorem ipsum dolor sit amet&#xA;Donec in purus et ipsum vulputate dignissim&#xA;Nunc nec nunc nec orci blandit rhoncus</data>
     </node>
     <node id="a03">
       <data key="weight">0.49</data>
-      <data key="label">A03</data>
+      <data key="label">A03&#xA;Nunc nec nunc nec orci</data>
     </node>
     <node id="a04">
       <data key="weight">0.37</data>
-      <data key="label">A04</data>
+      <data key="label">A04&#xA;Lorem ipsum dolor&#xA;Lorem ipsum dolor&#xA;Lorem ipsum dolor&#xA;Lorem ipsum dolor&#xA;Lorem ipsum dolor&#xA;Lorem ipsum dolor&#xA;Lorem ipsum dolor&#xA;Lorem ipsum dolor</data>
     </node>
     <node id="a05">
       <data key="weight">0.21</data>
@@ -49,7 +49,7 @@
     </node>
     <node id="a11">
       <data key="weight">0.40</data>
-      <data key="label">A11</data>
+      <data key="label">A11&#xA;Lorem ipsum&#xA;Lorem ipsum&#xA;Lorem ipsum&#xA;Lorem ipsum</data>
     </node>
     <node id="a12">
       <data key="weight">0.12</data>

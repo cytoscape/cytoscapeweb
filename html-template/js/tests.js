@@ -35,7 +35,7 @@ var style = {
 	nodes: {
 		shape: "RECTANGLE",
 		opacity: 0.75,
-		size: { defaultValue: 12, continuousMapper: { attrName: "weight", minValue: 12, maxValue: 36 } },
+		size: { defaultValue: 12, continuousMapper: { attrName: "weight", minValue: 12, maxValue: 48 } },
 		borderColor: "#333333",
 		borderWidth: 4,
 		selectionBorderColor: "#ff0000",
@@ -281,7 +281,6 @@ function runGraphTests(moduleName, vis, options) {
     });
     
     asyncTest("Select Nodes by ID", function() {
-    	expect(6);
     	var nodes = vis.nodes();
     	var sel = [nodes[0].data.id, nodes[1].data.id];
     	
@@ -527,8 +526,10 @@ function runGraphTests(moduleName, vis, options) {
     	same(s.edges.width.continuousMapper.maxValue, style.edges.width.continuousMapper.maxValue);
 
     	$.each(nodes, function(i, n) {
-			same(Math.round(n.opacity*100)/100, s.nodes.opacity, "Node opacity");
-			same(n.borderColor, s.nodes.borderColor, "Node borderColor");
+    		if (n.nodesCount == 0) { // ignore compound nodes
+    			same(Math.round(n.opacity*100)/100, s.nodes.opacity, "Node opacity");
+    			same(n.borderColor, s.nodes.borderColor, "Node borderColor");
+    		}
 	    });
 		$.each(edges, function(i, e) {
 			same(Math.round(e.opacity*100)/100, s.edges.opacity, "Edge opacity");
@@ -585,7 +586,11 @@ function runGraphTests(moduleName, vis, options) {
     	
     	$.each(nodes, function(i, n) {
     		var o = nodeOpacity(n.data.id);
-    		bypass.nodes[n.data.id] = { opacity: o, color: nodeColor };
+    		if (n.nodesCount > 0) {
+    			bypass.nodes[n.data.id] = { compoundOpacity: o, compoundColor: nodeColor };
+    		} else {
+    			bypass.nodes[n.data.id] = { opacity: o, color: nodeColor };
+    		}
     	});
     	$.each(edges, function(i, e) {
     		var o = edgeOpacity(e.data.id);
@@ -605,11 +610,12 @@ function runGraphTests(moduleName, vis, options) {
     	
     	$.each(nodes, function(i, n) {
     		var expected = nodeOpacity(n.data.id);
-    		same(bp.nodes[n.data.id].opacity, expected);
     		same(Math.round(n.opacity*100)/100, expected);
-    		
-    		same(bp.nodes[n.data.id].color, nodeColor);
     		same(n.color, nodeColor);
+    		var opacityAttr = n.nodesCount > 0 ? "compoundOpacity" : "opacity";
+    		same(bp.nodes[n.data.id][opacityAttr], expected);
+    		var colorAttr = n.nodesCount > 0 ? "compoundColor" : "color";
+    		same(bp.nodes[n.data.id][colorAttr], nodeColor);
     	});
     	$.each(edges, function(i, e) {
     		var expected = edgeOpacity(e.data.id);
@@ -765,7 +771,7 @@ function runGraphTests(moduleName, vis, options) {
     		}
     	});
     	
-    	// TODO: what happens when filtering merged edges?
+    	// TODO: test filtering merged edges?
     	
     	// NODES:
     	// Filter:
@@ -780,13 +786,16 @@ function runGraphTests(moduleName, vis, options) {
     	same(fnList.length, 3, "Filtered correct number of nodes");
     	// Listeners for "nodes" & "none" should get the same results:
     	$.each([fnList, fAllList], function(i, filtered) {
-	    	$.each(fnList, function(j, n) {
+	    	$.each(filtered, function(j, n) {
+	    		n = vis.node(n.data.id);
 	    		inNodes[n.data.id] = n;
 	    		same(n.group, "nodes", "Filtered group for '"+n.data.id+"' ("+j+")");
 	    		ok(n.data.weight > 0.03 && n.data.weight < 0.4, "Node '"+n.data.id+"' correctly filtered ("+j+")");
 	    		ok(n.visible, "Filtered node '"+n.data.id+"' is visible ("+j+")");
 	    		// When updateVisualMappers == false:
-	    		same(n.size, nlookup[n.data.id].size, "The node size should not change ("+n.data.id+")");
+	    		if (n.nodesCount == 0) { // ignore compound nodes
+	    			same(n.size, nlookup[n.data.id].size, "The node size should not change ("+n.data.id+")");
+	    		}
 	    	});
     	});
     	$.each(nodes, function(i, n) {
@@ -851,37 +860,41 @@ function runGraphTests(moduleName, vis, options) {
     	same(fAllList, null, "Return of listener for 'none' after removing filter by 'none'");
     });
     
-    asyncTest("Filter nodes and update mappers automatically", function() {
-    	expect(2);
-    	
-    	vis.addListener("filter", "nodes", function(evt) {
-        	start();
-        	vis.removeListener("filter", "nodes");
-
-        	var maxVal = -1, minVal = 999999;
-        	var larger, smaller;
-
-	    	$.each(evt.target, function(i, n) {
-	    		var size = n.size - n.borderWidth;
-	    		if (size > maxVal) {
-	    			larger = n;
-	    			maxVal = size;
-	    		} else if (size < minVal) {
-	    			smaller = n;
-	    			minVal = size;
-	    		}
-	    	});
-
-        	same(minVal, style.nodes.size.continuousMapper.minValue, "The node "+smaller.data.id+" should be smaller now");
-	    	same(maxVal, style.nodes.size.continuousMapper.maxValue, "The node "+larger.data.id+" should be bigger now");
+    var isCompoundGraph = vis.parentNodes().length > 0;
+    
+    if (!isCompoundGraph) { // continuous mapper for node size is hard to test because parent nodes' auto size! 
+	    asyncTest("Filter nodes and update mappers automatically", function() {
+	    	expect(2);
 	    	
-	    	vis.removeFilter("nodes");
-	    	stop();
-        });
-        
-        // Filter nodes and ask to update mappers:
-        vis.filter("nodes", nfilter, true);
-    });
+	    	vis.addListener("filter", "nodes", function(evt) {
+	        	start();
+	        	vis.removeListener("filter", "nodes");
+	
+	        	var maxVal = -1, minVal = 999999;
+	        	var larger, smaller;
+	
+		    	$.each(evt.target, function(i, n) {
+		    		var size = n.size - n.borderWidth;
+		    		if (size > maxVal) {
+		    			larger = n;
+		    			maxVal = size;
+		    		} else if (size < minVal) {
+		    			smaller = n;
+		    			minVal = size;
+		    		}
+		    	});
+	        	
+	        	same(minVal, style.nodes.size.continuousMapper.minValue, "The node "+smaller.data.id+" should be smaller now");
+	        	same(maxVal, style.nodes.size.continuousMapper.maxValue, "The node "+larger.data.id+" should be bigger now");
+		    	
+		    	vis.removeFilter("nodes", true);
+		    	stop();
+	        });
+	        
+	        // Filter nodes and ask to update mappers:
+	        vis.filter("nodes", nfilter, true);
+	    });
+    }
     
     test("Add Node", function() {
     	var nodes = vis.nodes();
@@ -918,7 +931,7 @@ function runGraphTests(moduleName, vis, options) {
     	var edges = vis.edges(), nodes = vis.nodes();
     	var count = edges.length;
     	var e;
-    	var src = nodes[0], tgt = nodes[3];
+    	var src = nodes[0], tgt = nodes[2];
     	
     	// 1. NO id:
     	e = vis.addEdge({ source: src.data.id, target: tgt.data.id });
@@ -942,7 +955,7 @@ function runGraphTests(moduleName, vis, options) {
     	vis.addDataField("edges", { name: "null_number_attr", type: "number" }); 
     	
     	var nodes = vis.nodes();
-    	var src = nodes[0], tgt = nodes[3];
+    	var src = nodes[0], tgt = nodes[2];
     	var e = vis.addEdge({ source: src.data.id, target: tgt.data.id, null_number_attr: null });
     	same(e.data.null_number_attr, null, "New edge added: 'null_number_attr' still null");
     	
@@ -1018,15 +1031,18 @@ function runGraphTests(moduleName, vis, options) {
     	});
     	
     	// 3. Remove only one by Object:
-    	vis.removeNode(originalNodes[1]);
-    	same(vis.node(originalNodes[1].data.id), null, "Node '"+originalNodes[1].data.id+"' deleted");
+    	vis.removeNode(originalNodes[0]);
+    	nodesCount -= 1 + originalNodes[0].nodesCount; // in case this node had children
+    	same(vis.node(originalNodes[0].data.id), null, "Node '"+originalNodes[1].data.id+"' deleted");
     	
     	// 4. Remove 2 nodes - by object:
-    	vis.removeElements("nodes", [originalNodes[2], originalNodes[3]]);
+    	vis.removeElements("nodes", [originalNodes[1], originalNodes[2]]);
+    	nodesCount -= 1 + originalNodes[1].nodesCount;
+    	nodesCount -= 1 + originalNodes[2].nodesCount;
     	nodes = vis.nodes();
-    	same(nodes.length, nodesCount-4, "2 more nodes removed - new length");
+    	same(nodes.length, nodesCount, "2 more nodes removed - new length");
+    	same(vis.node(originalNodes[1].data.id), null, "Node '"+originalNodes[1].data.id+"' deleted");
     	same(vis.node(originalNodes[2].data.id), null, "Node '"+originalNodes[2].data.id+"' deleted");
-    	same(vis.node(originalNodes[3].data.id), null, "Node '"+originalNodes[3].data.id+"' deleted");
     	
     	// 5. Remove ALL:
     	vis.removeElements();
@@ -1321,9 +1337,10 @@ function runGraphTests(moduleName, vis, options) {
     	var edges = vis.edges();
     	var schema = vis.dataSchema();
     	var ignoredFields = 5; // id (nodes), id (edges), source, target, directed
+    	var parents = vis.parentNodes();
     	
     	same(xml[0].tagName.toLowerCase(), "graphml", "<graphml> tag");
-    	same(xml.find("graph").length, 1, "<graph> tag");
+    	same(xml.find("node > graph").length, parents.length, "<graph> tag");
     	same(xml.find("key").length, (schema.nodes.length + schema.edges.length - ignoredFields), "Number <key> tags");
     	same(xml.find("node").length, nodes.length, "Number of nodes");
     	same(xml.find("edge").length, edges.length, "Number of edges");
@@ -1333,12 +1350,14 @@ function runGraphTests(moduleName, vis, options) {
     	var xml = $(vis.xgmml());
     	var nodes = vis.nodes();
     	var edges = vis.edges();
+    	var parents = vis.parentNodes();
     	
     	same(xml[0].tagName.toLowerCase(), "graph", "<graph> tag");
+    	same(xml.find("att > graph").length, parents.length, "nested <graph> tags"); // compound graphs only
     	same(xml.find("node").length, nodes.length, "Number of nodes");
-    	same(xml.find("node graphics").length, nodes.length, "Number of node graphics");
+    	same(xml.find("node > graphics").length, nodes.length, "Number of node graphics");
     	same(xml.find("edge").length, edges.length, "Number of edges");
-    	same(xml.find("edge graphics").length, edges.length, "Number of edge graphics");
+    	same(xml.find("edge > graphics").length, edges.length, "Number of edge graphics");
     });
     
     test("SIF", function() {
@@ -1348,7 +1367,7 @@ function runGraphTests(moduleName, vis, options) {
     	$.each(edges, function(i, e) {
     		var inter = e.data.interaction ? e.data.interaction : e.data.id;
     		var line = e.data.source + "\t" + inter + "\t" + e.data.target; 
-    		ok(sif.indexOf(line) > -1, "SIF text should have the line: '"+line+"'");
+    		ok(sif.indexOf(line) > -1, "SIF (A) text should have the line: '"+line+"'");
     	});
     	// Now replace the default node and interaction fields:
     	var sif = vis.sif({ nodeAttr: "name", interactionAttr: "type" });
@@ -1357,7 +1376,7 @@ function runGraphTests(moduleName, vis, options) {
     		var src = vis.node(e.data.source).data.name;
     		var tgt = vis.node(e.data.target).data.name;
     		var line = src + "\t" + e.data.type + "\t" + tgt; 
-    		ok(sif.indexOf(line) > -1, "SIF text should have the line: '"+line+"'");
+    		ok(sif.indexOf(line) > -1, "SIF (B) text should have the line: '"+line+"'");
     	});
     });
     
@@ -1380,11 +1399,12 @@ function runGraphTests(moduleName, vis, options) {
 				
 				var p = $("#"+vis.containerId).coordinates();
 				var scale = vis.zoom();
-				var size = n.size * scale;
+				var w = n.width * scale;
+				var h = n.height * scale;
 				p.x += n.x;
 				p.y += n.y;
-				pointer.css('left', p.x - size/2).css('top', p.y - size/2);
-				pointer.css('width', size).css('height', size);
+				pointer.css('left', p.x - w/2).css('top', p.y - h/2);
+				pointer.css('width', w).css('height', h);
 			});
     	});
     	vis.zoomToFit();

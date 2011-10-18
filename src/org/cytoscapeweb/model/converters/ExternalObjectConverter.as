@@ -45,9 +45,11 @@ package org.cytoscapeweb.model.converters {
     import flash.utils.IDataOutput;
     
     import org.cytoscapeweb.model.error.CWError;
+    import org.cytoscapeweb.util.DataSchemaUtils;
     import org.cytoscapeweb.util.ErrorCodes;
     import org.cytoscapeweb.util.Groups;
     import org.cytoscapeweb.util.Utils;
+    import org.cytoscapeweb.vis.data.CompoundNodeSprite;
     
     
     /**
@@ -63,11 +65,6 @@ package org.cytoscapeweb.model.converters {
         public static const NAME:String = "name";
         public static const TYPE:String = "type";
         public static const DEF_VALUE:String = "defValue";
-        
-        public static const ID:String = "id";
-        public static const SOURCE:String = "source";
-        public static const TARGET:String = "target";
-        public static const DIRECTED:String = "directed";
         
         private static const NODE_ATTR:Object = {
             id: 1
@@ -110,10 +107,10 @@ package org.cytoscapeweb.model.converters {
          */
         public static function convertToDataSet(network:Object, schema:DataSchema=null):DataSet {
             var lookup:Object = {};
-            var nodes:Array = [], edges:Array = [];
-            var id:String, sid:String, tid:String;
+            var nodes:Array = []; // array of CompoundNodeSprites
+            var edges:Array = []; // array of plain objects
             var obj:Object;
-            var f:DataField, type:int, defValue:*, mandatoryDefValue:*;
+            var f:DataField, name:String, type:int, defValue:*, mandatoryDefValue:*;
             var directed:Boolean = false;
             
             if (network == null) network = {};
@@ -124,42 +121,41 @@ package org.cytoscapeweb.model.converters {
             var extNodesSchema:Array = network[SCHEMA][Groups.NODES];
             var extEdgesSchema:Array = network[SCHEMA][Groups.EDGES];
             
-            var nodeSchema:DataSchema = new DataSchema();
-            nodeSchema.addField(new DataField(ID, DataUtil.STRING));
+            for each (obj in extEdgesSchema) {
+                if (obj[NAME] === DataSchemaUtils.DIRECTED) {
+                    // It might be the edge's directed field...
+                    directed = (obj[DEF_VALUE] == true);
+                    break;
+                }
+            }
             
-            var edgeSchema:DataSchema = new DataSchema();
-            edgeSchema.addField(new DataField(ID, DataUtil.STRING));
-            edgeSchema.addField(new DataField(SOURCE, DataUtil.STRING));
-            edgeSchema.addField(new DataField(TARGET, DataUtil.STRING));
+            var nodeSchema:DataSchema = DataSchemaUtils.minimumNodeSchema();
+            var edgeSchema:DataSchema = DataSchemaUtils.minimumEdgeSchema(directed);
             
             var addToSchema:Function = function(objArr:Array, schema:DataSchema):void {
                 for each (obj in objArr) {
-                    var name:String = obj[NAME];
+                    name = obj[NAME];
                     if (name == null) throw new Error("Missing '"+NAME+"' field for Schema object.");
-                    if (name === DIRECTED) {
-                        // Just get the default value; we will add the directed field later
-                        directed = (obj[DEF_VALUE] == true);
-                    } else {
-                        f = schema.getFieldByName(name);
-                        if (f == null) {
-                            type = toCW_Type(obj[TYPE]);
-                            
-                            // Some types always require a default value, because they don't accept null.
-                            switch(type) {
-                                case DataUtil.INT: mandatoryDefValue = 0; break;
-                                case DataUtil.BOOLEAN: mandatoryDefValue = false; break;
-                                default: mandatoryDefValue = null;
-                            }
-                            
-                            try {
-                                defValue = normalizeDataValue(obj[DEF_VALUE], type, mandatoryDefValue);
-                            } catch (err:Error) {
-                                throw new CWError("Invalid default value of '" + name + "'--" + err.message,
-                                                  ErrorCodes.INVALID_DATA_CONVERSION);
-                            }
-                            
-                            schema.addField(new DataField(name, type, defValue, name));
+                    
+                    type = toCW_Type(obj[TYPE]);
+                    f = schema.getFieldByName(name);
+                    
+                    if (f == null) {
+                        // Some types always require a default value, because they don't accept null.
+                        switch(type) {
+                            case DataUtil.INT: mandatoryDefValue = 0; break;
+                            case DataUtil.BOOLEAN: mandatoryDefValue = false; break;
+                            default: mandatoryDefValue = null;
                         }
+                        
+                        try {
+                            defValue = normalizeDataValue(obj[DEF_VALUE], type, mandatoryDefValue);
+                        } catch (err:Error) {
+                            throw new CWError("Invalid default value of '" + name + "'--" + err.message,
+                                              ErrorCodes.INVALID_DATA_CONVERSION);
+                        }
+                        
+                        schema.addField(new DataField(name, type, defValue, name));
                     }
                 }
             };
@@ -167,33 +163,29 @@ package org.cytoscapeweb.model.converters {
             addToSchema(extNodesSchema, nodeSchema);
             addToSchema(extEdgesSchema, edgeSchema);
             
-            edgeSchema.addField(new DataField(DIRECTED, DataUtil.BOOLEAN, directed));
-            
             // Convert from plain data objects:
             var extNodesData:Array = network[DATA][Groups.NODES];
             var extEdgesData:Array = network[DATA][Groups.EDGES];
             
-            // Nodes
-            for each (obj in extNodesData) {
-                normalizeData(obj, nodeSchema)
-                id = obj[ID];
-                lookup[id] = obj;
-                nodes.push(obj);
-            }
+            // Read external node and edge data, and populate the nodes and 
+            // edges array. We cannot use an array of plain nodes directly,
+            // since Data.fromDataSet function creates NodeSprite instances
+            // for node data. Therefore, nodes array will be populated by
+            // CompoundNodeSprite instances.
+            readData(extNodesData, extEdgesData, nodes, edges, nodeSchema, edgeSchema, lookup);
+                        
+            var cns:CompoundNodeSprite;
+            var parent:CompoundNodeSprite;
             
-            // Edges
-            for each (obj in extEdgesData) {
-                normalizeData(obj, edgeSchema);
-                id  = obj[ID];
-                sid = obj[SOURCE];
-                tid = obj[TARGET];
-                
-                if (!lookup.hasOwnProperty(sid))
-                    throw new Error("Edge "+id+" references unknown node: "+sid);
-                if (!lookup.hasOwnProperty(tid))
-                    throw new Error("Edge "+id+" references unknown node: "+tid);
-
-                edges.push(obj);
+            // add child nodes into the appropriate compounds using data parent
+            // id information set by the readData function.
+            for each (cns in nodes) {
+                if (cns.data.parent != null) {
+                    parent = (lookup[cns.data.parent] as CompoundNodeSprite); 
+                    
+                    // add the current compound node as a child
+                    parent.addNode(cns);
+                }
             }
             
             return new DataSet(
@@ -202,6 +194,82 @@ package org.cytoscapeweb.model.converters {
             );
         }
         
+        /**
+         * Recursively reads node and edge data from the given external data
+         * arrays, and populates the given nodes and edges arrays accordingly.
+         * While edges array is populated with Object instances, nodes array 
+         * is populated with CompoundNodeSprite instances.
+         * 
+         * @param extNodesData  external data array for nodes
+         * @param extEdgesData  external data array for edges
+         * @param nodes         node array to be populated
+         * @param edges         edge array to be populated
+         * @param nodeSchema    DataSchema for data fields of nodes
+         * @param edgeSchema    DataSchema for data fields of edges
+         * @param lookup        lookup map (by id) for nodes
+         */
+        private static function readData(extNodesData:Array,
+                                         extEdgesData:Array,
+                                         nodes:Array,
+                                         edges:Array,
+                                         nodeSchema:DataSchema,
+                                         edgeSchema:DataSchema,
+                                         lookup:Object):void {
+            var obj:Object;
+            var id:String, sid:String, tid:String;
+            var cns:CompoundNodeSprite;
+            
+            // Nodes
+            for each (obj in extNodesData) {
+                cns = new CompoundNodeSprite();
+                normalizeData(obj, nodeSchema)
+                id = obj[DataSchemaUtils.ID];
+                cns.data = obj;
+                lookup[id] = cns;
+                
+                // add the node to the array of compound nodes
+                nodes.push(cns);
+            }
+            
+            // Edges
+            for each (obj in extEdgesData) {
+                normalizeData(obj, edgeSchema);
+                id  = obj[DataSchemaUtils.ID];
+                sid = obj[DataSchemaUtils.SOURCE];
+                tid = obj[DataSchemaUtils.TARGET];
+                
+                if (!lookup.hasOwnProperty(sid))
+                    throw new Error("Edge "+id+" references unknown node: "+sid);
+                if (!lookup.hasOwnProperty(tid))
+                    throw new Error("Edge "+id+" references unknown node: "+tid);
+                
+                edges.push(obj);
+            }
+        }
+        
+        
+        public static function toExtSimpleNetworkModel(ds:DataSet):Object {
+            var obj:Object = {};
+            
+            // Add schema
+            obj[SCHEMA] = toExtSchema(ds.nodes.schema, ds.edges.schema);
+            
+            // Add graph data
+            obj[DATA] = {};
+            obj[DATA][Groups.NODES] = ds.nodes.data;
+            obj[DATA][Groups.EDGES] = ds.edges.data;
+            
+            return obj;
+        }
+        
+        
+        /**
+         * Creates a network model object representing the nodes and edges in
+         * the given data set.
+         * 
+         * @param ds    DataSet of nodes and edges
+         * @return      object representing the given data set
+         */
         public static function toExtNetworkModel(ds:DataSet):Object {
             var obj:Object = {};
             
@@ -215,6 +283,7 @@ package org.cytoscapeweb.model.converters {
             
             return obj;
         }
+        
         
         public static function toExtElementsArray(dataSprites:*, zoom:Number):Array {
             var arr:Array = null;
@@ -232,7 +301,7 @@ package org.cytoscapeweb.model.converters {
         public static function toExtElement(ds:DataSprite, zoom:Number):Object {
             var obj:Object = null;
             var p:Point;
-            var n:NodeSprite, e:EdgeSprite;
+            var n:CompoundNodeSprite, e:EdgeSprite;
             var scale:Number;
 
             if (ds != null) {
@@ -242,9 +311,10 @@ package org.cytoscapeweb.model.converters {
                 // Common Visual properties:
                 obj.opacity = ds.alpha;
                 obj.visible = ds.visible;
+                obj.zIndex = ds.parent != null ? ds.parent.getChildIndex(ds) : -1;
                 
-                if (ds is NodeSprite) {
-                    n = ds as NodeSprite;
+                if (ds is CompoundNodeSprite) {
+                    n = ds as CompoundNodeSprite;
                     
                     obj.group = Groups.NODES;
                     obj.shape = n.shape;
@@ -254,6 +324,7 @@ package org.cytoscapeweb.model.converters {
                     obj.color = n.props.transparent ? "transparent" : Utils.rgbColorAsString(n.fillColor);
                     obj.borderColor = Utils.rgbColorAsString(n.lineColor);
                     obj.borderWidth = n.lineWidth;
+                    obj.nodesCount = n.nodesCount;
 //                    obj.degree = n.degree;
 //                    obj.indegree = n.inDegree;
 //                    obj.outdegree = n.outDegree;
@@ -262,7 +333,6 @@ package org.cytoscapeweb.model.converters {
                     p = getGlobalCoordinate(n);
                     obj.x = p.x;
                     obj.y = p.y;
-                    
                     obj.rawX = p.x / zoom;
                     obj.rawY = p.y / zoom;
                 } else {

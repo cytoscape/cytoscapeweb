@@ -22,15 +22,15 @@
     
     <target name="build" depends="compile, archive">
     </target>
-	
+    
     <target name="archive" depends="copy resources to bin, js minify">
-    	<delete dir="${build.dir}" />
-    	<mkdir dir="${build.dir}"/>
+        <delete dir="${build.dir}" />
+        <mkdir dir="${build.dir}"/>
         <zip destfile="${build.dir}/cytoscapeweb_v${build.version}.zip">
-        	<zipfileset dir="${basedir}" includes="LICENSE.txt README.txt"/>
-        	<zipfileset dir="${flex.bin.dir}" prefix="swf" includes="CytoscapeWeb.swf playerProductInstall.swf"/>
-        	<zipfileset dir="${flex.bin.dir}/js" prefix="js/src" includes="json2.js AC_OETags.js cytoscapeweb.js"/>
-        	<zipfileset dir="${flex.bin.dir}/js" prefix="js/min" includes="json2.min.js AC_OETags.min.js cytoscapeweb.min.js"/>
+            <zipfileset dir="${basedir}" includes="LICENSE.txt README.txt"/>
+            <zipfileset dir="${flex.bin.dir}" prefix="swf" includes="CytoscapeWeb.swf playerProductInstall.swf"/>
+            <zipfileset dir="${flex.bin.dir}/js" prefix="js/src" includes="json2.js AC_OETags.js cytoscapeweb.js"/>
+            <zipfileset dir="${flex.bin.dir}/js" prefix="js/min" includes="json2.min.js AC_OETags.min.js cytoscapeweb.min.js"/>
         </zip>
     </target>
     
@@ -46,6 +46,7 @@
                  <include name="AlivePDF.swc"/>
                  <include name="flare.swc"/>
                  <include name="PureMVC_AS3_2_0_4.swc"/>
+                 <include name="as3commons-collections-1.0.0.swc"/>
             </compiler.include-libraries>
         </mxmlc>
     </target>

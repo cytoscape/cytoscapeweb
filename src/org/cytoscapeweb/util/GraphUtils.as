@@ -28,27 +28,28 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.util {
-	import flare.display.TextSprite;
-	import flare.util.Geometry;
-	import flare.vis.data.Data;
-	import flare.vis.data.DataList;
-	import flare.vis.data.DataSprite;
-	import flare.vis.data.EdgeSprite;
-	import flare.vis.data.NodeSprite;
-	
-	import flash.display.DisplayObject;
-	import flash.display.DisplayObjectContainer;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import flash.text.TextField;
-	import flash.utils.Dictionary;
-	
-	import org.cytoscapeweb.util.methods.$each;
-	import org.cytoscapeweb.view.layout.PackingAlgorithms;
-	
-	
-	public class GraphUtils {
-		
+    import flare.display.TextSprite;
+    import flare.util.Geometry;
+    import flare.vis.data.Data;
+    import flare.vis.data.DataList;
+    import flare.vis.data.DataSprite;
+    import flare.vis.data.EdgeSprite;
+    import flare.vis.data.NodeSprite;
+    
+    import flash.display.DisplayObject;
+    import flash.display.DisplayObjectContainer;
+    import flash.geom.Point;
+    import flash.geom.Rectangle;
+    import flash.text.TextField;
+    import flash.utils.Dictionary;
+    
+    import org.cytoscapeweb.util.methods.$each;
+    import org.cytoscapeweb.view.layout.PackingAlgorithms;
+    import org.cytoscapeweb.vis.data.CompoundNodeSprite;
+    
+    
+    public class GraphUtils {
+        
         // ========[ CONSTRUCTOR ]==================================================================
         
         /**
@@ -59,27 +60,92 @@ package org.cytoscapeweb.util {
         }
 
         // ========[ PUBLIC METHODS ]===============================================================
-
-        public static function bringToFront(d:DisplayObject):void {
+        
+        /**
+         * Brings the given display object to the front of the stage. This
+         * function does not taken compound nodes into account. Use bringToFront 
+         * function for full compatibility with compound graphs.
+         * 
+         * @param d     DisplayObject to bring to front
+         */
+        public static function toFront(d:DisplayObject):void {
             if (d != null) {
                 var p:DisplayObjectContainer = d.parent;
                 if (p != null)
-                   p.setChildIndex(d, p.numChildren-1);
+                    p.setChildIndex(d, p.numChildren-1);
             }
         }
         
+        /**
+         * Brings the given display object to the front of the stage. If the
+         * given display object is a CompoundNodeSprite, also brings all
+         * its children and edges inside the compound node to the front.
+         * 
+         * @param d     DisplayObject to bring to front 
+         */ 
+        public static function bringToFront(d:DisplayObject):void {
+            if (d != null) {
+                if (d is CompoundNodeSprite) {
+                    var cns:CompoundNodeSprite = d as CompoundNodeSprite;
+                    
+                    // bring the compound node sprite as well as all its
+                    // children and the edges inside the compound to the front.
+                    GraphUtils.toFront(cns);
+                    
+                    if (cns.isInitialized() && !cns.allChildrenInvisible()) {
+                        for each (var ns:NodeSprite in cns.getNodes()) {
+                            GraphUtils.toFront(ns);
+                            
+                            if (ns is CompoundNodeSprite) {
+                                GraphUtils.bringToFront(ns as CompoundNodeSprite);
+                            }
+                            
+                            ns.visitEdges(toFront);
+                        }
+                    }
+                } else {
+                    GraphUtils.toFront(d);
+                }
+            }
+        }
+        
+        /**
+         * If the given data sprite is filtered out, returns true. If a 
+         * NodeSprite itself is not filtered out, but at least one of its
+         * parents is filtered out, then the node is also considered as
+         * filtered out. Similarly, if an EdgeSprite is not filtered out, but
+         * either its source or target is filtered out, then the edge is also
+         * considered as filtered out.
+         * 
+         * @param ds    DataSprite to be checked
+         * @return      true if filtered out, false otherwise
+         */
         public static function isFilteredOut(ds:DataSprite):Boolean {
-            var b:Boolean = ds.props.$filteredOut;
+            var filtered:Boolean = ds.props.$filteredOut;
+            var cn:CompoundNodeSprite, parent:CompoundNodeSprite;
             
             if (ds is EdgeSprite) {
                 var e:EdgeSprite = EdgeSprite(ds);
-                b = b || e.source.props.$filteredOut || e.target.props.$filteredOut;
+                
+                // if an edge is not filtered out, but either its target or
+                // its source is filtered out, then the edge should also  filtered out
+                filtered = filtered || isFilteredOut(e.source) || isFilteredOut(e.target);
+            } else if (ds is CompoundNodeSprite) {
+                cn = ds as CompoundNodeSprite;
+                // if a node is not filtered out, but at least one of its
+                // parents is filtered out, then the node should also be filtered out
+                for each (parent in CompoundNodes.getParents(cn)) {
+                    if (parent.props.$filteredOut) {
+                        filtered = true;
+                        break;
+                    }
+                }
             }
             
-            return b;
+            return filtered;
         }
         
-        public static function getBounds(nodes:*, edges:*, 
+        public static function getBounds(nodes:*, edges:*,
                                          ignoreNodeLabels:Boolean,
                                          ignoreEdgeLabels:Boolean):Rectangle {
             var bounds:Rectangle = new Rectangle();
@@ -296,6 +362,24 @@ package org.cytoscapeweb.util {
                             }
                             return false;
                         });
+                        
+                        if (node is CompoundNodeSprite) {
+                            var cns:CompoundNodeSprite = node as CompoundNodeSprite;
+                            
+                            // include all non-visited children
+                            for each (var child:NodeSprite in CompoundNodes.getChildren(cns)) {
+                                if (!visited[child]) {
+                                    toVisit.push(child);
+                                }
+                            }
+                            
+                            // include all non-visited parents
+                            for each (var parent:NodeSprite in CompoundNodes.getParents(cns)) {
+                                if (!visited[parent]) {
+                                    toVisit.push(parent);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -350,5 +434,5 @@ package org.cytoscapeweb.util {
             
             return new Rectangle(0, 0, side, side);
         }
-	}
+    }
 }

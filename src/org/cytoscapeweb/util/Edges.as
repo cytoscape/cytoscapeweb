@@ -157,10 +157,14 @@ package org.cytoscapeweb.util {
         }
         
         public static function visible(e:EdgeSprite):Boolean {
-            var vis:Boolean = !GraphUtils.isFilteredOut(e);
-
-            var merged:Boolean = configProxy.edgesMerged;
-            vis = vis && ( (merged && e.props.$merged) || (!merged && !e.props.$merged) );
+            var vis:Boolean = true;
+            
+            if (GraphUtils.isFilteredOut(e)) {
+                vis = false;
+            } else {
+                var merged:Boolean = configProxy.edgesMerged;
+                vis = (merged && e.props.$merged) ||  (!merged && !e.props.$merged);
+            }
             
             return vis;
         }

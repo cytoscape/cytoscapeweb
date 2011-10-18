@@ -57,9 +57,10 @@ package org.cytoscapeweb.controller {
             var type:String = "drag";
             if (action === ApplicationFacade.DRAG_START_EVENT) type = "dragstart";
             else if (action === ApplicationFacade.DRAG_STOP_EVENT) type = "dragstop";
-            trace(type);
+            
             // Call external listener:            
-            if (extMediator.hasListener(type, group)) {
+            if (extMediator.hasListener(type, group) || 
+                extMediator.hasListener(type, Groups.NONE)) {
                 var target:Object = ExternalObjectConverter.toExtElement(ds, graphProxy.zoom);
                 
                 body = { functionName: ExternalFunctions.INVOKE_LISTENERS, 

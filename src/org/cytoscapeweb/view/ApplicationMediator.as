@@ -28,40 +28,40 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.view {
-	import flash.display.BitmapData;
-	import flash.events.Event;
-	import flash.events.KeyboardEvent;
-	import flash.events.MouseEvent;
-	import flash.geom.Matrix;
-	import flash.geom.Rectangle;
-	import flash.ui.Keyboard;
-	import flash.ui.Mouse;
-	
-	import mx.controls.Alert;
-	import mx.controls.Button;
-	import mx.controls.Label;
-	import mx.events.DragEvent;
-	import mx.events.FlexEvent;
-	import mx.events.ResizeEvent;
-	import mx.graphics.codec.PNGEncoder;
-	import mx.managers.CursorManager;
-	import mx.managers.CursorManagerPriority;
-	import mx.managers.PopUpManager;
-	
-	import org.cytoscapeweb.ApplicationFacade;
-	import org.cytoscapeweb.model.converters.PDFExporter;
-	import org.cytoscapeweb.model.converters.SVGExporter;
-	import org.cytoscapeweb.model.data.VisualStyleVO;
-	import org.cytoscapeweb.model.methods.$;
-	import org.cytoscapeweb.util.BoxPositions;
-	import org.cytoscapeweb.util.ExternalFunctions;
-	import org.cytoscapeweb.util.Utils;
-	import org.cytoscapeweb.util.VisualProperties;
-	import org.cytoscapeweb.view.components.GraphView;
-	import org.cytoscapeweb.view.components.PanZoomBox;
-	import org.puremvc.as3.interfaces.INotification;
-	
-	
+    import flash.display.BitmapData;
+    import flash.events.Event;
+    import flash.events.KeyboardEvent;
+    import flash.events.MouseEvent;
+    import flash.geom.Matrix;
+    import flash.geom.Rectangle;
+    import flash.ui.Keyboard;
+    import flash.ui.Mouse;
+    
+    import mx.controls.Alert;
+    import mx.controls.Button;
+    import mx.controls.Label;
+    import mx.events.DragEvent;
+    import mx.events.FlexEvent;
+    import mx.events.ResizeEvent;
+    import mx.graphics.codec.PNGEncoder;
+    import mx.managers.CursorManager;
+    import mx.managers.CursorManagerPriority;
+    import mx.managers.PopUpManager;
+    
+    import org.cytoscapeweb.ApplicationFacade;
+    import org.cytoscapeweb.model.converters.PDFExporter;
+    import org.cytoscapeweb.model.converters.SVGExporter;
+    import org.cytoscapeweb.model.data.VisualStyleVO;
+    import org.cytoscapeweb.model.methods.$;
+    import org.cytoscapeweb.util.BoxPositions;
+    import org.cytoscapeweb.util.ExternalFunctions;
+    import org.cytoscapeweb.util.Utils;
+    import org.cytoscapeweb.util.VisualProperties;
+    import org.cytoscapeweb.view.components.GraphView;
+    import org.cytoscapeweb.view.components.PanZoomBox;
+    import org.puremvc.as3.interfaces.INotification;
+    
+    
     public class ApplicationMediator extends BaseMediator {
 
         // ========[ CONSTANTS ]====================================================================
@@ -87,18 +87,18 @@ package org.cytoscapeweb.view {
         private var _executingTasks:uint = 0;
         
         /** Flag that indicates whether or not the PanZoomBox has been dragged. */
-	    private var _panZoomMoved:Boolean;
-	    private var _dragging:Boolean;
-	    
-	    // The new relation between the bounds of the panZoomBox and the canvas borders.
-	    // They will be usefull to determine the new position of the panZoomBox after resizing the canvas.
-	    private var _panZoomRightAnchor:Number;
-	    private var _panZoomLeftAnchor:Number;
-	    private var _panZoomTopAnchor:Number;
-	    private var _panZoomBottomAnchor:Number;
-	    
-	    private var _previousWidth:Number;
-	    private var _previousHeight:Number;
+        private var _panZoomMoved:Boolean;
+        private var _dragging:Boolean;
+        
+        // The new relation between the bounds of the panZoomBox and the canvas borders.
+        // They will be usefull to determine the new position of the panZoomBox after resizing the canvas.
+        private var _panZoomRightAnchor:Number;
+        private var _panZoomLeftAnchor:Number;
+        private var _panZoomTopAnchor:Number;
+        private var _panZoomBottomAnchor:Number;
+        
+        private var _previousWidth:Number;
+        private var _previousHeight:Number;
         
         private function get application():CytoscapeWeb {
             return viewComponent as CytoscapeWeb;
@@ -280,13 +280,13 @@ package org.cytoscapeweb.view {
         }
         
         // ========[ PRIVATE METHODS ]==============================================================
-		
-		private function onApplicationComplete(evt:FlexEvent):void {
-		    // KEY BINDINGS:
-		    application.stage.addEventListener(Event.DEACTIVATE, onDeactivate);
+        
+        private function onApplicationComplete(evt:FlexEvent):void {
+            // KEY BINDINGS:
+            application.stage.addEventListener(Event.DEACTIVATE, onDeactivate);
             application.stage.addEventListener(Event.ACTIVATE, onActivate);
             application.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, false, 0, true);
-		    
+            
             // Listeners to drag the PAN ZOOM control:
             panZoomBox.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDownPanZoom, false, 0, true);
             panZoomBox.addEventListener(MouseEvent.MOUSE_UP, onMouseUpPanZoom, false, 0, true);
@@ -298,22 +298,22 @@ package org.cytoscapeweb.view {
             
             // Tell the client application that Cytoscape Web is ready:
             sendNotification(ApplicationFacade.CALL_EXTERNAL_INTERFACE, { functionName: ExternalFunctions.COMPLETE });
-		}
-		  
-		private function showWaitMessage():void {
-		    if (_executingTasks++ === 0) {
-    			graphView.visible = false;
-    		    PopUpManager.addPopUp(waitMsgLabel, application, true);
-    		    PopUpManager.centerPopUp(waitMsgLabel);
-    		}
-		}
-		  
-		private function hideWaitMessage():void {
-		    if (--_executingTasks === 0) {
-    		    PopUpManager.removePopUp(waitMsgLabel);
-    		    graphView.visible = true;
-    		}
-		}
+        }
+          
+        private function showWaitMessage():void {
+            if (_executingTasks++ === 0) {
+                graphView.visible = false;
+                PopUpManager.addPopUp(waitMsgLabel, application, true);
+                PopUpManager.centerPopUp(waitMsgLabel);
+            }
+        }
+          
+        private function hideWaitMessage():void {
+            if (--_executingTasks === 0) {
+                PopUpManager.removePopUp(waitMsgLabel);
+                graphView.visible = true;
+            }
+        }
         
         private function onActivate(evt:Event):void {
             sendNotification(ApplicationFacade.ACTIVATE_EVENT);
@@ -346,18 +346,18 @@ package org.cytoscapeweb.view {
                 sendNotification(ApplicationFacade.PAN_GRAPH, {panX: panX, panY: panY});
         }
         
-	    private function onMouseDownPanZoom(evt:MouseEvent):void {
-	        evt.stopImmediatePropagation();
-	        _dragging = true;
-	        panZoomBox.startDrag(false, new Rectangle(0, 0, application.width - panZoomBox.width, application.height - panZoomBox.height));
-	    }
-	    
-	    private function onMouseUpPanZoom(evt:MouseEvent):void {
-	        if (_dragging) {
-    	        panZoomBox.stopDrag();
-    	        _dragging = false;
-    	        panZoomBox.dispatchEvent(new DragEvent(DragEvent.DRAG_COMPLETE));
-    	    } else {
+        private function onMouseDownPanZoom(evt:MouseEvent):void {
+            evt.stopImmediatePropagation();
+            _dragging = true;
+            panZoomBox.startDrag(false, new Rectangle(0, 0, application.width - panZoomBox.width, application.height - panZoomBox.height));
+        }
+        
+        private function onMouseUpPanZoom(evt:MouseEvent):void {
+            if (_dragging) {
+                panZoomBox.stopDrag();
+                _dragging = false;
+                panZoomBox.dispatchEvent(new DragEvent(DragEvent.DRAG_COMPLETE));
+            } else {
                 if (graphProxy.rolledOverNode != null) {
                     // Workaround to force a ROLL OUT event on a rolled over node, because when a node is
                     // behind the pan-zoom control, the node's roll out event won't buble up:
@@ -378,26 +378,26 @@ package org.cytoscapeweb.view {
                 if (!_overApp)
                     application.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OVER));
             }
-	    }
-	    
-	    private function onRollOverPanZoom(evt:MouseEvent):void {
-	        _overPanZoom = true;
-	        updateCursor();
-	    }
-	    
-	    private function onRollOutPanZoom(evt:MouseEvent):void {
-	        _overPanZoom = false;
-	        updateCursor();
-	    }
-	    
-	    private function onDragCompletePanZoom(evt:DragEvent):void {
-	        _panZoomMoved = true;
-	        cachePanZoomAnchors();
-	    }
-	    
-	    private function onAppResize(evt:ResizeEvent):void {
-	        resizeChildren();
-	    }
+        }
+        
+        private function onRollOverPanZoom(evt:MouseEvent):void {
+            _overPanZoom = true;
+            updateCursor();
+        }
+        
+        private function onRollOutPanZoom(evt:MouseEvent):void {
+            _overPanZoom = false;
+            updateCursor();
+        }
+        
+        private function onDragCompletePanZoom(evt:DragEvent):void {
+            _panZoomMoved = true;
+            cachePanZoomAnchors();
+        }
+        
+        private function onAppResize(evt:ResizeEvent):void {
+            resizeChildren();
+        }
         
         private function onRollOverApplication(evt:MouseEvent):void { trace("<<== ROLL OVER [APP]");
             _overApp = true;
@@ -416,33 +416,33 @@ package org.cytoscapeweb.view {
             hideAllCustomCursors();
             sendNotification(ApplicationFacade.ROLLOUT_EVENT);
         }
-	        
-	    private function resizeChildren():void {
-	        // Resize them:
+            
+        private function resizeChildren():void {
+            // Resize them:
             application.graphBox.width = application.width;
             application.graphBox.height = application.height;
-	        
-	        // Keep the panZoomBox in a good position:
-	        panZoomBox.x = calculatePanZoomBoxX();
-	        panZoomBox.y = calculatePanZoomBoxY();
-	        cachePanZoomAnchors();
-	        
-	        _previousWidth = application.width;
-	        _previousHeight = application.height;
-	    }
-	    
-	    private function calculatePanZoomBoxX():Number {
-	        // Initially anchored on one edge of the canvas:
-	        var x:Number;
-	        const HPAD:int = 6;
-	        var position:String = configProxy.panZoomControlPosition;
-	        
-	        switch (position) {
-	            case BoxPositions.TOP_LEFT:
-	            case BoxPositions.MIDDLE_LEFT:
-	            case BoxPositions.BOTTOM_LEFT:
-	                x = HPAD;
-	                break;
+            
+            // Keep the panZoomBox in a good position:
+            panZoomBox.x = calculatePanZoomBoxX();
+            panZoomBox.y = calculatePanZoomBoxY();
+            cachePanZoomAnchors();
+            
+            _previousWidth = application.width;
+            _previousHeight = application.height;
+        }
+        
+        private function calculatePanZoomBoxX():Number {
+            // Initially anchored on one edge of the canvas:
+            var x:Number;
+            const HPAD:int = 6;
+            var position:String = configProxy.panZoomControlPosition;
+            
+            switch (position) {
+                case BoxPositions.TOP_LEFT:
+                case BoxPositions.MIDDLE_LEFT:
+                case BoxPositions.BOTTOM_LEFT:
+                    x = HPAD;
+                    break;
                 case BoxPositions.TOP_CENTER:
                 case BoxPositions.MIDDLE_CENTER:
                 case BoxPositions.BOTTOM_CENTER:
@@ -453,37 +453,37 @@ package org.cytoscapeweb.view {
                 case BoxPositions.BOTTOM_RIGHT:
                 default:
                     x = application.width - panZoomBox.width - HPAD;
-	        }
-	        
-	        if (_panZoomMoved) {
-	            const MIN_DIST_TO_ANCHOR:Number = Math.min(20, application.width/10);
-	            
-	            if (_panZoomLeftAnchor > MIN_DIST_TO_ANCHOR  && _panZoomRightAnchor > MIN_DIST_TO_ANCHOR) {
-	                // Just keep the the right and left paddings with the same proportion:
-	                x = _panZoomLeftAnchor * application.width / _previousWidth;
-	            } else {
-	                // If the user previously dragged the panzoom box to really close to the
-	                // left or right canvas' border, he probaly wants it to be anchored there:
-	                if (_panZoomLeftAnchor < _panZoomRightAnchor) {
-	                    // Anchor at LEFT:
-	                    x = _panZoomLeftAnchor;
-	                } else {
-	                    // Anchor at RIGHT:
-	                    x = application.width - panZoomBox.width - _panZoomRightAnchor;
-	                }
-	            }
-	        }
-	        
-	        // Don't let the panZoom get out of the canvas!!!
-	        if (x > application.width) x = application.width - panZoomBox.width;
-	        if (x < 0) x = 0;
-	        
-	        return x;
-	    }
-	    
-	    private function calculatePanZoomBoxY():Number {
-	        // Initially anchored on one edge of the canvas:
-	        var y:Number;
+            }
+            
+            if (_panZoomMoved) {
+                const MIN_DIST_TO_ANCHOR:Number = Math.min(20, application.width/10);
+                
+                if (_panZoomLeftAnchor > MIN_DIST_TO_ANCHOR  && _panZoomRightAnchor > MIN_DIST_TO_ANCHOR) {
+                    // Just keep the the right and left paddings with the same proportion:
+                    x = _panZoomLeftAnchor * application.width / _previousWidth;
+                } else {
+                    // If the user previously dragged the panzoom box to really close to the
+                    // left or right canvas' border, he probaly wants it to be anchored there:
+                    if (_panZoomLeftAnchor < _panZoomRightAnchor) {
+                        // Anchor at LEFT:
+                        x = _panZoomLeftAnchor;
+                    } else {
+                        // Anchor at RIGHT:
+                        x = application.width - panZoomBox.width - _panZoomRightAnchor;
+                    }
+                }
+            }
+            
+            // Don't let the panZoom get out of the canvas!!!
+            if (x > application.width) x = application.width - panZoomBox.width;
+            if (x < 0) x = 0;
+            
+            return x;
+        }
+        
+        private function calculatePanZoomBoxY():Number {
+            // Initially anchored on one edge of the canvas:
+            var y:Number;
             const VPAD:int = 6;
             var position:String = configProxy.panZoomControlPosition;
             
@@ -504,40 +504,40 @@ package org.cytoscapeweb.view {
                 default:
                     y = application.height - panZoomBox.height - VPAD;
             }
-	        
-	        if (_panZoomMoved) {
-	            const MIN_DIST_TO_ANCHOR:Number = Math.min(20, application.height/10);
-	            
-	            if (_panZoomTopAnchor > MIN_DIST_TO_ANCHOR  && _panZoomBottomAnchor > MIN_DIST_TO_ANCHOR) {
-	                // Just keep the the top and bottom paddings with the same proportion:
-	                y = _panZoomTopAnchor * application.height / _previousHeight;
-	            } else {
-	                // If the user previously dragged the panzoom box to really close to the
-	                // top or bottom border, he probaly wants it to be anchored there:
-	                if (_panZoomTopAnchor < _panZoomBottomAnchor)
-	                    y = _panZoomTopAnchor;
-	                else
-	                    y = application.height - panZoomBox.height - _panZoomBottomAnchor;
-	            }
-	        }
-	        
-	        // Don't let the panZoom get out of the canvas!!!
-	        if (y > application.height) y = application.height - panZoomBox.height;
-	        if (y < 0) y = 0;
-	        
-	        return y;
-	    }
-	    
-	    private function cachePanZoomAnchors():void {
-	        _panZoomTopAnchor = panZoomBox.y;
-	        _panZoomLeftAnchor = panZoomBox.x;
-	        _panZoomBottomAnchor = application.height - panZoomBox.y - panZoomBox.height;
-	        _panZoomRightAnchor = application.width - panZoomBox.x - panZoomBox.width;
-	        
-	        if (_panZoomRightAnchor < 0) _panZoomRightAnchor = 0;
-	        if (_panZoomBottomAnchor < 0) _panZoomBottomAnchor = 0;
-	    }
-	    
+            
+            if (_panZoomMoved) {
+                const MIN_DIST_TO_ANCHOR:Number = Math.min(20, application.height/10);
+                
+                if (_panZoomTopAnchor > MIN_DIST_TO_ANCHOR  && _panZoomBottomAnchor > MIN_DIST_TO_ANCHOR) {
+                    // Just keep the the top and bottom paddings with the same proportion:
+                    y = _panZoomTopAnchor * application.height / _previousHeight;
+                } else {
+                    // If the user previously dragged the panzoom box to really close to the
+                    // top or bottom border, he probaly wants it to be anchored there:
+                    if (_panZoomTopAnchor < _panZoomBottomAnchor)
+                        y = _panZoomTopAnchor;
+                    else
+                        y = application.height - panZoomBox.height - _panZoomBottomAnchor;
+                }
+            }
+            
+            // Don't let the panZoom get out of the canvas!!!
+            if (y > application.height) y = application.height - panZoomBox.height;
+            if (y < 0) y = 0;
+            
+            return y;
+        }
+        
+        private function cachePanZoomAnchors():void {
+            _panZoomTopAnchor = panZoomBox.y;
+            _panZoomLeftAnchor = panZoomBox.x;
+            _panZoomBottomAnchor = application.height - panZoomBox.y - panZoomBox.height;
+            _panZoomRightAnchor = application.width - panZoomBox.x - panZoomBox.width;
+            
+            if (_panZoomRightAnchor < 0) _panZoomRightAnchor = 0;
+            if (_panZoomBottomAnchor < 0) _panZoomBottomAnchor = 0;
+        }
+        
         private function updateCursor(options:Object=null):void {
             if (options == null) options = {};
             if (!_overApp || options.selecting) return;

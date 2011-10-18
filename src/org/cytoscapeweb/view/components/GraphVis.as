@@ -55,6 +55,8 @@ package org.cytoscapeweb.view.components {
     
     import org.cytoscapeweb.model.data.ConfigVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
+    import org.cytoscapeweb.model.error.CWError;
+    import org.cytoscapeweb.util.CompoundNodes;
     import org.cytoscapeweb.util.Edges;
     import org.cytoscapeweb.util.GraphUtils;
     import org.cytoscapeweb.util.Groups;
@@ -66,12 +68,14 @@ package org.cytoscapeweb.view.components {
     import org.cytoscapeweb.util.methods.$each;
     import org.cytoscapeweb.view.controls.TooltipControl;
     import org.cytoscapeweb.view.layout.CircleLayout;
+    import org.cytoscapeweb.view.layout.CompoundSpringEmbedder;
     import org.cytoscapeweb.view.layout.ForceDirectedLayout;
     import org.cytoscapeweb.view.layout.NodeLinkTreeLayout;
     import org.cytoscapeweb.view.layout.PresetLayout;
     import org.cytoscapeweb.view.layout.RadialTreeLayout;
     import org.cytoscapeweb.view.layout.physics.Simulation;
     import org.cytoscapeweb.view.render.Labeler;
+    import org.cytoscapeweb.vis.data.CompoundNodeSprite;
     
 
     public class GraphVis extends Visualization {
@@ -85,6 +89,7 @@ package org.cytoscapeweb.view.components {
         private var _style:VisualStyleVO;
         private var _config:ConfigVO;
         private var _nodeLabeler:Labeler;
+        private var _compoundNodeLabeler:Labeler;
         private var _edgeLabeler:Labeler;
         private var _tooltipControl:TooltipControl;
         private var _initialWidth:Number;
@@ -100,7 +105,7 @@ package org.cytoscapeweb.view.components {
                     var show:Boolean = _config.nodeTooltipsEnabled && d is NodeSprite;
                     return show || (_config.edgeTooltipsEnabled && d is EdgeSprite);
                 };
-            	_tooltipControl = new TooltipControl(filter, null, onTooltipShow);
+                _tooltipControl = new TooltipControl(filter, null, onTooltipShow);
             }
             
             return _tooltipControl;
@@ -113,6 +118,14 @@ package org.cytoscapeweb.view.components {
                 _nodeLabeler = new Labeler(null, Data.NODES);
             }
             return _nodeLabeler;
+        }
+        
+        public function get compoundNodeLabeler():Labeler {
+            if (_compoundNodeLabeler == null) {
+                _compoundNodeLabeler = new Labeler(null, Groups.COMPOUND_NODES);
+                //_compoundNodeLabeler = new Labeler(null, Data.NODES);
+            }
+            return _compoundNodeLabeler;
         }
         
         public function get edgeLabeler():Labeler {
@@ -162,10 +175,10 @@ package org.cytoscapeweb.view.components {
         // ========[ CONSTRUCTOR ]==================================================================
 
         public function GraphVis(data:Data, config:ConfigVO) {
-        	super(data);
-        	_config = config;
-        	separateDisconnected();
-        	
+            super(data);
+            _config = config;
+            separateDisconnected();
+            
             // Tooltips:
             // --------------------------------------------------------------------------
             controls.add(tooltipControl);
@@ -190,6 +203,7 @@ package org.cytoscapeweb.view.components {
             // Nodes & Edges properties:
             // ---------------------------------------------------------
             data.nodes.setProperties(Nodes.properties);
+            data.group(Groups.COMPOUND_NODES).setProperties(CompoundNodes.properties);
             data.edges.setProperties(Edges.properties);
             
             // Node labels:
@@ -209,6 +223,23 @@ package org.cytoscapeweb.view.components {
             nodeLabeler.filters = Labels.filters;
             nodeLabeler.textFunction = Labels.text;
             
+            // Compound node labels:
+            // ---------------------------------------------------------
+            compoundNodeLabeler.cacheText = false;
+            compoundNodeLabeler.textMode = TextSprite.DEVICE;
+            
+            compoundNodeLabeler.fontName = Labels.labelFontName;
+            compoundNodeLabeler.fontColor = Labels.labelFontColor;
+            compoundNodeLabeler.fontSize = Labels.labelFontSize;
+            compoundNodeLabeler.fontWeight = Labels.labelFontWeight;
+            compoundNodeLabeler.fontStyle = Labels.labelFontStyle;
+            compoundNodeLabeler.hAnchor = Labels.labelHAnchor;
+            compoundNodeLabeler.vAnchor = Labels.labelVAnchor;
+            compoundNodeLabeler.xOffsetFunc = Labels.labelXOffset;
+            compoundNodeLabeler.yOffsetFunc = Labels.labelYOffset;
+            compoundNodeLabeler.filters = Labels.filters;
+            compoundNodeLabeler.textFunction = Labels.text;
+            
             // Edge labels:
             // ---------------------------------------------------------
             edgeLabeler.textMode = TextSprite.DEVICE;
@@ -222,9 +253,16 @@ package org.cytoscapeweb.view.components {
             edgeLabeler.textFunction = Labels.text;
 
             if (!firstTime) {
-                if (_config.nodeLabelsVisible) updateLabels(Data.NODES);
-                if (_config.edgeLabelsVisible) updateLabels(Data.EDGES);
+                if (_config.nodeLabelsVisible) {
+                    updateLabels(Data.NODES);
+                    updateLabels(Groups.COMPOUND_NODES);
+                }
+                
+                if (_config.edgeLabelsVisible) {
+                    updateLabels(Data.EDGES);
+                }
             }
+
             // Tooltips:
             // ---------------------------------------------------------
             tooltipControl.showDelay = _style.getValue(VisualProperties.TOOLTIP_DELAY) as Number;
@@ -248,7 +286,7 @@ package org.cytoscapeweb.view.components {
             
             var layout:Layout, fdl:ForceDirectedLayout;
             
-            if (_layoutName === Layouts.PRESET) {
+            if (_layoutName === Layouts.PRESET || _layoutName === Layouts.COSE) {
                 layout = createLayout(layoutObj, data);
                 _appliedLayouts.push(layout);
             } else {
@@ -271,7 +309,6 @@ package org.cytoscapeweb.view.components {
                     // Create one layout for each disconnected component:
                     for (var i:uint = 0; i < _dataList.length; i++) {
                         var d:Data = _dataList[i];
-                        
                         if (d.nodes.length > 1) {
                             var rect:Rectangle = GraphUtils.calculateGraphDimension(d.nodes, _layoutName); 
                             var root:NodeSprite = Layouts.rootNode(d);
@@ -294,7 +331,7 @@ package org.cytoscapeweb.view.components {
             seq.add(trans);
 
             seq.addEventListener(TransitionEvent.START, function(evt:TransitionEvent):void {
-            	evt.currentTarget.removeEventListener(evt.type, arguments.callee);
+                evt.currentTarget.removeEventListener(evt.type, arguments.callee);
                 if (fdl != null) fdl.enforceBounds = false;
             });
             
@@ -302,19 +339,27 @@ package org.cytoscapeweb.view.components {
                 evt.currentTarget.removeEventListener(evt.type, arguments.callee);
 
                 for each (layout in _appliedLayouts) layout.operate();
-                if (_layoutName != Layouts.PRESET) realignGraph();
+                
+                if (_layoutName != Layouts.PRESET) {
+                    realignGraph();
+                }
 
                 DirtySprite.renderDirty();
                 updateLabels();
                 
-                var repack:Boolean = _layoutName !== Layouts.PRESET;
+                var repack:Boolean = (_layoutName !== Layouts.PRESET) &&
+                                     (_layoutName !== Layouts.COSE);
 
-                if ( repack && _dataList != null && _dataList.length > 0) {
+                if (repack && _dataList != null && _dataList.length > 0) {
+                    updateAllCompoundBounds();
                     GraphUtils.repackDisconnected(_dataList,
                                                   stage.stageWidth,
                                                   !_config.nodeLabelsVisible,
                                                   !_config.edgeLabelsVisible);
                 }
+                
+                // update all compound bounds again after the operation
+                updateAllCompoundBounds();
             });
 
             return seq;
@@ -323,6 +368,7 @@ package org.cytoscapeweb.view.components {
         public function updateLabels(group:String=null):void {
             if (group == null) {
                 updateLabels(Groups.NODES);
+                updateLabels(Groups.COMPOUND_NODES);
                 updateLabels(Groups.EDGES);
             } else {
                 var visible:Boolean;
@@ -331,6 +377,9 @@ package org.cytoscapeweb.view.components {
                 if (group === Groups.NODES) {
                     visible = _config.nodeLabelsVisible;
                     labeler = nodeLabeler;
+                } else if (group === Groups.COMPOUND_NODES) {
+                    visible = _config.nodeLabelsVisible;
+                    labeler = compoundNodeLabeler;
                 } else {
                     visible = _config.edgeLabelsVisible && !_config.edgesMerged;
                     labeler = edgeLabeler;
@@ -359,7 +408,11 @@ package org.cytoscapeweb.view.components {
             data.visit(function(ds:DataSprite):Boolean {
                 var lb:TextSprite = labels.getValue(ds);
                 if (lb != null) lb.visible = visible && ds.visible;
-                if (ds is NodeSprite && ds.props.autoSize) ds.dirty();
+                if (ds is NodeSprite && ds.props.autoSize) {
+                    if (! (ds is CompoundNodeSprite && (ds as CompoundNodeSprite).nodesCount > 0)) {
+                        ds.dirty();
+                    }
+                }
                 return false;
             }, group);
         }
@@ -381,7 +434,10 @@ package org.cytoscapeweb.view.components {
             if (d == null) d = data;
             
             // It's necessary to operate labeler first, so each label's text sprite is well placed!
-            if (_config.nodeLabelsVisible) nodeLabeler.operate();
+            if (_config.nodeLabelsVisible) {
+                nodeLabeler.operate();
+                compoundNodeLabeler.operate();
+            }
 
             // Then render edges and operate their labels:
             $each(d.edges, function(i:uint, e:EdgeSprite):void {
@@ -397,7 +453,7 @@ package org.cytoscapeweb.view.components {
             return bounds;
         }
         
-		public function updateDragRectangle(...delta):void {
+        public function updateDragRectangle(...delta):void {
             if (_dragRect != null) {
                 var b:Rectangle = _dragRect;
                 if (delta.length > 1) {
@@ -434,6 +490,48 @@ package org.cytoscapeweb.view.components {
             }
         }
 
+        /**
+         * Updates the bounds of the given compound node sprite using bounds of
+         * its child nodes. This function does NOT recursively update bounds of
+         * its child compounds, in other words the bounds of all child nodes are
+         * assumed to be up-to-date. This method also updates the coordinates
+         * of the given compound node sprite according to the newly calculated
+         * bounds.
+         * 
+         * @param cns   compound node sprite
+         */
+        public function updateCompoundBounds(cns:CompoundNodeSprite):void {
+            var ns:NodeSprite;
+            var children:Data = new Data();
+            var bounds:Rectangle;
+            var allChildren:Array = CompoundNodes.getChildren(cns);
+            
+            if (allChildren.length > 0 && !cns.allChildrenInvisible()) {
+                for each (ns in allChildren) {
+                    children.addNode(ns);
+                }
+                
+                // calculate&update bounds of the compound node 
+                bounds = this.getRealBounds(children);
+                cns.updateBounds(bounds);
+            } else {
+                // empty compound, so reset bounds
+                cns.resetBounds();
+            }
+        }
+        
+        public function updateAllCompoundBounds():void {
+            var cns:CompoundNodeSprite;
+            
+            // find all parentless compounds, and recursively update bounds
+            // in a bottom-up manner.
+            for each (cns in data.group(Groups.COMPOUND_NODES)) {
+                if (cns.isInitialized() && cns.data.parent == null) {
+                    updateAllBounds(cns);
+                }
+            }
+        }
+        
         // ========[ PRIVATE METHODS ]==============================================================
         
         /**
@@ -444,13 +542,13 @@ package org.cytoscapeweb.view.components {
                                       d:Data,
                                       layoutBounds:Rectangle=null,
                                       layoutRoot:DataSprite=null):Layout {
-        	var layout:Layout;
-        	var name:String = obj.name;
-        	var options:Object = obj.options;
-        	var correction:Number;
-        	
-        	if (layoutBounds == null)
-        	   layoutBounds = new Rectangle(bounds.x, bounds.y, _initialWidth, _initialHeight);
+            var layout:Layout;
+            var name:String = obj.name;
+            var options:Object = obj.options;
+            var correction:Number;
+            
+            if (layoutBounds == null)
+               layoutBounds = new Rectangle(bounds.x, bounds.y, _initialWidth, _initialHeight);
 
             if (name === Layouts.FORCE_DIRECTED) {
                 var iter:uint = Math.max(1, options.iterations);
@@ -460,7 +558,7 @@ package org.cytoscapeweb.view.components {
                 var weightNorm:String = options.weightNorm;
                 var sim:Simulation = new Simulation();
                 
-        		var fdl:ForceDirectedLayout = new ForceDirectedLayout(true, iter, maxTime, autoStab, sim, weightAttr, weightNorm);
+                var fdl:ForceDirectedLayout = new ForceDirectedLayout(true, iter, maxTime, autoStab, sim, weightAttr, weightNorm);
                 //fdl.ticksPerIteration = 1,
                 fdl.simulation.dragForce.drag = options.drag;
                 fdl.simulation.nbodyForce.gravitation = options.gravitation;
@@ -488,9 +586,9 @@ package org.cytoscapeweb.view.components {
 
                 layout = fdl;
             } else if (name === Layouts.CIRCLE) {
-	            var tree:Boolean = options.tree;
-	            
-	            var cl:CircleLayout = new CircleLayout(null, null, tree, d);
+                var tree:Boolean = options.tree;
+                
+                var cl:CircleLayout = new CircleLayout(null, null, tree, d);
                 cl.angleWidth = options.angleWidth * Math.PI / 180;
                 
                 correction = Math.max(1, Math.abs(360 / options.angleWidth));
@@ -537,7 +635,16 @@ package org.cytoscapeweb.view.components {
                 }
                 
                 layout = psl;
+            } else if (name === Layouts.COSE) {
+                // create layout
+                var cose:CompoundSpringEmbedder = new CompoundSpringEmbedder();
+                // set layout options
+                cose.setOptions(options);
+                // set current layout
+                layout = cose;
             }
+            
+            if (layout == null) throw new CWError("Invalid layout: " + name);
             
             layout.layoutBounds = layoutBounds;
             layout.layoutRoot = layoutRoot;
@@ -550,15 +657,15 @@ package org.cytoscapeweb.view.components {
          * aligning their "real" bounds with its sprite's UP and LEFT edges.
          */ 
         private function realignGraph():void {
-        	// Get the rectangle where the graph is positioned:
-        	var rb:Rectangle = getRealBounds();
-        	// Get the shift value (graph position - original sprite bounds):
-        	var shiftX:Number = rb.x - 0;
+            // Get the rectangle where the graph is positioned:
+            var rb:Rectangle = getRealBounds();
+            // Get the shift value (graph position - original sprite bounds):
+            var shiftX:Number = rb.x - 0;
             var shiftY:Number = rb.y - 0;
-        	
-        	// Reposition all the nodes,
-        	// aligning the graph with the up and letf borders of this sprite:
-        	for each (var n:NodeSprite in data.nodes) {
+            
+            // Reposition all the nodes,
+            // aligning the graph with the up and letf borders of this sprite:
+            for each (var n:NodeSprite in data.nodes) {
                 n.x -= shiftX;
                 n.y -= shiftY;
             }
@@ -620,6 +727,17 @@ package org.cytoscapeweb.view.components {
             }
 
             return text;
+        }
+        
+        private function updateAllBounds(cns:CompoundNodeSprite):void { 
+            for each (var ns:NodeSprite in cns.getNodes()) {
+                if (ns is CompoundNodeSprite && (ns as CompoundNodeSprite).isInitialized()) {
+                    this.updateAllBounds(ns as CompoundNodeSprite);
+                }
+            }
+            
+            this.updateCompoundBounds(cns);
+            cns.render();
         }
     }
 }

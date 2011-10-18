@@ -28,8 +28,7 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.controller {
-    import mx.utils.StringUtil;
-    
+    import org.cytoscapeweb.model.methods.error;
     import org.puremvc.as3.interfaces.INotification;
     
 
@@ -39,11 +38,15 @@ package org.cytoscapeweb.controller {
             var layout:Object = notification.getBody();
             
             if (layout != null) {
-                // Fisrt, we have to set the new current layout:
-	            configProxy.currentLayout = layout;
-	            
-	            // Then, ask the mediator to apply it:
-                graphMediator.applyLayout(configProxy.currentLayout);
+                try {
+                    // Fisrt, we have to set the new current layout:
+                    configProxy.currentLayout = layout;
+                    
+                    // Then, ask the mediator to apply it:
+                    graphMediator.applyLayout(configProxy.currentLayout);
+                } catch (err:Error) {
+                    error(err);
+                }
             }
         }
     }

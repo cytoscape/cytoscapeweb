@@ -40,6 +40,7 @@ package org.cytoscapeweb.model {
     import org.cytoscapeweb.model.data.VisualPropertyVO;
     import org.cytoscapeweb.model.data.VisualStyleBypassVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
+    import org.cytoscapeweb.model.error.CWError;
     import org.cytoscapeweb.util.GraphUtils;
     import org.cytoscapeweb.util.Layouts;
     import org.puremvc.as3.patterns.proxy.Proxy;
@@ -183,6 +184,8 @@ package org.cytoscapeweb.model {
                     case Layouts.PRESET.toLowerCase():         name = Layouts.PRESET; break;
                     case Layouts.RADIAL.toLowerCase():         name = Layouts.RADIAL; break;
                     case Layouts.TREE.toLowerCase():           name = Layouts.TREE; break;
+                    case Layouts.COSE.toLowerCase():           name = Layouts.COSE; break;
+                    default:                                   throw new CWError("Invalid layout: " + name);
                 }
                 
                 options = Layouts.mergeOptions(name, options);
@@ -232,45 +235,45 @@ package org.cytoscapeweb.model {
             config = ConfigVO.getDefault();
 
             if (params != null) {
-            	id = params.id;
+                id = params.id;
             }
         }
 
         // ========[ PUBLIC METHODS ]===============================================================
 
-	    /**
-	     * It just binds the data to the VizMappers.
-	     */
+        /**
+         * It just binds the data to the VizMappers.
+         */
         public function bindGraphData(data:Data):void {
-        	var nodesData:Array = [], edgesData:Array = [], mergedEdgesData:Array = [];
-        	
-        	if (data.nodes != null) {
+            var nodesData:Array = [], edgesData:Array = [], mergedEdgesData:Array = [];
+            
+            if (data.nodes != null) {
                 for each (var n:NodeSprite in data.nodes) {
                     if (!GraphUtils.isFilteredOut(n)) nodesData.push(n.data);
                 }
-        	} if (data.edges != null) {
+            } if (data.edges != null) {
                 for each (var e:EdgeSprite in data.edges) {
                     if (!GraphUtils.isFilteredOut(e)) {
                         if (!e.props.$merged) edgesData.push(e.data);
                         else                  mergedEdgesData.push(e.data);
                     }
-        	   }
-        	}
+               }
+            }
 
-    		var props:Array = visualStyle.getPropertiesAsArray();
-    		
-    		for each (var p:VisualPropertyVO in props) {
-    			if (p.vizMapper is ContinuousVizMapperVO) {
+            var props:Array = visualStyle.getPropertiesAsArray();
+            
+            for each (var p:VisualPropertyVO in props) {
+                if (p.vizMapper is ContinuousVizMapperVO) {
                     if (p.isNodeProperty()) {
-    				    ContinuousVizMapperVO(p.vizMapper).dataList = nodesData;
-    				} else if (p.isEdgeProperty()) {
-    				    if (p.isMergedEdgeProperty())
-    				        ContinuousVizMapperVO(p.vizMapper).dataList = mergedEdgesData;
-    				    else
-    				        ContinuousVizMapperVO(p.vizMapper).dataList = edgesData;
-    				}
-    			}
-    		}
+                        ContinuousVizMapperVO(p.vizMapper).dataList = nodesData;
+                    } else if (p.isEdgeProperty()) {
+                        if (p.isMergedEdgeProperty())
+                            ContinuousVizMapperVO(p.vizMapper).dataList = mergedEdgesData;
+                        else
+                            ContinuousVizMapperVO(p.vizMapper).dataList = edgesData;
+                    }
+                }
+            }
         }
 
         // ========[ PRIVATE METHODS ]==============================================================

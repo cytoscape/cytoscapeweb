@@ -28,31 +28,31 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.view.render {
-	import com.senocular.drawing.DashedLine;
-	
-	import flare.util.Geometry;
-	import flare.util.Shapes;
-	import flare.vis.data.DataSprite;
-	import flare.vis.data.EdgeSprite;
-	import flare.vis.data.NodeSprite;
-	import flare.vis.data.render.EdgeRenderer;
-	
-	import flash.display.Graphics;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	
-	import org.cytoscapeweb.util.ArrowShapes;
-	import org.cytoscapeweb.util.LineStyles;
-	import org.cytoscapeweb.util.NodeShapes;
-	import org.cytoscapeweb.util.Utils;
-	
-	public class EdgeRenderer extends flare.vis.data.render.EdgeRenderer {
+    import com.senocular.drawing.DashedLine;
+    
+    import flare.util.Geometry;
+    import flare.util.Shapes;
+    import flare.vis.data.DataSprite;
+    import flare.vis.data.EdgeSprite;
+    import flare.vis.data.NodeSprite;
+    import flare.vis.data.render.EdgeRenderer;
+    
+    import flash.display.Graphics;
+    import flash.geom.Point;
+    import flash.geom.Rectangle;
+    
+    import org.cytoscapeweb.util.ArrowShapes;
+    import org.cytoscapeweb.util.LineStyles;
+    import org.cytoscapeweb.util.NodeShapes;
+    import org.cytoscapeweb.util.Utils;
+    
+    public class EdgeRenderer extends flare.vis.data.render.EdgeRenderer {
 
         // ========[ CONSTANTS ]====================================================================
 
         // ========[ PRIVATE PROPERTIES ]===========================================================
 
-		private static var _instance:org.cytoscapeweb.view.render.EdgeRenderer = new org.cytoscapeweb.view.render.EdgeRenderer();
+        private static var _instance:org.cytoscapeweb.view.render.EdgeRenderer = new org.cytoscapeweb.view.render.EdgeRenderer();
         /** Static AppEdgeRenderer instance. */
         public static function get instance():org.cytoscapeweb.view.render.EdgeRenderer { return _instance; }
         
@@ -103,34 +103,34 @@ package org.cytoscapeweb.view.render {
             // Curvature
             var op1:Point, op2:Point;
             
-			if (curve) {
-			    var h:Number = e.props.curvature;
-			    var saH:Number = sourceArrowStyle != null ? sourceArrowStyle.height : 0;
+            if (curve) {
+                var h:Number = e.props.curvature;
+                var saH:Number = sourceArrowStyle != null ? sourceArrowStyle.height : 0;
                 var taH:Number = targetArrowStyle != null ? targetArrowStyle.height : 0;
-			    
-			    if (loop) {
-			        h += Math.max(s.width, s.height, saH*2, taH*2, w*4);
-			        op1 = new Point(s.x, s.y - s.height/2 - h);
-			        op2 = new Point(s.x - s.width/2 - h, s.y);
-			    } else {
-    			    // Fix curvature height
-    			    if (sourceShape != ArrowShapes.NONE || targetShape != ArrowShapes.NONE) {
-        			    var maxH:Number = Math.max(saH, taH, s.width/2, t.width/2);
+                
+                if (loop) {
+                    h += Math.max(s.width, s.height, saH*2, taH*2, w*4);
+                    op1 = new Point(s.x, s.y - s.height/2 - h);
+                    op2 = new Point(s.x - s.width/2 - h, s.y);
+                } else {
+                    // Fix curvature height
+                    if (sourceShape != ArrowShapes.NONE || targetShape != ArrowShapes.NONE) {
+                        var maxH:Number = Math.max(saH, taH, s.width/2, t.width/2);
         
                         if (maxH >= h) {
                             var nbd:Number = nd - s.width/2 - t.width/2; // distance between nodes borders
-            			    h += 2 * Math.sqrt(Math.max(0, maxH*maxH - Math.pow(nd/4, 2))) * (h/Math.abs(h));
+                            h += 2 * Math.sqrt(Math.max(0, maxH*maxH - Math.pow(nd/4, 2))) * (h/Math.abs(h));
                         }
                     }
                     
-    			    // Find bezier control point
-    			    op2 = op1 = Utils.orthogonalPoint(h, np1, np2);
-    			}
-			} else {
-			    op1 = np1.clone();
-			    op2 = np2.clone();
-			}
-			
+                    // Find bezier control point
+                    op2 = op1 = Utils.orthogonalPoint(h, np1, np2);
+                }
+            } else {
+                op1 = np1.clone();
+                op2 = np2.clone();
+            }
+            
             // ----------------------------------------------------
 
             // get arrow tip point as intersection of edge with bounding box
@@ -456,9 +456,9 @@ package org.cytoscapeweb.view.render {
         }
 
         private function intersectNode(n:NodeSprite, start:Point, end:Point, int:Point):void {
-        	var r:Rectangle = n.getBounds(n.parent);
-        	
-        	switch (n.shape) {
+            var r:Rectangle = n.getBounds(n.parent);
+            
+            switch (n.shape) {
                 case NodeShapes.ELLIPSE:
                     if (n.width == n.height)
                         intersectCircle(n.width/2, start, end, int);
@@ -471,7 +471,7 @@ package org.cytoscapeweb.view.render {
                 default:
                     var points:Array = NodeShapes.getDrawPoints(r, n.shape);
                     intersectLines(points, start, end, int);
-        	}
+            }
         }
         
         private function intersectCircle(radius:Number, start:Point, end:Point, ip:Point):void {

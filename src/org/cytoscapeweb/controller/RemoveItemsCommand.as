@@ -58,6 +58,9 @@ package org.cytoscapeweb.controller {
     
                 graphMediator.dispose(items);
                 graphProxy.remove(items);
+				
+				// shrink affected compound node bounds
+				graphMediator.shrinkCompounds();
                 
                 if (updateVisualMappers) sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
                 else graphMediator.separateDisconnected();

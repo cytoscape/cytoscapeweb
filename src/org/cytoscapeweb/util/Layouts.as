@@ -47,6 +47,7 @@ package org.cytoscapeweb.util {
         public static const FORCE_DIRECTED:String = "ForceDirected";
         public static const RADIAL:String = "Radial";
         public static const TREE:String = "Tree";
+        public static const COSE:String = "CompoundSpringEmbedder";
         public static const PRESET:String = "Preset";
         
         public static const DEFAULT_OPTIONS:Object = {
@@ -83,6 +84,21 @@ package org.cytoscapeweb.util {
             Preset: {
                 points: [ ],
                 fitToScreen: true
+            },
+            CompoundSpringEmbedder : {
+                layoutQuality:                  "default", // Layout Quality
+                incremental:                    false, // Incremental
+                uniformLeafNodeSizes:           false, // Uniform Leaf Node Sizes
+                tension:                        50, // Spring
+                gravitation:                    -50, // Repulsion or Attraction
+                smartDistance:                  true, // Smart Range Calculation
+                centralGravitation:             50, // Central Gravity
+                centralGravityDistance:         50, // Gravity Range
+                compoundCentralGravitation:     50, // Compound Gravity
+                compoundCentralGravityDistance: 50, // Compound Gravity Range
+                restLength:                     50, // Desired Edge Length
+                smartRestLength:                true, // Smart Edge Length Calculation
+                multiLevelScaling:              false // Multi-Level Scaling
             }
         };
         

@@ -40,6 +40,7 @@ package org.cytoscapeweb.util {
     import org.cytoscapeweb.ApplicationFacade;
     import org.cytoscapeweb.model.ConfigProxy;
     import org.cytoscapeweb.model.data.VisualStyleVO;
+    import org.cytoscapeweb.vis.data.CompoundNodeSprite;
     
     
     public class Labels {
@@ -106,21 +107,27 @@ package org.cytoscapeweb.util {
         }
         
         public static function labelHAnchor(d:DataSprite):int {
-            if (d is NodeSprite && d.props.autoSize) return TextSprite.CENTER;
-            return Anchors.toFlareAnchor(style.getValue(VisualProperties.NODE_LABEL_HANCHOR, d.data));
+            if (d is NodeSprite && d.props.autoSize) {
+                if (! (d is CompoundNodeSprite && (d as CompoundNodeSprite).nodesCount > 0))
+                    return TextSprite.CENTER;
+            }
+            return Anchors.toFlareAnchor(style.getValue(_$(VisualProperties.NODE_LABEL_HANCHOR, d), d.data));
         }
         
         public static function labelVAnchor(d:DataSprite):int {
-            if (d is NodeSprite && d.props.autoSize) return TextSprite.MIDDLE;
-            return Anchors.toFlareAnchor(style.getValue(VisualProperties.NODE_LABEL_VANCHOR, d.data));
+           if (d is NodeSprite && d.props.autoSize) {
+                if (! (d is CompoundNodeSprite && (d as CompoundNodeSprite).nodesCount > 0))
+                    return TextSprite.MIDDLE;
+            }
+            return Anchors.toFlareAnchor(style.getValue(_$(VisualProperties.NODE_LABEL_VANCHOR, d), d.data));
         }
         
         public static function labelXOffset(d:DataSprite):Number {
-            return style.getValue(VisualProperties.NODE_LABEL_XOFFSET, d.data);
+            return style.getValue(_$(VisualProperties.NODE_LABEL_XOFFSET, d), d.data);
         }
         
         public static function labelYOffset(d:DataSprite):Number {
-            return style.getValue(VisualProperties.NODE_LABEL_YOFFSET, d.data);
+            return style.getValue(_$(VisualProperties.NODE_LABEL_YOFFSET, d), d.data);
         }
         
         public static function filters(d:DataSprite):Array {
@@ -138,11 +145,23 @@ package org.cytoscapeweb.util {
         /**
          * @param propName A node property name.
          * @param d A node or edge sprite.
-         * @return The analogue edge property name name if the DataSprite is an edge
+         * @return The analogue edge property name if the DataSprite is an edge or a compound node
          */
         private static function _$(propName:String, d:DataSprite):String {
-            if (propName != null && d is EdgeSprite)
+            if (propName != null && d is EdgeSprite) {
                 propName = propName.replace("node", "edge");
+            } else if (propName != null && d is CompoundNodeSprite) {
+                if ((d as CompoundNodeSprite).isInitialized()) {
+                    var idx:int = propName.indexOf(".");
+                    
+                    // convert from node.property to node.compoundProperty
+                    
+                    propName = propName.substring(0,idx+1) + "compound" +
+                        propName.charAt(idx+1).toUpperCase() +
+                        propName.substring(idx+2);
+                }
+            }
+            
             return propName;
         }
         

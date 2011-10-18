@@ -28,35 +28,35 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.view.render {
-	import flare.display.TextSprite;
-	import flare.util.Shapes;
-	import flare.vis.data.DataSprite;
-	import flare.vis.data.EdgeSprite;
-	import flare.vis.data.NodeSprite;
-	import flare.vis.data.render.ShapeRenderer;
-	
-	import flash.display.BitmapData;
-	import flash.display.Graphics;
-	import flash.display.Sprite;
-	import flash.geom.Matrix;
-	import flash.geom.Rectangle;
-	import flash.utils.setTimeout;
-	
-	import mx.utils.StringUtil;
-	
-	import org.cytoscapeweb.ApplicationFacade;
-	import org.cytoscapeweb.model.ConfigProxy;
-	import org.cytoscapeweb.model.GraphProxy;
-	import org.cytoscapeweb.model.error.CWError;
-	import org.cytoscapeweb.model.methods.error;
-	import org.cytoscapeweb.util.ErrorCodes;
-	import org.cytoscapeweb.util.NodeShapes;
-	
+    import flare.display.TextSprite;
+    import flare.util.Shapes;
+    import flare.vis.data.DataSprite;
+    import flare.vis.data.EdgeSprite;
+    import flare.vis.data.NodeSprite;
+    import flare.vis.data.render.ShapeRenderer;
+    
+    import flash.display.BitmapData;
+    import flash.display.Graphics;
+    import flash.display.Sprite;
+    import flash.geom.Matrix;
+    import flash.geom.Rectangle;
+    import flash.utils.setTimeout;
+    
+    import mx.utils.StringUtil;
+    
+    import org.cytoscapeweb.ApplicationFacade;
+    import org.cytoscapeweb.model.ConfigProxy;
+    import org.cytoscapeweb.model.GraphProxy;
+    import org.cytoscapeweb.model.error.CWError;
+    import org.cytoscapeweb.model.methods.error;
+    import org.cytoscapeweb.util.ErrorCodes;
+    import org.cytoscapeweb.util.NodeShapes;
+    
 
     public class NodeRenderer extends ShapeRenderer {
-    	
-    	private static const WRAP_PAD:Number = 5;
-    	
+        
+        private static const WRAP_PAD:Number = 5;
+        
         private static var _instance:NodeRenderer = new NodeRenderer();
         public static function get instance():NodeRenderer { return _instance; }
 
@@ -152,7 +152,7 @@ package org.cytoscapeweb.view.render {
                 // or the node will not receive mouse events
                 if (d.props.transparent) fillAlpha = 0;
                 g.beginFill(fillColor, fillAlpha);
-                drawShape(d, d.shape, w, h);
+                drawShape(d, d.shape, new Rectangle(-w/2, -h/2, w, h));
                 g.endFill();
                 
                 // 2. Draw an image on top:
@@ -172,14 +172,20 @@ package org.cytoscapeweb.view.render {
         
         // ========[ PRIVATE METHODS ]==============================================================
         
-        private function drawShape(s:Sprite, shape:String, width:Number, height:Number):void {
+        protected function drawShape(s:Sprite, shape:String, bounds:Rectangle):void {
             var g:Graphics = s.graphics;
+            var w:Number = bounds.width;
+            var h:Number = bounds.height;
+            var x:Number = bounds.x;
+            var y:Number = bounds.y;
+            
+            if (isNaN(w) || isNaN(h)) return;
             
             switch (shape) {
                 case null:
                     break;
                 case NodeShapes.RECTANGLE:
-                    g.drawRect(-width/2, -height/2, width, height);
+                    g.drawRect(x, y, w, h);
                     break;
                 case NodeShapes.TRIANGLE:
                 case NodeShapes.DIAMOND:
@@ -187,24 +193,23 @@ package org.cytoscapeweb.view.render {
                 case NodeShapes.OCTAGON:
                 case NodeShapes.PARALLELOGRAM:
                 case NodeShapes.V:
-                    var r:Rectangle = new Rectangle(-width/2, -height/2, width, height);
-                    var points:Array = NodeShapes.getDrawPoints(r, shape);
+                    var points:Array = NodeShapes.getDrawPoints(bounds, shape);
                     Shapes.drawPolygon(g, points);
                     break;
                 case NodeShapes.ROUND_RECTANGLE:
-                    var eh:Number = NodeShapes.getRoundRectCornerRadius(width, height) * 2;
-                    g.drawRoundRect(-width/2, -height/2, width, height, eh, eh);
+                    var eh:Number = NodeShapes.getRoundRectCornerRadius(w, h) * 2;
+                    g.drawRoundRect(x, y, w, h, eh, eh);
                     break;
                 case NodeShapes.ELLIPSE:
                 default:
-                    if (width == height)
-                        Shapes.drawCircle(g, width/2);
+                    if (w == h)
+                        Shapes.drawCircle(g, w/2);
                     else
-                        g.drawEllipse(-width/2, -height/2, width, height);
+                        g.drawEllipse(x, y, w, h);
             }
         }
         
-        private function drawImage(d:DataSprite, w:Number, h:Number):void {
+        protected function drawImage(d:DataSprite, w:Number, h:Number):void {
             var url:String = d.props.imageUrl;
             
             if (w > 0 && h > 0 && url != null && StringUtil.trim(url).length > 0) {
@@ -238,7 +243,7 @@ package org.cytoscapeweb.view.render {
                         m.translate(-(bd.width*scale)/2, -(bd.height*scale)/2);
                         
                         d.graphics.beginBitmapFill(bd, m, false, true);
-                        drawShape(d, d.shape, w, h);
+                        drawShape(d, d.shape, new Rectangle(-w/2, -h/2, w, h));
                         d.graphics.endFill();
                     }
                 }

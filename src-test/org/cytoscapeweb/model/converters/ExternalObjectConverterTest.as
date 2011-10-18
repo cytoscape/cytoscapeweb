@@ -40,6 +40,7 @@ package org.cytoscapeweb.model.converters {
     
     import org.cytoscapeweb.fixtures.Fixtures;
     import org.cytoscapeweb.model.error.CWError;
+    import org.cytoscapeweb.util.DataSchemaUtils;
     import org.cytoscapeweb.util.Groups;
     
     public class ExternalObjectConverterTest extends TestCase {
@@ -230,12 +231,12 @@ package org.cytoscapeweb.model.converters {
             // Edges schema
             assertMinEdgesSchema(es, true);
             
-            assertTrue(null === es.getFieldByName(ExternalObjectConverter.SOURCE).defaultValue);
+            assertTrue(null === es.getFieldByName(DataSchemaUtils.SOURCE).defaultValue);
             
             assertEquals(DataUtil.NUMBER, es.getFieldByName("weight").type);
             assertTrue(null === es.getFieldByName("weight").defaultValue);
             
-            assertEquals(DataUtil.BOOLEAN, es.getFieldByName(ExternalObjectConverter.DIRECTED).type);
+            assertEquals(DataUtil.BOOLEAN, es.getFieldByName(DataSchemaUtils.DIRECTED).type);
             
             // Test Data:
             // --------------------
@@ -246,6 +247,7 @@ package org.cytoscapeweb.model.converters {
             assertEquals(network.data.edges.length, ed.length);
             
             for each (var n:Object in nd) {
+                if (n is NodeSprite) n = n.data;
                 assertTrue(n.id is String);
                 assertTrue(n.label is String);
                 assertTrue(n.score is Number);
@@ -267,8 +269,8 @@ package org.cytoscapeweb.model.converters {
             
             // NODES
             var props:Array = ["data","shape","borderColor","borderWidth","opacity","visible","color",
-                               "x","y","rawX","rawY","size","width","height"/*, "degree", "indegree", "outdegree"*/];
-            var attrs:Array = ["id"];
+                               "x","y","rawX","rawY","size","width","height","zIndex"/*, "degree", "indegree", "outdegree"*/];
+            var attrs:Array = ["id","parent"];
             
             for each (var n:NodeSprite in data.nodes) {
                 o = ExternalObjectConverter.toExtElement(n, 1);
@@ -282,7 +284,7 @@ package org.cytoscapeweb.model.converters {
             
             // EDGES
             props = ["data","color","width","opacity","visible","sourceArrowShape","targetArrowShape",
-                     "sourceArrowColor","targetArrowColor","curvature","merged"];
+                     "sourceArrowColor","targetArrowColor","curvature","merged","zIndex"];
             attrs = ["id","source","target","directed"];
             
             for each (var e:EdgeSprite in data.edges) {
@@ -299,15 +301,15 @@ package org.cytoscapeweb.model.converters {
         }
         
         private function assertMinNodesSchema(s:DataSchema):void {
-            assertEquals(DataUtil.STRING, s.getFieldByName(ExternalObjectConverter.ID).type);
+            assertEquals(DataUtil.STRING, s.getFieldByName(DataSchemaUtils.ID).type);
         }
         
         private function assertMinEdgesSchema(s:DataSchema, directed:Boolean=false):void {
-            assertEquals(DataUtil.STRING, s.getFieldByName(ExternalObjectConverter.ID).type);
-            assertEquals(DataUtil.STRING, s.getFieldByName(ExternalObjectConverter.SOURCE).type);
-            assertEquals(DataUtil.STRING, s.getFieldByName(ExternalObjectConverter.TARGET).type);
-            assertEquals(DataUtil.BOOLEAN, s.getFieldByName(ExternalObjectConverter.DIRECTED).type);
-            assertEquals(directed, s.getFieldByName(ExternalObjectConverter.DIRECTED).defaultValue);
+            assertEquals(DataUtil.STRING, s.getFieldByName(DataSchemaUtils.ID).type);
+            assertEquals(DataUtil.STRING, s.getFieldByName(DataSchemaUtils.SOURCE).type);
+            assertEquals(DataUtil.STRING, s.getFieldByName(DataSchemaUtils.TARGET).type);
+            assertEquals(DataUtil.BOOLEAN, s.getFieldByName(DataSchemaUtils.DIRECTED).type);
+            assertEquals(directed, s.getFieldByName(DataSchemaUtils.DIRECTED).defaultValue);
         }
         
         private function assertEmptyGraph(ds:DataSet):void {

@@ -28,42 +28,44 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.view.components {
-	import flare.animate.Parallel;
-	import flare.animate.Transition;
-	import flare.animate.TransitionEvent;
-	import flare.display.DirtySprite;
-	import flare.util.Displays;
-	import flare.vis.data.Data;
-	import flare.vis.data.DataList;
-	import flare.vis.data.DataSprite;
-	import flare.vis.data.EdgeSprite;
-	import flare.vis.data.NodeSprite;
-	
-	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	
-	import mx.core.UIComponent;
-	
-	import org.cytoscapeweb.events.GraphViewEvent;
-	import org.cytoscapeweb.model.data.ConfigVO;
-	import org.cytoscapeweb.model.data.VisualStyleVO;
-	import org.cytoscapeweb.util.Edges;
-	import org.cytoscapeweb.util.GraphUtils;
-	import org.cytoscapeweb.util.Layouts;
-	import org.cytoscapeweb.util.Nodes;
-	import org.cytoscapeweb.util.Utils;
-	import org.cytoscapeweb.util.methods.$each;
-	
-	public class GraphView extends UIComponent {
+    import flare.animate.Parallel;
+    import flare.animate.Transition;
+    import flare.animate.TransitionEvent;
+    import flare.display.DirtySprite;
+    import flare.util.Displays;
+    import flare.vis.data.Data;
+    import flare.vis.data.DataList;
+    import flare.vis.data.DataSprite;
+    import flare.vis.data.EdgeSprite;
+    import flare.vis.data.NodeSprite;
+    
+    import flash.display.Sprite;
+    import flash.events.Event;
+    import flash.geom.Point;
+    import flash.geom.Rectangle;
+    
+    import mx.core.UIComponent;
+    
+    import org.cytoscapeweb.events.GraphViewEvent;
+    import org.cytoscapeweb.model.data.ConfigVO;
+    import org.cytoscapeweb.model.data.VisualStyleVO;
+    import org.cytoscapeweb.util.CompoundNodes;
+    import org.cytoscapeweb.util.Edges;
+    import org.cytoscapeweb.util.GraphUtils;
+    import org.cytoscapeweb.util.Layouts;
+    import org.cytoscapeweb.util.Nodes;
+    import org.cytoscapeweb.util.Utils;
+    import org.cytoscapeweb.util.methods.$each;
+    import org.cytoscapeweb.vis.data.CompoundNodeSprite;
+    
+    public class GraphView extends UIComponent {
         
         // ========[ CONSTANTS ]====================================================================
 
         // ========[ PRIVATE PROPERTIES ]===========================================================
     
-	    private var _style:VisualStyleVO;
-	    private var _config:ConfigVO;
+        private var _style:VisualStyleVO;
+        private var _config:ConfigVO;
 
         // ========[ PUBLIC PROPERTIES ]============================================================
 
@@ -82,25 +84,25 @@ package org.cytoscapeweb.view.components {
             return vc;
         }
 
-		// ========[ CONSTRUCTOR ]==================================================================
+        // ========[ CONSTRUCTOR ]==================================================================
 
-		public function GraphView() {
-		    doubleClickEnabled = true;
-		    
+        public function GraphView() {
+            doubleClickEnabled = true;
+            
             this.addEventListener(Event.ADDED_TO_STAGE, function(evt:Event):void {
                 hitArea = Sprite(parent);
             });
-		}
-		
-		// ========[ PUBLIC METHODS ]===============================================================
+        }
+        
+        // ========[ PUBLIC METHODS ]===============================================================
 
         public function draw(data:Data, config:ConfigVO, style:VisualStyleVO,
                              scale:Number, viewCenter:Point):void {
             this._config = config;
             this._style = style;
-        	hitArea = Sprite(parent);
-        	
-        	dispatchEvent(new GraphViewEvent(GraphViewEvent.RENDER_INITIALIZE));
+            hitArea = Sprite(parent);
+            
+            dispatchEvent(new GraphViewEvent(GraphViewEvent.RENDER_INITIALIZE));
             resize();
 
             createVisualization(data, config.currentLayout.name);
@@ -112,8 +114,8 @@ package org.cytoscapeweb.view.components {
             var par:Parallel = applyLayout(config.currentLayout);
             
             par.addEventListener(TransitionEvent.END, function(evt:TransitionEvent):void {
-            	evt.currentTarget.removeEventListener(evt.type, arguments.callee);
-            	evt.currentTarget.dispose();
+                evt.currentTarget.removeEventListener(evt.type, arguments.callee);
+                evt.currentTarget.dispose();
                 dispatchEvent(new GraphViewEvent(GraphViewEvent.RENDER_COMPLETE));
                 
                 // Set the view center:
@@ -147,11 +149,11 @@ package org.cytoscapeweb.view.components {
             par.add(t);
           
             par.addEventListener(TransitionEvent.END, function(evt:TransitionEvent):void {
-            	evt.currentTarget.removeEventListener(evt.type, arguments.callee);
-            	
-            	var layout:Object = _config.currentLayout;
-            	if (layout.name !== Layouts.PRESET || layout.options.fitToScreen === true) {
-                	zoomToFit();
+                evt.currentTarget.removeEventListener(evt.type, arguments.callee);
+                
+                var layout:Object = _config.currentLayout;
+                if (layout.name !== Layouts.PRESET || layout.options.fitToScreen === true) {
+                    zoomToFit();
                     centerGraph();
                 }
                 
@@ -168,42 +170,42 @@ package org.cytoscapeweb.view.components {
         * @return The actual scale value after the zooming is executed.
         */
         public function zoomTo(scale:Number):Number { trace("-> Zoom to: " + scale);
-       		if (scale < _config.minZoom)
+            if (scale < _config.minZoom)
                 scale = _config.minZoom;
             else if (scale > _config.maxZoom)
                 scale = _config.maxZoom;
-       		
-       		var delta:Number = scale / vis.scaleX;
-       		zoomBy(delta);
-       		
-       		return scale;
+            
+            var delta:Number = scale / vis.scaleX;
+            zoomBy(delta);
+            
+            return scale;
         }
         
         public function zoomToFit():Number {
-       	    // Reset zoom first:
-        	if (vis.scaleX != 1)
-        	   zoomTo(1);
-        	
-        	var scale:Number = 1;
+            // Reset zoom first:
+            if (vis.scaleX != 1)
+               zoomTo(1);
+            
+            var scale:Number = 1;
             var b:Rectangle = vis.getRealBounds();
             var pw:Number = stage.stageWidth;
             var ph:Number = stage.stageHeight;
             
             if (b != null && b.width > 0 && b.height > 0) {
-            	var graphEdge:Number = b.width;
-            	var canvasEdge:Number = pw;
-            	
-            	if (b.height/b.width > ph/pw) {
-            		graphEdge = b.height;
-            		canvasEdge = ph;
-            	}
-	            if (graphEdge > canvasEdge) {
-		            scale = canvasEdge / graphEdge;
-		            zoomBy(scale);
-		        }
-	        }
+                var graphEdge:Number = b.width;
+                var canvasEdge:Number = pw;
+                
+                if (b.height/b.width > ph/pw) {
+                    graphEdge = b.height;
+                    canvasEdge = ph;
+                }
+                if (graphEdge > canvasEdge) {
+                    scale = canvasEdge / graphEdge;
+                    zoomBy(scale);
+                }
+            }
 
-	        return scale;
+            return scale;
         }
         
         public function panGraph(amountX:Number, amountY:Number):void {
@@ -214,16 +216,16 @@ package org.cytoscapeweb.view.components {
             var b:Rectangle = getRealBounds();
             
             if (b != null && b.width > 0 && b.height > 0) {
-	            // The new coordinates:
-	            var newX:Number = (stage.stageWidth - b.width) / 2;
-	            var newY:Number = (stage.stageHeight - b.height) / 2;
-	            
-	            // The amount to move, considering the new coordinates and the current position:
-	            var panX:Number = newX - b.x;
+                // The new coordinates:
+                var newX:Number = (stage.stageWidth - b.width) / 2;
+                var newY:Number = (stage.stageHeight - b.height) / 2;
+                
+                // The amount to move, considering the new coordinates and the current position:
+                var panX:Number = newX - b.x;
                 var panY:Number = newY - b.y;
-	            
-	            panGraph(panX, panY);
-	        }
+                
+                panGraph(panX, panY);
+            }
         }
         
         /**
@@ -286,15 +288,29 @@ package org.cytoscapeweb.view.components {
         
         public function resetNode(n:NodeSprite):void {
             if (n != null) {
-                n.size = Nodes.size(n);
-                n.fillColor = Nodes.fillColor(n);
-                n.lineWidth = Nodes.lineWidth(n);
-                n.lineColor = Nodes.lineColor(n);
-                n.alpha = Nodes.alpha(n);
-                n.props.transparent = Nodes.transparent(n);
-                n.shape = Nodes.shape(n);
-                n.filters = Nodes.filters(n);
-                if (n.props.label != null) n.props.label.alpha = n.alpha;
+                if (n is CompoundNodeSprite && (n as CompoundNodeSprite).isInitialized()) {
+                    n.size = CompoundNodes.size(n);
+                    n.fillColor = CompoundNodes.fillColor(n);
+                    n.lineWidth = CompoundNodes.lineWidth(n);
+                    n.lineColor = CompoundNodes.lineColor(n);
+                    n.alpha = CompoundNodes.alpha(n);
+                    n.props.transparent = CompoundNodes.transparent(n);
+                    n.shape = CompoundNodes.shape(n);
+                    n.filters = CompoundNodes.filters(n);
+                } else {
+                    n.size = Nodes.size(n);
+                    n.fillColor = Nodes.fillColor(n);
+                    n.lineWidth = Nodes.lineWidth(n);
+                    n.lineColor = Nodes.lineColor(n);
+                    n.alpha = Nodes.alpha(n);  
+                    n.props.transparent = Nodes.transparent(n);
+                    n.shape = Nodes.shape(n);
+                    n.filters = Nodes.filters(n);
+                }
+                
+                if (n.props.label != null) {
+                    n.props.label.alpha = n.alpha;
+                }
             }
         }
         
@@ -361,18 +377,30 @@ package org.cytoscapeweb.view.components {
         public function update():void {         
             vis.update();
         }
-		
+        
         // ========[ PRIVATE METHODS ]==============================================================
-		
-		private function highlightSelectedNode(n:NodeSprite):void {
+        
+        private function highlightSelectedNode(n:NodeSprite):void {
             if (n != null) {
-                n.fillColor = Nodes.fillColor(n);
-                n.lineWidth = Nodes.selectionLineWidth(n);
-                n.lineColor = Nodes.lineColor(n);
-                n.alpha = Nodes.selectionAlpha(n);
-                n.props.transparent = Nodes.transparent(n);
-                n.filters = Nodes.filters(n, true);
-                if (n.props.label != null) n.props.label.alpha = n.alpha;
+                if (n is CompoundNodeSprite && (n as CompoundNodeSprite).isInitialized()) {
+                    n.fillColor = CompoundNodes.fillColor(n);
+                    n.lineWidth = CompoundNodes.selectionLineWidth(n);
+                    n.lineColor = CompoundNodes.lineColor(n);
+                    n.alpha = CompoundNodes.selectionAlpha(n);
+                    n.props.transparent = CompoundNodes.transparent(n);
+                    n.filters = CompoundNodes.filters(n, true);
+                } else {
+                    n.fillColor = Nodes.fillColor(n);
+                    n.lineWidth = Nodes.selectionLineWidth(n);
+                    n.lineColor = Nodes.lineColor(n);
+                    n.alpha = Nodes.selectionAlpha(n);
+                    n.props.transparent = Nodes.transparent(n);
+                    n.filters = Nodes.filters(n, true);
+                }
+                
+                if (n.props.label != null) {
+                    n.props.label.alpha = n.alpha;
+                }
             }
         }
         
@@ -387,8 +415,8 @@ package org.cytoscapeweb.view.components {
                 if (e.props.label != null) e.props.label.alpha = e.alpha;
             }
         }
-		
-		/**
+        
+        /**
          * Zoom the "camera" by the specified scale factor.
          */
         private function zoomBy(scale:Number):void { trace("-> Zoom by: " + scale);            
@@ -398,20 +426,20 @@ package org.cytoscapeweb.view.components {
                 dispatchEvent(new GraphViewEvent(GraphViewEvent.SCALE_CHANGE, vis.scaleX));
             }
         }
-		
-		private function resize():void {
-		    width = stage.stageWidth;
+        
+        private function resize():void {
+            width = stage.stageWidth;
             height = stage.stageHeight;
-		}
-		
-		private function createVisualization(data:Data, layoutName:String):GraphVis {
-		    vis = new GraphVis(data, _config);
+        }
+        
+        private function createVisualization(data:Data, layoutName:String):GraphVis {
+            vis = new GraphVis(data, _config);
             addChild(vis);
             
             vis.refreshVisualProperties(_style);
             vis.bounds = GraphUtils.calculateGraphDimension(data.nodes, layoutName);
             
             return vis;
-		}
-	}
+        }
+    }
 }

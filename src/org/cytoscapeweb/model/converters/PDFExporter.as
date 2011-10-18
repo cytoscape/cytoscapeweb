@@ -71,6 +71,7 @@ package org.cytoscapeweb.model.converters {
     import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.VisualProperties;
     import org.cytoscapeweb.view.components.GraphView;
+    import org.cytoscapeweb.vis.data.CompoundNodeSprite;
         
     /**
      * Class that generates a vectorial image PDF file from the network.
@@ -160,10 +161,10 @@ package org.cytoscapeweb.model.converters {
             _shiftY = sp.y - margin;
             
             // Draw:
-            drawEdges(pdf, graphData.edges);
-            if (config.edgeLabelsVisible) drawLabels(pdf, graphData.edges);
             drawNodes(pdf, graphData.nodes);
             if (config.nodeLabelsVisible) drawLabels(pdf, graphData.nodes);
+            drawEdges(pdf, graphData.edges);
+            if (config.edgeLabelsVisible) drawLabels(pdf, graphData.edges);
     
             var bytes:ByteArray = pdf.save(Method.LOCAL);
     
@@ -216,7 +217,7 @@ package org.cytoscapeweb.model.converters {
                         var offLength:Number = LineStyles.getOffLength(e, lineStyle, _scale);
                         dashedLine = new DashedLine([onLength, offLength, onLength, offLength]);
                     } else {
-                    	dashedLine = null;
+                        dashedLine = null;
                     }
                     
                     // First let's draw any glow (e.g. for selected edges):
@@ -352,15 +353,24 @@ package org.cytoscapeweb.model.converters {
                     // Another possible solution would be to embed fonts, but it did not work for me.
                     var textHeight:Number = lbl.size * 0.72 * _scale;
                     var textWidth:Number = field.textWidth * _scale;
-
+                    
                     // Get the Global label point (relative to the stage):
-                    if (d is NodeSprite) {
+                    
+                    if (d is CompoundNodeSprite
+                        && (d as CompoundNodeSprite).isInitialized()) {
+                        hAnchor = _style.getValue(VisualProperties.C_NODE_LABEL_HANCHOR, d.data);
+                        vAnchor = _style.getValue(VisualProperties.C_NODE_LABEL_VANCHOR, d.data);
+                        xOffset = _style.getValue(VisualProperties.C_NODE_LABEL_XOFFSET, d.data) * _scale;
+                        yOffset = _style.getValue(VisualProperties.C_NODE_LABEL_YOFFSET, d.data) * _scale;
+                    } else if (d is NodeSprite) {
                         // If node, calculate the label position from scratch
                         hAnchor = _style.getValue(VisualProperties.NODE_LABEL_HANCHOR, d.data);
                         vAnchor = _style.getValue(VisualProperties.NODE_LABEL_VANCHOR, d.data);
                         xOffset = _style.getValue(VisualProperties.NODE_LABEL_XOFFSET, d.data) * _scale;
                         yOffset = _style.getValue(VisualProperties.NODE_LABEL_YOFFSET, d.data) * _scale;
-                        
+                    }
+                    
+                    if (d is NodeSprite) {
                         p = toImagePoint(new Point(d.x, d.y), d);
                         // Flare's label cordinates is relative to the label's upper-left corner (x,y)=(0,0),
                         // but AlivePDF uses the bottom-left corner instead (x,y)=(0,fonSize):
@@ -537,10 +547,10 @@ package org.cytoscapeweb.model.converters {
         }
         
          private function sortByZOrder(list:DataList):Array {
-        	var arr:Array = new Array();
-        	
-        	for each (var sp:DataSprite in list) arr.push(sp);
-        	
+            var arr:Array = new Array();
+            
+            for each (var sp:DataSprite in list) arr.push(sp);
+            
             arr.sort(function(a:DataSprite, b:DataSprite):int {
                 var z1:int = a.parent.getChildIndex(a);
                 var z2:int = b.parent.getChildIndex(b);

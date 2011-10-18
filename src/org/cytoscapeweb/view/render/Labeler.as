@@ -45,9 +45,11 @@ package org.cytoscapeweb.view.render {
     import flash.text.TextFormat;
     import flash.text.TextFormatAlign;
     
+    import org.cytoscapeweb.util.Groups;
     import org.cytoscapeweb.util.NodeShapes;
     import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.methods.$each;
+    import org.cytoscapeweb.vis.data.CompoundNodeSprite;
     
     
     public class Labeler extends flare.vis.operator.label.Labeler {
@@ -73,7 +75,16 @@ package org.cytoscapeweb.view.render {
 
         public function Labeler(source:*=null, group:String=Data.NODES, 
                                 format:TextFormat=null, filter:*=null) {
-            super(source, group, format, filter, group === Data.NODES ? LAYER : CHILD);
+            var policy:String;
+            
+            if ((group === Data.NODES) || (group === Groups.COMPOUND_NODES)) {
+                policy = LAYER;
+            } else {
+                policy = CHILD;
+            }
+            
+            super(source, group, format, filter, policy);
+            //super(source, group, format, filter, group === Data.NODES ? LAYER : CHILD);
         }
         
         // ========[ PROTECTED METHODS ]============================================================
@@ -92,7 +103,16 @@ package org.cytoscapeweb.view.render {
             
             // IMPORTANT: When dragging nodes, the labeler might need to be updated:
             if (_policy === CHILD) {
-                var elements:DataList = group === Data.NODES ? visualization.data.nodes : visualization.data.edges;
+                var elements:DataList;
+                
+                if (group === Data.NODES) {
+                    elements = visualization.data.nodes;
+                } else if (group === Groups.COMPOUND_NODES) {
+                    elements = visualization.data.group(Groups.COMPOUND_NODES);
+                } else {
+                    elements = visualization.data.edges;
+                }
+                    
                 $each(elements, function(i:uint, d:DataSprite):void {
                     d.addEventListener(Event.RENDER, onRender);
                 });
@@ -104,8 +124,16 @@ package org.cytoscapeweb.view.render {
                 _t = (t ? t : Transitioner.DEFAULT);
                 
                 var f:Function = Filter.$(filter);
-                var list:DataList = group === Data.NODES ? visualization.data.nodes: visualization.data.edges;
+                var list:DataList;
 
+                if (group === Data.NODES) {
+                    list = visualization.data.nodes;
+                } else if (group === Groups.COMPOUND_NODES) {
+                    list = visualization.data.group(Groups.COMPOUND_NODES);
+                } else {
+                    list = visualization.data.edges;
+                }
+                
                 if (list != null) {
                     $each(list, function(i:uint, d:DataSprite):void {
                         if (f == null || f(d)) process(d);
@@ -206,14 +234,16 @@ package org.cytoscapeweb.view.render {
                 }
             } else {
                 // The offset should be based on each node's size (not just from the node's center):
-                if      (label.horizontalAnchor == TextSprite.LEFT)  myXOffset += d.width/2;
-                else if (label.horizontalAnchor == TextSprite.RIGHT) myXOffset -= d.width/2;
-                if      (label.verticalAnchor == TextSprite.TOP)     myYOffset += d.height/2;
-                else if (label.verticalAnchor == TextSprite.BOTTOM)  myYOffset -= d.height/2;
+                if      (label.horizontalAnchor === TextSprite.LEFT)  myXOffset += d.width/2;
+                else if (label.horizontalAnchor === TextSprite.RIGHT) myXOffset -= d.width/2;
+                if      (label.verticalAnchor === TextSprite.TOP)     myYOffset += d.height/2;
+                else if (label.verticalAnchor === TextSprite.BOTTOM)  myYOffset -= d.height/2;
                 
                 if (d.props.autoSize) {
-                    d.render();
-                    if (d.shape == NodeShapes.TRIANGLE) myYOffset += d.height/4;
+                    if (! (d is CompoundNodeSprite && (d as CompoundNodeSprite).nodesCount > 0)) {
+                        d.render();
+                        if (d.shape == NodeShapes.TRIANGLE) myYOffset += d.height/4;
+                    }
                 }
             }
             

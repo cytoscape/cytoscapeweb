@@ -28,43 +28,45 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.model {
-	import flare.data.DataField;
-	import flare.data.DataSchema;
-	import flare.data.DataSet;
-	import flare.data.DataTable;
-	import flare.data.DataUtil;
-	import flare.vis.data.Data;
-	import flare.vis.data.DataList;
-	import flare.vis.data.DataSprite;
-	import flare.vis.data.EdgeSprite;
-	import flare.vis.data.NodeSprite;
-	
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import flash.net.URLRequest;
-	import flash.net.URLRequestHeader;
-	import flash.net.URLRequestMethod;
-	import flash.net.navigateToURL;
-	import flash.utils.IDataOutput;
-	
-	import mx.utils.StringUtil;
-	
-	import org.cytoscapeweb.ApplicationFacade;
-	import org.cytoscapeweb.model.converters.ExternalObjectConverter;
-	import org.cytoscapeweb.model.converters.GraphMLConverter;
-	import org.cytoscapeweb.model.converters.SIFConverter;
-	import org.cytoscapeweb.model.converters.XGMMLConverter;
-	import org.cytoscapeweb.model.data.ConfigVO;
-	import org.cytoscapeweb.model.data.GraphicsDataTable;
-	import org.cytoscapeweb.model.data.InteractionVO;
-	import org.cytoscapeweb.model.data.VisualStyleVO;
-	import org.cytoscapeweb.model.error.CWError;
-	import org.cytoscapeweb.util.ErrorCodes;
-	import org.cytoscapeweb.util.GraphUtils;
-	import org.cytoscapeweb.util.Groups;
-	import org.cytoscapeweb.util.Layouts;
-	import org.puremvc.as3.patterns.proxy.Proxy;
-	
+    import flare.data.DataField;
+    import flare.data.DataSchema;
+    import flare.data.DataSet;
+    import flare.data.DataTable;
+    import flare.data.DataUtil;
+    import flare.vis.data.Data;
+    import flare.vis.data.DataList;
+    import flare.vis.data.DataSprite;
+    import flare.vis.data.EdgeSprite;
+    import flare.vis.data.NodeSprite;
+    
+    import flash.geom.Point;
+    import flash.geom.Rectangle;
+    import flash.net.URLRequest;
+    import flash.net.URLRequestHeader;
+    import flash.net.URLRequestMethod;
+    import flash.net.navigateToURL;
+    import flash.utils.IDataOutput;
+    
+    import mx.utils.StringUtil;
+    
+    import org.cytoscapeweb.ApplicationFacade;
+    import org.cytoscapeweb.model.converters.ExternalObjectConverter;
+    import org.cytoscapeweb.model.converters.GraphMLConverter;
+    import org.cytoscapeweb.model.converters.SIFConverter;
+    import org.cytoscapeweb.model.converters.XGMMLConverter;
+    import org.cytoscapeweb.model.data.ConfigVO;
+    import org.cytoscapeweb.model.data.GraphicsDataTable;
+    import org.cytoscapeweb.model.data.InteractionVO;
+    import org.cytoscapeweb.model.data.VisualStyleVO;
+    import org.cytoscapeweb.model.error.CWError;
+    import org.cytoscapeweb.util.CompoundNodes;
+    import org.cytoscapeweb.util.ErrorCodes;
+    import org.cytoscapeweb.util.GraphUtils;
+    import org.cytoscapeweb.util.Groups;
+    import org.cytoscapeweb.util.Layouts;
+    import org.cytoscapeweb.vis.data.CompoundNodeSprite;
+    import org.puremvc.as3.patterns.proxy.Proxy;
+    
     [Bindable]
     public class GraphProxy extends Proxy {
 
@@ -84,6 +86,11 @@ package org.cytoscapeweb.model {
         
         private var _rolledOverNode:NodeSprite;
         private var _rolledOverEdge:EdgeSprite;
+        
+        /**
+         *  array of non-selected child nodes of selected compound nodes
+         */
+        private var _missingChildren:Array;
         
         /** Scale factor, between 0 and 1 */
         private var _zoom:Number = 1;
@@ -122,6 +129,7 @@ package org.cytoscapeweb.model {
             data.addGroup(Groups.SELECTED_EDGES);
             data.addGroup(Groups.REGULAR_EDGES);
             data.addGroup(Groups.MERGED_EDGES);
+            data.addGroup(Groups.COMPOUND_NODES);
             
             if (data != null) {
                 // Add missing Ids:
@@ -157,7 +165,8 @@ package org.cytoscapeweb.model {
         
         public function get nodes():Array {
             var arr:Array = [];
-            for each (var n:NodeSprite in graphData.nodes) arr.push(n);
+            var n:NodeSprite;
+            for each (n in graphData.nodes) arr.push(n);
             return arr;
         }
         
@@ -175,10 +184,11 @@ package org.cytoscapeweb.model {
 
         public function get filteredNodes():Array {
             var arr:Array = null;
+            var n:NodeSprite;
             var list:DataList = graphData.group(Groups.FILTERED_NODES);
             if (list != null) {
                 arr = [];
-                for each (var n:NodeSprite in list) arr.push(n);
+                for each (n in list) arr.push(n);
             }
             return arr;
         }
@@ -221,26 +231,26 @@ package org.cytoscapeweb.model {
         public function set filteredEdges(value:Array):void {
             var list:DataList = graphData.group(Groups.FILTERED_EDGES);
             var e:EdgeSprite;
-        	
-        	if (list == null && value != null) {
+            
+            if (list == null && value != null) {
                 list = graphData.addGroup(Groups.FILTERED_EDGES);
             }
-        	
+            
             for each (e in graphData.edges) {
                 e.props.$filteredOut = value != null;
                 if (value != null) list.remove(e);
             }
             
-	        if (value != null) {
+            if (value != null) {
                 for each (e in value) {
                     e.props.$filteredOut = false;
                     list.add(e);
                 }
-	        }
-	        
-	        for (var key:String in _interactions) {
-    	        var inter:InteractionVO = _interactions[key];
-    	        inter.update(edgesSchema);
+            }
+            
+            for (var key:String in _interactions) {
+                var inter:InteractionVO = _interactions[key];
+                inter.update(edgesSchema);
             }
             
             if (value == null) graphData.removeGroup(Groups.FILTERED_EDGES);
@@ -256,16 +266,16 @@ package org.cytoscapeweb.model {
  
         public function set rolledOverNode(node:NodeSprite):void {
             if (_rolledOverNode != node) {
-	            if (_rolledOverNode != null) _rolledOverNode.props.$hover = false;
+                if (_rolledOverNode != null) _rolledOverNode.props.$hover = false;
                 if (node != null) node.props.$hover = true;
                 _rolledOverNode = node;
-	        }
+            }
         }
         
         public function get selectedNodes():Array {
-        	var arr:Array = [];
-        	var list:DataList = graphData.group(Groups.SELECTED_NODES);
-        	for each (var n:NodeSprite in list) arr.push(n);
+            var arr:Array = [];
+            var list:DataList = graphData.group(Groups.SELECTED_NODES);
+            for each (var n:NodeSprite in list) arr.push(n);
 
             return arr;
         }
@@ -315,6 +325,57 @@ package org.cytoscapeweb.model {
             _viewCenter = value;
         }
 
+        /**
+         * Finds non-selected children of the compound nodes in the given
+         * node array, and returns the collected children in an array of nodes.
+         * 
+         * @return      array of nodes
+         */
+        public function get missingChildren():Array {
+            // this map is used to avoid duplicates
+            var childMap:Object;
+            var children:Array;
+            var nodes:Array = this.selectedNodes;;
+            var node:NodeSprite;
+            
+            // if missing children is set before, just return the
+            // previously collected children
+            if (_missingChildren != null) {
+                children = _missingChildren;
+            } else {
+                // collect non-selected children of all selected compound nodes
+                childMap = new Object();
+                
+                // for each node sprite in the selected nodes, search for missing children
+                for each (var ns:NodeSprite in nodes) {
+                    if (ns is CompoundNodeSprite) {
+                        // get non-selected children of the current compound
+                        children = CompoundNodes.getChildren(
+                            (ns as CompoundNodeSprite),
+                            CompoundNodes.NON_SELECTED);
+                        
+                        // concat the new children with the map
+                        for each (node in children) {
+                            // assuming the node.data.id is not null
+                            childMap[node.data.id] = node;
+                        }
+                    }
+                }
+                
+                // convert child map to an array
+                children = new Array();
+                
+                for each (node in childMap) {
+                    children.push(node);
+                }
+                
+                // update missing children array
+                _missingChildren = children;
+            }
+            
+            return children;
+        }
+        
         // ========[ CONSTRUCTOR ]==================================================================
 
         public function GraphProxy(ds:DataSet=null) {
@@ -330,7 +391,7 @@ package org.cytoscapeweb.model {
 
         // ========[ PUBLIC METHODS ]===============================================================
 
-        public function getNode(id:String):NodeSprite {
+        public function getNode(id:String):CompoundNodeSprite {
             return _nodesMap[id];
         }
         
@@ -362,19 +423,19 @@ package org.cytoscapeweb.model {
                 if (schema.getFieldById(name) == null) {
                     // This field is not duplicated...
                     if (defValue == null) {
-                    	switch (type) {
-                    		case DataUtil.BOOLEAN: defValue = false; break;
-                    		case DataUtil.INT: defValue = 0; break;
+                        switch (type) {
+                            case DataUtil.BOOLEAN: defValue = false; break;
+                            case DataUtil.INT: defValue = 0; break;
                             default: defValue = null;
                         }
                     } else {
-	                    try {
-	                        defValue = ExternalObjectConverter.normalizeDataValue(defValue, type, null);
-	                    } catch (err:Error) {
-	                        throw new CWError("Cannot add data field '"+name+"':" + err.message,
-	                                          ErrorCodes.INVALID_DATA_CONVERSION);
-	                    }
-	                }
+                        try {
+                            defValue = ExternalObjectConverter.normalizeDataValue(defValue, type, null);
+                        } catch (err:Error) {
+                            throw new CWError("Cannot add data field '"+name+"':" + err.message,
+                                              ErrorCodes.INVALID_DATA_CONVERSION);
+                        }
+                    }
                     
                     var field:DataField = new DataField(name, type, defValue);
                     schema.addField(field);
@@ -386,7 +447,7 @@ package org.cytoscapeweb.model {
                         ds.data[field.name] = field.defaultValue;
                     }
                 } else {
-                	throw new CWError("Cannot add data field '"+name+"': data field name already existis",
+                    throw new CWError("Cannot add data field '"+name+"': data field name already existis",
                                       ErrorCodes.INVALID_DATA_CONVERSION);
                 }
             }
@@ -482,9 +543,9 @@ package org.cytoscapeweb.model {
         }
 
         public function getDataSpriteList(objList:Array, group:String=null, mergeData:Boolean=false):Array {
-        	var list:Array = null;
-        	if (group == null) group = Groups.NONE;
-        	
+            var list:Array = null;
+            if (group == null) group = Groups.NONE;
+            
             if (objList != null) {
                 list = [];
                 
@@ -497,25 +558,25 @@ package org.cytoscapeweb.model {
                 
                 for each (var obj:* in objList) {
                     if (obj != null) {
-	                    var id:* = obj;
-	                    var gr:String = group;
-	                    var data:Object = null;
-	                    
-	                    if (obj && obj.hasOwnProperty("data") && obj.data.id) {
-	                       data = obj.data;
-	                       id = data.id;
-	                    }
-	                    if (group === Groups.NONE && obj.hasOwnProperty("group"))
-	                       gr = obj.group;
+                        var id:* = obj;
+                        var gr:String = group;
+                        var data:Object = null;
+                        
+                        if (obj && obj.hasOwnProperty("data") && obj.data.id) {
+                           data = obj.data;
+                           id = data.id;
+                        }
+                        if (group === Groups.NONE && obj.hasOwnProperty("group"))
+                           gr = obj.group;
 
-	    	            // If an edge and a node has the same requested id and group is NONE,
-	    	            // both are included:
-	    	            if (gr === Groups.NODES || gr === Groups.NONE) {
-	        	            push(getNode(id), data);
-	        	        }
-	    	            if (gr === Groups.EDGES || gr === Groups.NONE) {
-	        	            push(getEdge(id), data);
-	        	        }
+                        // If an edge and a node has the same requested id and group is NONE,
+                        // both are included:
+                        if (gr === Groups.NODES || gr === Groups.NONE) {
+                            push(getNode(id), data);
+                        }
+                        if (gr === Groups.EDGES || gr === Groups.NONE) {
+                            push(getEdge(id), data);
+                        }
                     }
                 }
             }
@@ -530,12 +591,13 @@ package org.cytoscapeweb.model {
          */
         public function changeNodesSelection(nodes:Array, select:Boolean):Array {
             var changed:Array = [];
+            var n:NodeSprite;
             
             if (nodes != null && nodes.length > 0) {
                 var list:DataList = graphData.group(Groups.SELECTED_NODES);
                 
-                for each (var n:NodeSprite in nodes) {
-	                if (n.props.$selected !== select) {
+                for each (n in nodes) {
+                    if (n.props.$selected !== select) {
                         n.props.$selected = select;
                         if (select) list.add(n)
                         else list.remove(n);
@@ -556,6 +618,7 @@ package org.cytoscapeweb.model {
             var changed:Array = [];
             var interactions:Object = {}; // to update...
             var list:DataList = graphData.group(Groups.SELECTED_EDGES);
+            var e:EdgeSprite;
             
             var change:Function = function(e:EdgeSprite):void {
                 e.props.$selected = select;
@@ -565,7 +628,7 @@ package org.cytoscapeweb.model {
             }
             
             if (edges != null && edges.length > 0) {
-                for each (var e:EdgeSprite in edges) {
+                for each (e in edges) {
                     var update:Boolean = false;
                     
                     if (e.props.$merged) {
@@ -594,18 +657,66 @@ package org.cytoscapeweb.model {
             return changed;
         }
         
-        public function addNode(data:Object):NodeSprite {
-            if (data == null) data = {};
+        /**
+         * Creates and adds a new CompoundNodeSprite to the graph data. Also,
+         * sets the given data object as the data property of the sprite.
+         * 
+         * @param data  data associated with the compound node
+         * @return      newly created NodeSprite
+         */
+        public function addNode(data:Object):CompoundNodeSprite {
+            if (data == null) {
+                data = {};
+            }
+            
+            if (data.id == null) {
+                data.id = nextId(Groups.NODES);
+            } else if (hasId(Groups.NODES, data.id)) {
+                throw new Error("Duplicate node id ('"+data.id+"')");
+            }
             
             normalizeData(data, Groups.NODES);
+            var cns:CompoundNodeSprite = new CompoundNodeSprite();
             
-            if (data.id == null) data.id = nextId(Groups.NODES);
-            else if (hasId(Groups.NODES, data.id)) throw new Error("Duplicate node id ('"+data.id+"')");
-
-            var n:NodeSprite = graphData.addNode(data);
-            createCache(n);
+            if (data != null) {
+                cns.data = data;
+            }
+                        
+            // and newly created CompoundNodeSprite to the graph data, but do
+            // not add it to the list of compound nodes. It will be added to
+            // that list when a child node is added into the compound.
+            this.graphData.addNode(cns);
             
-            return n;
+            // postponed until the first child node
+            //var list:DataList = this.graphData.group(Groups.COMPOUND_NODES);          
+            //list.add(nodeSprite);
+            this.createCache(cns);
+            
+            return cns;
+        }
+        
+        public function addToParent(ns:NodeSprite, parent:CompoundNodeSprite):void {
+           var group:DataList = this.graphData.group(Groups.COMPOUND_NODES);
+            
+            // initialize the compound node if it is not initialized,
+            // yet. Also, add the compound to the compound node data group
+            if (!parent.isInitialized()) {
+                // initialize child node list
+                parent.initialize();
+                // add to the data group
+                group.add(parent);
+            }
+            
+            // add node into the target compound node
+            parent.addNode(ns);
+        }
+        
+        /**
+         * Resets the missing children array in order to enable re-calculation
+         * of missing child nodes in the getter method of missingChildren.
+         */ 
+        public function resetMissingChildren():void {
+            _missingChildren = null;
         }
         
         public function addEdge(data:Object):EdgeSprite {
@@ -615,8 +726,8 @@ package org.cytoscapeweb.model {
             
             normalizeData(data, Groups.EDGES);
             
-            var src:NodeSprite = getNode(data.source);
-            var tgt:NodeSprite = getNode(data.target);
+            var src:CompoundNodeSprite = getNode(data.source);
+            var tgt:CompoundNodeSprite = getNode(data.target);
             
             if (src == null) throw new Error("Cannot find source node with id '"+data.source+"'");
             if (tgt == null) throw new Error("Cannot find target node with id '"+data.target+"'");
@@ -733,6 +844,8 @@ package org.cytoscapeweb.model {
                             this.viewCenter = xgmmlConverter.viewCenter;
                             
                             var points:Object = xgmmlConverter.points;
+                            
+                            // update node positions & layout info
                             if (points != null) {
                                 if (layout == null) layout = {};
                                 if (layout is String) layout = { name: layout };
@@ -757,7 +870,18 @@ package org.cytoscapeweb.model {
                 _nodesSchema = ds.nodes.schema;
                 _edgesSchema = ds.edges.schema;
                 
-                setData(Data.fromDataSet(ds));
+                var data:Data = Data.fromDataSet(ds);  
+                
+                setData(data);
+                
+                // add compound nodes to the corresponding data group
+                for each (var ns:NodeSprite in data.nodes) {
+                    if (ns is CompoundNodeSprite) {
+                        if ((ns as CompoundNodeSprite).isInitialized()) {
+                            data.group(Groups.COMPOUND_NODES).add(ns);
+                        }
+                    }
+                }
             } catch (err:Error) {
                 trace("[ERROR]: onLoadGraph_result: " + err.getStackTrace());
                 throw err;
@@ -770,24 +894,28 @@ package org.cytoscapeweb.model {
             var out:IDataOutput, nodesTable:DataTable, edgesTable:DataTable, dtSet:DataSet;
             format = StringUtil.trim(format.toLowerCase());
                         
-            if (format === "xgmml") {
+            if (format === "xgmml" || format === "graphml") {
+                // GraphicsDataTable is needed for both graphML and XGMML formats,
+                // since we also require the information contained in the DataSprite instances
+                // in addition to the raw data.
                 nodesTable = new GraphicsDataTable(graphData.nodes, nodesSchema);
                 edgesTable = new GraphicsDataTable(graphData.group(Groups.REGULAR_EDGES), edgesSchema);
                 dtSet = new DataSet(nodesTable, edgesTable);
-                var bounds:Rectangle = GraphUtils.getBounds(nodes, edges,
-                                                            !configProxy.nodeLabelsVisible,
-                                                            !configProxy.edgeLabelsVisible);
-                out = new XGMMLConverter(configProxy.visualStyle, zoom, viewCenter, bounds).write(dtSet);
+                
+                if (format === "xgmml") {
+                    var bounds:Rectangle = GraphUtils.getBounds(nodes, edges,
+                                                                !configProxy.nodeLabelsVisible,
+                                                                !configProxy.edgeLabelsVisible);
+                    out = new XGMMLConverter(configProxy.visualStyle, zoom, viewCenter, bounds).write(dtSet);
+                } else {
+                    out = new GraphMLConverter().write(dtSet);
+                }
             } else {
+                // convert to SIF (it does not support compounds!)
                 nodesTable = new DataTable(graphData.nodes.toDataArray(), nodesSchema);
                 edgesTable = new DataTable(graphData.group(Groups.REGULAR_EDGES).toDataArray(), edgesSchema);
                 dtSet = new DataSet(nodesTable, edgesTable);
-
-                if (format === "graphml") {
-                    out = new GraphMLConverter().write(dtSet);
-                } else {
-                    out = new SIFConverter(options).write(dtSet);
-                }
+                out = new SIFConverter(options).write(dtSet);
             }
 
             return "" + out;
@@ -797,7 +925,7 @@ package org.cytoscapeweb.model {
          * Send the the network data to a URL.
          */
         public function export(data:Object, url:String, window:String="_self"):void {
-        	var request:URLRequest = new URLRequest(url);
+            var request:URLRequest = new URLRequest(url);
             var header:URLRequestHeader = new URLRequestHeader("Content-type", "application/octet-stream");
             request.requestHeaders.push(header);
             request.method = URLRequestMethod.POST;
@@ -848,6 +976,7 @@ package org.cytoscapeweb.model {
                 delete _nodesMap[ds.data.id];
                 
                 graphData.group(Groups.SELECTED_NODES).remove(ds);
+                graphData.group(Groups.COMPOUND_NODES).remove(ds);
                 
                 fl = graphData.group(Groups.FILTERED_NODES);
                 if (fl != null) fl.remove(ds);
@@ -869,22 +998,22 @@ package org.cytoscapeweb.model {
         }
         
         private function nextId(gr:String):String {
-    		var id:String;
-    		var prefix:String = gr === Groups.NODES ? "n" : (gr === Groups.MERGED_EDGES ? "me" : "e");
-    		var number:int = _ids[gr];
-    		do {
-    		    number++;
-    		    id = prefix + number;
-    		} while (hasId(gr, id))
-    		_ids[gr] = number;
-    		
-    		return id;
+            var id:String;
+            var prefix:String = gr === Groups.NODES ? "n" : (gr === Groups.MERGED_EDGES ? "me" : "e");
+            var number:int = _ids[gr];
+            do {
+                number++;
+                id = prefix + number;
+            } while (hasId(gr, id))
+            _ids[gr] = number;
+            
+            return id;
         }
         
         private function hasId(gr:String, id:*):Boolean {
-        	return gr === Groups.EDGES || gr === Groups.MERGED_EDGES ?
-        	          _edgesMap[""+id] !== undefined :
-        	          _nodesMap[""+id] !== undefined;
+            return gr === Groups.EDGES || gr === Groups.MERGED_EDGES ?
+                      _edgesMap[""+id] !== undefined :
+                      _nodesMap[""+id] !== undefined;
         }
         
         private function createMergedEdges():void {            
@@ -925,7 +1054,7 @@ package org.cytoscapeweb.model {
                 f = schema.getFieldById(k);
                 
                 if (f == null) {
-                	throw new CWError("Undefined data field: '"+k+"'",
+                    throw new CWError("Undefined data field: '"+k+"'",
                                       ErrorCodes.INVALID_DATA_CONVERSION);
                 }
                 

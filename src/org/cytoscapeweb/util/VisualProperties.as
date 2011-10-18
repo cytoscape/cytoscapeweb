@@ -30,26 +30,26 @@
 package org.cytoscapeweb.util {
     import org.cytoscapeweb.model.error.CWError;
     
-	
-	
+    
+    
     /**
      * Abstract utility class defining names of visual attributes.
      */
     public class VisualProperties {
-    	
+        
         // ========[ CONSTANTS ]====================================================================
-    	
-    	// Global properties:
-    	//------------------------------
-    	public static const BACKGROUND_COLOR:String = "global.backgroundColor";
-    	public static const TOOLTIP_DELAY:String = "global.tooltipDelay";
-    	
-    	// Selection Rectangle:
-    	public static const SELECTION_LINE_COLOR:String = "global.selectionLineColor";
-    	public static const SELECTION_LINE_ALPHA:String = "global.selectionLineOpacity";
-    	public static const SELECTION_LINE_WIDTH:String = "global.selectionLineWidth";
-    	public static const SELECTION_FILL_COLOR:String = "global.selectionFillColor";
-    	public static const SELECTION_FILL_ALPHA:String = "global.selectionFillOpacity";
+        
+        // Global properties:
+        //------------------------------
+        public static const BACKGROUND_COLOR:String = "global.backgroundColor";
+        public static const TOOLTIP_DELAY:String = "global.tooltipDelay";
+        
+        // Selection Rectangle:
+        public static const SELECTION_LINE_COLOR:String = "global.selectionLineColor";
+        public static const SELECTION_LINE_ALPHA:String = "global.selectionLineOpacity";
+        public static const SELECTION_LINE_WIDTH:String = "global.selectionLineWidth";
+        public static const SELECTION_FILL_COLOR:String = "global.selectionFillColor";
+        public static const SELECTION_FILL_ALPHA:String = "global.selectionFillOpacity";
 
         // Nodes properties:
         //------------------------------
@@ -127,6 +127,63 @@ package org.cytoscapeweb.util {
         public static const EDGE_TOOLTIP_BACKGROUND_COLOR:String = "edges.tooltipBackgroundColor";
         public static const EDGE_TOOLTIP_BORDER_COLOR:String = "edges.tooltipBorderColor";
         
+        // Compound Nodes properties:
+        //--------------------------------
+        public static const C_NODE_PADDING_LEFT:String = "nodes.compoundPaddingLeft";
+        public static const C_NODE_PADDING_RIGHT:String = "nodes.compoundPaddingRight";
+        public static const C_NODE_PADDING_TOP:String = "nodes.compoundPaddingTop";
+        public static const C_NODE_PADDING_BOTTOM:String = "nodes.compoundPaddingBottom";
+        
+        public static const C_NODE_SHAPE:String = "nodes.compoundShape";
+        //public static const C_NODE_WIDTH:String = "nodes.compoundWidth";
+        //public static const C_NODE_HEIGHT:String = "nodes.compoundHeight";
+        public static const C_NODE_SIZE:String = "nodes.compoundSize";
+        public static const C_NODE_COLOR:String = "nodes.compoundColor";
+        public static const C_NODE_ALPHA:String = "nodes.compoundOpacity";
+        public static const C_NODE_LINE_COLOR:String = "nodes.compoundBorderColor";
+        public static const C_NODE_LINE_WIDTH:String = "nodes.compoundBorderWidth";
+        public static const C_NODE_IMAGE:String = "nodes.compoundImage";        
+        
+        public static const C_NODE_TOOLTIP_TEXT:String = "nodes.compoundTooltipText";
+        public static const C_NODE_TOOLTIP_FONT:String = "nodes.compoundTooltipFont";
+        public static const C_NODE_TOOLTIP_FONT_SIZE:String = "nodes.compoundTooltipFontSize";
+        public static const C_NODE_TOOLTIP_COLOR:String = "nodes.compoundTooltipFontColor";
+        public static const C_NODE_TOOLTIP_BACKGROUND_COLOR:String = "nodes.compoundTooltipBackgroundColor";
+        public static const C_NODE_TOOLTIP_BORDER_COLOR:String = "nodes.compoundTooltipBorderColor";
+        
+        //public static const C_NODE_LABEL:String = "nodes.compoundLabel";
+        public static const C_NODE_LABEL_FONT_NAME:String = "nodes.compoundLabelFontName";
+        public static const C_NODE_LABEL_FONT_SIZE:String = "nodes.compoundLabelFontSize";
+        public static const C_NODE_LABEL_FONT_COLOR:String = "nodes.compoundLabelFontColor";
+        public static const C_NODE_LABEL_FONT_WEIGHT:String = "nodes.compoundLabelFontWeight";
+        public static const C_NODE_LABEL_FONT_STYLE:String = "nodes.compoundLabelFontStyle";
+        public static const C_NODE_LABEL_HANCHOR:String = "nodes.compoundLabelHorizontalAnchor";
+        public static const C_NODE_LABEL_VANCHOR:String = "nodes.compoundLabelVerticalAnchor";
+        public static const C_NODE_LABEL_XOFFSET:String = "nodes.compoundLabelXOffset";
+        public static const C_NODE_LABEL_YOFFSET:String = "nodes.compoundLabelYOffset";
+        
+        public static const C_NODE_LABEL_GLOW_COLOR:String = "nodes.compoundLabelGlowColor";
+        public static const C_NODE_LABEL_GLOW_ALPHA:String = "nodes.compoundLabelGlowOpacity";
+        public static const C_NODE_LABEL_GLOW_BLUR:String = "nodes.compoundLabelGlowBlur";
+        public static const C_NODE_LABEL_GLOW_STRENGTH:String = "nodes.compoundLabelGlowStrength";
+        
+        public static const C_NODE_SELECTION_COLOR:String = "nodes.compoundSelectionColor";
+        public static const C_NODE_SELECTION_ALPHA:String = "nodes.compoundSelectionOpacity";
+        public static const C_NODE_SELECTION_LINE_COLOR:String = "nodes.compoundSelectionBorderColor";
+        public static const C_NODE_SELECTION_LINE_WIDTH:String = "nodes.compoundSelectionBorderWidth";
+        public static const C_NODE_SELECTION_GLOW_COLOR:String = "nodes.compoundSelectionGlowColor";
+        public static const C_NODE_SELECTION_GLOW_ALPHA:String = "nodes.compoundSelectionGlowOpacity";
+        public static const C_NODE_SELECTION_GLOW_BLUR:String = "nodes.compoundSelectionGlowBlur";
+        public static const C_NODE_SELECTION_GLOW_STRENGTH:String = "nodes.compoundSelectionGlowStrength";
+        
+        public static const C_NODE_HOVER_ALPHA:String = "nodes.compoundHoverOpacity";
+        public static const C_NODE_HOVER_LINE_COLOR:String = "nodes.compoundHoverBorderColor";
+        public static const C_NODE_HOVER_LINE_WIDTH:String = "nodes.compoundHoverBorderWidth";
+        public static const C_NODE_HOVER_GLOW_COLOR:String = "nodes.compoundHoverGlowColor";
+        public static const C_NODE_HOVER_GLOW_ALPHA:String = "nodes.compoundHoverGlowOpacity";
+        public static const C_NODE_HOVER_GLOW_BLUR:String = "nodes.compoundHoverGlowBlur";
+        public static const C_NODE_HOVER_GLOW_STRENGTH:String = "nodes.compoundHoverGlowStrength";
+        
         // TODO rename and create colors, etc:
         public static const EDGE_TOOLTIP_TEXT_MERGE:String = "edges.mergeTooltipText";
         
@@ -169,21 +226,21 @@ package org.cytoscapeweb.util {
          * @param value the visual property value to be converted.
          */
         public static function parseValue(name:String, value:*):* {
-        	var val:* = value;
-        	
-        	if (value != null) {
+            var val:* = value;
+            
+            if (value != null) {
                 if (isColor(name)) {
                     val = -1;
                     
                     if (value != "transparent") {
-                    	var color:uint = Utils.rgbColorAsUint(value);
-                    	
-                    	if (isNaN(color))
+                        var color:uint = Utils.rgbColorAsUint(value);
+                        
+                        if (isNaN(color))
                            throw new CWError("Invalid color ('"+value+"') for visual property '"+name+"'",
                                               ErrorCodes.INVALID_DATA_CONVERSION);
-                    	
-                    	// Add alpha, which is required by for most of the colors:
-                    	if (name != BACKGROUND_COLOR) color += 0xff000000;
+                        
+                        // Add alpha, which is required by for most of the colors:
+                        if (name != BACKGROUND_COLOR) color += 0xff000000;
                         val = color;
                     } else if (name === BACKGROUND_COLOR) {
                         // background cannot be transparent; will be white instead
@@ -199,7 +256,7 @@ package org.cytoscapeweb.util {
                         if (isNaN(val))
                             throw new CWError("Invalid number ('"+value+"') for visual property '"+name+"'",
                                                ErrorCodes.INVALID_DATA_CONVERSION);
-                	}
+                    }
                 } else if (name == VisualProperties.EDGE_STYLE || name == VisualProperties.EDGE_STYLE_MERGE) {
                     val = LineStyles.parse(value);
                 } else if (name == VisualProperties.NODE_SHAPE) {
