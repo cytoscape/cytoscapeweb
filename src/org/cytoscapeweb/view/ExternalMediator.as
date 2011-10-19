@@ -397,6 +397,7 @@ package org.cytoscapeweb.view {
             var newAll:Array = [], newNodes:Array = [], newEdges:Array = [], ret:Array = [];
             var edgesToAdd:Array = [], childrenToAdd:Array = [];
             var gr:String, newElement:DataSprite, parent:CompoundNodeSprite, o:Object;
+            var createdEdges:Array;
             
             try {                
                 // Create element:
@@ -438,9 +439,13 @@ package org.cytoscapeweb.view {
                 
                 // Now it is safe to add the edges:
                 for each (o in edgesToAdd) {
-                    newElement = graphProxy.addEdge(o.data);
-                    newEdges.push(newElement);
-                    newAll.push(newElement);
+                    createdEdges = graphProxy.addEdge(o.data);
+                    newEdges.push(createdEdges[0]);
+                    newAll.push(createdEdges[0]);
+                    
+                    if (createdEdges.length > 1) {
+                        newEdges.push(createdEdges[1]);
+                    }
                 }
                 
                 // process child nodes to add, and update corresponding parent compound nodes
@@ -536,12 +541,12 @@ package org.cytoscapeweb.view {
             
             try {
                 // Create edge:
-                var e:EdgeSprite = graphProxy.addEdge(data);
+                var createdEdges:Array = graphProxy.addEdge(data);
                 // Set listeners, styles, etc:
-                graphMediator.initialize(Groups.EDGES, [e]);
+                graphMediator.initialize(Groups.EDGES, createdEdges);
                 
                 if (updateVisualMappers) sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
-                o = ExternalObjectConverter.toExtElement(e, graphProxy.zoom);
+                o = ExternalObjectConverter.toExtElement(createdEdges[0], graphProxy.zoom);
                 
             } catch (err:Error) {
                 trace("[ERROR]: addEdge: " + err.getStackTrace());

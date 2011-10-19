@@ -34,6 +34,8 @@ package org.cytoscapeweb.model.data {
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
     
+    import org.cytoscapeweb.util.DataSchemaUtils;
+    
     public class InteractionVO {
         
         private var _key:String;
@@ -201,10 +203,13 @@ package org.cytoscapeweb.model.data {
         // ========[ PRIVATE METHODS ]==============================================================
         
         private function recreateDataFields(edgesSchema:DataSchema):void {
-            _mergedEdge.data = {};
-            _mergedEdge.data.source = node1.data.id;
-            _mergedEdge.data.target = node2.data.id;
-            _mergedEdge.data.directed = false;
+            var id:String = _mergedEdge.data.id;
+            
+            _mergedEdge.data = { };
+            _mergedEdge.data[DataSchemaUtils.ID] = id;
+            _mergedEdge.data[DataSchemaUtils.SOURCE] = node1.data.id;
+            _mergedEdge.data[DataSchemaUtils.TARGET] = node2.data.id;
+            _mergedEdge.data[DataSchemaUtils.DIRECTED] = false;
             
             var v:*;
             

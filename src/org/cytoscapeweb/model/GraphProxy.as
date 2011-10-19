@@ -719,10 +719,16 @@ package org.cytoscapeweb.model {
             _missingChildren = null;
         }
         
-        public function addEdge(data:Object):EdgeSprite {
+        /**
+         * @return The newly created edges. The first element of the array is the added edge.
+         *         There can be a second one, which is always a merged edge,
+         *         but only if it was created as a result of adding the new element.  
+         */
+        public function addEdge(data:Object):Array {
             if (data == null) throw new CWError("The 'data' argument is mandatory",
                                                 ErrorCodes.INVALID_DATA_CONVERSION);
             trace("add edge: " + data.id);
+            var arr:Array = [];
             
             normalizeData(data, Groups.EDGES);
             
@@ -737,6 +743,7 @@ package org.cytoscapeweb.model {
 
             // Create edge:
             var e:EdgeSprite = graphData.addEdgeFor(src, tgt, data.directed, data);
+            arr.push(e);
             
             // Add it to cache:
             createCache(e);
@@ -747,11 +754,12 @@ package org.cytoscapeweb.model {
             
             if (inter == null) {
                 inter = createInteraction(e.source, e.target);
+                arr.push(inter.mergedEdge);
             } else {
                 inter.update(edgesSchema);
             }
             
-            return e;
+            return arr;
         }
         
         public function remove(items:Array):void {
