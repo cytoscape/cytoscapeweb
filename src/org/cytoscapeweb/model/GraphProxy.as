@@ -756,69 +756,19 @@ package org.cytoscapeweb.model {
         
         public function remove(items:Array):void {
             for each (var ds:DataSprite in items) {
-                if (ds is NodeSprite) {
-                    removeNode(NodeSprite(ds));
+                if (ds is CompoundNodeSprite) {
+                    removeNode(ds as CompoundNodeSprite);
                 } else {
-                    removeEdge(EdgeSprite(ds));
+                    removeEdge(ds as EdgeSprite);
                 }
             }
+            
             // Reset auto-increment ID lookup:
             if (nodes.length === 0) _ids[Groups.NODES] = 0;
             if (edges.length === 0) _ids[Groups.EDGES] = 0;
             if (mergedEdges.length === 0) _ids[Groups.MERGED_EDGES] = 0;
         }
         
-        public function removeNode(n:NodeSprite):void {
-            if (n == null) return;
-            deleteCache(n);
-            
-            if (n.props.$selected) graphData.group(Groups.SELECTED_NODES).remove(n);
-            
-            var filterList:DataList = graphData.group(Groups.FILTERED_NODES);
-            if (filterList != null) filterList.remove(n);
-       
-            // Also remove its linked edges:
-            var edges:Array = [];
-            n.visitEdges(function(e:EdgeSprite):Boolean {
-                edges.push(e);
-                return false;
-            }, NodeSprite.GRAPH_LINKS);
-            remove(edges);
-            
-            graphData.removeNode(n);
-        }
-        
-        public function removeEdge(e:EdgeSprite):void {
-            if (e == null) return;
-            deleteCache(e);
-            
-            // Delete edge:
-            graphData.removeEdge(e);
-            
-            // Delete or update related objects:
-            if (e.props.$merged) {
-                // MERGED...
-                // Delete children ("regular") edges:
-                var children:Array = e.props.$edges;
-                if (children.length > 0) remove(children);
-            } else {
-                // REGULAR EDGE:
-                // Update or delete the interaction:
-                var inter:InteractionVO = getInteraction(e.source, e.target);
-                
-                if (inter != null) {
-                    var edgeCount:int = inter.edges.length;
-                    
-                    if (edgeCount > 0) {
-                        inter.update(edgesSchema);
-                    } else {
-                        delete _interactions[inter.key];
-                        removeEdge(inter.mergedEdge);
-                    }
-                }
-            }
-        }
-
         public function loadGraph(network:*, layout:*):void {
             try {
                 var ds:DataSet;
@@ -935,6 +885,95 @@ package org.cytoscapeweb.model {
         
         // ========[ PRIVATE METHODS ]==============================================================
         
+        private function removeNode(n:CompoundNodeSprite):void {
+            if (n == null) return;
+            var stack:Array = [n], edges:Array;
+            var child:CompoundNodeSprite, parent:CompoundNodeSprite;
+            
+            while (stack.length > 0) {
+                n = stack.pop();
+                if (n.props.$deleted) continue;
+                
+                trace("Deleting Node (" + n.data.id + ")...");
+                deleteCache(n);
+           
+                // Remove children:
+                if (n.nodesCount > 0) {
+                    for each (child in n.getNodes()) {
+                        if (!child.props.$deleted) stack.push(child);
+                    }
+                }
+                
+                // Remove it from its parent, if it is a child:
+                if (n.data.parent != null) {
+                    parent = getNode(n.data.parent);
+                    if (parent != null) {
+                        parent.removeNode(n);
+                        
+                        if (parent.nodesCount === 0) {
+                            graphData.group(Groups.COMPOUND_NODES).remove(parent);
+                        }
+                    }
+                }
+           
+                // Also remove its linked edges:
+                edges = [];
+                n.visitEdges(function(e:EdgeSprite):Boolean {
+                    edges.push(e);
+                    return false;
+                }, NodeSprite.GRAPH_LINKS);
+                remove(edges);
+                
+                graphData.removeNode(n);
+                n.props.$deleted = true;
+            }
+        }
+        
+        private function removeEdge(e:EdgeSprite):void {
+            var stack:Array = [e], children:Array;
+            var child:EdgeSprite, parent:EdgeSprite;
+            var inter:InteractionVO;
+            
+            while (stack.length > 0) {
+                e = stack.pop();
+                if (e.props.$deleted) continue;
+                
+                trace("Deleting Edge (" + e.data.id + ")...");
+                
+                inter = getInteraction(e.source, e.target);
+                
+                // Delete edge:
+                deleteCache(e);
+                graphData.removeEdge(e);
+                e.props.$deleted = true;
+            
+                // Delete or update related objects:
+                if (e.props.$merged) {
+                    // MERGED...
+                    // Delete children ("regular") edges:
+                    children = e.props.$edges;
+                    
+                    if (children.length > 0) {
+                        for each (child in children) {
+                            if (!child.props.$deleted) stack.push(child);
+                        }
+                    }
+                    
+                    delete _interactions[inter.key];
+                } else {
+                    // REGULAR EDGE:
+                    // Update or delete the interaction:
+                    if (inter != null) {
+                        if (inter.edges.length > 0) {
+                            inter.update(edgesSchema);
+                        } else {
+                            stack.push(inter.mergedEdge);
+                        }
+                    }
+                }
+            }
+        }
+        
         /**
          * Create a mapping of nodes and edges, with their IDs as key,
          * in order to make it easier to get them later.
@@ -981,6 +1020,12 @@ package org.cytoscapeweb.model {
                 fl = graphData.group(Groups.FILTERED_NODES);
                 if (fl != null) fl.remove(ds);
                 
+                // Also remove parent from compound group, if it has no children:
+                var parent:CompoundNodeSprite = this.getNode(ds.data.parent);
+                if (parent != null && parent.nodesCount === 0) {
+                    graphData.group(Groups.COMPOUND_NODES).remove(parent);
+                    trace(">> removed compound from group >> "+parent.data.id);
+                }
             } else if (ds is EdgeSprite) {
                 delete _edgesMap[ds.data.id];
 

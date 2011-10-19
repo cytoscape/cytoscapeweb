@@ -306,16 +306,64 @@ package org.cytoscapeweb.view {
         }
         
         public function dispose(items:Array):void {
+            var ds:DataSprite, n:CompoundNodeSprite, child:CompoundNodeSprite;
+            var e:EdgeSprite, me:EdgeSprite;
+            var stack:Array = items.concat();
+            var mergedEdges:Array = [];
+            
             // Remove event listeners:
-            for each (var ds:DataSprite in items) {
+            while (stack.length > 0) {
+                ds = stack.pop();
+                if (ds.props.$disposed) continue;
+                
+                trace("Disposing " + ds + " (" + ds.data.id + ")...");
                 disposeDataSprite(ds);
                 
-                if (ds is NodeSprite) {
+                if (ds is CompoundNodeSprite) {
+                    n = ds as CompoundNodeSprite;
+                    
                     // Also dispose its linked edges:
-                    NodeSprite(ds).visitEdges(function(e:EdgeSprite):Boolean {
-                        disposeDataSprite(e);
+                    n.visitEdges(function(e:EdgeSprite):Boolean {
+                        if (!e.props.$disposed) stack.push(e);
                         return false;
                     });
+                    
+                    if (n.nodesCount > 0) {
+                        for each (child in n.getNodes()) {
+                            if (!child.props.$disposed) stack.push(child);
+                        }
+                    }
+                } else if (ds is EdgeSprite) { 
+                    if (ds.props.$merged && ds.props.$edges != null) {
+                        for each (e in ds.props.$edges) {
+                            if (!e.props.$disposed) stack.push(e);
+                        }
+                    } else if (ds.props.$parent != null) {
+                        // save for later disposal...
+                        if (!ds.props.$parent.props.$disposed)
+                            mergedEdges.push(ds.props.$parent);
+                    }
+                }
+            }
+            
+            var shallDispose:Boolean;
+            
+            // Finally dispose "empty" mergedEdges:
+            for each (me in mergedEdges) {
+                if (!me.props.$disposed) {
+                    shallDispose = true;
+                    
+                    for each (e in me.props.$edges) {
+                        if (!e.props.$disposed) {
+                            shallDispose = false;
+                            break;
+                        }
+                    }
+                    
+                    if (shallDispose) {
+                        trace("Disposing merged Edge (" + me.data.id + ")...");
+                        disposeDataSprite(me);
+                    }
                 }
             }
         }
@@ -729,8 +777,7 @@ package org.cytoscapeweb.view {
             } else {
                 if (target is CompoundNodeSprite) {
                     children = children.concat(
-                        CompoundNodes.getChildren(
-                            target as CompoundNodeSprite));
+                        CompoundNodes.getChildren(target as CompoundNodeSprite));
                 }
                 
                 children = children.concat([target]);
@@ -746,7 +793,6 @@ package org.cytoscapeweb.view {
             var n:CompoundNodeSprite;
             
             // drag all necessary nodes
-            
             for each (n in nodes) {
                 if (n != target) {
                     n.x += amountX;
@@ -777,8 +823,7 @@ package org.cytoscapeweb.view {
                         ns = this.graphProxy.getNode(parentId);
                         
                         if (ns != null) {
-                            // only update if the parent is not also being
-                            // dragged
+                            // only update if the parent is not also being dragged
                             if (!ns.props.$selected || (n == target && !n.props.$selected)) {
                                 // update the bounds of the compound node
                                 this.vis.updateCompoundBounds(ns);
@@ -797,8 +842,7 @@ package org.cytoscapeweb.view {
                 
                 // update bound coordinates of dragged compound nodes
                 if (n is CompoundNodeSprite) {
-                    if ((n as CompoundNodeSprite).bounds != null)
-                    {
+                    if ((n as CompoundNodeSprite).bounds != null) {
                         (n as CompoundNodeSprite).bounds.x += amountX;
                         (n as CompoundNodeSprite).bounds.y += amountY;
                     }
@@ -950,6 +994,7 @@ package org.cytoscapeweb.view {
             
             // Avoinding errors in case the tooltip is about to be shown:
             ds.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OUT, true, false, 0, 0, vis));
+            ds.props.$disposed = true;
         }
         
         private function updateCursor():void {

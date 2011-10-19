@@ -93,7 +93,10 @@ package org.cytoscapeweb.model.data {
         public function get edges():Array {
             var edges:Array = [];
             node1.visitEdges(function(e:EdgeSprite):Boolean {
-                if (!e.props.$merged && hasNodes(e.source, e.target)) edges.push(e);
+                if (!e.props.$merged && hasNodes(e.source, e.target)) {
+                    e.props.$parent = _mergedEdge;
+                    edges.push(e);
+                }
                 return false;
             }, loop ? NodeSprite.IN_LINKS : NodeSprite.GRAPH_LINKS);
             

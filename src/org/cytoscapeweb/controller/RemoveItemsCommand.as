@@ -49,9 +49,10 @@ package org.cytoscapeweb.controller {
                 
                 if (items == null) {
                     items = [];
-                    if (group === Groups.NODES || group === Groups.NONE) items = items.concat(graphProxy.nodes);
-                    if (group === Groups.EDGES || group === Groups.NONE) items = items.concat(graphProxy.edges);
-                    
+                    if (group === Groups.NODES || group === Groups.NONE)
+                        items = items.concat(graphProxy.nodes);
+                    if (group === Groups.EDGES || group === Groups.NONE)
+                        items = items.concat(graphProxy.edges);
                 } else {
                     items = graphProxy.getDataSpriteList(items, group);
                 }

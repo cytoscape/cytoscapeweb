@@ -541,7 +541,7 @@ function runGraphTests(moduleName, vis, options) {
     test("Visual Style--transparent nodes", function() {
     	vis.visualStyle({ 
     		global: { backgroundColor: "transparent" },
-    		nodes: { color: "transparent" },
+    		nodes: { color: "transparent", compoundColor: "transparent" },
     		edges: { color: "transparent" }
     	});
     	same(vis.visualStyle().global.backgroundColor, "#ffffff", "Visual Style backgroundColor color");

@@ -87,7 +87,7 @@ package org.cytoscapeweb.view.render {
         // ========[ PUBLIC METHODS ]===============================================================
         
         /** @inheritDoc */
-        public override function render(d:DataSprite):void {trace("RENDER NODE: " + d.data.id);
+        public override function render(d:DataSprite):void {
             try {
                 // Using a bit mask to avoid transparent mdes when fillcolor=0xffffffff.
                 // See https://sourceforge.net/forum/message.php?msg_id=7393265

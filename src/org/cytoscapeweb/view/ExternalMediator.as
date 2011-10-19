@@ -51,7 +51,6 @@ package org.cytoscapeweb.view {
     import org.cytoscapeweb.model.data.VisualStyleVO;
     import org.cytoscapeweb.model.error.CWError;
     import org.cytoscapeweb.model.methods.error;
-    import org.cytoscapeweb.util.CompoundNodes;
     import org.cytoscapeweb.util.ExternalFunctions;
     import org.cytoscapeweb.util.Groups;
     import org.cytoscapeweb.vis.data.CompoundNodeSprite;
@@ -555,84 +554,6 @@ package org.cytoscapeweb.view {
         private function removeElements(group:String=Groups.NONE,
                                         items:Array=null, 
                                         updateVisualMappers:Boolean=false):void {
-            var id:*;
-            var ns:NodeSprite;
-            var cns:CompoundNodeSprite;
-            
-            var childMap:Object = new Object();
-            var childList:Array;
-            var node:NodeSprite;
-            var parentId:String;
-            
-            if (items != null) {
-                // for each item to be removed check whether it is a compound
-                // node or not
-                
-                for each (var item:* in items) {
-                    if (item != null)  {
-                        id = item;
-                        
-                        if (item.hasOwnProperty("data") && item.data.id != null) {
-                            id = item.data.id;
-                        }
-                    }
-                    
-                    ns = this.graphProxy.getNode(id);
-                    
-                    if (ns != null) {
-                        if (ns is CompoundNodeSprite) {
-                            cns = (ns as CompoundNodeSprite);
-                            
-                            // if ns is also selected then add non-selected
-                            // children of the compound to the list of nodes
-                            // to be removed
-                            if (ns.props.$selected) {
-                                childList = CompoundNodes.getChildren(cns,
-                                                                      CompoundNodes.NON_SELECTED);
-                            } else {
-                                // otherwise add all children of the compound
-                                // to the list of nodes to be removed
-                                childList = CompoundNodes.getChildren( cns);
-                            }
-                            
-                            //update map of child nodes to be removed
-                            for each (node in childList) {
-                                // assuming node.data.id is not null
-                                childMap[node.data.id] = node;
-                            }
-                            
-                            for each (node in cns.getNodes()) {
-                                // remove each node from the compound node,
-                                // this also resets the parent id of the node
-                                cns.removeNode(node);
-                            }
-                        }
-                        
-                        parentId = ns.data.parent;
-                        
-                        // remove ns from its parent compound's children list 
-                        // if it is in a compound
-                                            
-                        if (parentId != null) {
-                            // get the parent node
-                            cns = this.graphProxy.getNode(parentId)
-                                as CompoundNodeSprite;
-                            
-                            // remove current node from the compound node
-                            if (cns != null) {
-                                cns.removeNode(ns);
-                            }
-                        }
-                        
-                    }
-                }
-                
-                // update items with the new list of nodes to be removed
-                for each (node in childMap) {
-                    items.push(node);
-                }
-            }
-            
             sendNotification(ApplicationFacade.REMOVE_ITEMS,
                              { group: group, items: items, updateVisualMappers: updateVisualMappers });
         }

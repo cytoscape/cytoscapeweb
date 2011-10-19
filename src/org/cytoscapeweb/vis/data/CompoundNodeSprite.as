@@ -183,7 +183,7 @@ package org.cytoscapeweb.vis.data {
 			this._nodesMap[ns.data.id] = ns;
 			// set the parent id of the added node
 			ns.data.parent = this.data.id;
-			_nodesCount++;
+			this._nodesCount++;
 		}
 		
 		/**
@@ -199,7 +199,11 @@ package org.cytoscapeweb.vis.data {
 				delete ns.data.parent;
 				// remove the node from the list of child nodes 
 				delete this._nodesMap[ns.data.id];
-				_nodesCount--;
+				this._nodesCount--;
+				
+				if (this._nodesCount === 0) { // not a compound node anymore
+				    this._nodesMap = null;
+				}
 			}
 		}
 		
