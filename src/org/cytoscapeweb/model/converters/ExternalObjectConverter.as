@@ -301,7 +301,7 @@ package org.cytoscapeweb.model.converters {
         public static function toExtElement(ds:DataSprite, zoom:Number):Object {
             var obj:Object = null;
             var p:Point;
-            var n:CompoundNodeSprite, e:EdgeSprite;
+            var n:NodeSprite, e:EdgeSprite;
             var scale:Number;
 
             if (ds != null) {
@@ -313,8 +313,8 @@ package org.cytoscapeweb.model.converters {
                 obj.visible = ds.visible;
                 obj.zIndex = ds.parent != null ? ds.parent.getChildIndex(ds) : -1;
                 
-                if (ds is CompoundNodeSprite) {
-                    n = ds as CompoundNodeSprite;
+                if (ds is NodeSprite) {
+                    n = ds as NodeSprite;
                     
                     obj.group = Groups.NODES;
                     obj.shape = n.shape;
@@ -324,7 +324,7 @@ package org.cytoscapeweb.model.converters {
                     obj.color = n.props.transparent ? "transparent" : Utils.rgbColorAsString(n.fillColor);
                     obj.borderColor = Utils.rgbColorAsString(n.lineColor);
                     obj.borderWidth = n.lineWidth;
-                    obj.nodesCount = n.nodesCount;
+                    obj.nodesCount = n is CompoundNodeSprite ? CompoundNodeSprite(n).nodesCount : 0;
 //                    obj.degree = n.degree;
 //                    obj.indegree = n.inDegree;
 //                    obj.outdegree = n.outDegree;
@@ -338,7 +338,7 @@ package org.cytoscapeweb.model.converters {
                 } else {
                     obj.group = Groups.EDGES;
 
-                    e = EdgeSprite(ds);
+                    e = ds as EdgeSprite;
                     obj.color = Utils.rgbColorAsString(e.lineColor);
                     obj.width = ds.lineWidth;
                     obj.sourceArrowShape = e.props.sourceArrowShape;

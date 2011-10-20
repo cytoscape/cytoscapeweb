@@ -43,6 +43,7 @@ package org.cytoscapeweb.model.converters {
     import mx.utils.StringUtil;
     
     import org.cytoscapeweb.util.DataSchemaUtils;
+    import org.cytoscapeweb.vis.data.CompoundNodeSprite;
 
     /**
      * Converts data between the Simple Interaction Format and flare DataSet instances.
@@ -230,10 +231,10 @@ package org.cytoscapeweb.model.converters {
         // ========[ PROTECTED METHODS ]============================================================
 
         protected function createNodeData(name:String):Object {
-            var data:Object = {};
-            data[DataSchemaUtils.ID] = data[LABEL] = name;
+            var cns:CompoundNodeSprite = new CompoundNodeSprite();
+            cns.data[DataSchemaUtils.ID] = cns.data[LABEL] = name;
 
-            return data;
+            return cns;
         }
         
         protected function createEdgeData(interaction:String, source:String, target:String):Object {
