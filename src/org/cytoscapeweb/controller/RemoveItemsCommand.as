@@ -28,9 +28,13 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.controller {
+    import flare.vis.data.DataSprite;
+    import flare.vis.data.NodeSprite;
+    
     import org.cytoscapeweb.ApplicationFacade;
     import org.cytoscapeweb.model.methods.error;
     import org.cytoscapeweb.util.Groups;
+    import org.cytoscapeweb.vis.data.CompoundNodeSprite;
     import org.puremvc.as3.interfaces.INotification;
     
 
@@ -44,6 +48,7 @@ package org.cytoscapeweb.controller {
                 var group:String = notification.getBody().group;
                 var items:Array = notification.getBody().items;
                 var updateVisualMappers:Boolean = notification.getBody().updateVisualMappers;
+                var ds:DataSprite, parent:CompoundNodeSprite;
 
                 if (group == null) group = Groups.NONE;
                 
@@ -57,11 +62,32 @@ package org.cytoscapeweb.controller {
                     items = graphProxy.getDataSpriteList(items, group);
                 }
     
+                // save all affected parents for later:
+                var lookup:Object = {};
+                var parentNodes:Array = [];
+                
+                if (graphProxy.compoundGraph) {
+                    for each (ds in items) {
+                        if (ds is NodeSprite && ds.data.parent != null) {
+                            if (lookup[ds.data.parent] == null) {
+                                parent = graphProxy.getNode(ds.data.parent);
+                                
+                                if (parent != null) {
+                                    lookup[ds.data.parent] = parent;
+                                    parentNodes.push(parent);
+                                }
+                            }
+                        }
+                    }
+                }
+    
                 graphMediator.dispose(items);
                 graphProxy.remove(items);
 				
-				// shrink affected compound node bounds
-				graphMediator.shrinkCompounds();
+				// shrink affected compound node bounds:
+                if (parentNodes.length > 0) {
+    				graphMediator.updateParentNodes(parentNodes);
+                }
                 
                 if (updateVisualMappers) sendNotification(ApplicationFacade.GRAPH_DATA_CHANGED);
                 else graphMediator.separateDisconnected();

@@ -33,6 +33,7 @@ package org.cytoscapeweb.vis.data {
 	import flash.geom.Rectangle;
 	
 	import org.cytoscapeweb.model.error.CWError;
+	import org.cytoscapeweb.util.NodeShapes;
 	import org.cytoscapeweb.util.Nodes;
 
 	/**
@@ -184,6 +185,8 @@ package org.cytoscapeweb.vis.data {
 			// set the parent id of the added node
 			ns.data.parent = this.data.id;
 			this._nodesCount++;
+			
+			this.dirty();
 		}
 		
 		/**
@@ -203,7 +206,10 @@ package org.cytoscapeweb.vis.data {
 				
 				if (this._nodesCount === 0) { // not a compound node anymore
 				    this._nodesMap = null;
+				    this.resetBounds();
 				}
+				
+				this.dirty();
 			}
 		}
 		
@@ -224,25 +230,50 @@ package org.cytoscapeweb.vis.data {
 		}
 		
 		public function updateBounds(bounds:Rectangle):void {
+		    var shapePaddingX:Number = 0;
+		    var shapePaddingY:Number = 0;
+		    
 			// extend bounds by adding padding width & height
 			bounds.x -= this.paddingLeft;
 			bounds.y -= this.paddingTop;
 			bounds.height += this.paddingTop + this.paddingBottom;
 			bounds.width += this.paddingLeft + this.paddingRight;
 			
-			// set bounds
-			_bounds = bounds;
-			
-			// also update x & y coordinates of the compound node by using
-			// the new bounds
-			this.x = bounds.x + (bounds.width / 2);
-			this.y = bounds.y + (bounds.height / 2);
-		}
-		
-		public function resetBounds():void {
-			_bounds = null;
+			switch (shape) {
+                case NodeShapes.ROUND_RECTANGLE:
+                    shapePaddingX = NodeShapes.getRoundRectCornerRadius(bounds.width, bounds.height);
+                    shapePaddingY = (shapePaddingX /= 2);
+                    break;
+                case NodeShapes.ELLIPSE:
+                    // circumscribe the bounds rectangle
+                    var newW:Number = (bounds.width / Math.sqrt(2)) * 2;
+                    var newH:Number = (bounds.height / Math.sqrt(2)) * 2;
+                    shapePaddingX = (newW - bounds.width) / 2;
+                    shapePaddingY = (newH - bounds.height) / 2;
+                    break;
+            }
+            
+            if (shapePaddingX > 0 || shapePaddingY > 0) {
+                // Just to preveet the child nodes from being rendered outise the parent when close
+                // to the corners of a round rectangle, for example
+                bounds.x -= shapePaddingX;
+                bounds.y -= shapePaddingY;
+                bounds.width += shapePaddingX * 2;
+                bounds.height += shapePaddingY * 2;
+            }
+            
+            // set bounds
+            _bounds = bounds;
+            
+            // also update x & y coordinates of the compound node by using the new bounds
+            this.x = bounds.x + (bounds.width / 2);
+            this.y = bounds.y + (bounds.height / 2);
 		}
 		
 		// ====================== [ PRIVATE FUNCTIONS ] ========================
+		
+		private function resetBounds():void {
+            _bounds = null;
+        }
 	}
 }

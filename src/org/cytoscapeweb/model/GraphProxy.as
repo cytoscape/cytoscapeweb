@@ -335,7 +335,7 @@ package org.cytoscapeweb.model {
             // this map is used to avoid duplicates
             var childMap:Object;
             var children:Array;
-            var nodes:Array = this.selectedNodes;;
+            var nodes:Array = this.selectedNodes;
             var node:NodeSprite;
             
             // if missing children is set before, just return the
@@ -374,6 +374,14 @@ package org.cytoscapeweb.model {
             }
             
             return children;
+        }
+        
+        /**
+         * @return true if the graph contains one or moere compound nodes
+         */
+        public function get compoundGraph():Boolean {
+            var g:DataList = graphData.group(Groups.COMPOUND_NODES);
+            return g != null && g.length > 0;
         }
         
         // ========[ CONSTRUCTOR ]==================================================================

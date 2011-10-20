@@ -462,7 +462,7 @@ package org.cytoscapeweb.view {
                     parent = this.graphProxy.getNode(o.data.parent);
                     
                     if (parent != null) {
-                        this.graphMediator.updateCompoundNode(parent, o.sprite);
+                        this.graphMediator.updateCompoundNode(parent);
                     }
                 }
                 
@@ -519,7 +519,7 @@ package org.cytoscapeweb.view {
                 // update parent compound node if adding a node to another one
                 if (parent != null) {
                     this.graphProxy.addToParent(ns, parent);
-                    this.graphMediator.updateCompoundNode(parent, ns);
+                    this.graphMediator.updateCompoundNode(parent);
                 }
                 
                 if (updateVisualMappers) {

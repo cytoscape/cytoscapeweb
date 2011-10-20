@@ -1,0 +1,159 @@
+<graphml
+	xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"
+	xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<key id="label" for="node" attr.name="label" attr.type="string" />
+	<key id="weight" for="node" attr.name="weight" attr.type="double" />
+	<key id="name" for="node" attr.name="name" attr.type="string" />
+	<key id="label" for="edge" attr.name="label" attr.type="string" />
+	<key id="weight" for="edge" attr.name="weight" attr.type="double" />
+	<graph edgedefault="undirected">
+		<node id="n3">
+			<data key="label">n3</data>
+		</node>
+		<node id="n4">
+			<data key="label">n4</data>
+		</node>
+		<node id="n16">
+			<data key="label">n16</data>
+		</node>
+		<node id="n17">
+			<data key="label">n17</data>
+		</node>
+		<node id="n18">
+			<data key="label">n18</data>
+		</node>
+		<node id="n19">
+			<data key="label">n19</data>
+		</node>
+		<node id="n2">
+			<data key="label">n2</data>
+			<graph edgedefault="undirected">
+				<node id="n22">
+					<data key="label">n22</data>
+				</node>
+				<node id="n21">
+					<data key="label">n21</data>
+				</node>
+				<node id="n23">
+					<data key="label">n23</data>
+				</node>
+				<edge target="n21" id="e15" source="n23">
+					<data key="label"></data>
+					<data key="weight">0.2</data>
+				</edge>
+				<edge target="n22" id="e16" source="n23">
+					<data key="label"></data>
+					<data key="weight">0.1</data>
+				</edge>
+				<edge target="n21" id="e17" source="n22">
+					<data key="label"></data>
+					<data key="weight">0.2</data>
+				</edge>
+			</graph>
+		</node>
+		<node id="n1">
+			<data key="label">n1</data>
+			<graph edgedefault="undirected">
+				<node id="n20">
+					<data key="label">n20</data>
+				</node>
+				<node id="n11">
+					<data key="label">n11</data>
+				</node>
+				<node id="n12">
+					<data key="label">n12</data>
+				</node>
+				<node id="n13">
+					<data key="label">n13</data>
+					<graph edgedefault="undirected">
+						<node id="n131">
+							<data key="label">n131</data>
+						</node>
+					</graph>
+				</node>
+				<edge target="n12" id="e12" source="n11">
+					<data key="label">e12</data>
+					<data key="weight">0.2</data>
+				</edge>
+				<edge target="n11" id="e13" source="n20">
+					<data key="label"></data>
+					<data key="weight">0.1</data>
+				</edge>
+				<edge target="n11" id="e20" source="n13">
+					<data key="label"></data>
+					<data key="weight">0.3</data>
+				</edge>
+			</graph>
+		</node>
+		<node id="n6">
+			<data key="label">n6</data>
+			<graph edgedefault="undirected">
+				<node id="n10">
+					<data key="label">n10</data>
+				</node>
+				<node id="n8">
+					<data key="label">n8</data>
+				</node>
+				<node id="n7">
+					<data key="label">n7</data>
+				</node>
+				<node id="n9">
+					<data key="label">n9</data>
+					<graph edgedefault="undirected">
+						<node id="n14">
+							<data key="label">n14</data>
+						</node>
+						<node id="n15">
+							<data key="label">n15</data>
+						</node>
+						<edge target="n14" id="e18" source="n15">
+							<data key="label"></data>
+						</edge>
+					</graph>
+				</node>
+				<edge target="n10" id="e5" source="n8">
+					<data key="label"></data>
+				</edge>
+				<edge target="n10" id="e6" source="n7">
+					<data key="label"></data>
+				</edge>
+			</graph>
+		</node>
+		<edge target="n3" id="e3" source="n4">
+			<data key="label"></data>
+			<data key="weight">0.7</data>
+		</edge>
+		<edge target="n3" id="e4" source="n2">
+			<data key="label"></data>
+			<data key="weight">0.4</data>
+		</edge>
+		<edge target="n10" id="e7" source="n3">
+			<data key="label"></data>
+			<data key="weight">0.2</data>
+		</edge>
+		<edge target="n19" id="e8" source="n18">
+			<data key="label"></data>
+			<data key="weight">0.3</data>
+		</edge>
+		<edge target="n17" id="e9" source="n19">
+			<data key="label"></data>
+			<data key="weight">0.9</data>
+		</edge>
+		<edge target="n16" id="e10" source="n17">
+			<data key="label"></data>
+			<data key="weight">0.8</data>
+		</edge>
+		<edge target="n1" id="e11" source="n16">
+			<data key="label"></data>
+			<data key="weight">0.4</data>
+		</edge>
+		<edge target="n18" id="e14" source="n17">
+			<data key="label"></data>
+			<data key="weight">0.2</data>
+		</edge>
+		<edge target="n7" id="e19" source="n15">
+			<data key="label"></data>
+			<data key="weight">0.1</data>
+		</edge>
+	</graph>
+</graphml>

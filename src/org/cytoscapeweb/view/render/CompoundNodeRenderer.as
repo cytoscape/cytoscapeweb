@@ -29,10 +29,8 @@
 */
 package org.cytoscapeweb.view.render {
 	import flare.vis.data.DataSprite;
-	import flare.vis.data.NodeSprite;
 	
 	import flash.display.Graphics;
-	import flash.display.Sprite;
 	import flash.geom.Rectangle;
 	
 	import org.cytoscapeweb.util.GraphUtils;
@@ -117,28 +115,6 @@ package org.cytoscapeweb.view.render {
 				// the superclass renderer function.
 				super.render(d);
 			}
-		}
-		
-		/**
-		 * This method only support
-		 * two shapes: NodeShapes.RECTANGLE and NodeShapes.ROUND_RECTANGLE. No
-		 * other shapes are supported for compound nodes (for consistency). 
-		 * 
-		 * @param s			target sprite
-		 * @param shape		shape name as a string
-		 * @param bounds	rectangular bounds for the sprite s
-		 */
-		override protected function drawShape(s:Sprite, shape:String, bounds:Rectangle):void {
-			switch (shape) {
-				case NodeShapes.ROUND_RECTANGLE:
-				case NodeShapes.RECTANGLE:
-				    // these are the only supported compound node shapes!
-				    break;
-				default:
-					shape = NodeShapes.RECTANGLE;
-			}
-			
-			super.drawShape(s, shape, bounds);
 		}
 		
 		/**

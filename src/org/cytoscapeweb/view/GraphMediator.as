@@ -32,7 +32,6 @@ package org.cytoscapeweb.view {
     import flare.display.DirtySprite;
     import flare.util.Arrays;
     import flare.vis.data.Data;
-    import flare.vis.data.DataList;
     import flare.vis.data.DataSprite;
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
@@ -203,8 +202,16 @@ package org.cytoscapeweb.view {
             graphView.updateLabels(Groups.EDGES);
         }
         
+        public function updateAllCompoundBounds():void {
+            if (graphProxy.compoundGraph) {
+                vis.updateAllCompoundBounds();
+                graphView.updateLabels(Groups.COMPOUND_NODES);
+            }
+        }
+        
         public function updateLabels():void {
             graphView.updateLabels();
+            updateAllCompoundBounds();
         }
         
         public function selectNodes(nodes:Array):void {
@@ -280,7 +287,7 @@ package org.cytoscapeweb.view {
             
             // it is required to update compound bounds after filtering in order
             // to keep compound bounds valid with respect to its children
-            vis.updateAllCompoundBounds();
+            updateAllCompoundBounds();
             
             // it is also required to operate compound node labeler, to update
             // compound node labels
@@ -381,52 +388,37 @@ package org.cytoscapeweb.view {
             return graphView.viewCenter;
         }
         
-        /**
-         * This function adds the given node sprite into target compound node's
-         * child list and updates the bounds of the target compound node in case
-         * of a new node added to the target compound node. Bounds updating
-         * process continues up to the root parent if necessary.
-         * 
-         * @param eventTarget   parent parent compound node
-         * @param ns            newly added node sprite 
-         */
-        public function updateCompoundNode(parent:CompoundNodeSprite, ns:NodeSprite):void {
-            if (parent != null) {
-                // initialize visual properties
-                this.updateDataSprites(Groups.COMPOUND_NODES, [parent]);
+        public function updateParentNodes(items:Array):void {
+            if (items != null) {
+                var ds:DataSprite, parent:CompoundNodeSprite;
                 
-                // update bounds of the target compound node up to  the root
-                while (parent != null) {
-                    // update the bounds of the compound node
-                    this.vis.updateCompoundBounds(parent);
-                    // render the compound node with new bounds
-                    parent.render();
-                    // advance to the next parent node
-                    parent = this.graphProxy.getNode(parent.data.parent);
+                for each (ds in items) {
+                    if (ds is CompoundNodeSprite) {
+                        parent = ds as CompoundNodeSprite;
+                        
+                        while (parent != null) {trace("update parent >>> " + parent.data.id);
+                            // update the bounds of the compound node
+                            if (parent.nodesCount > 0) {
+                                this.vis.updateCompoundBounds(parent);
+                            } else {
+                                this.updateDataSprites(Groups.NODES, [parent]);
+                            }
+                            
+                            if (parent.data.parent != null) {
+                                parent = this.graphProxy.getNode(parent.data.parent);
+                            } else {
+                                // reached top, no more parent
+                                parent = null;
+                            }
+                        }
+                    }
                 }
                 
-                if (configProxy.nodeLabelsVisible) {
-                    graphView.updateLabels(Groups.NODES);
-                }
+                updateLabels();
             }
         }
         
-        public function shrinkCompounds():void {
-            // get all compound nodes in the graph data 
-            var nodes:DataList = this.graphProxy.graphData.group(Groups.COMPOUND_NODES);
-            var cns:CompoundNodeSprite;
-            
-            for each (cns in nodes) {
-                // consider only compounds at the top level; compounds which
-                // are inside another compound node is handled recursively
-                // by the shrinkCompundNode method
-                this.shrinkCompoundNode(cns);
-            }
-        }
-        
-        // ========[ PRIVATE METHODS ]==============================================================
-
-        private function updateDataSprites(gr:String, items:Array):void {
+        public function updateDataSprites(gr:String, items:Array):void {
             var props:Object; 
             
             if (gr === Groups.NODES) {
@@ -443,6 +435,33 @@ package org.cytoscapeweb.view {
             
             separateDisconnected();
         }
+        
+        public function updateCompoundNode(cns:CompoundNodeSprite):void {
+            if (cns != null) {
+                // initialize visual properties
+                this.updateDataSprites(Groups.COMPOUND_NODES, [cns]);
+                
+                if (configProxy.nodeLabelsVisible) {
+                    graphView.updateLabels(Groups.NODES);
+                }
+                
+                // update bounds of the target compound node up to  the root
+                while (cns != null) {
+                    // update the bounds of the compound node
+                    this.vis.updateCompoundBounds(cns);
+                    // render the compound node with new bounds
+                    cns.render();
+                    // advance to the next parent node
+                    cns = this.graphProxy.getNode(cns.data.parent);
+                }
+                
+                if (configProxy.nodeLabelsVisible) {
+                    graphView.updateLabels(Groups.NODES);
+                }
+            }
+        }
+        
+        // ========[ PRIVATE METHODS ]==============================================================
 
         private function onRenderInitialize(evt:GraphViewEvent):void {
             graphView.addEventListener(GraphViewEvent.LAYOUT_INITIALIZE, onLayoutInitialize, false, 0, true);
@@ -842,9 +861,11 @@ package org.cytoscapeweb.view {
                 
                 // update bound coordinates of dragged compound nodes
                 if (n is CompoundNodeSprite) {
-                    if ((n as CompoundNodeSprite).bounds != null) {
-                        (n as CompoundNodeSprite).bounds.x += amountX;
-                        (n as CompoundNodeSprite).bounds.y += amountY;
+                    ns = n as CompoundNodeSprite;
+                    
+                    if (ns.bounds != null) {
+                        ns.bounds.x += amountX;
+                        ns.bounds.y += amountY;
                     }
                 }
             }
@@ -1005,31 +1026,6 @@ package org.cytoscapeweb.view {
                                                                 draggingGraph: _draggingGraph,
                                                                 draggingComponent: _draggingComponent,
                                                                 shiftDown: _shiftDown });
-        }
-        
-        /**
-         * In a bottom-up manner, recursively updates the bounds of all inner 
-         * compound nodes of the given compound node and also the bounds of
-         * the given compound node itself.
-         * 
-         * @param cns   compound node sprite to be resized 
-         */
-        private function shrinkCompoundNode(cns:CompoundNodeSprite) : void
-        {
-            // first, shrink inner compound nodes if any
-            for each (var ns:NodeSprite in cns.getNodes())
-            {
-                if (ns is CompoundNodeSprite)
-                {
-                    this.shrinkCompoundNode(ns as CompoundNodeSprite);
-                }
-            }
-            
-            // then, update bounds of the compound node
-            this.vis.updateCompoundBounds(cns);
-            
-            // render the node with the new bounds
-            cns.render();
         }
     }
 }

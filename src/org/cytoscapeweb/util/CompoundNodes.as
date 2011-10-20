@@ -116,8 +116,19 @@ package org.cytoscapeweb.util {
         
         public static function shape(n:NodeSprite):String {
             var shape:String = CompoundNodes.style.getValue(VisualProperties.C_NODE_SHAPE, n.data);
+            shape = NodeShapes.parse(shape);
             
-            return NodeShapes.parse(shape);
+            switch (shape) {
+                case NodeShapes.ROUND_RECTANGLE:
+                case NodeShapes.RECTANGLE:
+                case NodeShapes.ELLIPSE:
+                    // these are the only supported compound node shapes!
+                    break;
+                default:
+                    shape = NodeShapes.RECTANGLE;
+            }
+            
+            return shape;
         }
         
         public static function size(n:NodeSprite):Number {
@@ -170,175 +181,121 @@ package org.cytoscapeweb.util {
         public static function selectionLineWidth(n:NodeSprite):Number {
             var propName:String = VisualProperties.C_NODE_LINE_WIDTH;
             
-            if (style.hasVisualProperty(
-                VisualProperties.C_NODE_SELECTION_LINE_WIDTH))
-            {
+            if (style.hasVisualProperty(VisualProperties.C_NODE_SELECTION_LINE_WIDTH)) {
                 propName = VisualProperties.C_NODE_SELECTION_LINE_WIDTH;
-            }
-            else if (n.props.$hover &&
-                style.hasVisualProperty(
-                    VisualProperties.C_NODE_HOVER_LINE_WIDTH))
-            {
+            } else if (n.props.$hover &&
+                       style.hasVisualProperty(VisualProperties.C_NODE_HOVER_LINE_WIDTH)) {
                 propName = VisualProperties.C_NODE_HOVER_LINE_WIDTH;
             }
             
             return style.getValue(propName, n.data);
         }
         
-        public static function alpha(n:NodeSprite) : Number
-        {
+        public static function alpha(n:NodeSprite):Number {
             var propName:String = VisualProperties.C_NODE_ALPHA;
             
             if (n.props.$hover &&
-                style.hasVisualProperty(
-                    VisualProperties.C_NODE_HOVER_ALPHA))
-            {
+                style.hasVisualProperty(VisualProperties.C_NODE_HOVER_ALPHA)) {
                 propName = VisualProperties.C_NODE_HOVER_ALPHA;
-            }
-            else if (n.props.$selected &&
-                style.hasVisualProperty(
-                    VisualProperties.C_NODE_SELECTION_ALPHA))
-            {
+            } else if (n.props.$selected &&
+                style.hasVisualProperty(VisualProperties.C_NODE_SELECTION_ALPHA)) {
                 propName = VisualProperties.C_NODE_SELECTION_ALPHA;
             }
             
             return style.getValue(propName, n.data);
         }
         
-        public static function transparent(n:NodeSprite):Boolean
-        {
+        public static function transparent(n:NodeSprite):Boolean {
             var propName:String = VisualProperties.C_NODE_COLOR;
             
             if (n.props.$selected &&
-                style.hasVisualProperty(
-                    VisualProperties.C_NODE_SELECTION_COLOR))
-            {
+                style.hasVisualProperty(VisualProperties.C_NODE_SELECTION_COLOR)) {
                 propName = VisualProperties.C_NODE_SELECTION_COLOR;
             }
             
             return style.getValue(propName, n.data) < 0;
         }
         
-        public static function selectionAlpha(n:NodeSprite):Number
-        {
+        public static function selectionAlpha(n:NodeSprite):Number {
             var propName:String = VisualProperties.C_NODE_ALPHA;
             
-            if (style.hasVisualProperty(
-                VisualProperties.C_NODE_SELECTION_ALPHA))
-            {
+            if (style.hasVisualProperty(VisualProperties.C_NODE_SELECTION_ALPHA)) {
                 propName = VisualProperties.C_NODE_SELECTION_ALPHA;
             }
             
             return style.getValue(propName, n.data);
         }
         
-        public static function filters(n:NodeSprite,
-                                       selectNow:Boolean=false) : Array
-        {
+        public static function filters(n:NodeSprite, selectNow:Boolean=false):Array {
             var filters:Array = [];
-            
             var glow:GlowFilter = null;
             
-            if (!selectNow && n.props.$hover)
-            {
+            if (!selectNow && n.props.$hover) {
                 glow = hoverGlow(n);
             }
-            if (glow == null &&
-                n.props.$selected)
-            {
+            if (glow == null && n.props.$selected) {
                 glow = selectionGlow(n);
             }
-            
-            if (glow != null)
-            {
+            if (glow != null) {
                 filters.push(glow);
             }
             
             return filters;
         }
         
-        public static function selectionGlow(n:NodeSprite) : GlowFilter
-        {
+        public static function selectionGlow(n:NodeSprite):GlowFilter {
             var filter:GlowFilter = null;
             var data:Object = n.data;
-            var alpha:Number = style.getValue(
-                VisualProperties.C_NODE_SELECTION_GLOW_ALPHA, data);            
-            var blur:Number = style.getValue(
-                VisualProperties.C_NODE_SELECTION_GLOW_BLUR, data);
-            var strength:Number = style.getValue(
-                VisualProperties.C_NODE_SELECTION_GLOW_STRENGTH, data);
+            var alpha:Number = style.getValue(VisualProperties.C_NODE_SELECTION_GLOW_ALPHA, data);            
+            var blur:Number = style.getValue(VisualProperties.C_NODE_SELECTION_GLOW_BLUR, data);
+            var strength:Number = style.getValue(VisualProperties.C_NODE_SELECTION_GLOW_STRENGTH, data);
             
-            if (alpha > 0 &&
-                blur > 0 &&
-                strength > 0)
-            {
-                var color:uint = style.getValue(
-                    VisualProperties.C_NODE_SELECTION_GLOW_COLOR, data);           
-                
+            if (alpha > 0 && blur > 0 && strength > 0) {
+                var color:uint = style.getValue(VisualProperties.C_NODE_SELECTION_GLOW_COLOR, data);           
                 filter = new GlowFilter(color, alpha, blur, blur, strength);
             }
             
             return filter;
         }
         
-        public static function hoverGlow(n:NodeSprite) : GlowFilter
-        {
+        public static function hoverGlow(n:NodeSprite):GlowFilter {
             var filter:GlowFilter = null;
             var data:Object = n.data;
-            var alpha:Number = style.getValue(
-                VisualProperties.C_NODE_HOVER_GLOW_ALPHA, data);
-            var blur:Number = style.getValue(
-                VisualProperties.C_NODE_HOVER_GLOW_BLUR, data);
-            var strength:Number = style.getValue(
-                VisualProperties.C_NODE_HOVER_GLOW_STRENGTH, data);
+            var alpha:Number = style.getValue(VisualProperties.C_NODE_HOVER_GLOW_ALPHA, data);
+            var blur:Number = style.getValue(VisualProperties.C_NODE_HOVER_GLOW_BLUR, data);
+            var strength:Number = style.getValue(VisualProperties.C_NODE_HOVER_GLOW_STRENGTH, data);
             
-            if (alpha > 0 && blur > 0 && strength > 0)
-            {
-                var color:uint = style.getValue(
-                    VisualProperties.C_NODE_HOVER_GLOW_COLOR, data);
-                
+            if (alpha > 0 && blur > 0 && strength > 0) {
+                var color:uint = style.getValue(VisualProperties.C_NODE_HOVER_GLOW_COLOR, data);
                 filter = new GlowFilter(color, alpha, blur, blur, strength);
             }
             
             return filter;
         }
         
-        public static function imageUrl(n:NodeSprite):String
-        {
+        public static function imageUrl(n:NodeSprite):String {
             var propName:String = VisualProperties.C_NODE_IMAGE;
             // TODO: selected/mouseover images
             return style.getValue(propName, n.data);
         }
         
-        public static function paddingLeft(n:NodeSprite) : Number
-        {
-            var margin:Number = style.getValue(
-                VisualProperties.C_NODE_PADDING_LEFT, n.data);
-            
+        public static function paddingLeft(n:NodeSprite):Number {
+            var margin:Number = style.getValue(VisualProperties.C_NODE_PADDING_LEFT, n.data);
             return margin;
         }
         
-        public static function paddingRight(n:NodeSprite) : Number
-        {
-            var margin:Number = style.getValue(
-                VisualProperties.C_NODE_PADDING_RIGHT, n.data);
-            
+        public static function paddingRight(n:NodeSprite):Number {
+            var margin:Number = style.getValue(VisualProperties.C_NODE_PADDING_RIGHT, n.data);
             return margin;
         }
         
-        public static function paddingTop(n:NodeSprite) : Number
-        {
-            var margin:Number = style.getValue(
-                VisualProperties.C_NODE_PADDING_TOP, n.data);
-            
+        public static function paddingTop(n:NodeSprite):Number {
+            var margin:Number = style.getValue(VisualProperties.C_NODE_PADDING_TOP, n.data);
             return margin;
         }
         
-        public static function paddingBottom(n:NodeSprite) : Number
-        {
-            var margin:Number = style.getValue(
-                VisualProperties.C_NODE_PADDING_BOTTOM, n.data);
-            
+        public static function paddingBottom(n:NodeSprite):Number {
+            var margin:Number = style.getValue(VisualProperties.C_NODE_PADDING_BOTTOM, n.data);
             return margin;
         }
         

@@ -514,9 +514,6 @@ package org.cytoscapeweb.view.components {
                 // calculate&update bounds of the compound node 
                 bounds = this.getRealBounds(children);
                 cns.updateBounds(bounds);
-            } else {
-                // empty compound, so reset bounds
-                cns.resetBounds();
             }
         }
         
@@ -736,6 +733,7 @@ package org.cytoscapeweb.view.components {
                 }
             }
             
+//            this.compoundNodeLabeler.update(cns);
             this.updateCompoundBounds(cns);
             cns.render();
         }

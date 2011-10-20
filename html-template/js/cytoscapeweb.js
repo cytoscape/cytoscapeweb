@@ -2341,6 +2341,13 @@
      * @memberOf org.cytoscapeweb.Node#
      */
     /**
+     * The number of child nodes.
+     * @property
+     * @name nodesCount
+     * @type Number
+     * @memberOf org.cytoscapeweb.Node#
+     */
+    /**
      * A boolean value that indicates whether or not the node is set to visible.
      * @property
      * @name visible
@@ -2725,14 +2732,17 @@
      * and the first letter of the term is correspondingly capitalized (e.g. "color" becomes "compoundColor") for compound nodes.</p>
      * <ul class="options">
      *     <li><code>shape</code> {{@link org.cytoscapeweb.NodeShape}}: Node shape name. The default value for regular nodes is <code>"ELLIPSE"</code>.
-     *         Compound nodes can only be <code>"RECTANGLE"</code> or <code>"ROUNDRECT"</code>, and the former is the default <code>compoundShape</code>.</li>
+     *         The <code>compoundShape</code> property accepts only <code>"RECTANGLE"</code> (default), <code>"ROUNDRECT"</code> or <code>"ELLIPSE"</code>.</li>
      *     <li><code>size</code> {Number}: Node size, in pixels.
      *                                     It has the same effect of setting the same value (or mapper) to both <code>width</code> and <code>height</code>.
-     *                                     The default value is 24.</li>
+     *                                     The default value is 24.
+     *                                     The size of compound nodes is automatically calculated, so setting <code>compoundSize</code> has no effect.</li>
      *     <li><code>width</code> {Number}: Node width, in pixels. It is not set by default.
-     *                                      If set, it overrides the value returned by <code>size</code>.</li>
+     *                                      If set, it overrides the value returned by <code>size</code>.
+     *                                      Because the size of compound nodes is automatically calculated, setting <code>compoundWidth</code> has no effect.</li>
      *     <li><code>height</code> {Number}: Node height, in pixels. It is not set by default.
-     *                                       If set, it overrides the value returned by <code>size</code>.</li>
+     *                                       If set, it overrides the value returned by <code>size</code>.
+     *                                       Because the size of compound nodes is automatically calculated, setting <code>compoundHeight</code> has no effect.</li>
      *     <li><code>color</code> {String}: Fill color code of nodes. The default value is "#f5f5f5".</li>
      *     <li><code>image</code> {String}: The URL of the image to be used as the node background. No image is used by default.
      *                                      If you specify a cross-domain address, then the image might not be loaded by Flash, unless
