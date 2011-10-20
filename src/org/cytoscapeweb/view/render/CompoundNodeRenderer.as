@@ -110,6 +110,9 @@ package org.cytoscapeweb.view.render {
 				// to the front, otherwise they remain on the back side of
 				// the compound node.
 				GraphUtils.bringToFront(ns);
+				// prevent gaps between this node and its edges
+				updateEdges(ns);
+				
 			} else {
 				// if the data sprite is not a compound node, then just call
 				// the superclass renderer function.

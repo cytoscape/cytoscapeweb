@@ -291,7 +291,9 @@ package org.cytoscapeweb.view {
             
             // it is also required to operate compound node labeler, to update
             // compound node labels
-            vis.compoundNodeLabeler.operate();
+            if (configProxy.nodeLabelsVisible) {
+                vis.compoundNodeLabeler.operate();
+            }
         }
 
         public function resetDataSprite(ds:DataSprite):void {            

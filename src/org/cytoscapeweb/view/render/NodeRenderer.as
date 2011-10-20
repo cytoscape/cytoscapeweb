@@ -158,12 +158,8 @@ package org.cytoscapeweb.view.render {
                 // 2. Draw an image on top:
                 drawImage(d, w, h);
                 
-                // To prevent gaps between the node and its edges when the node has the
-                // border width changed on mouseover or selection
-                NodeSprite(d).visitEdges(function(e:EdgeSprite):Boolean {
-                   e.dirty();
-                   return false; 
-                }, NodeSprite.GRAPH_LINKS);
+                updateEdges(d as NodeSprite);
+                
             } catch (err:Error) {
                 error(new CWError("Error rendering Node '" + d.data.id +"': " + err.message,
                                   ErrorCodes.RENDERING_ERROR));
@@ -248,6 +244,15 @@ package org.cytoscapeweb.view.render {
                     }
                 }
             }
+        }
+        
+        protected function updateEdges(n:NodeSprite):void {
+            // To prevent gaps between the node and its edges when the node has the
+            // border width changed on mouseover or selection
+            n.visitEdges(function(e:EdgeSprite):Boolean {
+               e.dirty();
+               return false; 
+            }, NodeSprite.GRAPH_LINKS);
         }
     }
 }
