@@ -62,6 +62,10 @@ package org.cytoscapeweb.controller {
             // Ask the mediators to apply the new style:
             appMediator.applyVisualStyle(configProxy.visualStyle);
             graphMediator.applyVisualStyle(configProxy.visualStyle);
+            
+            if (graphProxy.compoundGraph) {
+                graphMediator.updateParentNodes(graphProxy.nodes);
+            }
         }
     }
 }

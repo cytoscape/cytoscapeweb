@@ -57,6 +57,10 @@ package org.cytoscapeweb.controller {
         
         private function ready(obj:Object=null):void {
             graphMediator.applyVisualBypass(configProxy.visualStyleBypass);
+            
+            if (graphProxy.compoundGraph) {
+                graphMediator.updateParentNodes(graphProxy.nodes);
+            }
         }
     }
 }

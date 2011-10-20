@@ -34,6 +34,8 @@ package org.cytoscapeweb.model.converters {
     import flare.data.DataSet;
     import flare.data.DataUtil;
     import flare.vis.data.Data;
+    import flare.vis.data.EdgeSprite;
+    import flare.vis.data.NodeSprite;
     
     import flash.utils.ByteArray;
     import flash.utils.IDataOutput;
@@ -46,6 +48,7 @@ package org.cytoscapeweb.model.converters {
      
         public function testRead():void {
             var toTest:Array = [Fixtures.SIF_TABS, Fixtures.SIF_SPACES];
+            var id:String;
             
             for each (var fixture:Class in toTest) {
                 var input:ByteArray = new (fixture)() as ByteArray;
@@ -73,6 +76,7 @@ package org.cytoscapeweb.model.converters {
                 
                 // Nodes:
                 for each (tuple in nodesData) {
+                    if (tuple is NodeSprite) tuple = tuple.data;
                     nodesMap[tuple.id] = tuple;
                     assertEquals(tuple.id, tuple.label);
                     // Each node data must have come from the SIF file:
@@ -85,7 +89,8 @@ package org.cytoscapeweb.model.converters {
                 
                 // The same for edges:
                 for each (tuple in edgesData) {
-                    var id:String = tuple.source + " (" + tuple.interaction + ") " + tuple.target;
+                    if (tuple is EdgeSprite) tuple = tuple.data;
+                    id = tuple.source + " (" + tuple.interaction + ") " + tuple.target;
                     assertEquals(id, tuple.id);
                     assertNotNull(tuple.interaction);
                     assertEquals(tuple.interaction, tuple.label);
