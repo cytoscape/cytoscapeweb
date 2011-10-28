@@ -29,8 +29,6 @@
 */
 package org.cytoscapeweb.model.converters { 
     import flare.display.TextSprite;
-    import flare.vis.data.Data;
-    import flare.vis.data.DataList;
     import flare.vis.data.DataSprite;
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
@@ -66,6 +64,7 @@ package org.cytoscapeweb.model.converters {
     import org.cytoscapeweb.util.Anchors;
     import org.cytoscapeweb.util.ArrowShapes;
     import org.cytoscapeweb.util.Fonts;
+    import org.cytoscapeweb.util.GraphUtils;
     import org.cytoscapeweb.util.LineStyles;
     import org.cytoscapeweb.util.NodeShapes;
     import org.cytoscapeweb.util.Utils;
@@ -104,13 +103,15 @@ package org.cytoscapeweb.model.converters {
         // ========[ PUBLIC METHODS ]===============================================================
 
         /**
-         * @param graphData
+         * @param nodes
+         * @param edges Regular or merged edges
          * @param scale The zooming scale applied to the graph.
          * @param showLabels Whether or not labels will be included. 
          * @param width The desired image width in pixels.
          * @param height The desired image height in pixels.
          */
-        public function export(graphData:Data,
+        public function export(nodes:Array,
+                               edges:Array,
                                style:VisualStyleVO,
                                config:ConfigVO,
                                scale:Number=1, 
@@ -118,6 +119,7 @@ package org.cytoscapeweb.model.converters {
             _style = style;
             _scale = scale;
             var bounds:Rectangle = _graphView.getRealBounds();
+            var ds:DataSprite;
             
             // Width and height depends on the current zooming and
             // we also add a margin to the image:
@@ -160,11 +162,25 @@ package org.cytoscapeweb.model.converters {
             _shiftX = sp.x - margin - hPad ;
             _shiftY = sp.y - margin;
             
-            // Draw:
-            drawNodes(pdf, graphData.nodes);
-            if (config.nodeLabelsVisible) drawLabels(pdf, graphData.nodes);
-            drawEdges(pdf, graphData.edges);
-            if (config.edgeLabelsVisible) drawLabels(pdf, graphData.edges);
+            // Draw elements:
+            if (nodes != null && nodes.length > 0) {
+                var elements:Array = nodes.concat(edges);
+                // Sort elements by their z-order,
+                // so overlapping nodes/edges will have the same position in the generated image:
+                elements = GraphUtils.sortByZOrder(elements);
+                
+                for each (ds in elements) {
+                    if (ds is NodeSprite) drawNode(pdf, ds as NodeSprite);
+                    else drawEdge(pdf, ds as EdgeSprite, config.edgeLabelsVisible);
+                }
+                
+                // Node labels always on top:
+                if (config.nodeLabelsVisible) {
+                    for each (ds in elements) {
+                        if (ds is NodeSprite) drawLabel(pdf, ds);
+                    }
+                }
+            }
     
             var bytes:ByteArray = pdf.save(Method.LOCAL);
     
@@ -173,156 +189,149 @@ package org.cytoscapeweb.model.converters {
         
         // ========[ PRIVATE METHODS ]==============================================================
         
-        private function drawEdges(pdf:PDF, edges:DataList):void {
-            var sortedEdges:Array = sortByZOrder(edges);
-            
-            for each (var e:EdgeSprite in sortedEdges) {
-                if (!e.visible || e.lineAlpha === 0 || e.lineWidth === 0) continue;
+        private function drawEdge(pdf:PDF, e:EdgeSprite, labelVisible:Boolean):void {
+            if (!e.visible || e.lineAlpha === 0 || e.lineWidth === 0) return;
                 
-                // Edge points:
-                var start:Point, end:Point, c1:Point, c2:Point;
-                if (e.props.$points != null) {
-                    start = e.props.$points.start;
-                    end = e.props.$points.end;
-                    c1 = e.props.$points.c1;
-                    c2 = e.props.$points.c2;
-                }
-                
-                if (start != null && end != null) {
-                    start = toImagePoint(start, e);
-                    end = toImagePoint(end, e);
-                    
-                    if (c1 != null) c1 = toImagePoint(c1, e);
-                    if (c2 != null) c2 = toImagePoint(c2, e);
-                    
-                    // Arrows points:
-                    var sArrowPoints:Array = toImagePointsArray(e.props.$points.sourceArrow, e);
-                    var tArrowPoints:Array = toImagePointsArray(e.props.$points.targetArrow, e);
-                    var sJointPoints:Array = toImagePointsArray(e.props.$points.sourceArrowJoint, e);
-                    var tJointPoints:Array = toImagePointsArray(e.props.$points.targetArrowJoint, e);
-                    
-                    var saStyle:Object = ArrowShapes.getArrowStyle(e, e.props.sourceArrowShape, e.props.sourceArrowColor);
-                    var taStyle:Object = ArrowShapes.getArrowStyle(e, e.props.targetArrowShape, e.props.targetArrowColor);
-                    
-                    var w:Number = e.lineWidth * _scale;
-                    var loop:Boolean = e.source === e.target;
-                    var lineStyle:String = e.props.lineStyle;
-                    var solid:Boolean = lineStyle === LineStyles.SOLID;
-                    var dashedLine:DashedLine;
-                    var cap:String = (LineStyles.getCaps(lineStyle) === CapsStyle.ROUND) ? Caps.ROUND : Caps.NONE;
-                    var dashArr:String = '';
-                    
-                    if (!solid) {
-                        var onLength:Number = LineStyles.getOnLength(e, lineStyle, _scale);
-                        var offLength:Number = LineStyles.getOffLength(e, lineStyle, _scale);
-                        dashedLine = new DashedLine([onLength, offLength, onLength, offLength]);
-                    } else {
-                        dashedLine = null;
-                    }
-                    
-                    // First let's draw any glow (e.g. for selected edges):
-                    // -----------------------------------------------------
-                    var filters:Array = e.filters;
-                    for each (var f:BitmapFilter in filters) {
-                        if (f is GlowFilter) {
-                            var glow:GlowFilter = f as GlowFilter;
-                            var gw:Number = w + GLOW_WIDTH*_scale;
-                            var gc:RGBColor = new RGBColor(glow.color);
-                            var ga:Number = Math.min(glow.alpha, e.alpha);
-                            
-                            // The current version of AlivePDF does not support glows, gradients, etc.
-                            // So we just draw a bigger shape behind the node:
-                            pdf.lineStyle(gc, gw, 0, ga, WindingRule.NON_ZERO, Blend.NORMAL, dashedLine, cap, Joint.MITER);
-                            drawEdgeShaft(pdf, start, end, c1, c2, loop);
-                            
-                            // Arrow glow:
-                            pdf.lineStyle(gc, GLOW_WIDTH*_scale, 0, ga, WindingRule.NON_ZERO, Blend.NORMAL, null, Caps.NONE, Joint.MITER);
-                            pdf.beginFill(gc);
-                            drawEdgeArrowJoint(pdf, sJointPoints, saStyle.shape);
-                            drawEdgeArrowJoint(pdf, tJointPoints, taStyle.shape);
-                            drawEdgeArrow(pdf, saStyle.shape, sArrowPoints, saStyle.height*_scale);
-                            drawEdgeArrow(pdf, taStyle.shape, tArrowPoints, taStyle.height*_scale);
-                            pdf.endFill();
-                        }
-                    }
-                    
-                    // Draw the edge's line:
-                    // -----------------------------------------------------
-                    var edgeColor:RGBColor = new RGBColor(e.lineColor);
-                    pdf.lineStyle(edgeColor, w, 0, e.alpha, WindingRule.NON_ZERO, Blend.NORMAL, dashedLine, cap, Joint.MITER);
-                                  
-                    drawEdgeShaft(pdf, start, end, c1, c2, loop);
-                    
-                    // Draw arrow joints:
-                    // -----------------------------------------------------
-                    pdf.lineStyle(edgeColor, 0, 0, e.alpha, WindingRule.NON_ZERO, Blend.NORMAL, null, Caps.NONE, Joint.MITER);
-                    
-                    pdf.beginFill(edgeColor);
-                    drawEdgeArrowJoint(pdf, sJointPoints, saStyle.shape);
-                    drawEdgeArrowJoint(pdf, tJointPoints, taStyle.shape);
-                    pdf.endFill();
-                    
-                    // Draw arrows:
-                    // -----------------------------------------------------
-                    var saColor:RGBColor = new RGBColor(saStyle.color);
-                    pdf.lineStyle(saColor, 0, 0, e.alpha, WindingRule.NON_ZERO, Blend.NORMAL, null, Caps.NONE, Joint.MITER);
-                    pdf.beginFill(saColor);
-                    drawEdgeArrow(pdf, saStyle.shape, sArrowPoints, saStyle.height*_scale);
-                    pdf.endFill();
-                    
-                    var taColor:RGBColor = new RGBColor(taStyle.color);
-                    pdf.lineStyle(taColor, 0, 0, e.alpha, WindingRule.NON_ZERO, Blend.NORMAL, null, Caps.NONE, Joint.MITER);
-                    pdf.beginFill(taColor);
-                    drawEdgeArrow(pdf, taStyle.shape, tArrowPoints, taStyle.height*_scale);
-                    pdf.endFill();
-                }
+            // Edge points:
+            var start:Point, end:Point, c1:Point, c2:Point;
+            if (e.props.$points != null) {
+                start = e.props.$points.start;
+                end = e.props.$points.end;
+                c1 = e.props.$points.c1;
+                c2 = e.props.$points.c2;
             }
-        }
-        
-        private function drawNodes(pdf:PDF, nodes:DataList):void {
-            // First, sort nodes by their z-order,
-            // so overlapping nodes will have the same position in the generated image:
-            var sortedNodes:Array = sortByZOrder(nodes);
             
-            for each (var n:NodeSprite in sortedNodes) {
-                if (!n.visible || n.alpha === 0) continue;
+            if (start != null && end != null) {
+                start = toImagePoint(start, e);
+                end = toImagePoint(end, e);
                 
-                // Get the Global node point (relative to the stage):
-                var np:Point = toImagePoint(new Point(n.x, n.y), n);
-                var nw:Number, nh:Number;
+                if (c1 != null) c1 = toImagePoint(c1, e);
+                if (c2 != null) c2 = toImagePoint(c2, e);
                 
-                // First let's draw any node glow (e.g. for selected nodes):
-                var filters:Array = n.filters;
+                // Arrows points:
+                var sArrowPoints:Array = toImagePointsArray(e.props.$points.sourceArrow, e);
+                var tArrowPoints:Array = toImagePointsArray(e.props.$points.targetArrow, e);
+                var sJointPoints:Array = toImagePointsArray(e.props.$points.sourceArrowJoint, e);
+                var tJointPoints:Array = toImagePointsArray(e.props.$points.targetArrowJoint, e);
+                
+                var saStyle:Object = ArrowShapes.getArrowStyle(e, e.props.sourceArrowShape, e.props.sourceArrowColor);
+                var taStyle:Object = ArrowShapes.getArrowStyle(e, e.props.targetArrowShape, e.props.targetArrowColor);
+                
+                var w:Number = e.lineWidth * _scale;
+                var loop:Boolean = e.source === e.target;
+                var lineStyle:String = e.props.lineStyle;
+                var solid:Boolean = lineStyle === LineStyles.SOLID;
+                var dashedLine:DashedLine;
+                var cap:String = (LineStyles.getCaps(lineStyle) === CapsStyle.ROUND) ? Caps.ROUND : Caps.NONE;
+                var dashArr:String = '';
+                
+                if (!solid) {
+                    var onLength:Number = LineStyles.getOnLength(e, lineStyle, _scale);
+                    var offLength:Number = LineStyles.getOffLength(e, lineStyle, _scale);
+                    dashedLine = new DashedLine([onLength, offLength, onLength, offLength]);
+                } else {
+                    dashedLine = null;
+                }
+                
+                // First let's draw any glow (e.g. for selected edges):
+                // -----------------------------------------------------
+                var filters:Array = e.filters;
                 for each (var f:BitmapFilter in filters) {
                     if (f is GlowFilter) {
                         var glow:GlowFilter = f as GlowFilter;
-                        var gw:Number = GLOW_WIDTH * _scale;
+                        var gw:Number = w + GLOW_WIDTH*_scale;
                         var gc:RGBColor = new RGBColor(glow.color);
-                        nw = (n.width + GLOW_WIDTH) * _scale;
-                        nh = (n.height + GLOW_WIDTH) * _scale;
+                        var ga:Number = Math.min(glow.alpha, e.alpha);
                         
                         // The current version of AlivePDF does not support glows, gradients, etc.
                         // So we just draw a bigger shape behind the node:
-                        pdf.lineStyle(gc, gw, 0, Math.min(glow.alpha, n.alpha),
-                                      WindingRule.NON_ZERO, Blend.NORMAL, null, Caps.ROUND, Joint.ROUND);
-                        drawNodeShape(pdf, n.shape, np.x, np.y, nw, nh);
+                        pdf.lineStyle(gc, gw, 0, ga, WindingRule.NON_ZERO, Blend.NORMAL, dashedLine, cap, Joint.MITER);
+                        drawEdgeShaft(pdf, start, end, c1, c2, loop);
+                        
+                        // Arrow glow:
+                        pdf.lineStyle(gc, GLOW_WIDTH*_scale, 0, ga, WindingRule.NON_ZERO, Blend.NORMAL, null, Caps.NONE, Joint.MITER);
+                        pdf.beginFill(gc);
+                        drawEdgeArrowJoint(pdf, sJointPoints, saStyle.shape);
+                        drawEdgeArrowJoint(pdf, tJointPoints, taStyle.shape);
+                        drawEdgeArrow(pdf, saStyle.shape, sArrowPoints, saStyle.height*_scale);
+                        drawEdgeArrow(pdf, taStyle.shape, tArrowPoints, taStyle.height*_scale);
+                        pdf.endFill();
                     }
                 }
                 
-                // Then draw the node:
-                nw = (n.width - n.lineWidth) * _scale;
-                nh = (n.height - n.lineWidth) * _scale;
+                // Draw the edge's line:
+                // -----------------------------------------------------
+                var edgeColor:RGBColor = new RGBColor(e.lineColor);
+                pdf.lineStyle(edgeColor, w, 0, e.alpha, WindingRule.NON_ZERO, Blend.NORMAL, dashedLine, cap, Joint.MITER);
+                              
+                drawEdgeShaft(pdf, start, end, c1, c2, loop);
                 
-                pdf.lineStyle(new RGBColor(n.lineColor), n.lineWidth*_scale, 0, n.alpha,
-                              WindingRule.NON_ZERO, Blend.NORMAL, null, Caps.ROUND, Joint.ROUND);
+                // Draw arrow joints:
+                // -----------------------------------------------------
+                pdf.lineStyle(edgeColor, 0, 0, e.alpha, WindingRule.NON_ZERO, Blend.NORMAL, null, Caps.NONE, Joint.MITER);
                 
-                if (!n.props.transparent) pdf.beginFill(new RGBColor(n.fillColor));
-                drawNodeShape(pdf, n.shape, np.x, np.y, nw, nh);
-                if (!n.props.transparent) pdf.endFill();
+                pdf.beginFill(edgeColor);
+                drawEdgeArrowJoint(pdf, sJointPoints, saStyle.shape);
+                drawEdgeArrowJoint(pdf, tJointPoints, taStyle.shape);
+                pdf.endFill();
+                
+                // Draw arrows:
+                // -----------------------------------------------------
+                var saColor:RGBColor = new RGBColor(saStyle.color);
+                pdf.lineStyle(saColor, 0, 0, e.alpha, WindingRule.NON_ZERO, Blend.NORMAL, null, Caps.NONE, Joint.MITER);
+                pdf.beginFill(saColor);
+                drawEdgeArrow(pdf, saStyle.shape, sArrowPoints, saStyle.height*_scale);
+                pdf.endFill();
+                
+                var taColor:RGBColor = new RGBColor(taStyle.color);
+                pdf.lineStyle(taColor, 0, 0, e.alpha, WindingRule.NON_ZERO, Blend.NORMAL, null, Caps.NONE, Joint.MITER);
+                pdf.beginFill(taColor);
+                drawEdgeArrow(pdf, taStyle.shape, tArrowPoints, taStyle.height*_scale);
+                pdf.endFill();
+                
+                // Edge label:
+                if (labelVisible) drawLabel(pdf, e);
             }
         }
         
-        private function drawLabels(pdf:PDF, data:DataList):void {
+        private function drawNode(pdf:PDF, n:NodeSprite):void {
+            if (!n.visible || n.alpha === 0) return;
+            
+            // Get the Global node point (relative to the stage):
+            var np:Point = toImagePoint(new Point(n.x, n.y), n);
+            var nw:Number, nh:Number;
+            
+            // First let's draw any node glow (e.g. for selected nodes):
+            var filters:Array = n.filters;
+            for each (var f:BitmapFilter in filters) {
+                if (f is GlowFilter) {
+                    var glow:GlowFilter = f as GlowFilter;
+                    var gw:Number = GLOW_WIDTH * _scale;
+                    var gc:RGBColor = new RGBColor(glow.color);
+                    nw = (n.width + GLOW_WIDTH) * _scale;
+                    nh = (n.height + GLOW_WIDTH) * _scale;
+                    
+                    // The current version of AlivePDF does not support glows, gradients, etc.
+                    // So we just draw a bigger shape behind the node:
+                    pdf.lineStyle(gc, gw, 0, Math.min(glow.alpha, n.alpha),
+                                  WindingRule.NON_ZERO, Blend.NORMAL, null, Caps.ROUND, Joint.ROUND);
+                    drawNodeShape(pdf, n.shape, np.x, np.y, nw, nh);
+                }
+            }
+            
+            // Then draw the node:
+            nw = (n.width - n.lineWidth) * _scale;
+            nh = (n.height - n.lineWidth) * _scale;
+            
+            pdf.lineStyle(new RGBColor(n.lineColor), n.lineWidth*_scale, 0, n.alpha,
+                          WindingRule.NON_ZERO, Blend.NORMAL, null, Caps.ROUND, Joint.ROUND);
+            
+            if (!n.props.transparent) pdf.beginFill(new RGBColor(n.fillColor));
+            drawNodeShape(pdf, n.shape, np.x, np.y, nw, nh);
+            if (!n.props.transparent) pdf.endFill();
+        }
+        
+        private function drawLabel(pdf:PDF, d:DataSprite):void {
             var hAnchor:String = Anchors.CENTER;
             var vAnchor:String = Anchors.MIDDLE;
             var xOffset:Number = 0;
@@ -330,15 +339,13 @@ package org.cytoscapeweb.model.converters {
             const HPAD:Number = 2 * _scale;
             const VPAD:Number = 2 * _scale;
             var p:Point;
-            
-            for each (var d:DataSprite in data) {
-                var lbl:TextSprite = d.props.label;
+            var lbl:TextSprite = d.props.label;
                 
-                if (lbl != null && lbl.visible && lbl.alpha > 0) {
-                    var text:String = lbl.text;
-                    var lblSize:int = Math.round(lbl.size*_scale);
-                    
-                    if (text == null || text === "" || lblSize < 1) continue;
+            if (lbl != null && lbl.visible && lbl.alpha > 0) {
+                var text:String = lbl.text;
+                var lblSize:int = Math.round(lbl.size*_scale);
+                
+                if (text != null && text !== "" && lblSize >= 1) {
                     var field:TextField = lbl.textField;
                     var lines:Array = text.split("\r");
                     
@@ -406,7 +413,7 @@ package org.cytoscapeweb.model.converters {
                         p.y += textHeight;
                         p.y -= (textHeight * lines.length/2);
                     }
-
+    
                     var style:String = lbl.bold ?
                                        (lbl.italic ? Style.BOLD_ITALIC : Style.BOLD) :
                                        (lbl.italic ? Style.ITALIC : Style.NORMAL);
@@ -544,21 +551,6 @@ package org.cytoscapeweb.model.converters {
                         break;
                 }
             }
-        }
-        
-         private function sortByZOrder(list:DataList):Array {
-            var arr:Array = new Array();
-            
-            for each (var sp:DataSprite in list) arr.push(sp);
-            
-            arr.sort(function(a:DataSprite, b:DataSprite):int {
-                var z1:int = a.parent.getChildIndex(a);
-                var z2:int = b.parent.getChildIndex(b);
-                
-                return z1 < z2 ? -1 : (z1 > z2 ? 1 : 0);
-            });
-            
-            return arr;
         }
         
         /**

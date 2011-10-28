@@ -38,6 +38,7 @@ package org.cytoscapeweb.util {
     
     import flash.display.DisplayObject;
     import flash.display.DisplayObjectContainer;
+    import flash.display.Sprite;
     import flash.geom.Point;
     import flash.geom.Rectangle;
     import flash.text.TextField;
@@ -433,6 +434,19 @@ package org.cytoscapeweb.util {
             }
             
             return new Rectangle(0, 0, side, side);
+        }
+        
+        public static function sortByZOrder(sprites:Array):Array {
+            var sorted:Array = sprites.concat();
+            
+            sorted.sort(function(a:Sprite, b:Sprite):int {
+                var z1:int = a.parent.getChildIndex(a);
+                var z2:int = b.parent.getChildIndex(b);
+                
+                return z1 < z2 ? -1 : (z1 > z2 ? 1 : 0);
+            });
+            
+            return sorted;
         }
     }
 }

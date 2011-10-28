@@ -29,8 +29,6 @@
 */
 package org.cytoscapeweb.model.converters { 
     import flare.display.TextSprite;
-    import flare.vis.data.Data;
-    import flare.vis.data.DataList;
     import flare.vis.data.DataSprite;
     import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
@@ -54,6 +52,7 @@ package org.cytoscapeweb.model.converters {
     import org.cytoscapeweb.util.Anchors;
     import org.cytoscapeweb.util.ArrowShapes;
     import org.cytoscapeweb.util.Fonts;
+    import org.cytoscapeweb.util.GraphUtils;
     import org.cytoscapeweb.util.Images;
     import org.cytoscapeweb.util.LineStyles;
     import org.cytoscapeweb.util.NodeShapes;
@@ -99,19 +98,22 @@ package org.cytoscapeweb.model.converters {
         // ========[ PUBLIC METHODS ]===============================================================
 
         /**
-         * @param graphData
+         * @param nodes
+         * @param edges Regular or merged edges
          * @param scale The zooming scale applied to the graph.
          * @param showLabels Whether or not labels will be included. 
          * @param width The desired image width in pixels.
          * @param height The desired image height in pixels.
          */
-        public function export(graphData:Data,
+        public function export(nodes:Array,
+                               edges:Array,
                                style:VisualStyleVO,
                                config:ConfigVO,
                                scale:Number=1, 
                                width:Number=0, height:Number=0):String {
             _style = style;
             _scale = scale;
+            var ds:DataSprite;
             var bounds:Rectangle = _graphView.getRealBounds();
             
             // Width and height depends on the current zooming and
@@ -149,10 +151,26 @@ package org.cytoscapeweb.model.converters {
             _shiftY = sp.y - margin;
             
             // Draw edges and nodes:
-            svg += drawNodes(graphData.nodes);
-            if (config.nodeLabelsVisible) svg += drawLabels(graphData.nodes);
-            svg += drawEdges(graphData.edges);
-            if (config.edgeLabelsVisible) svg += drawLabels(graphData.edges);
+            if (nodes != null && nodes.length > 0) {
+                var elements:Array = nodes.concat(edges);
+                // Sort elements by their z-order,
+                // so overlapping nodes/edges will have the same position in the generated image:
+                elements = GraphUtils.sortByZOrder(elements);
+                
+                for each (ds in elements) {
+                    if (ds is NodeSprite)
+                        svg += drawNode(ds as NodeSprite);
+                    else
+                        svg += drawEdge(ds as EdgeSprite, config.edgeLabelsVisible);
+                }
+                
+                // Node labels always on top:
+                if (config.nodeLabelsVisible) {
+                    for each (ds in elements) {
+                        if (ds is NodeSprite) svg += drawLabel(ds);
+                    }
+                }
+            }
     
             // Close the root element:
             svg += '</svg>';
@@ -162,14 +180,12 @@ package org.cytoscapeweb.model.converters {
         
         // ========[ PRIVATE METHODS ]==============================================================
         
-        private function drawEdges(edges:DataList):String {
+        private function drawEdge(e:EdgeSprite, labelVisible:Boolean):String {
             var svg:String = '';
-            var c:String, a:Number;
-            var sortedEdges:Array = sortByZOrder(edges);
             
-            for each (var e:EdgeSprite in sortedEdges) {
-                if (!e.visible || e.lineAlpha === 0 || e.lineWidth === 0) continue;
-                
+            if (e.visible && e.lineAlpha > 0 && e.lineWidth > 0) {
+                var c:String, a:Number;
+                    
                 // Edge points:
                 var start:Point, end:Point, c1:Point, c2:Point;
                 if (e.props.$points != null) {
@@ -271,25 +287,23 @@ package org.cytoscapeweb.model.converters {
                     
                     // Close edge group:
                     svg += '</g>';
+                    
+                    // Edge label:
+                    if (labelVisible) svg += drawLabel(e);
                 }
             }
             
             return svg;
         }
         
-        private function drawNodes(nodes:DataList):String {
+        private function drawNode(n:NodeSprite):String {
             var svg:String = '';
             
-            // First, sort nodes by their z-order,
-            // so overlapping nodes will have the same position in the generated image:
-            var sortedNodes:Array = sortByZOrder(nodes);
-            var c:String, lc:String, a:Number, lw:Number;
-            var w:Number, h:Number;
-            var nodeSvgShape:String;
-            var img:BitmapData;
-            
-            for each (var n:NodeSprite in sortedNodes) {
-                if (!n.visible || n.alpha === 0) continue;
+            if (n.visible && n.alpha > 0) {
+                var c:String, lc:String, a:Number, lw:Number;
+                var w:Number, h:Number;
+                var nodeSvgShape:String;
+                var img:BitmapData;
                 
                 // Get the Global node point (relative to the stage):
                 var np:Point = toImagePoint(new Point(n.x, n.y), n);
@@ -359,21 +373,18 @@ package org.cytoscapeweb.model.converters {
             return svg;
         }
         
-        private function drawLabels(data:DataList):String {
+        private function drawLabel(ds:DataSprite):String {
             var svg:String = '';
-            
-            for each (var d:DataSprite in data) {
-                var lbl:TextSprite = d.props.label;
+            var lbl:TextSprite = ds.props.label;
                 
-                if (lbl != null && lbl.visible && lbl.alpha > 0) {
-                    var text:String = lbl.text;
-                    var lblSize:int = Math.round(lbl.size*_scale);
-                    
-                    if (text == null || text === "" || lblSize < 1) continue;
-                    
+            if (lbl != null && lbl.visible && lbl.alpha > 0) {
+                var text:String = lbl.text;
+                var lblSize:int = Math.round(lbl.size*_scale);
+                
+                if (text != null && text != "" && lblSize >= 1) {
                     var field:TextField = lbl.textField;
                     var lines:Array = text.split("\r");
-
+    
                     // ATTENTION!!!
                     // It seems that Flash does not convert points to pixels correctly. 
                     // See: - http://alarmingdevelopment.org/?p=66
@@ -382,21 +393,21 @@ package org.cytoscapeweb.model.converters {
                     var textHeight:Number = lbl.size * 0.72 * _scale;
                     textHeight *= 1.25; // vertical spacing between lines
                     var textWidth:Number = field.textWidth * _scale;
-
+    
                     // Get the Global label point (relative to the stage):
                     var p:Point = toImagePoint(new Point(lbl.x, lbl.y), lbl);
                     var hAnchor:String = Anchors.CENTER;
                     var vAnchor:String = Anchors.MIDDLE;
                     
-                    if (d is CompoundNodeSprite
-                        && (d as CompoundNodeSprite).isInitialized()) {
-                        hAnchor = _style.getValue(VisualProperties.C_NODE_LABEL_HANCHOR, d.data);
-                        vAnchor = _style.getValue(VisualProperties.C_NODE_LABEL_VANCHOR, d.data);
-                    } else if (d is NodeSprite) {
-                        hAnchor = _style.getValue(VisualProperties.NODE_LABEL_HANCHOR, d.data);
-                        vAnchor = _style.getValue(VisualProperties.NODE_LABEL_VANCHOR, d.data);
+                    if (ds is CompoundNodeSprite
+                        && (ds as CompoundNodeSprite).isInitialized()) {
+                        hAnchor = _style.getValue(VisualProperties.C_NODE_LABEL_HANCHOR, ds.data);
+                        vAnchor = _style.getValue(VisualProperties.C_NODE_LABEL_VANCHOR, ds.data);
+                    } else if (ds is NodeSprite) {
+                        hAnchor = _style.getValue(VisualProperties.NODE_LABEL_HANCHOR, ds.data);
+                        vAnchor = _style.getValue(VisualProperties.NODE_LABEL_VANCHOR, ds.data);
                     }
-
+    
                     var hpad:Number = 2 * _scale;
                     switch (hAnchor) {
                         case Anchors.LEFT:   p.x += hpad; break;
@@ -420,7 +431,7 @@ package org.cytoscapeweb.model.converters {
                             p.y -= ( (textHeight * lines.length) + vpad );
                             break;
                     }
-
+    
                     var style:String = lbl.italic ? 'italic': 'normal';
                     var weight:String = lbl.bold ? 'bold' : 'normal';
                     
@@ -431,9 +442,9 @@ package org.cytoscapeweb.model.converters {
                     else if (family == Fonts.TYPEWRITER) family = 'courier';
                     
                     var c:String = Utils.rgbColorAsString(lbl.color);
-                    var a:Number = d.alpha;
+                    var a:Number = ds.alpha;
                     var ta:String = getTextAnchor(lbl);
-
+    
                     svg += '<text font-family="'+family+'" font-style="'+style+'" font-weight="'+weight+'" stroke="none" fill="'+c+'"' +
                                 ' fill-opacity="'+a+'" font-size="'+lblSize+'" x="'+p.x+'" y="'+p.y+'" style="text-anchor:'+ta+';">';
                     
@@ -574,21 +585,6 @@ package org.cytoscapeweb.model.converters {
             }
             
             return svg;
-        }
-        
-         private function sortByZOrder(list:DataList):Array {
-            var arr:Array = new Array();
-            
-            for each (var sp:DataSprite in list) arr.push(sp);
-            
-            arr.sort(function(a:DataSprite, b:DataSprite):int {
-                var z1:int = a.parent.getChildIndex(a);
-                var z2:int = b.parent.getChildIndex(b);
-                
-                return z1 < z2 ? -1 : (z1 > z2 ? 1 : 0);
-            });
-            
-            return arr;
         }
         
         /**

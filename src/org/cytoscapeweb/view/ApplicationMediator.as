@@ -247,23 +247,28 @@ package org.cytoscapeweb.view {
 
                 var encoder:PNGEncoder = new PNGEncoder();
                 image = encoder.encode(source);
-            } else if (type === "svg") {
-                var svgConv:SVGExporter = new SVGExporter(graphView);
-                image = svgConv.export(graphProxy.graphData,
-                                       configProxy.visualStyle,
-                                       configProxy.config,
-                                       graphProxy.zoom,
-                                       width,
-                                       height);
             } else {
-                // PDF:
-                var pdfExp:PDFExporter = new PDFExporter(graphView);
-                image = pdfExp.export(graphProxy.graphData,
-                                      configProxy.visualStyle,
-                                      configProxy.config,
-                                      graphProxy.zoom,
-                                      width,
-                                      height);
+                var edges:Array = configProxy.edgesMerged ? graphProxy.mergedEdges 
+                                                          : graphProxy.edges;
+                if (type === "pdf") {
+                    var pdfExp:PDFExporter = new PDFExporter(graphView);
+                    image = pdfExp.export(graphProxy.nodes,
+                                          edges,
+                                          configProxy.visualStyle,
+                                          configProxy.config,
+                                          graphProxy.zoom,
+                                          width,
+                                          height);
+                } else {
+                    var svgConv:SVGExporter = new SVGExporter(graphView);
+                    image = svgConv.export(graphProxy.nodes,
+                                           edges,
+                                           configProxy.visualStyle,
+                                           configProxy.config,
+                                           graphProxy.zoom,
+                                           width,
+                                           height);
+                }
             }
             
             // Set previous scale:
