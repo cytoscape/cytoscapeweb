@@ -380,6 +380,7 @@ package org.cytoscapeweb.model.converters {
             if (lbl != null && lbl.visible && lbl.alpha > 0) {
                 var text:String = lbl.text;
                 var lblSize:int = Math.round(lbl.size*_scale);
+                var filter:Object, gf:GlowFilter;
                 
                 if (text != null && text != "" && lblSize >= 1) {
                     var field:TextField = lbl.textField;
@@ -444,20 +445,46 @@ package org.cytoscapeweb.model.converters {
                     var c:String = Utils.rgbColorAsString(lbl.color);
                     var a:Number = ds.alpha;
                     var ta:String = getTextAnchor(lbl);
-    
-                    svg += '<text font-family="'+family+'" font-style="'+style+'" font-weight="'+weight+'" stroke="none" fill="'+c+'"' +
-                                ' fill-opacity="'+a+'" font-size="'+lblSize+'" x="'+p.x+'" y="'+p.y+'" style="text-anchor:'+ta+';">';
                     
-                    if (lines.length > 0) {
-                        for (var i:int = 0; i < lines.length; i++) {
-                            var ln:String = lines[i];
-                            svg += '<tspan style="text-anchor:'+ta+';" x="'+p.x+'" dy="'+textHeight+'">'+ln+'</tspan>';
+                    // Glow filter:
+                    var sc:String = "none", so:Number = 0, sw:Number = 0;
+                    var filters:Array = lbl.filters;
+                    
+                    if (filters != null) {
+                        for each (filter in filters) {
+                            if (filter is GlowFilter) {
+                                gf = filter as GlowFilter;
+                                so = gf.alpha;
+                                
+                                if (so > 0) {
+                                    sc = Utils.rgbColorAsString(gf.color);
+                                    sw = Math.max(0.1, gf.blurX);
+                                    
+                                    drawText(so);
+                                }
+                            }
                         }
-                    } else {
-                        svg += text;
                     }
                     
-                    svg += '</text>';
+                    // TODO: use filters instead, when Safari and IE supports it
+                    drawText(0);
+    
+                    function drawText(so:Number):void {                
+                        svg += '<text font-family="'+family+'" font-style="'+style+'" font-weight="'+weight+'"' +
+                                    ' stroke="'+sc+'" stroke-width="'+sw+'" stroke-opacity="'+so+'" stroke-linejoin="round" fill="'+c+'"' +
+                                    ' fill-opacity="'+a+'" font-size="'+lblSize+'" x="'+p.x+'" y="'+p.y+'" style="text-anchor:'+ta+';">';
+                        
+                        if (lines.length > 0) {
+                            for (var i:int = 0; i < lines.length; i++) {
+                                var ln:String = lines[i];
+                                svg += '<tspan style="text-anchor:'+ta+';" x="'+p.x+'" dy="'+textHeight+'">'+ln+'</tspan>';
+                            }
+                        } else {
+                            svg += text;
+                        }
+                    
+                        svg += '</text>';
+                    }
                 }
             }
             
