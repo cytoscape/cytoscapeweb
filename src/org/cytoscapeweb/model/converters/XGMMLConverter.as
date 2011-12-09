@@ -651,7 +651,7 @@ package org.cytoscapeweb.model.converters {
                         name !== WEIGHT) { // Cytoscape won't parse regular weight attributes...
                         // add as attribute
                         x.@[name] = toString(data[name], field.type);
-                    } else {
+                    } else if (! (tagName === NODE && name === DataSchemaUtils.PARENT) ) {
                         if (data[name] != null) {
                             addAtt(x, name, schema, data[name]);
                         }

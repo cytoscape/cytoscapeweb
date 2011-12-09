@@ -43,6 +43,7 @@ package org.cytoscapeweb.model.converters {
     
     import org.cytoscapeweb.model.data.GraphicsDataTable;
     import org.cytoscapeweb.util.DataSchemaUtils;
+    import org.cytoscapeweb.util.Groups;
     import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.methods.$each;
     import org.cytoscapeweb.vis.data.CompoundNodeSprite;
@@ -208,9 +209,9 @@ package org.cytoscapeweb.model.converters {
                     }
                 }
                 
-                if (group === NODE || group === ALL)
+                if ( (group === NODE || group === ALL) && nodeSchema.getFieldById(id) == null )
                     nodeSchema.addField(new DataField(attrName, type, def, id));
-                if (group === EDGE || group === ALL)
+                if ( (group === EDGE || group === ALL) && edgeSchema.getFieldById(id) == null )
                     edgeSchema.addField(new DataField(attrName, type, def, id));
             }
             
@@ -341,6 +342,7 @@ package org.cytoscapeweb.model.converters {
             for (var i:int = 0; i < schema.numFields; ++i) {
                 field = schema.getFieldAt(i);
                 if (attrs.hasOwnProperty(field.name)) continue;
+                if (group === Groups.NODES && field.name === DataSchemaUtils.PARENT) continue;
                 
                 var key:XML = new XML(<key/>);
                 key.@[ID] = field.id;
@@ -392,6 +394,8 @@ package org.cytoscapeweb.model.converters {
                 var x:XML = new XML("<"+tag+"/>");
                 
                 for (var name:String in tuple) {
+                	if (tag === NODE && name === DataSchemaUtils.PARENT) continue;
+                	
                     var value:* = tuple[name];
                     var field:DataField = schema.getFieldByName(name);
                     if (field != null && value == field.defaultValue) continue;
