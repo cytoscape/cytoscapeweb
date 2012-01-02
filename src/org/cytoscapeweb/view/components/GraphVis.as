@@ -28,6 +28,7 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 package org.cytoscapeweb.view.components {
+    import com.gskinner.utils.Rndm;
     import com.senocular.drawing.DashedLine;
     
     import flare.animate.Sequence;
@@ -291,14 +292,17 @@ package org.cytoscapeweb.view.components {
                 _appliedLayouts.push(layout);
             } else {
                 if (_layoutName === Layouts.FORCE_DIRECTED) {
+                    // Is there a seed?
+                    var seed:* = layoutObj.options.seed;
+                    var rndm:* = (seed is Number && uint(seed) > 0) ? new Rndm(uint(seed)) : Math;
                     // If the previous layout is ForceDirected, we need to set the nodes' particles and
                     // the edges' springs to null, otherwise the layout may not render very well
                     // when it is applied again.
                     data.nodes.visit(function(n:NodeSprite):void {
                         n.props.particle = null;
                         // It is also important to set random positions to nodes:
-                        n.x = Math.random() * _initialWidth;
-                        n.y = Math.random() * _initialHeight;
+                        n.x = rndm.random() * _initialWidth;
+                        n.y = rndm.random() * _initialHeight;
                     });
                     data.edges.visit(function(e:EdgeSprite):void {
                        e.props.spring = null;

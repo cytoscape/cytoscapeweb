@@ -73,6 +73,7 @@ package org.cytoscapeweb.util {
                 mass:        3,
                 tension:     0.1,
                 restLength:  "auto",
+                seed:        undefined, // optional integer
                 weightAttr:  null,
                 weightNorm:  ForceDirectedLayout.NORMALIZED_WEIGHT,
                 minWeight:   undefined,
