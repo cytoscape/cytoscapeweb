@@ -52,6 +52,7 @@ package org.cytoscapeweb.view.components {
     import org.cytoscapeweb.util.CompoundNodes;
     import org.cytoscapeweb.util.Edges;
     import org.cytoscapeweb.util.GraphUtils;
+    import org.cytoscapeweb.util.Groups;
     import org.cytoscapeweb.util.Layouts;
     import org.cytoscapeweb.util.Nodes;
     import org.cytoscapeweb.util.Utils;
@@ -419,9 +420,26 @@ package org.cytoscapeweb.view.components {
         /**
          * Zoom the "camera" by the specified scale factor.
          */
-        private function zoomBy(scale:Number):void { trace("-> Zoom by: " + scale);            
+        private function zoomBy(scale:Number):void {
             if (scale > 0) {
+                var prevScale:Number = vis.scaleX;
                 Displays.zoomBy(vis, scale, stage.stageWidth/2, stage.stageHeight/2);
+                
+                // Update node labels and compound bounds when zooming in, because there is a
+                // precision problem if the labeler runs when the scale is near zero,
+                // which causes misaligned labels later.
+                if (prevScale < 0.5) {
+                    if (_config.nodeLabelsVisible) {
+                        if (vis.nodeLabeler.enabled) {
+                            vis.nodeLabeler.operate();
+                        }
+                        if (vis.compoundNodeLabeler.enabled) {
+                            vis.compoundNodeLabeler.operate();
+                            vis.updateAllCompoundBounds();
+                        }
+                    }
+                }
+                
                 // Let others know about the new scale:
                 dispatchEvent(new GraphViewEvent(GraphViewEvent.SCALE_CHANGE, vis.scaleX));
             }

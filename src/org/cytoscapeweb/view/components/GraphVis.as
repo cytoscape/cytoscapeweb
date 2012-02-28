@@ -124,7 +124,6 @@ package org.cytoscapeweb.view.components {
         public function get compoundNodeLabeler():Labeler {
             if (_compoundNodeLabeler == null) {
                 _compoundNodeLabeler = new Labeler(null, Groups.COMPOUND_NODES);
-                //_compoundNodeLabeler = new Labeler(null, Data.NODES);
             }
             return _compoundNodeLabeler;
         }
@@ -369,7 +368,7 @@ package org.cytoscapeweb.view.components {
             return seq;
         }
         
-        public function updateLabels(group:String=null):void {
+        internal function updateLabels(group:String=null):void {
             if (group == null) {
                 updateLabels(Groups.NODES);
                 updateLabels(Groups.COMPOUND_NODES);
@@ -439,15 +438,20 @@ package org.cytoscapeweb.view.components {
             
             // It's necessary to operate labeler first, so each label's text sprite is well placed!
             if (_config.nodeLabelsVisible) {
-                nodeLabeler.operate();
-                compoundNodeLabeler.operate();
+                if (nodeLabeler.enabled)
+                    nodeLabeler.operate();
+                if (compoundNodeLabeler.enabled)
+                    compoundNodeLabeler.operate();
             }
 
             // Then render edges and operate their labels:
             $each(d.edges, function(i:uint, e:EdgeSprite):void {
                  e.render();
             });
-            if (_config.edgeLabelsVisible) edgeLabeler.operate();
+            
+            if (_config.edgeLabelsVisible && edgeLabeler.enabled) {
+                edgeLabeler.operate();
+            }
 
             var bounds:Rectangle = GraphUtils.getBounds(d.nodes,
                                                         d.edges,
@@ -737,7 +741,6 @@ package org.cytoscapeweb.view.components {
                 }
             }
             
-//            this.compoundNodeLabeler.update(cns);
             this.updateCompoundBounds(cns);
             cns.render();
         }

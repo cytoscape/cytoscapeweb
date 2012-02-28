@@ -145,6 +145,8 @@ package org.cytoscapeweb.view.render {
         /** @inheritDoc */
         protected override function process(d:DataSprite):void {
             var label:TextSprite = getLabel(d, true);
+            if (label == null) return;
+            
             label.filters = filters(d);
             label.alpha = d.alpha;
             

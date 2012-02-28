@@ -249,9 +249,9 @@ package org.cytoscapeweb.view {
             vis.data.nodes.setProperties(Nodes.properties);
             vis.data.edges.setProperties(Edges.properties);
             vis.data.group(Groups.COMPOUND_NODES).setProperties(CompoundNodes.properties);
-            vis.updateLabels(Groups.NODES);
-            vis.updateLabels(Groups.COMPOUND_NODES);
-            vis.updateLabels(Groups.EDGES);
+            graphView.updateLabels(Groups.NODES);
+            graphView.updateLabels(Groups.COMPOUND_NODES);
+            graphView.updateLabels(Groups.EDGES);
             separateDisconnected();
         }
         
@@ -266,8 +266,8 @@ package org.cytoscapeweb.view {
                         n.visible = Nodes.visible(n);
                     }
                 }
-                vis.updateLabels(Groups.NODES);
-                vis.updateLabels(Groups.COMPOUND_NODES);
+                graphView.updateLabels(Groups.NODES);
+                graphView.updateLabels(Groups.COMPOUND_NODES);
             }
             // When filtering nodes, it may be necessary to show/hide related edges as well:
             if (updateNodes || updateEdges) {
@@ -281,7 +281,7 @@ package org.cytoscapeweb.view {
                         e.visible = Edges.visible(e);
                     }
                 }
-                vis.updateLabels(Groups.EDGES);
+                graphView.updateLabels(Groups.EDGES);
             }
             separateDisconnected();
             
@@ -307,7 +307,7 @@ package org.cytoscapeweb.view {
         public function initialize(gr:String, items:Array):void {
             addListeners(items);
             updateDataSprites(gr, items);
-            vis.updateLabels(gr);
+            graphView.updateLabels(gr);
         }
         
         public function separateDisconnected():void {
