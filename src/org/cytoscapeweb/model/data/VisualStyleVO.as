@@ -47,7 +47,8 @@ package org.cytoscapeweb.model.data {
               global: {
                     backgroundColor: "#ffffff",
                     tooltipDelay: 800,
-                    selectionLineColor: "#8888ff",
+					ignoreLabelsInCompounds: false,
+					selectionLineColor: "#8888ff",
                     selectionLineOpacity: 0.8,
                     selectionLineWidth: 1,
                     selectionFillColor: "#8888ff",

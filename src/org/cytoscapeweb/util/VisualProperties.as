@@ -43,6 +43,7 @@ package org.cytoscapeweb.util {
         //------------------------------
         public static const BACKGROUND_COLOR:String = "global.backgroundColor";
         public static const TOOLTIP_DELAY:String = "global.tooltipDelay";
+		public static const IGNORE_LABELS_FOR_COMPOUND_BOUNDS:String = "global.ignoreLabelsForCompoundBounds";
         
         // Selection Rectangle:
         public static const SELECTION_LINE_COLOR:String = "global.selectionLineColor";

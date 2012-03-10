@@ -519,8 +519,28 @@ package org.cytoscapeweb.view.components {
                     children.addNode(ns);
                 }
                 
-                // calculate&update bounds of the compound node 
-                bounds = this.getRealBounds(children);
+                // calculate&update bounds of the compound node
+				if (_style.getValue(VisualProperties.IGNORE_LABELS_FOR_COMPOUND_BOUNDS))
+				{
+					bounds = GraphUtils.getBounds(children.nodes,
+						null,
+						true,
+						true);
+					
+					if (_config.nodeLabelsVisible)
+					{
+						if (nodeLabeler.enabled)
+							nodeLabeler.operate();
+						
+						//	if (compoundNodeLabeler.enabled)
+						//		compoundNodeLabeler.operate();
+					}
+				}
+				else
+				{
+					bounds = this.getRealBounds(children);
+				}
+                
                 cns.updateBounds(bounds);
             }
         }

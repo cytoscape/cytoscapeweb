@@ -29,12 +29,20 @@
 */
 package org.cytoscapeweb.view.layout
 {
+	import flare.vis.data.Data;
 	import flare.vis.data.EdgeSprite;
 	import flare.vis.data.NodeSprite;
 	import flare.vis.operator.layout.Layout;
 	
+	import flash.geom.Rectangle;
+	
+	import org.cytoscapeweb.ApplicationFacade;
+	import org.cytoscapeweb.model.ConfigProxy;
+	import org.cytoscapeweb.model.data.VisualStyleVO;
 	import org.cytoscapeweb.util.GraphUtils;
 	import org.cytoscapeweb.util.Groups;
+	import org.cytoscapeweb.util.VisualProperties;
+	import org.cytoscapeweb.view.components.GraphVis;
 	import org.cytoscapeweb.view.layout.ivis.layout.CoSEOptions;
 	import org.cytoscapeweb.view.layout.ivis.layout.GeneralOptions;
 	import org.cytoscapeweb.view.layout.ivis.layout.LEdge;
@@ -296,8 +304,33 @@ package org.cytoscapeweb.view.layout
 			}
 			else
 			{
-				lNode.setWidth(node.width);
-				lNode.setHeight(node.height);
+				var configProxy:ConfigProxy = ApplicationFacade.getInstance().
+					retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
+				
+				var style:VisualStyleVO = configProxy.config.visualStyle;
+				
+				var ignore:Boolean =
+					style.getValue(VisualProperties.IGNORE_LABELS_FOR_COMPOUND_BOUNDS);
+				
+				if(ignore)
+				{
+					lNode.setWidth(node.width);
+					lNode.setHeight(node.height);
+				}
+				else
+				{
+					var data:Data = new Data();
+					data.addNode(node);
+					
+					var bounds:Rectangle = 
+						(visualization as GraphVis).getRealBounds(data);
+					
+					var width:Number = bounds.width;
+					var height:Number = bounds.height;
+					
+					lNode.setWidth(width);
+					lNode.setHeight(height);
+				}
 			}
 		}
 		
