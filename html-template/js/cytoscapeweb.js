@@ -2025,7 +2025,6 @@
         },
         
         _parseJSON: function(s) {
-        	if (s != null) { s = s.replace(/\n/g, '\\n').replace(/\t/g, '\\t'); }
         	return JSON.parse(s);
         }
     };

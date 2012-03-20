@@ -34,7 +34,6 @@ package org.cytoscapeweb.view {
     import flare.data.DataSet;
     import flare.vis.data.DataList;
     import flare.vis.data.DataSprite;
-    import flare.vis.data.EdgeSprite;
     import flare.vis.data.NodeSprite;
     
     import flash.external.ExternalInterface;
@@ -127,8 +126,8 @@ package org.cytoscapeweb.view {
                 var desigFunction:String;
                 
                 if (json && argument != null) {
-                    argument = JSON.encode(argument);
-                    // Call a proxy function instead, sending the name of the designated function.
+                    argument = encode(argument);
+                    // Call a proxy function instead, sending the name of the designated function:
                     desigFunction = functionName;
                     functionName = ExternalFunctions.DISPATCH;
                 }
@@ -288,19 +287,19 @@ package org.cytoscapeweb.view {
                 }
             }
             
-            return JSON.encode(obj);
+            return encode(obj);
         }
 
         private function getNodeById(id:String):String {
             var obj:Object = ExternalObjectConverter.toExtElement(graphProxy.getNode(id),
                                                                   graphProxy.zoom);
-            return JSON.encode(obj);
+            return encode(obj);
         }
         
         private function getEdgeById(id:String):String {
             var obj:Object = ExternalObjectConverter.toExtElement(graphProxy.getEdge(id),
                                                                   graphProxy.zoom);
-            return JSON.encode(obj);
+            return encode(obj);
         }
         
         private function getNodes(topLevelOnly:Boolean=false):String {
@@ -317,7 +316,7 @@ package org.cytoscapeweb.view {
             }
             
             arr = ExternalObjectConverter.toExtElementsArray(arr, graphProxy.zoom);
-            return JSON.encode(arr);
+            return encode(arr);
         }
         
         private function getChildNodes(parentId:String):String {
@@ -329,38 +328,38 @@ package org.cytoscapeweb.view {
             if (nodes != null)
                 arr = ExternalObjectConverter.toExtElementsArray(nodes, graphProxy.zoom);
             
-            return JSON.encode(arr);
+            return encode(arr);
         }
         
         private function getParentNodes():String {
             var nodes:DataList = graphProxy.graphData.group(Groups.COMPOUND_NODES);
             var list:* = nodes != null ? nodes : [];
             list = ExternalObjectConverter.toExtElementsArray(list, graphProxy.zoom);
-            return JSON.encode(list);
+            return encode(list);
         }
         
         private function getEdges():String {
             var edges:Array = graphProxy.edges;
             var arr:Array = ExternalObjectConverter.toExtElementsArray(edges, graphProxy.zoom);
-            return JSON.encode(arr);
+            return encode(arr);
         }
         
         private function getMergedEdges():String {
             var edges:Array = graphProxy.mergedEdges;
             var arr:Array = ExternalObjectConverter.toExtElementsArray(edges, graphProxy.zoom);
-            return JSON.encode(arr);
+            return encode(arr);
         }
         
         private function getSelectedNodes():String {
             var arr:Array = ExternalObjectConverter.toExtElementsArray(graphProxy.selectedNodes,
                                                                        graphProxy.zoom);
-            return JSON.encode(arr);
+            return encode(arr);
         }
         
         private function getSelectedEdges():String {
             var arr:Array = ExternalObjectConverter.toExtElementsArray(graphProxy.selectedEdges,
                                                                        graphProxy.zoom);
-            return JSON.encode(arr);
+            return encode(arr);
         }
         
         private function getLayout():Object {
@@ -390,7 +389,7 @@ package org.cytoscapeweb.view {
         
         private function getVisualStyleBypass():String {
             var obj:Object = configProxy.visualStyleBypass.toObject();
-            return JSON.encode(obj);
+            return encode(obj);
         }
         
         private function addElements(items:Array, updateVisualMappers:Boolean=false):String {
@@ -486,7 +485,7 @@ package org.cytoscapeweb.view {
                 error(err);
             }
             
-            return JSON.encode(ret);
+            return encode(ret);
         }
         
         private function addNode(x:Number,
@@ -533,7 +532,7 @@ package org.cytoscapeweb.view {
                 error(err);
             }
             
-            return JSON.encode(extObj);
+            return encode(extObj);
         }
         
         private function addEdge(data:Object, updateVisualMappers:Boolean=false):String {
@@ -553,7 +552,7 @@ package org.cytoscapeweb.view {
                 error(err);
             }
             
-            return JSON.encode(o);
+            return encode(o);
         }
         
         private function removeElements(group:String=Groups.NONE,
@@ -565,7 +564,7 @@ package org.cytoscapeweb.view {
         
         private function getDataSchema():String {
             var obj:Object = ExternalObjectConverter.toExtSchema(graphProxy.nodesSchema, graphProxy.edgesSchema);
-            return JSON.encode(obj);
+            return encode(obj);
         }
         
         private function addDataField(group:String, dataField:Object):void {
@@ -592,7 +591,7 @@ package org.cytoscapeweb.view {
             
             var model:Object = ExternalObjectConverter.toExtNetworkModel(ds);
             
-            return JSON.encode(model);
+            return encode(model);
         }
         
         private function getNetworkAsText(format:String="xgmml", options:Object=null):String {
@@ -664,6 +663,18 @@ package org.cytoscapeweb.view {
                 // TODO: decide what to do with this:
                 sendNotification(ApplicationFacade.ADD_CALLBACK_ERROR, err);
             }
+        }
+        
+        private function encode(obj:*):String {
+            var s:String = null;
+            
+            if (obj != null) {
+                s = JSON.encode(obj);
+                // Replace single slashes by double ones, or it wont be sent to JavaScript
+                s = s.replace(/\\/g, "\\\\");
+            }
+            
+            return s;
         }
     }
 }
