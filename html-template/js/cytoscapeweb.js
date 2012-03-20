@@ -2824,7 +2824,9 @@
      *     <li><code>tooltipFontSize</code> {Number}: The point size of node tool tips. The default value is 11.</li>
      *     <li><code>tooltipFontColor</code> {String}: Font color of node tool tips. The default value is "#000000".</li>
      *     <li><code>tooltipBackgroundColor</code> {String}: Background color of node tool tips. The default value is "#f5f5cc".</li>
-     *     <li><code>tooltipBorderColor</code> {String}: Border color of node tool tips. The default value is "#000000".</li></ul>
+     *     <li><code>tooltipBorderColor</code> {String}: Border color of node tool tips. The default value is "#000000".</li>
+     *     <li><code>compoundChildLabelEnclosure</code> {Boolean}: Whether or not compound nodes should enclose child node/edge labels. 
+     *                                                             The default value is <code>true</code>, meaning compound nodes are sized to fit their child labels inside.</li></ul>
      * @property
      * @name nodes
      * @type Object

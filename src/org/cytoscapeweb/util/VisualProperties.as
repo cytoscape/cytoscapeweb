@@ -43,7 +43,6 @@ package org.cytoscapeweb.util {
         //------------------------------
         public static const BACKGROUND_COLOR:String = "global.backgroundColor";
         public static const TOOLTIP_DELAY:String = "global.tooltipDelay";
-		public static const IGNORE_LABELS_FOR_COMPOUND_BOUNDS:String = "global.ignoreLabelsForCompoundBounds";
         
         // Selection Rectangle:
         public static const SELECTION_LINE_COLOR:String = "global.selectionLineColor";
@@ -184,6 +183,8 @@ package org.cytoscapeweb.util {
         public static const C_NODE_HOVER_GLOW_ALPHA:String = "nodes.compoundHoverGlowOpacity";
         public static const C_NODE_HOVER_GLOW_BLUR:String = "nodes.compoundHoverGlowBlur";
         public static const C_NODE_HOVER_GLOW_STRENGTH:String = "nodes.compoundHoverGlowStrength";
+        
+        public static const C_NODE_CHILD_LABEL_ENCLOSURE:String = "nodes.compoundChildLabelEnclosure";
         
         // TODO rename and create colors, etc:
         public static const EDGE_TOOLTIP_TEXT_MERGE:String = "edges.mergeTooltipText";

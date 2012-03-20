@@ -252,6 +252,10 @@ package org.cytoscapeweb.view {
             graphView.updateLabels(Groups.NODES);
             graphView.updateLabels(Groups.COMPOUND_NODES);
             graphView.updateLabels(Groups.EDGES);
+            
+            if (configProxy.visualStyle.getValue(VisualProperties.C_NODE_CHILD_LABEL_ENCLOSURE))
+                vis.updateAllCompoundBounds();
+            
             separateDisconnected();
         }
         

@@ -308,28 +308,24 @@ package org.cytoscapeweb.view.layout
 					retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
 				
 				var style:VisualStyleVO = configProxy.config.visualStyle;
+				var encloseLabels:Boolean = style.getValue(VisualProperties.C_NODE_CHILD_LABEL_ENCLOSURE);
 				
-				var ignore:Boolean =
-					style.getValue(VisualProperties.IGNORE_LABELS_FOR_COMPOUND_BOUNDS);
-				
-				if(ignore)
-				{
-					lNode.setWidth(node.width);
-					lNode.setHeight(node.height);
-				}
-				else
+				if(encloseLabels)
 				{
 					var data:Data = new Data();
 					data.addNode(node);
 					
-					var bounds:Rectangle = 
-						(visualization as GraphVis).getRealBounds(data);
-					
+					var bounds:Rectangle =  (visualization as GraphVis).getRealBounds(data);
 					var width:Number = bounds.width;
 					var height:Number = bounds.height;
 					
 					lNode.setWidth(width);
 					lNode.setHeight(height);
+				}
+				else
+				{
+					lNode.setWidth(node.width);
+                    lNode.setHeight(node.height);
 				}
 			}
 		}

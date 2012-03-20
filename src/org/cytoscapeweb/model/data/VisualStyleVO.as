@@ -47,7 +47,6 @@ package org.cytoscapeweb.model.data {
               global: {
                     backgroundColor: "#ffffff",
                     tooltipDelay: 800,
-					ignoreLabelsInCompounds: false,
 					selectionLineColor: "#8888ff",
                     selectionLineOpacity: 0.8,
                     selectionLineWidth: 1,
@@ -129,7 +128,8 @@ package org.cytoscapeweb.model.data {
                     compoundHoverGlowColor: "#aae6ff",
                     compoundHoverGlowOpacity: 0,
                     compoundHoverGlowBlur: 8,
-                    compoundHoverGlowStrength: 6
+                    compoundHoverGlowStrength: 6,
+                    compoundChildLabelEnclosure: true
                 },
                 edges: {
                     color: "#999999",

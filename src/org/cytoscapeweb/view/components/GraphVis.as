@@ -520,25 +520,15 @@ package org.cytoscapeweb.view.components {
                 }
                 
                 // calculate&update bounds of the compound node
-				if (_style.getValue(VisualProperties.IGNORE_LABELS_FOR_COMPOUND_BOUNDS))
-				{
-					bounds = GraphUtils.getBounds(children.nodes,
-						null,
-						true,
-						true);
-					
-					if (_config.nodeLabelsVisible)
-					{
-						if (nodeLabeler.enabled)
-							nodeLabeler.operate();
-						
-						//	if (compoundNodeLabeler.enabled)
-						//		compoundNodeLabeler.operate();
-					}
-				}
-				else
-				{
+				if (_style.getValue(VisualProperties.C_NODE_CHILD_LABEL_ENCLOSURE)) {
 					bounds = this.getRealBounds(children);
+				} else {
+					bounds = GraphUtils.getBounds(children.nodes, null, true, true);
+                    
+                    if (_config.nodeLabelsVisible) {
+                        if (nodeLabeler.enabled)
+                            nodeLabeler.operate();
+                    }
 				}
                 
                 cns.updateBounds(bounds);
