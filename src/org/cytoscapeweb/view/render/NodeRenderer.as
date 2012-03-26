@@ -231,13 +231,25 @@ package org.cytoscapeweb.view.render {
                     var bd:BitmapData = _imgCache.getImage(url);
                     
                     if (bd != null) {
-                        var bmpSize:Number = Math.min(bd.height, bd.width);
-                        var scale:Number = Math.max(w, h)/bmpSize;
+                        // Rescale te image, if necessary
+                        var scale:Number = 1;
+                        var iw:Number = bd.width;
+                        var ih:Number = bd.height;
+                        var nodeEdge:Number = w;
+                        var imgEdge:Number = iw;
+                        
+                        if (h/w > ih/iw) {
+                            nodeEdge = h;
+                            imgEdge = ih;
+                        }
+                        
+                        scale = nodeEdge / imgEdge;
 
                         var m:Matrix = new Matrix();
                         m.scale(scale, scale);
                         m.translate(-(bd.width*scale)/2, -(bd.height*scale)/2);
                         
+                        // Draw the image as background
                         d.graphics.beginBitmapFill(bd, m, false, true);
                         drawShape(d, d.shape, new Rectangle(-w/2, -h/2, w, h));
                         d.graphics.endFill();
