@@ -41,6 +41,7 @@ package org.cytoscapeweb.view.layout
 	import org.cytoscapeweb.model.data.VisualStyleVO;
 	import org.cytoscapeweb.util.GraphUtils;
 	import org.cytoscapeweb.util.Groups;
+	import org.cytoscapeweb.util.SizePolicies;
 	import org.cytoscapeweb.util.VisualProperties;
 	import org.cytoscapeweb.view.components.GraphVis;
 	import org.cytoscapeweb.view.layout.ivis.layout.CoSEOptions;
@@ -308,7 +309,7 @@ package org.cytoscapeweb.view.layout
 					retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
 				
 				var style:VisualStyleVO = configProxy.config.visualStyle;
-				var encloseLabels:Boolean = style.getValue(VisualProperties.C_NODE_CHILD_LABEL_ENCLOSURE);
+				var encloseLabels:Boolean = style.getValue(VisualProperties.C_NODE_SIZE, node.data) == SizePolicies.AUTO;
 				
 				if(encloseLabels)
 				{

@@ -47,6 +47,7 @@ package org.cytoscapeweb.view.render {
     
     import org.cytoscapeweb.util.Groups;
     import org.cytoscapeweb.util.NodeShapes;
+    import org.cytoscapeweb.util.SizePolicies;
     import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.methods.$each;
     import org.cytoscapeweb.vis.data.CompoundNodeSprite;
@@ -241,7 +242,7 @@ package org.cytoscapeweb.view.render {
                 if      (label.verticalAnchor === TextSprite.TOP)     myYOffset += d.height/2;
                 else if (label.verticalAnchor === TextSprite.BOTTOM)  myYOffset -= d.height/2;
                 
-                if (d.props.autoSize) {
+                if (d.size == SizePolicies.AUTO) {
                     if (! (d is CompoundNodeSprite && (d as CompoundNodeSprite).nodesCount > 0)) {
                         d.render();
                         if (d.shape == NodeShapes.TRIANGLE) myYOffset += d.height/4;

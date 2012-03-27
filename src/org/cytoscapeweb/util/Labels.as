@@ -107,7 +107,7 @@ package org.cytoscapeweb.util {
         }
         
         public static function labelHAnchor(d:DataSprite):int {
-            if (d is NodeSprite && d.props.autoSize) {
+            if (d is NodeSprite && d.size == SizePolicies.AUTO) {
                 if (! (d is CompoundNodeSprite && (d as CompoundNodeSprite).nodesCount > 0))
                     return TextSprite.CENTER;
             }
@@ -115,7 +115,7 @@ package org.cytoscapeweb.util {
         }
         
         public static function labelVAnchor(d:DataSprite):int {
-           if (d is NodeSprite && d.props.autoSize) {
+           if (d is NodeSprite && d.size == SizePolicies.AUTO) {
                 if (! (d is CompoundNodeSprite && (d as CompoundNodeSprite).nodesCount > 0))
                     return TextSprite.MIDDLE;
             }

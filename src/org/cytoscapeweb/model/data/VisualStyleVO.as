@@ -97,7 +97,7 @@ package org.cytoscapeweb.model.data {
                     compoundPaddingTop: 10,
                     compoundPaddingBottom: 10,
                     compoundShape: NodeShapes.RECTANGLE,
-                    compoundSize: 48,
+                    compoundSize: "auto",
                     compoundColor: "#f5f5f5",
                     compoundOpacity: 0.8,
                     compoundBorderColor: "#666666",
@@ -128,8 +128,7 @@ package org.cytoscapeweb.model.data {
                     compoundHoverGlowColor: "#aae6ff",
                     compoundHoverGlowOpacity: 0,
                     compoundHoverGlowBlur: 8,
-                    compoundHoverGlowStrength: 6,
-                    compoundChildLabelEnclosure: true
+                    compoundHoverGlowStrength: 6
                 },
                 edges: {
                     color: "#999999",

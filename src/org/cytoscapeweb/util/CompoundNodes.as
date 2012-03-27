@@ -48,6 +48,9 @@ package org.cytoscapeweb.util {
         public static const SELECTED:String = "selected";
         public static const NON_SELECTED:String = "non-selected";
         
+        public static const AUTO_SIZE:Number = -1;
+        public static const AUTO_IGNORE_LABELS_SIZE:Number = -2;
+        
         private static var _properties:Object;
         private static var _configProxy:ConfigProxy;
         private static var _graphProxy:GraphProxy;
@@ -90,9 +93,6 @@ package org.cytoscapeweb.util {
             if (CompoundNodes._properties == null) {
                 CompoundNodes._properties = {
                         shape: CompoundNodes.shape,
-                        //"props.compoundWidth": Nodes.width,
-                        //"props.compoundHeight": Nodes.height,
-                        //"props.compoundAutoSize": Nodes.autoSize,
                         size: CompoundNodes.size,
                         paddingLeft: CompoundNodes.paddingLeft,
                         paddingRight: CompoundNodes.paddingRight,
@@ -135,6 +135,8 @@ package org.cytoscapeweb.util {
             // set size as double size of a simple node
             var size:Number = style.getValue(
                 VisualProperties.NODE_SIZE, n.data) * 2;
+                
+            if (size < 1) size = 48;
             
             return size / _properties.renderer.defaultSize;
         }

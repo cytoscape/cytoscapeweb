@@ -40,6 +40,7 @@ package org.cytoscapeweb.view.render {
     import flash.display.Sprite;
     import flash.geom.Matrix;
     import flash.geom.Rectangle;
+    import flash.utils.clearTimeout;
     import flash.utils.setTimeout;
     
     import mx.utils.StringUtil;
@@ -56,6 +57,8 @@ package org.cytoscapeweb.view.render {
     public class NodeRenderer extends ShapeRenderer {
         
         private static const WRAP_PAD:Number = 5;
+        
+        private var drawTimerId:uint = 0;
         
         private static var _instance:NodeRenderer = new NodeRenderer();
         public static function get instance():NodeRenderer { return _instance; }
@@ -93,7 +96,7 @@ package org.cytoscapeweb.view.render {
                 // See https://sourceforge.net/forum/message.php?msg_id=7393265
                 var fillColor:uint = 0xffffff & d.fillColor;
                 var fillAlpha:Number = d.fillAlpha;
-                var size:Number = d.size * defaultSize;
+                var size:Number = d.size;
                 
                 var lineColor:uint = d.lineColor;
                 var lineAlpha:Number = d.lineAlpha;
@@ -102,7 +105,7 @@ package org.cytoscapeweb.view.render {
                 var w:Number = d.props.width;
                 var h:Number = d.props.height;
                 
-                if (d.props.autoSize) {
+                if (size < 0) {
                     var lbl:TextSprite = d.props.label;
                     var hf:Number = 1, wf:Number = 1;
                     
@@ -130,6 +133,7 @@ package org.cytoscapeweb.view.render {
                     w += 2 * WRAP_PAD;
                     h += 2 * WRAP_PAD;
                 } else {
+                    size *= defaultSize
                     if (isNaN(w) || w < 0) w = size;
                     if (isNaN(h) || h < 0) h = size;
                 }
@@ -220,9 +224,16 @@ package org.cytoscapeweb.view.render {
                 }
 
                 function drawWhenLoaded():void {
-                    setTimeout(function():void {trace(" .TIMEOUT: Checking again...");
-                        if (_imgCache.isLoaded(url)) draw();
-                        else if (!_imgCache.isBroken(url)) drawWhenLoaded();
+                    if (drawTimerId != 0)
+                        clearTimeout(drawTimerId);
+                    
+                    drawTimerId = setTimeout(function():void {trace(" .TIMEOUT: Checking again...");
+                        if (_imgCache.isLoaded(url)) {
+                            drawTimerId = 0;
+                            draw();
+                        } else if (!_imgCache.isBroken(url)) {
+                            drawWhenLoaded();
+                        }
                     }, 50);
                 }
                 
@@ -247,7 +258,7 @@ package org.cytoscapeweb.view.render {
 
                         var m:Matrix = new Matrix();
                         m.scale(scale, scale);
-                        m.translate(-(bd.width*scale)/2, -(bd.height*scale)/2);
+                        m.translate(-(iw*scale)/2, -(ih*scale)/2);
                         
                         // Draw the image as background
                         d.graphics.beginBitmapFill(bd, m, false, true);

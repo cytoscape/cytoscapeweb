@@ -33,6 +33,7 @@ package org.cytoscapeweb.model.data {
     
     import org.cytoscapeweb.util.ArrowShapes;
     import org.cytoscapeweb.util.NodeShapes;
+    import org.cytoscapeweb.util.SizePolicies;
     import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.VisualProperties;
     
@@ -230,6 +231,7 @@ package org.cytoscapeweb.model.data {
             assertEquals( "Missing default value should be replaced by value from default visual style",
                            _defStyle.getValue(VisualProperties.EDGE_WIDTH),
                            o.edges.width.defaultValue );
+            assertEquals("auto", o.nodes.compoundSize);
             
             // Number of properties.
             var arr:Array = vs.getPropertiesAsArray();
@@ -265,6 +267,7 @@ package org.cytoscapeweb.model.data {
             assertEquals(_defStyle.getValue(VisualProperties.NODE_SIZE), style.getValue(VisualProperties.NODE_SIZE));
             assertEquals(_defStyle.getValue(VisualProperties.EDGE_ALPHA) , style.getValue(VisualProperties.EDGE_ALPHA));
             assertEquals(_defStyle.getValue(VisualProperties.EDGE_WIDTH), style.getValue(VisualProperties.EDGE_WIDTH));
+            assertEquals(_defStyle.getValue(VisualProperties.C_NODE_SIZE), style.getValue(VisualProperties.C_NODE_SIZE));
             
             // 2. Simple Object:
             style = VisualStyleVO.fromObject(_simpleStyle);
@@ -312,6 +315,20 @@ package org.cytoscapeweb.model.data {
                 for each (var data:Object in _dataList)
                     assertEquals(style1.getValue(pName, data), style2.getValue(pName, data));
             }
+            
+            // 4. AUTO sizes:
+            style = VisualStyleVO.fromObject({ nodes: { size: "auto", compoundSize: "auto" }  });
+            assertEquals(SizePolicies.AUTO, style.getValue(VisualProperties.NODE_SIZE));
+            assertEquals(SizePolicies.AUTO, style.getValue(VisualProperties.C_NODE_SIZE));
+            
+            style = VisualStyleVO.fromObject({ nodes: { compoundSize: 10 }  });
+            assertEquals(SizePolicies.AUTO, style.getValue(VisualProperties.C_NODE_SIZE));
+            
+            style = VisualStyleVO.fromObject({ nodes: { compoundSize: -10 }  });
+            assertEquals(SizePolicies.AUTO, style.getValue(VisualProperties.C_NODE_SIZE));
+            
+            style = VisualStyleVO.fromObject({ nodes: { compoundSize: "ignoreLabels" }  });
+            assertEquals(SizePolicies.AUTO_IGNORE_LABELS, style.getValue(VisualProperties.C_NODE_SIZE));
         }
         
         public function testDefaultVisualStyle():void {

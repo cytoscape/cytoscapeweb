@@ -93,6 +93,7 @@ package org.cytoscapeweb.view.render {
                     // Even if "transparent", we still need to draw a shape,
                     // or the node will not receive mouse events
                     if (d.props.transparent) fillAlpha = 0;
+                    
     				// draw the background color:
     				// Using a bit mask to avoid transparent mdes when fillcolor=0xffffffff.
     				// See https://sourceforge.net/forum/message.php?msg_id=7393265

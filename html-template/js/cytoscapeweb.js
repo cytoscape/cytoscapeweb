@@ -2738,7 +2738,12 @@
      *     <li><code>size</code> {Number}: Node size, in pixels.
      *                                     It has the same effect of setting the same value (or mapper) to both <code>width</code> and <code>height</code>.
      *                                     The default value is 24.
-     *                                     The size of compound nodes is automatically calculated, so setting <code>compoundSize</code> has no effect.</li>
+     *                                     You can also set <code>"auto"</code> if you want to let Cytoscape Web calculate the size of the node automatically so it encloses its label.</li>
+     *     <li><code>compoundSize</code> {String}: The size of compound nodes is always automatically calculated, so the actual size cannot be set.
+     *                                             This property accepts two values:
+     *                                             <ul><li><code>auto</code> (default): compound nodes are sized to fit their child labels inside.</li>
+     *                                                 <li><code>ignoreLabels</code>: child labels are ignored when calculating the compound node size.</li>
+     *                                             </ul></li>
      *     <li><code>width</code> {Number}: Node width, in pixels. It is not set by default.
      *                                      If set, it overrides the value returned by <code>size</code>.
      *                                      Because the size of compound nodes is automatically calculated, setting <code>compoundWidth</code> has no effect.</li>
@@ -2824,9 +2829,7 @@
      *     <li><code>tooltipFontSize</code> {Number}: The point size of node tool tips. The default value is 11.</li>
      *     <li><code>tooltipFontColor</code> {String}: Font color of node tool tips. The default value is "#000000".</li>
      *     <li><code>tooltipBackgroundColor</code> {String}: Background color of node tool tips. The default value is "#f5f5cc".</li>
-     *     <li><code>tooltipBorderColor</code> {String}: Border color of node tool tips. The default value is "#000000".</li>
-     *     <li><code>compoundChildLabelEnclosure</code> {Boolean}: Whether or not compound nodes should enclose child node/edge labels. 
-     *                                                             The default value is <code>true</code>, meaning compound nodes are sized to fit their child labels inside.</li></ul>
+     *     <li><code>tooltipBorderColor</code> {String}: Border color of node tool tips. The default value is "#000000".</li></ul>
      * @property
      * @name nodes
      * @type Object

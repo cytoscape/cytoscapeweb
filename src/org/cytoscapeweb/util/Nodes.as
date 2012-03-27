@@ -37,7 +37,6 @@ package org.cytoscapeweb.util {
     import org.cytoscapeweb.model.data.VisualStyleBypassVO;
     import org.cytoscapeweb.model.data.VisualStyleVO;
     import org.cytoscapeweb.view.render.NodeRenderer;
-    import org.cytoscapeweb.vis.data.CompoundNodeSprite;
     
     
     public class Nodes {
@@ -80,7 +79,6 @@ package org.cytoscapeweb.util {
                     shape: shape,
                     "props.width": width,
                     "props.height": height,
-                    "props.autoSize": autoSize,
                     size: size,
                     fillColor: fillColor,
                     lineColor: lineColor, 
@@ -107,7 +105,7 @@ package org.cytoscapeweb.util {
         public static function size(n:NodeSprite):Number {
             var size:* = style.getValue(VisualProperties.NODE_SIZE, n.data);
             // Flare size is a relative value:
-            return size < 0 ? -1 : size/_properties.renderer.defaultSize;
+            return size < 0 ? SizePolicies.AUTO : size/_properties.renderer.defaultSize;
         }
         
         public static function width(n:NodeSprite):Number {
@@ -118,13 +116,6 @@ package org.cytoscapeweb.util {
         public static function height(n:NodeSprite):Number {
             var h:Number = style.getValue(VisualProperties.NODE_HEIGHT, n.data);
             return h;
-        }
-        
-        public static function autoSize(n:NodeSprite):Boolean {
-            var size:Number = style.getValue(VisualProperties.NODE_SIZE, n.data);
-            var wrap:Boolean = size === -1;
-            
-            return wrap;
         }
         
         public static function fillColor(n:NodeSprite):uint {

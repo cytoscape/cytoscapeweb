@@ -64,6 +64,7 @@ package org.cytoscapeweb.view.components {
     import org.cytoscapeweb.util.Labels;
     import org.cytoscapeweb.util.Layouts;
     import org.cytoscapeweb.util.Nodes;
+    import org.cytoscapeweb.util.SizePolicies;
     import org.cytoscapeweb.util.Utils;
     import org.cytoscapeweb.util.VisualProperties;
     import org.cytoscapeweb.util.methods.$each;
@@ -411,7 +412,7 @@ package org.cytoscapeweb.view.components {
             data.visit(function(ds:DataSprite):Boolean {
                 var lb:TextSprite = labels.getValue(ds);
                 if (lb != null) lb.visible = visible && ds.visible;
-                if (ds is NodeSprite && ds.props.autoSize) {
+                if (ds is NodeSprite && ds.size == SizePolicies.AUTO) {
                     if (! (ds is CompoundNodeSprite && (ds as CompoundNodeSprite).nodesCount > 0)) {
                         ds.dirty();
                     }
@@ -520,7 +521,7 @@ package org.cytoscapeweb.view.components {
                 }
                 
                 // calculate&update bounds of the compound node
-				if (_style.getValue(VisualProperties.C_NODE_CHILD_LABEL_ENCLOSURE)) {
+				if (_style.getValue(VisualProperties.C_NODE_SIZE, cns.data) == SizePolicies.AUTO) {
 					bounds = this.getRealBounds(children);
 				} else {
 					bounds = GraphUtils.getBounds(children.nodes, null, true, true);

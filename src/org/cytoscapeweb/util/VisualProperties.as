@@ -184,8 +184,6 @@ package org.cytoscapeweb.util {
         public static const C_NODE_HOVER_GLOW_BLUR:String = "nodes.compoundHoverGlowBlur";
         public static const C_NODE_HOVER_GLOW_STRENGTH:String = "nodes.compoundHoverGlowStrength";
         
-        public static const C_NODE_CHILD_LABEL_ENCLOSURE:String = "nodes.compoundChildLabelEnclosure";
-        
         // TODO rename and create colors, etc:
         public static const EDGE_TOOLTIP_TEXT_MERGE:String = "edges.mergeTooltipText";
         
@@ -249,9 +247,13 @@ package org.cytoscapeweb.util {
                         val = 0xffffff;
                     }
                 } else if (isNumber(name)) {
-                    if (name === NODE_SIZE && (val is String) && 
-                        String(val).toLowerCase() === "auto") {
-                        val = -1;
+                    if (name === NODE_SIZE && (val is String) && String(val).toLowerCase() === "auto") {
+                        val = SizePolicies.AUTO;
+                    } else if (name === C_NODE_SIZE) {
+                        if ((val is String) && String(val).toLowerCase() === "ignorelabels")
+                            val = SizePolicies.AUTO_IGNORE_LABELS;
+                        else
+                            val = SizePolicies.AUTO;
                     } else {
                         val = Number(value);
                         
@@ -286,8 +288,14 @@ package org.cytoscapeweb.util {
             } else if (isNumber(name)) {
                 value = Number(value);
                 
-                if (name === NODE_SIZE && value < 0)
+                if (name === NODE_SIZE && value < 0) {
                     value = "auto";
+                } else if (name === C_NODE_SIZE && value < 0) {
+                    if (value === SizePolicies.AUTO_IGNORE_LABELS)
+                        value = "ignoreLabels";
+                    else
+                        value = "auto";
+                }
             } else if (isString(name)) {
                 if (value == null) value = "";
                 else value = value.toString();
