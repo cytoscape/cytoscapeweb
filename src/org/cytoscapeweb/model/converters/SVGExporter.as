@@ -460,19 +460,21 @@ package org.cytoscapeweb.model.converters {
                                     sc = Utils.rgbColorAsString(gf.color);
                                     sw = Math.max(0.1, gf.blurX);
                                     
-                                    drawText(so);
+                                    drawText(sw, so);
                                 }
                             }
                         }
                     }
                     
                     // TODO: use filters instead, when Safari and IE supports it
-                    drawText(0);
+                    drawText(0, 0);
     
-                    function drawText(so:Number):void {                
+                    function drawText(strokeWidth:Number, strokeOpacity:Number):void {                
                         svg += '<text font-family="'+family+'" font-style="'+style+'" font-weight="'+weight+'"' +
-                                    ' stroke="'+sc+'" stroke-width="'+sw+'" stroke-opacity="'+so+'" stroke-linejoin="round" fill="'+c+'"' +
-                                    ' fill-opacity="'+a+'" font-size="'+lblSize+'" x="'+p.x+'" y="'+p.y+'" style="text-anchor:'+ta+';">';
+                                    ' stroke="'+sc+'" stroke-width="'+strokeWidth+'" stroke-opacity="'+strokeOpacity+'"' + 
+                                    ' stroke-linejoin="round" fill="'+c+'" fill-opacity="'+a+'"' + 
+                                    ' font-size="'+lblSize+'" x="'+p.x+'" y="'+p.y+'"' + 
+                                    ' style="text-anchor:'+ta+';">';
                         
                         if (lines.length > 0) {
                             for (var i:int = 0; i < lines.length; i++) {
