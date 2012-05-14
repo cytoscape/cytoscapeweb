@@ -454,6 +454,14 @@ package org.cytoscapeweb.model {
                     for each (var ds:DataSprite in items) {
                         ds.data[field.name] = field.defaultValue;
                     }
+                    
+                    if (group === Groups.EDGES) {
+                        // Update the merged edges' data
+                        for (var key:String in _interactions) {
+                            var inter:InteractionVO = _interactions[key];
+                            inter.update(edgesSchema, true, field.name);
+                        }
+                    }
                 } else {
                     throw new CWError("Cannot add data field '"+name+"': data field name already existis",
                                       ErrorCodes.INVALID_DATA_CONVERSION);

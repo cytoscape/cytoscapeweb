@@ -117,7 +117,7 @@ package org.cytoscapeweb.model.data {
             return (_node1 == node1 && _node2 == node2) || (_node1 == node2 && _node2 == node1);
         }
         
-        public function update(edgesSchema:DataSchema, updateData:Boolean=true):void {
+        public function update(edgesSchema:DataSchema, updateData:Boolean=true, dataFieldName:String=null):void {
             // Merged edge data:
             if (updateData) recreateDataFields(edgesSchema);
             
@@ -163,23 +163,25 @@ package org.cytoscapeweb.model.data {
                 // Merged edge data:
                 if (updateData) {
                     for each (var df:DataField in edgesSchema.fields) {
-                        if (isMergeable(df)) {
-                            var mv:* = mergedEdge.data[df.name];
-                            var v:* = e.data[df.name];
-                            
-                            switch (df.type) {
-                                case DataUtil.INT:
-                                case DataUtil.NUMBER:
-                                    mv += (isNaN(v) ? 0 : v);
-                                    break;
-                                case DataUtil.BOOLEAN:
-                                    mv |= v;
-                                    break;
-                                default:
-                                    mv.push(v !== undefined ? v : null);
+                        if (dataFieldName == null || df.name == dataFieldName) {
+                            if (isMergeable(df)) {
+                                var mv:* = mergedEdge.data[df.name];
+                                var v:* = e.data[df.name];
+                                
+                                switch (df.type) {
+                                    case DataUtil.INT:
+                                    case DataUtil.NUMBER:
+                                        mv += (isNaN(v) ? 0 : v);
+                                        break;
+                                    case DataUtil.BOOLEAN:
+                                        mv |= v;
+                                        break;
+                                    default:
+                                        mv.push(v !== undefined ? v : null);
+                                }
+                                
+                                _mergedEdge.data[df.name] = mv;
                             }
-                            
-                            _mergedEdge.data[df.name] = mv;
                         }
                     }
                 }
