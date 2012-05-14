@@ -58,7 +58,7 @@ package org.cytoscapeweb.view.render {
         
         private static const WRAP_PAD:Number = 5;
         
-        private var drawTimerId:uint = 0;
+        private var drawTimers:Object = {}; // node_id -> timer_id
         
         private static var _instance:NodeRenderer = new NodeRenderer();
         public static function get instance():NodeRenderer { return _instance; }
@@ -214,22 +214,26 @@ package org.cytoscapeweb.view.render {
             
             if (w > 0 && h > 0 && url != null && StringUtil.trim(url).length > 0) {
                 // Load the image into the cache first?
-                if (!_imgCache.contains(url)) {trace("Will load IMAGE...");
+                if (!_imgCache.contains(url)) {trace("Will load IMAGE (node="+d.data.id+")...");
                     _imgCache.loadImage(url);
                 }
-                if (_imgCache.isLoaded(url)) {trace(" .LOADED :-)");
+                if (_imgCache.isLoaded(url)) {trace(" .IMG LOADED (node="+d.data.id+")");
                     draw();
-                } else {trace(" .NOT loaded :-(");
+                } else {trace(" .IMG NOT loaded (node="+d.data.id+")");
                     drawWhenLoaded();
                 }
 
                 function drawWhenLoaded():void {
-                    if (drawTimerId != 0)
-                        clearTimeout(drawTimerId);
+                    var timerId:* = drawTimers[d.data.id];
                     
-                    drawTimerId = setTimeout(function():void {trace(" .TIMEOUT: Checking again...");
+                    if (timerId != null) {
+                        clearTimeout(timerId);
+                        delete drawTimers[d.data.id];
+                    }
+                    
+                    drawTimers[d.data.id] = setTimeout(function():void {trace(" .TIMEOUT (node="+d.data.id+"): Checking again...");
                         if (_imgCache.isLoaded(url)) {
-                            drawTimerId = 0;
+                            delete drawTimers[d.data.id];
                             draw();
                         } else if (!_imgCache.isBroken(url)) {
                             drawWhenLoaded();
@@ -237,7 +241,7 @@ package org.cytoscapeweb.view.render {
                     }, 50);
                 }
                 
-                function draw():void {trace("Will draw: " + d.data.id);
+                function draw():void {trace("Will draw IMG: " + d.data.id);
                     // Get the image from cache:
                     var bd:BitmapData = _imgCache.getImage(url);
                     
