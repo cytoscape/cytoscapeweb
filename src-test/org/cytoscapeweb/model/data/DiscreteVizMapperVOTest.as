@@ -101,13 +101,21 @@ package org.cytoscapeweb.model.data {
 
             var entries:Array = obj.entries;
             assertEquals(2, entries.length);
-            assertEquals("A", entries[1].attrValue);
+            var foundA:Boolean = false, foundB:Boolean = false;
             
             for each (var entry:Object in entries) {
-                if (entry.attrValue === "A")      assertEquals("#ff0000", entry.value);
-                else if (entry.attrValue === "B") assertEquals("#0000ff", entry.value);
-                else fail("Entries attribute values should be 'A' or 'B'!");
+                if (entry.attrValue === "A") {
+                    foundA = true;
+                    assertEquals("#ff0000", entry.value);
+                } else if (entry.attrValue === "B") {
+                    foundB = true;
+                    assertEquals("#0000ff", entry.value);
+                } else {
+                    fail("Entries attribute values should be 'A' or 'B'!");   
+                }
             }
+            
+            assertTrue(foundA && foundB);
         }
 	}
 }
