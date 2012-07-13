@@ -68,6 +68,11 @@ package org.cytoscapeweb.util {
             assertEquals(null, VisualProperties.parseValue(VisualProperties.NODE_TOOLTIP_TEXT, null));
             assertEquals(null, VisualProperties.parseValue(VisualProperties.NODE_TOOLTIP_TEXT, undefined));
             
+            assertEquals("1.15", VisualProperties.parseValue(VisualProperties.C_NODE_TOOLTIP_TEXT, 1.15));
+            assertEquals(" ", VisualProperties.parseValue(VisualProperties.C_NODE_TOOLTIP_TEXT, " "));
+            assertEquals(null, VisualProperties.parseValue(VisualProperties.C_NODE_TOOLTIP_TEXT, null));
+            assertEquals(null, VisualProperties.parseValue(VisualProperties.C_NODE_TOOLTIP_TEXT, undefined));
+            
             assertEquals(NodeShapes.ELLIPSE, VisualProperties.parseValue(VisualProperties.NODE_SHAPE, 0));
             assertEquals(NodeShapes.ELLIPSE, VisualProperties.parseValue(VisualProperties.NODE_SHAPE, "NotAShape!"));
             assertEquals(NodeShapes.ELLIPSE, VisualProperties.parseValue(VisualProperties.NODE_SHAPE, ""));

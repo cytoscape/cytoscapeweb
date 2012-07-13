@@ -721,15 +721,16 @@ package org.cytoscapeweb.view.components {
         
         private function formatNodeTooltip(node:NodeSprite, tooltip:TextSprite):void {
             var data:Object = node.data;
+            var compound:Boolean = (node is CompoundNodeSprite) && (CompoundNodeSprite(node)).nodesCount > 0;
 
-            var font:String = _style.getValue(VisualProperties.NODE_TOOLTIP_FONT, data);
-            var color:uint = _style.getValue(VisualProperties.NODE_TOOLTIP_COLOR, data);
-            var size:Number = _style.getValue(VisualProperties.NODE_TOOLTIP_FONT_SIZE, data);
-            var template:String = _style.getValue(VisualProperties.NODE_TOOLTIP_TEXT, data);
+            var font:String = _style.getValue(compound ? VisualProperties.C_NODE_TOOLTIP_FONT : VisualProperties.NODE_TOOLTIP_FONT, data);
+            var color:uint = _style.getValue(compound ? VisualProperties.C_NODE_TOOLTIP_COLOR : VisualProperties.NODE_TOOLTIP_COLOR, data);
+            var size:Number = _style.getValue(compound ? VisualProperties.C_NODE_TOOLTIP_FONT_SIZE : VisualProperties.NODE_TOOLTIP_FONT_SIZE, data);
+            var template:String = _style.getValue(compound ? VisualProperties.C_NODE_TOOLTIP_TEXT : VisualProperties.NODE_TOOLTIP_TEXT, data);
             
             tooltip.htmlText = formatTooltipContent(data, template, font, color, size);
-            tooltip.textField.backgroundColor = _style.getValue(VisualProperties.NODE_TOOLTIP_BACKGROUND_COLOR, data);
-            tooltip.textField.borderColor = _style.getValue(VisualProperties.NODE_TOOLTIP_BORDER_COLOR, data);
+            tooltip.textField.backgroundColor = _style.getValue(compound ? VisualProperties.C_NODE_TOOLTIP_BACKGROUND_COLOR : VisualProperties.NODE_TOOLTIP_BACKGROUND_COLOR, data);
+            tooltip.textField.borderColor = _style.getValue(compound ? VisualProperties.C_NODE_TOOLTIP_BORDER_COLOR : VisualProperties.NODE_TOOLTIP_BORDER_COLOR, data);
         }
         
         private function formatTooltipContent(data:Object, template:String, font:String, color:uint, size:Number):String {
