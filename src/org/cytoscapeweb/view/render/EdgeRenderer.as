@@ -80,7 +80,10 @@ package org.cytoscapeweb.view.render {
             var x1:Number = e.x1, y1:Number = e.y1;
             var x2:Number = e.x2, y2:Number = e.y2;
             
-            if (x1 === x2 && y1 === y2) return;
+            if (x1 === x2 && y1 === y2) {
+                g.clear();
+                return;
+            }
             
             var np1:Point = new Point(x1, y1);
             var np2:Point = new Point(x2, y2);
