@@ -205,6 +205,7 @@ package org.cytoscapeweb.model.converters {
         // It has to specify the XGMML default namespace before getting nodes/edges:
         private static const NS:Namespace = new Namespace(DEFAULT_NAMESPACE);
         private static const CY:Namespace = new Namespace(CYTOSCAPE_NAMESPACE);
+        private static const XLINK:Namespace = new Namespace(XLINK_NAMESPACE);
         
         // ========[ PRIVATE PROPERTIES ]===========================================================
         
@@ -272,9 +273,7 @@ package org.cytoscapeweb.model.converters {
          */
         public function parse(xgmml:XML, schema:DataSchema=null):DataSet {
             var lookup:Object = {};
-            var nodes:Array = [], n:Object;
-            var edges:Array = [], e:Object;
-            var id:String, sid:String, tid:String;
+            var nodes:Array, edges:Array;
             var def:Object, type:int;
             var group:String, attrName:String, attrType:String;
             
@@ -319,143 +318,10 @@ package org.cytoscapeweb.model.converters {
                 }
             }
             
-            // Parse nodes
+            // Parse nodes and edges
             // ------------------------------------------------------
-            var nodesList:XMLList = xgmml..node;
-            var node:XML;
-            var cns:CompoundNodeSprite;
-         
-            // for each node in the node list create a CompoundNodeSprite
-            // instance and add it to the nodeSprites array.
-            for each (node in nodesList) {
-                id = StringUtil.trim("" + node.@[ID]);
-                
-                if (id === "") {
-                    throw new Error( "The 'id' attribute is mandatory for 'node' tags");
-                }
-                
-                //lookup[id] = (n = parseData(node, nodeSchema));
-                //nodes.push(n);
-                
-                n = parseData(node, nodeSchema);
-                cns = new CompoundNodeSprite();
-                cns.data = n;
-                nodes.push(cns);
-                lookup[id] = cns;
-            }
-           
-            var graphList:XMLList = xgmml..graph;
-            var graph:XML;
-            var compound:XML
-            
-            // for each subgraph in the XML, initialize the CompoundNodeSprite
-            // owning that subgraph.
-            for each (graph in graphList) {
-                // if the parent is undefined,
-                // then the node is in the root graph.
-                if (graph.parent() !== undefined) {
-                    compound = graph.parent().parent(); // parent is <att>
-                    id = compound.@[ID].toString();
-                    cns = lookup[id] as CompoundNodeSprite;
-                    
-                    if (cns != null) {
-                        cns.initialize();
-                    }
-                }
-            }
-            
-            // add each node to its parent if it is not a node in the root
-            
-            for each (node in nodesList) {
-                graph = node.parent();
-                
-                // if the parent is undefined,
-                // then the node is in the root graph.
-                if (graph.parent() !== undefined) {
-                    compound = graph.parent().parent();
-                    id = compound.@[ID].toString();
-                    cns = lookup[id] as CompoundNodeSprite;
-                    id = node.@[ID].toString();
-                    
-                    if (cns != null) {
-                        cns.addNode(lookup[id] as CompoundNodeSprite);
-                    }
-                }
-            }
-            
-            // parse graphics
-            for each (node in nodesList) {
-                id = StringUtil.trim("" + node.@[ID]);
-                cns = lookup[id] as CompoundNodeSprite;
-                
-                if (cns.isInitialized()) {
-                    parseGraphics(id, node, C_NODE_GRAPHICS_ATTR);
-                    
-                    // separately set width and height values for compound
-                    // bounds, since bounds are not visual styles.
-                    var g:XML = node[GRAPHICS][0];
-
-                    if (!(g == null || _noGraphicInfo)) {
-                        var bounds:Rectangle = new Rectangle();
-                        
-                        bounds.width = Number(g.@["w"]);
-                        bounds.height = Number(g.@["h"]);
-                        
-                        cns.bounds = bounds;
-                    }
-                } else {
-                    parseGraphics(id, node, NODE_GRAPHICS_ATTR);
-                }
-            }
-            
-            // set position values for compound bounds
-            
-            for each (var point:Object in points) {
-                cns = lookup[point.id] as CompoundNodeSprite;
-                
-                if (cns.isInitialized()) {
-                    cns.bounds.x = point.x - cns.bounds.width/2;
-                    cns.bounds.y = point.y - cns.bounds.height/2;
-                }
-            }
-            
-            // Parse edges
-            // ------------------------------------------------------
-            // Parse IDs first:
-            var edgesIds:Object = {};
-            var edgesList:XMLList = xgmml..edge;
-            var edge:XML;
-            
-            for each (edge in edgesList) {
-                id = StringUtil.trim("" + edge.@[ID]);
-                if (id !== "") edgesIds[id] = true;
-            }
-            
-            var count:int = 1;
-            
-            // Parse the attributes:
-            for each (edge in edgesList/*xgmml.edge*/) {
-                id  = edge.@[ID].toString();
-                sid = edge.@[SOURCE].toString();
-                tid = edge.@[TARGET].toString();
-
-                if (StringUtil.trim(id) === "") {
-                    while (edgesIds[count.toString()] === true) ++count;
-                    id = count.toString();
-                    edgesIds[id] = true;
-                    edge.@[ID] = id;
-                    count++;
-                }
-                
-                // error checking
-                if (!lookup.hasOwnProperty(sid))
-                    error("Edge "+id+" references unknown node: "+sid);
-                if (!lookup.hasOwnProperty(tid))
-                    error("Edge "+id+" references unknown node: "+tid);
-                                
-                edges.push(e = parseData(edge, edgeSchema));
-                parseGraphics(id, edge, EDGE_GRAPHICS_ATTR);
-            }
+            nodes = parseNodes(xgmml, nodeSchema, lookup);
+            edges = parseEdges(xgmml, edgeSchema, lookup);
             
             return new DataSet(
                 new DataTable(nodes, nodeSchema),
@@ -519,6 +385,163 @@ package org.cytoscapeweb.model.converters {
         }
         
         // ========[ PRIVATE METHODS ]==============================================================
+        
+        private function parseNodes(xgmml:XML, nodeSchema:DataSchema, lookup:Object):Array {
+            var nodes:Array = [], n:Object;
+            var cns:CompoundNodeSprite;
+            var id:String, href:String;
+            var nodesList:XMLList = xgmml..node;
+            var node:XML;
+         
+            // for each node in the node list create a CompoundNodeSprite
+            // instance and add it to the nodeSprites array.
+            for each (node in nodesList) {
+                id = StringUtil.trim("" + node.@[ID]);
+                href = StringUtil.trim("" + node.@XLINK::href);
+                
+                if (id === "") {
+                    if (href === "")
+                        throw new Error( "The 'id' or 'href' attribute is mandatory for 'node' tags");
+                    else
+                        continue; // Ignore XLink references for now
+                }
+                    
+                n = parseData(node, nodeSchema);
+                cns = new CompoundNodeSprite();
+                cns.data = n;
+                nodes.push(cns);
+                lookup[id] = cns;
+            }
+           
+            var graphList:XMLList = xgmml..graph;
+            var graph:XML;
+            var compound:XML
+            
+            // for each subgraph in the XML, initialize the CompoundNodeSprite owning that subgraph.
+            for each (graph in graphList) {
+                // if the parent is undefined, then the node is in the root graph.
+                if (graph.parent() !== undefined) {
+                    compound = graph.parent().parent(); // parent is <att>
+                    id = compound.@[ID].toString();
+                    cns = lookup[id] as CompoundNodeSprite;
+                    
+                    if (cns != null)
+                        cns.initialize();
+                }
+            }
+            
+            // add each node to its parent if it is not a node in the root
+            for each (node in nodesList) {
+                graph = node.parent();
+                
+                // if the parent is undefined, then the node is in the root graph.
+                if (graph.parent() !== undefined) {
+                    // find the parent node
+                    compound = graph.parent().parent();
+                    id = compound.@[ID].toString();
+                    cns = lookup[id] as CompoundNodeSprite;
+                    
+                    if (cns != null) {
+                        // add the child node
+                        href = StringUtil.trim("" + node.@XLINK::href);
+                        id = href === "" ? node.@[ID].toString() : parseIdFromXLink(href);
+                        cns.addNode(lookup[id] as CompoundNodeSprite);
+                    }
+                }
+            }
+            
+            // parse graphics
+            for each (node in nodesList) {
+                href = StringUtil.trim("" + node.@XLINK::href);
+                
+                if (href !== "") continue; // no graphics when it's just an XLink reference
+                
+                id = StringUtil.trim("" + node.@[ID]);
+                cns = lookup[id] as CompoundNodeSprite;
+                
+                if (cns.isInitialized()) {
+                    parseGraphics(id, node, C_NODE_GRAPHICS_ATTR);
+                    
+                    // separately set width and height values for compound
+                    // bounds, since bounds are not visual styles.
+                    var g:XML = node[GRAPHICS][0];
+
+                    if (!(g == null || _noGraphicInfo)) {
+                        var bounds:Rectangle = new Rectangle();
+                        bounds.width = Number(g.@["w"]);
+                        bounds.height = Number(g.@["h"]);
+                        cns.bounds = bounds;
+                    }
+                } else {
+                    parseGraphics(id, node, NODE_GRAPHICS_ATTR);
+                }
+            }
+            
+            // set position values for compound bounds
+            
+            for each (var point:Object in points) {
+                cns = lookup[point.id] as CompoundNodeSprite;
+                
+                if (cns.isInitialized()) {
+                    cns.bounds.x = point.x - cns.bounds.width/2;
+                    cns.bounds.y = point.y - cns.bounds.height/2;
+                }
+            }
+            
+            return nodes;
+        }
+        
+        private function parseEdges(xgmml:XML, edgeSchema:DataSchema, lookup:Object):Array {
+            var edges:Array = [], e:Object;
+            
+            // Parse IDs first:
+            var edgesIds:Object = {};
+            var edgesList:XMLList = xgmml..edge;
+            var edge:XML;
+            var id:String, sid:String, tid:String;
+            var href:String;
+            
+            for each (edge in edgesList) {
+                href = StringUtil.trim("" + edge.@XLINK::href);
+                if (href !== "") continue;
+                
+                id = StringUtil.trim("" + edge.@[ID]);
+                if (id !== "") edgesIds[id] = true;
+            }
+            
+            var count:int = 1;
+            
+            // Parse the attributes:
+            for each (edge in edgesList/*xgmml.edge*/) {
+                // just ignore XLink references, because CW model doesn't have subgraphs
+                // (for CW, it doesn't matter where edge elements are placed in the XGMML doc)
+                href = StringUtil.trim("" + edge.@XLINK::href);
+                if (href !== "") continue;
+                
+                id  = edge.@[ID].toString();
+                sid = edge.@[SOURCE].toString();
+                tid = edge.@[TARGET].toString();
+
+                if (StringUtil.trim(id) === "") {
+                    while (edgesIds[count.toString()] === true) ++count;
+                    id = count.toString();
+                    edgesIds[id] = true;
+                    edge.@[ID] = id;
+                    count++;
+                }
+                
+                // error checking
+                if (!lookup.hasOwnProperty(sid))
+                    error("Edge "+id+" references unknown node: "+sid);
+                if (!lookup.hasOwnProperty(tid))
+                    error("Edge "+id+" references unknown node: "+tid);
+                                
+                edges.push(e = parseData(edge, edgeSchema));
+                parseGraphics(id, edge, EDGE_GRAPHICS_ATTR);
+            }
+            
+            return edges;
+        }
         
         private function parseData(tag:XML, schema:DataSchema):Object {
             var data:Object = {};
@@ -1028,6 +1051,10 @@ package org.cytoscapeweb.model.converters {
             }
             
             return value;
+        }
+        
+        private function parseIdFromXLink(href:String):String {
+            return href != null ? StringUtil.trim(href).replace("#", "") : null;
         }
         
         private static function toString(o:Object, type:int):String {

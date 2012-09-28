@@ -50,6 +50,9 @@ package org.cytoscapeweb.fixtures {
         [Embed(source="/assets/fixtures/spaces.sif", mimeType="application/octet-stream")]
         public static const SIF_SPACES:Class;
         
+        [Embed(source="/assets/fixtures/cy3_groups.xgmml", mimeType="application/octet-stream")]
+        public static const XGMML_CY3_GROUPS:Class;
+        
         // ========[ PRIVATE PROPERTIES ]===========================================================
         
         private static var _xmlCache:Object = {};

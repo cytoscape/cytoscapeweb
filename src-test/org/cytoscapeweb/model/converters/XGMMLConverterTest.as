@@ -46,6 +46,7 @@ package org.cytoscapeweb.model.converters {
     import org.cytoscapeweb.util.LineStyles;
     import org.cytoscapeweb.util.NodeShapes;
     import org.cytoscapeweb.util.VisualProperties;
+    import org.cytoscapeweb.vis.data.CompoundNodeSprite;
     
     public class XGMMLConverterTest extends TestCase {
         
@@ -89,6 +90,31 @@ package org.cytoscapeweb.model.converters {
                 
                 // *** TODO: Tests visual attributes according to VizMapper:
             }
+        }
+        
+        public function testImportXgmmlWithXLinks():void {
+            var xml:XML = Fixtures.getFixtureAsXml(Fixtures.XGMML_CY3_GROUPS);
+            var converter:XGMMLConverter = new XGMMLConverter(VisualStyleVO.defaultVisualStyle(), 1);
+            var ds:DataSet = converter.parse(xml);
+            
+            assertEquals(7, ds.nodes.data.length);
+            assertEquals(4, ds.edges.data.length);
+            
+            var nodeLookup:Object = {};
+            var n:CompoundNodeSprite;
+            
+            for each (n in ds.nodes.data) {
+                nodeLookup[n.data.id] = n.data;
+                nodeLookup[n.data.label] = n.data;
+            }
+                
+            assertEquals("Group 1", nodeLookup[ nodeLookup["Node 1"].parent ].label);
+            assertEquals("Group 1", nodeLookup[ nodeLookup["Node 2"].parent ].label);
+            assertEquals("Group 2", nodeLookup[ nodeLookup["Node 4"].parent ].label);
+            assertEquals("Group 2", nodeLookup[ nodeLookup["Node 5"].parent ].label);
+            assertNull(nodeLookup["Node 3"].parent);
+            assertNull(nodeLookup["Group 1"].parent);
+            assertNull(nodeLookup["Group 2"].parent);
         }
         
         public function testParseGraphicsValue():void {
