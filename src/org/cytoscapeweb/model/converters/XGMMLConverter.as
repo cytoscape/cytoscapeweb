@@ -626,7 +626,7 @@ package org.cytoscapeweb.model.converters {
                     if (k.indexOf('cy:') === 0)
                         v = g.@CY::[k.replace('cy:', '')];
                     else
-                        v = g.@[k]
+                        v = g.@[k];
 
                     if (v[0] != null) {
                         v = v[0].toString();

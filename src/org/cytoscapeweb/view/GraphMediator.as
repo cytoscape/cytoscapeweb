@@ -400,7 +400,7 @@ package org.cytoscapeweb.view {
                     if (ds is CompoundNodeSprite) {
                         parent = ds as CompoundNodeSprite;
                         
-                        while (parent != null) {trace("update parent >>> " + parent.data.id);
+                        while (parent != null) {
                             // update the bounds of the compound node
                             if (parent.nodesCount > 0) {
                                 this.vis.updateCompoundBounds(parent);

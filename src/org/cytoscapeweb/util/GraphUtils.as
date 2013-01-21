@@ -63,21 +63,6 @@ package org.cytoscapeweb.util {
         // ========[ PUBLIC METHODS ]===============================================================
         
         /**
-         * Brings the given display object to the front of the stage. This
-         * function does not taken compound nodes into account. Use bringToFront 
-         * function for full compatibility with compound graphs.
-         * 
-         * @param d     DisplayObject to bring to front
-         */
-        public static function toFront(d:DisplayObject):void {
-            if (d != null) {
-                var p:DisplayObjectContainer = d.parent;
-                if (p != null)
-                    p.setChildIndex(d, p.numChildren-1);
-            }
-        }
-        
-        /**
          * Brings the given display object to the front of the stage. If the
          * given display object is a CompoundNodeSprite, also brings all
          * its children and edges inside the compound node to the front.
@@ -86,26 +71,25 @@ package org.cytoscapeweb.util {
          */ 
         public static function bringToFront(d:DisplayObject):void {
             if (d != null) {
+                toFront(d);
+                
                 if (d is CompoundNodeSprite) {
                     var cns:CompoundNodeSprite = d as CompoundNodeSprite;
+                    var ns:NodeSprite;
                     
                     // bring the compound node sprite as well as all its
                     // children and the edges inside the compound to the front.
-                    GraphUtils.toFront(cns);
-                    
                     if (cns.isInitialized() && !cns.allChildrenInvisible()) {
-                        for each (var ns:NodeSprite in cns.getNodes()) {
-                            GraphUtils.toFront(ns);
-                            
-                            if (ns is CompoundNodeSprite) {
-                                GraphUtils.bringToFront(ns as CompoundNodeSprite);
-                            }
-                            
+                        for each (ns in cns.getNodes()) {
                             ns.visitEdges(toFront);
                         }
+                        for each (ns in cns.getNodes()) {
+                            if (ns is CompoundNodeSprite)
+                                bringToFront(ns);
+                            else
+                                toFront(ns);
+                        }
                     }
-                } else {
-                    GraphUtils.toFront(d);
                 }
             }
         }
@@ -447,6 +431,23 @@ package org.cytoscapeweb.util {
             });
             
             return sorted;
+        }
+        
+        // ========[ PRIVATE METHODS ]==============================================================
+        
+        /**
+         * Brings the given display object to the front of the stage. This
+         * function does not taken compound nodes into account. Use bringToFront 
+         * function for full compatibility with compound graphs.
+         * 
+         * @param d     DisplayObject to bring to front
+         */
+        private static function toFront(d:DisplayObject):void {
+            if (d != null) {
+                var p:DisplayObjectContainer = d.parent;
+                if (p != null)
+                    p.setChildIndex(d, p.numChildren-1);
+            }
         }
     }
 }
