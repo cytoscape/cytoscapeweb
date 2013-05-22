@@ -3,17 +3,6 @@ package org.cytoscapeweb.view.layout.ivis.layout
 	import org.cytoscapeweb.view.layout.ivis.layout.cose.CoSEConstants;
 	import org.cytoscapeweb.view.layout.ivis.layout.fd.FDLayoutConstants;
 
-//import java.io.Serializable;
-
-//import org.ivis.layout.cose.CoSEConstants;
-//import org.ivis.layout.fd.FDLayoutConstants;
-//import org.ivis.layout.avsdf.AVSDFConstants;
-//import org.ivis.layout.cise.CiSEConstants;
-//import org.ivis.layout.sgym.SgymConstants;
-//import org.ivis.layout.spring.SpringConstants;
-
-
-
 /**
  * This method gathers the user-customizable layout options in a package
  *
