@@ -80,7 +80,7 @@ package org.cytoscapeweb.view.render {
             var x1:Number = e.x1, y1:Number = e.y1;
             var x2:Number = e.x2, y2:Number = e.y2;
             
-            if (x1 === x2 && y1 === y2) {
+            if (s != t && x1 === x2 && y1 === y2) {
                 g.clear();
                 return;
             }
@@ -91,7 +91,7 @@ package org.cytoscapeweb.view.render {
             var w:Number = e.lineWidth;
             var curve:Boolean = e.shape === Shapes.BEZIER || e.shape === Shapes.BSPLINE || e.shape === Shapes.CARDINAL;
             
-            // Edge intersection points (with target and souce nodes):
+            // Edge intersection points (with target and source nodes):
             var _intT:Point = new Point(), _intS:Point = new Point();
             _intS.x = x1; _intS.y = y1;
             _intT.x = x2; _intT.y = y2;
