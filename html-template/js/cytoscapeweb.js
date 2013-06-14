@@ -197,7 +197,7 @@
          *                    <li><code>network</code>: The model that describes the network. Only this option is mandatory. It can be one of the following formats:
          *                                              <ul><li>{@link org.cytoscapeweb.NetworkModel}: A simple JavaScript object that defines the raw data from which to build a network.</li>
          *                                                  <li><a href="http://graphml.graphdrawing.org/primer/graphml-primer.html" rel="external">GraphML</a>: An XML format for graphs.</li>
-         *                                                  <li><a href="http://www.cs.rpi.edu/~puninj/XGMML/" rel="external">XGMML</a>: This XML format allows you to define
+         *                                                  <li><a href="http://cgi5.cs.rpi.edu/research/groups/pb/punin/public_html/XGMML/" rel="external">XGMML</a>: This XML format allows you to define
          *                                                      visual properties (e.g. colors and shapes) and nodes positioning, if you want to,
          *                                                      although using the <code>visualStyle</code> and <code>layout</code> options is usually better.</li>
          *                                                  <li><a href="http://cytoscape.wodaklab.org/wiki/Cytoscape_User_Manual/Network_Formats/" rel="external">SIF</a>: A simpler text format
@@ -206,7 +206,7 @@
          *                    <li><code>visualStyle</code>: an optional {@link org.cytoscapeweb.VisualStyle} object to be applied on this network.</li>
          *                    <li><code>layout</code>: an optional {@link org.cytoscapeweb.Layout} object, or just the layout name.
          *                                             The default is "ForceDirected", unless the network data is an 
-         *                                             <a href="http://www.cs.rpi.edu/~puninj/XGMML/" rel="external">XGMML</a>, whose 
+         *                                             <a href="http://cgi5.cs.rpi.edu/research/groups/pb/punin/public_html/XGMML/" rel="external">XGMML</a>, whose 
          *                                             <code><a href="http://www.cs.rpi.edu/research/groups/pb/punin/public_html/XGMML/draft-xgmml-20010628.html#NodeE" rel="external">node</a></code>
          *                                             elements contain
          *                                             <code><a href="http://www.cs.rpi.edu/research/groups/pb/punin/public_html/XGMML/draft-xgmml-20010628.html#GLCPE" rel="external">graphics</a></code>
@@ -1339,7 +1339,7 @@
         },
 
         /**
-         * <p>Return the network data as <a href="http://www.cs.rpi.edu/~puninj/XGMML/" rel="external">XGMML</a>.</p>
+         * <p>Return the network data as <a href="http://cgi5.cs.rpi.edu/research/groups/pb/punin/public_html/XGMML/" rel="external">XGMML</a>.</p>
          * @return {String} The XML text.
          * @see org.cytoscapeweb.Visualization#graphml
          * @see org.cytoscapeweb.Visualization#sif
