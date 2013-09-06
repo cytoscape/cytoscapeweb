@@ -910,9 +910,9 @@ public /*abstract*/ class Layout
 
 						// TODO put method can be implemented
 						//remainingDegrees.put(neighbor, newDegree);
-						if(! remainingDegrees.add(node , degree))
+						if(! remainingDegrees.add(neighbor , newDegree))
 						{
-							remainingDegrees.replaceFor(node , degree)
+							remainingDegrees.replaceFor(neighbor , newDegree)
 						}
 						
 					}
