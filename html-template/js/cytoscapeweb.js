@@ -323,7 +323,8 @@
          *      restLength:    100,
          *      iterations:    200,
          *      maxTime:       10000,
-         *      autoStabilize: false
+         *      autoStabilize: false,
+		 *		incremental: false
          * };
          * vis.layout({ name: 'ForceDirected', options: options });
          *
@@ -2591,6 +2592,8 @@
      *         <li><code>maxWeight</code> {Number}: The maximum edge weight to consider, if the layout is set to be weighted.
      *                                              Do not specify any value if you want the layout to get the maximum weight from the rendered edges data (filtered-out edges are ignored).
      *                                              Any edge with a weight above the maximum will be laid out the same as an edge with maximum weight.</li>
+     *         <li><code>incremental</code> {Boolean}: Whether the layout should be done incrementally with respect to the previous position of nodes.
+													Default value is false.</li>
      *     </ul>
      * <li><b>Circle:</b></li>
      *     <ul class="options">

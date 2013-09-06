@@ -120,7 +120,8 @@ package org.cytoscapeweb.view.layout {
                                             autoStabilize:Boolean=true,
                                             sim:Simulation=null,
                                             edgeWeightAttr:String=null,
-                                            edgeWeightNormalization:String=null) {
+                                            edgeWeightNormalization:String=null,
+                                            isIncremental:Boolean= false) {
             super(enforceBounds, iterations, sim);
             this.maxTime = maxTime;
             this.autoStabilize = autoStabilize;

@@ -80,7 +80,8 @@ package org.cytoscapeweb.util {
                 maxWeight:   undefined,
                 iterations:  400,
                 maxTime:     30000, // milliseconds
-                autoStabilize: true
+                autoStabilize: true,
+                incremental: false
             },
             Preset: {
                 points: [ ],

@@ -294,6 +294,11 @@ package org.cytoscapeweb.view.components {
                 if (_layoutName === Layouts.FORCE_DIRECTED) {
                     // Is there a seed?
                     var seed:* = layoutObj.options.seed;
+					var isIncremental:Boolean = false;
+					if (layoutObj.options.incremental != undefined && layoutObj.options.incremental != null)
+					{
+						isIncremental = layoutObj.options.incremental;
+					}
                     var rndm:* = (seed is Number && uint(seed) > 0) ? new Rndm(uint(seed)) : Math;
                     // If the previous layout is ForceDirected, we need to set the nodes' particles and
                     // the edges' springs to null, otherwise the layout may not render very well
@@ -301,8 +306,11 @@ package org.cytoscapeweb.view.components {
                     data.nodes.visit(function(n:NodeSprite):void {
                         n.props.particle = null;
                         // It is also important to set random positions to nodes:
-                        n.x = rndm.random() * _initialWidth;
-                        n.y = rndm.random() * _initialHeight;
+                        if (!isIncremental) // randomize only if it is not incremental
+                        {
+							n.x = rndm.random() * _initialWidth;
+							n.y = rndm.random() * _initialHeight;
+                        }
                     });
                     data.edges.visit(function(e:EdgeSprite):void {
                        e.props.spring = null;
