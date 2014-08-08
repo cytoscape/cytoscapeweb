@@ -43,6 +43,7 @@ package org.cytoscapeweb.model.converters {
     import flash.text.TextField;
     import flash.text.TextFormatAlign;
     import flash.utils.ByteArray;
+    import flash.xml.XMLDocument;
     
     import mx.graphics.codec.PNGEncoder;
     import mx.utils.Base64Encoder;
@@ -479,7 +480,12 @@ package org.cytoscapeweb.model.converters {
                         if (lines.length > 0) {
                             for (var i:int = 0; i < lines.length; i++) {
                                 var ln:String = lines[i];
-                                svg += '<tspan style="text-anchor:'+ta+';" x="'+p.x+'" dy="'+textHeight+'">'+ln+'</tspan>';
+                                var tspan:XML = <tspan/>;
+                                tspan.@style = "text-anchor:"+ta+";";
+                                tspan.@x = p.x;
+                                tspan.@dy = textHeight;
+                                tspan.appendChild(ln);
+                                svg += tspan.toXMLString();
                             }
                         } else {
                             svg += text;
